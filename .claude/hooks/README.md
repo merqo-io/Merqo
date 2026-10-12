@@ -22,8 +22,6 @@ behavioral description of each hook and the events they're wired to.
   change-narration comments and oversized (>5-line) comment blocks on TS
   edits, feedback-only. Patterns come from
   `.claude/comment-hygiene-patterns.txt`.
-- `post-tool-failure.sh` — PostToolUseFailure: surfaces tool-error context,
-  always exits 0.
 - `skill-usage-log.sh` — PostToolUse(Skill\_\_.\*): appends to
   `.claude/skill-usage.log`.
 - `stop-checks.sh` — Stop: exits 0 when `stop_hook_active`; else runs

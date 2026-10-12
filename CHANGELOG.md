@@ -8,6 +8,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Internal: the AI harness follows templateCentral 6.0.4. Hook commands no
+  longer depend on the shell's current directory, the end-of-turn test run
+  is skipped when nothing changed, the guard against skipping git hooks
+  closes six gaps and reads the branch of the directory a command runs in
+  (so commits from a git worktree are not blocked by the main checkout's
+  branch), and the pull-request doc gates fail when the base branch is
+  missing. See the dated entry in `AGENTS.md`.
 - Pin `@merqo/ui` to commit `9b202ba529dfd8fecbcbb9a2cc9f37efba4bd7d4` (tag `v0.32.3`) with matching build permission. Long info tooltips now wrap inside the screen instead of staying on one line that runs off a phone, and tests that import `@merqo/ui` no longer load about 3,400 Simple Icons modules. Here that fixes the savings summary and kit card tooltips, which were a single 1,271px line.
 - Pin `@merqo/ui` to commit `a8063218e5954bef35242550070606628d79375a` (tag `v0.32.2`) with matching build permission. Every info icon now takes taps through a transparent 44px touch area on touch devices; the icon is drawn as before and nothing moves. Here that covers the savings summary and kit card info icons, which were 16px targets.
 - Pin `@merqo/ui` to commit `cb9dd39ab56d6bc2030d30edb7474ee8ebf60820` (tag `v0.32.1`) with matching build permission. The info icons on the dashboard's savings summary and kit cards now open on a tap as well as on hover and keyboard focus; a phone or tablet could not open them. `StatTile` and `InfoTooltip` also accept optional class overrides, unused here.
