@@ -32,6 +32,8 @@ lives here instead of directly in the hook files husky invokes.
   exempting merge commits and `chore(release):`; non-zero exit rejects the
   commit.
 
+`commit-msg-check.sh` also accepts a breaking-change subject (`type(scope)!:`) and the messages git writes itself (`Revert "…"`, `fixup!`, `squash!`, `amend!`).
+
 ## Parent
 
 [.husky](../README.md)
