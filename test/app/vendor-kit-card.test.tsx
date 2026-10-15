@@ -14,7 +14,7 @@ describe("VendorKitCard", () => {
           slug: "qkit",
           name: "qkit",
           tagline: "Take orders and run your queue.",
-          href: "https://qkit-sg.vercel.app",
+          href: "https://qkit.merqo.io",
           plan: "free",
         }}
         metrics={{ ok: false, slug: "qkit" }}
@@ -33,7 +33,7 @@ describe("VendorKitCard", () => {
           slug: "qkit",
           name: "qkit",
           tagline: "Take orders and run your queue.",
-          href: "https://qkit-sg.vercel.app",
+          href: "https://qkit.merqo.io",
           plan: "free",
         }}
         metrics={{ ok: false, slug: "qkit" }}
@@ -51,7 +51,7 @@ describe("VendorKitCard", () => {
             slug: "qkit",
             name: "qkit",
             tagline: "Take orders and run your queue.",
-            href: "https://qkit-sg.vercel.app",
+            href: "https://qkit.merqo.io",
             plan: "free",
           }}
           savings={{
@@ -78,7 +78,7 @@ describe("VendorKitCard", () => {
             slug: "qkit",
             name: "qkit",
             tagline: "Take orders and run your queue.",
-            href: "https://qkit-sg.vercel.app",
+            href: "https://qkit.merqo.io",
             plan: "free",
           }}
           savings={{
@@ -104,7 +104,7 @@ describe("VendorKitCard", () => {
             slug: "loopkit",
             name: "loopkit",
             tagline: "Stamp cards, points and tiers.",
-            href: "https://loopkit-sg.vercel.app",
+            href: "https://loopkit.merqo.io",
             plan: "pro",
           }}
           savings={{
@@ -129,7 +129,7 @@ describe("VendorKitCard", () => {
           slug: "qkit",
           name: "qkit",
           tagline: "Take orders and run your queue.",
-          href: "https://qkit-sg.vercel.app",
+          href: "https://qkit.merqo.io",
           plan: "free",
           lastVerifiedAt: "2026-07-26T11:57:00Z",
         }}
@@ -147,7 +147,7 @@ describe("VendorKitCard", () => {
           slug: "qkit",
           name: "qkit",
           tagline: "Take orders and run your queue.",
-          href: "https://qkit-sg.vercel.app",
+          href: "https://qkit.merqo.io",
           plan: "free",
         }}
         metrics={{ ok: false, slug: "qkit" }}

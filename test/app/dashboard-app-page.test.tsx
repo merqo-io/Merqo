@@ -89,10 +89,7 @@ describe("DashboardPage — Ready to add kits", () => {
       screen.queryByTestId("activate-kits-button-paykit"),
     ).not.toBeInTheDocument();
     const paykitLink = screen.getByRole("link", { name: "Add paykit" });
-    expect(paykitLink).toHaveAttribute(
-      "href",
-      "https://paykit-sg.vercel.app/login",
-    );
+    expect(paykitLink).toHaveAttribute("href", "https://paykit.merqo.io/login");
     expect(paykitLink).toHaveAttribute("target", "_blank");
   });
 

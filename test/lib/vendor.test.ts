@@ -105,7 +105,7 @@ describe("addableKits", () => {
       description: "Take orders and run your queue from a QR code.",
       features: ["QR ordering", "Live dashboard", "No app needed"],
       status: "live" as const,
-      href: "https://qkit-sg.vercel.app",
+      href: "https://qkit.merqo.io",
     },
     {
       slug: "loopkit",
@@ -128,7 +128,7 @@ describe("addableKits", () => {
   it("includes a live kit the vendor has no vendor_links row for", () => {
     const out = addableKits([], kits);
     expect(out.map((t) => t.slug)).toEqual(["qkit"]);
-    expect(out[0].href).toBe("https://qkit-sg.vercel.app");
+    expect(out[0].href).toBe("https://qkit.merqo.io");
     expect(out[0].description).toBeTruthy();
   });
 
@@ -156,7 +156,7 @@ describe("provisionableKits", () => {
       description: "Take orders and run your queue from a QR code.",
       features: ["QR ordering", "Live dashboard", "No app needed"],
       status: "live" as const,
-      href: "https://qkit-sg.vercel.app",
+      href: "https://qkit.merqo.io",
     },
     {
       slug: "loopkit",
@@ -165,7 +165,7 @@ describe("provisionableKits", () => {
       description: "Digital stamp cards and points that bring customers back.",
       features: ["Stamp cards", "Points", "Rewards"],
       status: "live" as const,
-      href: "https://loopkit-sg.vercel.app",
+      href: "https://loopkit.merqo.io",
     },
     {
       slug: "paykit",
@@ -174,7 +174,7 @@ describe("provisionableKits", () => {
       description: "Collect payment however your customer prefers.",
       features: ["PayNow", "Cards", "Receipts"],
       status: "live" as const,
-      href: "https://paykit-sg.vercel.app",
+      href: "https://paykit.merqo.io",
     },
     {
       slug: "shopkit",
@@ -222,7 +222,7 @@ describe("comingKits", () => {
       description: "Take orders and run your queue from a QR code.",
       features: ["QR ordering", "Live dashboard", "No app needed"],
       status: "live" as const,
-      href: "https://qkit-sg.vercel.app",
+      href: "https://qkit.merqo.io",
     },
     {
       slug: "loopkit",

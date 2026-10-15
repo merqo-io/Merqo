@@ -10,7 +10,7 @@ const qkit = {
   description: "Take orders and run your queue from a QR code.",
   features: ["QR ordering", "Live dashboard", "No app needed"],
   status: "live" as const,
-  href: "https://qkit-sg.vercel.app",
+  href: "https://qkit.merqo.io",
 };
 
 const shopkit = {

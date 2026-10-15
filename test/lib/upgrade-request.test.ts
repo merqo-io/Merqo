@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { requestKitUpgrade } from "@/lib/upgrade-request";
 
 const kit = {
-  app_url: "https://qkit-sg.vercel.app",
+  app_url: "https://qkit.merqo.io",
   metrics_secret: "s",
 };
 
@@ -19,7 +19,7 @@ describe("requestKitUpgrade", () => {
     expect(r).toEqual({ success: true });
     const [url, init] = fetchSpy.mock.calls[0] as [URL, RequestInit];
     expect(url.toString()).toBe(
-      "https://qkit-sg.vercel.app/api/merqo/upgrade-request",
+      "https://qkit.merqo.io/api/merqo/upgrade-request",
     );
     expect(init.method).toBe("POST");
     expect((init.headers as Record<string, string>).Authorization).toBe(
