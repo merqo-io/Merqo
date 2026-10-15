@@ -23,28 +23,28 @@ export type Kit = {
 };
 
 /** Where the live qkit product lives. Set NEXT_PUBLIC_QKIT_URL per environment
- *  to override (e.g. a custom domain). */
+ *  to override (e.g. a preview deploy). */
 export const QKIT_URL =
-  process.env.NEXT_PUBLIC_QKIT_URL ?? "https://qkit-sg.vercel.app";
+  process.env.NEXT_PUBLIC_QKIT_URL ?? "https://qkit.merqo.io";
 
 /** Where the live loopkit product lives. Set NEXT_PUBLIC_LOOPKIT_URL per
- *  environment to override (e.g. a custom domain). */
+ *  environment to override (e.g. a preview deploy). */
 export const LOOPKIT_URL =
-  process.env.NEXT_PUBLIC_LOOPKIT_URL ?? "https://loopkit-sg.vercel.app";
+  process.env.NEXT_PUBLIC_LOOPKIT_URL ?? "https://loopkit.merqo.io";
 
 /** Where the live paykit product lives. Set NEXT_PUBLIC_PAYKIT_URL per
- *  environment to override (e.g. a custom domain). */
+ *  environment to override (e.g. a preview deploy). */
 export const PAYKIT_URL =
-  process.env.NEXT_PUBLIC_PAYKIT_URL ?? "https://paykit-sg.vercel.app";
+  process.env.NEXT_PUBLIC_PAYKIT_URL ?? "https://paykit.merqo.io";
 
 /** Where the live stockkit product lives. Set NEXT_PUBLIC_STOCKKIT_URL per
- *  environment to override (e.g. a custom domain). */
+ *  environment to override (e.g. a preview deploy). */
 export const STOCKKIT_URL =
-  process.env.NEXT_PUBLIC_STOCKKIT_URL ?? "https://stockkit-sg.vercel.app";
+  process.env.NEXT_PUBLIC_STOCKKIT_URL ?? "https://stockkit.merqo.io";
 
 // Canonical per-kit URLs (each kit is a standalone product on its own domain).
 // href is wired for the live kits (qkit, loopkit, paykit, stockkit); the rest
-// launch on: shopkit-sg.vercel.app · reachkit-sg.vercel.app
+// launch on their own merqo.io subdomains.
 export const KITS: Kit[] = [
   {
     slug: "qkit",

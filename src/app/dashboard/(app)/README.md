@@ -41,7 +41,7 @@ section; one or more kits gets the savings + per-kit overview.
   all, the `h1` block is a "pick a kit to get started" hero with the bulk
   `ActivateKitsButton`, and the savings/overview are skipped.
 - `page.test.tsx` — RTL coverage of the page's kit-grouping and re-sync
-  behavior.
+  behavior. Kit `app_url` fixtures use the `*.merqo.io` production hosts.
 - `loading.tsx` — skeleton shown while `page.tsx`'s data resolves.
 - `savings-summary.tsx` — `SavingsSummary({ totals })`: the page-level total
   of the per-card savings estimates, with an `InfoTooltip` (`@merqo/ui`)

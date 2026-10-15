@@ -8,6 +8,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The kit URL fallbacks in `src/lib/kits.ts`, used when `NEXT_PUBLIC_QKIT_URL`,
+  `NEXT_PUBLIC_LOOPKIT_URL`, `NEXT_PUBLIC_PAYKIT_URL` or
+  `NEXT_PUBLIC_STOCKKIT_URL` is unset, are now each kit's `https://<kit>.merqo.io`
+  host instead of the deleted `*-sg.vercel.app` projects. Production sets all
+  four, so nothing changes live. `.env.example` now lists
+  `NEXT_PUBLIC_STOCKKIT_URL` and its comment matches. Test fixtures use the
+  same hosts.
+
 - Internal: the AI harness follows templateCentral 6.0.4. Hook commands no
   longer depend on the shell's current directory, the end-of-turn test run
   is skipped when nothing changed, the guard against skipping git hooks
