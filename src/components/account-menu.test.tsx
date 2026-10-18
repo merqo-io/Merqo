@@ -175,7 +175,7 @@ describe("AccountMenu", () => {
     expect(mocks.signOutAction).toHaveBeenCalled();
   });
 
-  it("signing out swallows the redirect() control-flow error instead of toasting it", async () => {
+  it("signing out treats the redirect() control-flow error as navigation, not a toast", async () => {
     const redirectError = Object.assign(new Error("NEXT_REDIRECT"), {
       digest: "NEXT_REDIRECT;push;/login;307;",
     });

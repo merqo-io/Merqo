@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Pin `@merqo/ui` to commit `7b386558af36a1cbf008a9b4c4073c07ffc105ba` (tag `v0.34.2`) with matching build permission. Signing out from the account menu now keeps reading "Signing out…" until `/login` loads, and the shared component no longer treats the `redirect()` throw as an error, so Merqo's own wrapper that swallowed it is removed.
 - Internal: the AI harness follows templateCentral 6.0.4. Hook commands no
   longer depend on the shell's current directory, the end-of-turn test run
   is skipped when nothing changed, the guard against skipping git hooks
