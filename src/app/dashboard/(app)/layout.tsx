@@ -38,9 +38,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* `contents` keeps the shared nav's sticky <header> a direct child of
-          this full-height container: a wrapper box only as tall as the
-          header would leave it no room to stick. */}
+      {/* `contents`: a sticky header needs the full-height parent as its box. */}
       <div className="contents print:hidden">
         <DashboardNav
           homeHref="/dashboard"
