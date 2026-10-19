@@ -62,13 +62,11 @@ own README). `useAsyncAction`, `InfoTooltip`, `Section`,
 `TwoColumnSections`, `ImageUploader`, and `DashboardTour` are used directly
 or through a thin per-app adapter (`src/hooks/use-async-action.ts`,
 `src/lib/image-upload-adapter.ts`, `src/components/dashboard-tour.tsx`).
-`account-menu.tsx` composes `@merqo/ui`'s `AccountMenu` for **both** the
-vendor dashboard and admin-console headers — Merqo's own dual-persona
-structure (unlike a single-persona kit) means neither header uses the
-shared package's composed `DashboardNav` (burger + inline nav links): the
-vendor dashboard has no nav links to show, and the admin console's own
-tab-row-below-header nav (`admin-nav.tsx`) is visually distinct enough to
-keep hand-rolled. The profile page composes shared Section, TwoColumnSections, ImageUploader and SocialLinksFields in route-local sections. Each section owns its save state and retains its distinct server-action or Supabase Auth contract.
+`dashboard-nav.tsx` composes `@merqo/ui`'s `DashboardNav` for **both** the
+vendor dashboard and admin-console headers (burger, inline links, account
+menu, kit switcher on the dashboard), and both layouts end with the landing
+`Footer` without its sign-in link. The profile and vendor-detail pages use
+`BackButton`. The profile page composes shared Section, TwoColumnSections, ImageUploader and SocialLinksFields in route-local sections. Each section owns its save state and retains its distinct server-action or Supabase Auth contract.
 `@merqo/ui`'s `AccountMenu` hardcodes its Profile link to
 `/dashboard/profile`; `src/app/dashboard/profile/page.tsx` redirects that
 to Merqo's real, persona-shared `/profile` route. The landing nav
@@ -76,7 +74,7 @@ to Merqo's real, persona-shared `/profile` route. The landing nav
 shell (`wordmark`/`end` slots), added in v0.9.0. v0.10.0 added an optional
 `LinkComponent` prop to `AccountMenu`/`DashboardNav` so Next.js consumers can
 opt their internal nav links out of a plain `<a>`'s full page reload;
-`account-menu.tsx` passes `LinkComponent={Link}` (`next/link`).
+`dashboard-nav.tsx` passes `LinkComponent={Link}` (`next/link`).
 
 `@merqo/ui` bumped to v0.32.0 (2026-09-22), for currency. It adds
 `ImageUploader`'s `deferUpload` mode (upload on save instead of on pick);

@@ -29,6 +29,8 @@ session user's own connection through the service client.
 section's failure contract and refreshes after disconnect. The page reads the
 current connection with its own-row session/RLS client.
 
+The page header's way back to `/dashboard` is `@merqo/ui`'s `BackButton`, given `next/link`.
+
 ## Verification
 
 Action tests cover validation, verified identity and field-specific patches.
