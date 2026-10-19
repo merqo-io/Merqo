@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 const { requireMerqoTeamMock, hasActiveVendorAccessMock, getAvatarUrlMock } =
@@ -29,7 +29,38 @@ describe("AdminLayout", () => {
     getAvatarUrlMock.mockReset().mockReturnValue(null);
   });
 
-  it("threads the signed-in user's email/avatar and an active-vendor canSwitch into AdminNav, and renders children", async () => {
+  it("renders the shared nav with every admin section and a footer without a sign-in link", async () => {
+    requireMerqoTeamMock.mockResolvedValue({
+      user: { email: "team@merqo.io", user_metadata: {} },
+    });
+    hasActiveVendorAccessMock.mockResolvedValue(false);
+
+    const { default: AdminLayout } = await import("./layout");
+    render(await AdminLayout({ children: <div>page content</div> }));
+
+    for (const [label, href] of [
+      ["Overview", "/admin"],
+      ["Vendors", "/admin/vendors"],
+      ["Products", "/admin/products"],
+      ["Team", "/admin/team"],
+      ["Feedback", "/admin/feedback"],
+      ["Activity", "/admin/activity"],
+    ]) {
+      expect(screen.getByRole("link", { name: label })).toHaveAttribute(
+        "href",
+        href,
+      );
+    }
+    expect(
+      screen.getByRole("link", { name: "merqo admin home" }),
+    ).toHaveAttribute("href", "/admin");
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Sign in →" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("threads the signed-in user's email/avatar and an active-vendor canSwitch into the nav, and renders children", async () => {
     requireMerqoTeamMock.mockResolvedValue({
       user: { email: "team@merqo.io", user_metadata: {} },
     });

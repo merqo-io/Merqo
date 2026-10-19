@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BackButton } from "@merqo/ui";
 import { notFound } from "next/navigation";
 import { requireMerqoTeam } from "@/lib/team";
 import { getVendorGrant, listProducts } from "@/lib/admin";
@@ -41,13 +42,12 @@ export default async function VendorDetailPage({
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-5 py-8">
       <div>
-        <Link
+        <BackButton
           href="/admin/vendors"
-          className="text-sm text-muted-foreground hover:underline"
-        >
-          ← All vendors
-        </Link>
-        <h1 className="mt-2 font-display text-2xl font-bold tracking-tight">
+          label="All vendors"
+          LinkComponent={Link}
+        />
+        <h1 className="mt-4 font-display text-2xl font-bold tracking-tight">
           {grant.email}
         </h1>
       </div>

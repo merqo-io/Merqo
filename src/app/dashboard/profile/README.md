@@ -19,7 +19,7 @@ working without patching `@merqo/ui` itself.
 ## Connectivity
 
 Reached only via `@merqo/ui`'s `AccountMenu` "Profile" menu item (see
-`src/components/account-menu.tsx`), rendered in both the `/dashboard` and
+`src/components/dashboard-nav.tsx`), rendered in both the `/dashboard` and
 `/admin` headers. Immediately hands off to `src/app/profile/`.
 
 ## Parent

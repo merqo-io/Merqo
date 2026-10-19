@@ -1,7 +1,17 @@
 import { requireMerqoTeam } from "@/lib/team";
 import { hasActiveVendorAccess } from "@/lib/vendor";
 import { getAvatarUrl } from "@/lib/account";
-import { AdminNav } from "./admin-nav";
+import { DashboardNav } from "@/components/dashboard-nav";
+import { Footer } from "@/components/landing/footer";
+
+const ADMIN_LINKS = [
+  { href: "/admin", label: "Overview" },
+  { href: "/admin/vendors", label: "Vendors" },
+  { href: "/admin/products", label: "Products" },
+  { href: "/admin/team", label: "Team" },
+  { href: "/admin/feedback", label: "Feedback" },
+  { href: "/admin/activity", label: "Activity" },
+];
 
 export default async function AdminLayout({
   children,
@@ -15,13 +25,29 @@ export default async function AdminLayout({
     : false;
 
   return (
-    <div className="min-h-screen">
-      <AdminNav
-        email={user.email}
-        avatarUrl={getAvatarUrl(user)}
-        canSwitch={canSwitch}
-      />
-      {children}
+    <div className="flex min-h-screen flex-col">
+      {/* `contents` keeps the shared nav's sticky <header> a direct child of
+          this full-height container: a wrapper box only as tall as the
+          header would leave it no room to stick. */}
+      <div className="contents print:hidden">
+        <DashboardNav
+          homeHref="/admin"
+          homeLabel="merqo admin home"
+          badge="Admin"
+          navLinks={ADMIN_LINKS}
+          email={user.email}
+          avatarUrl={getAvatarUrl(user)}
+          switchTo={
+            canSwitch
+              ? { href: "/dashboard", label: "View vendor dashboard" }
+              : undefined
+          }
+        />
+      </div>
+      <div className="w-full flex-1">{children}</div>
+      <div className="contents print:hidden">
+        <Footer showSignIn={false} />
+      </div>
     </div>
   );
 }

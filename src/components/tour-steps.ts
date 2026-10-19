@@ -18,11 +18,9 @@ const exampleFreeBadge = renderToStaticMarkup(
   createElement(Badge, { variant: "muted" }, "Free"),
 );
 
-// Merqo's dashboard nav is just a brand wordmark + an account-menu trigger —
-// no burger, no nav links, nothing that collapses on a narrow viewport (see
-// docs/superpowers/specs/2026-08-01-dashboard-nav-standard-design.md's "out of
-// scope" note on Merqo's minimal nav). So there is one step list, not the
-// desktop/mobile pair qkit/stockkit need.
+// Every step targets something visible at all widths (the dashboard cards and
+// the account-menu trigger, which the nav keeps on screen below `sm` too), so
+// there is one step list, not the desktop/mobile pair qkit/stockkit need.
 const STEPS: TourStep[] = [
   {
     element: sel("dashboard-welcome"),

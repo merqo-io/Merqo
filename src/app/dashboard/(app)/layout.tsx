@@ -1,9 +1,9 @@
-import Link from "next/link";
+import { getSwitchKits } from "@merqo/ui";
 import { requireVendorSession } from "@/lib/vendor";
 import { getAvatarUrl } from "@/lib/account";
-import { AccountMenu } from "@/components/account-menu";
+import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardTour } from "@/components/dashboard-tour";
-import { Wordmark } from "@/components/brand/wordmark";
+import { Footer } from "@/components/landing/footer";
 import { createServerClient } from "@/lib/supabase/server";
 import { stampTourSeen } from "@/lib/tour-prefs";
 
@@ -37,26 +37,31 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-20 border-b border-border bg-background/85 px-5 py-3.5 backdrop-blur-md print:hidden">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link
-            href="/dashboard"
-            aria-label="merqo dashboard home"
-            className="shrink-0 transition-opacity hover:opacity-80"
-          >
-            <Wordmark className="text-3xl" />
-          </Link>
-          <AccountMenu
-            email={user.email}
-            avatarUrl={getAvatarUrl(user)}
-            switchTo={
-              isTeam ? { href: "/admin", label: "Go to admin" } : undefined
-            }
-          />
-        </div>
-      </header>
-      <main className="mx-auto max-w-7xl px-5 py-8">{children}</main>
+    <div className="flex min-h-screen flex-col">
+      {/* `contents` keeps the shared nav's sticky <header> a direct child of
+          this full-height container: a wrapper box only as tall as the
+          header would leave it no room to stick. */}
+      <div className="contents print:hidden">
+        <DashboardNav
+          homeHref="/dashboard"
+          homeLabel="merqo dashboard home"
+          navLinks={[{ href: "/dashboard", label: "Dashboard" }]}
+          email={user.email}
+          avatarUrl={getAvatarUrl(user)}
+          switchTo={
+            isTeam ? { href: "/admin", label: "Go to admin" } : undefined
+          }
+          // "merqo" is not a kit slug, so the whole kit family comes back:
+          // the hub is where a vendor jumps into any kit.
+          switchKits={getSwitchKits("merqo")}
+        />
+      </div>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-5 py-8">
+        {children}
+      </main>
+      <div className="contents print:hidden">
+        <Footer showSignIn={false} />
+      </div>
       <DashboardTour seen={!!prefs?.tour_seen_at} />
     </div>
   );

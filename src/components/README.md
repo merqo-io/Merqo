@@ -8,24 +8,19 @@ or scoped to `dashboard/`/`landing/`.
 
 ## Contents
 
-- `account-menu.tsx` — `AccountMenu`: thin adapter composing `@merqo/ui`'s
-  shared `AccountMenu` for the dashboard/admin header avatar dropdown —
-  wires Merqo's `signOutAction` directly (`@merqo/ui` treats the
-  `NEXT_REDIRECT` throw from its `redirect()` as navigation, so a successful
-  sign-out never reaches `onError`), `submitFeedbackAction`/
-  `submitSupportMessageAction` (throw-adapting, since both return
-  `{success, error}` rather than throwing), the support-category list, and
-  the optional cross-persona switch link (`extraLink`). No `/dashboard/plan`
-  or kit-local settings route exists, so `showPlanItem` is off and
-  `kitLocalSettingsHref` is omitted. Merqo has no per-user display name
-  distinct from email at this level, so `email` fills both the shared
-  component's `vendor.name` (initials fallback only) and `vendor.subtitle`
-  (the one line actually shown). Passes `LinkComponent={Link}` (`next/link`)
-  so the shared component's internal links use client-side navigation
-  instead of a full page reload.
-- `account-menu.test.tsx` — RTL tests: trigger subtitle/initials, menu-item
-  order (no Plan item), the switch link, Feedback/Get-help submit wiring
-  (including the category-fallback and inline-error paths), and sign-out.
+- `dashboard-nav.tsx` — `DashboardNav`: thin adapter composing `@merqo/ui`'s
+  shared `DashboardNav` (burger, inline links, account dropdown) for both the
+  `/dashboard` and `/admin` headers. Callers pass the home href, wordmark
+  label, optional badge ("Admin"), link list, and an optional cross-persona
+  link (`extraLink`) or kit switcher (`switchKits`); it wires Merqo's
+  `signOutAction`, `submitFeedbackAction`/`submitSupportMessageAction`
+  (throw-adapting, since both return `{success, error}`), the support-category
+  list and `LinkComponent={Link}`. No `/dashboard/plan` route exists, so
+  `showPlanItem` is off. `email` fills both `vendor.name` (initials fallback)
+  and `vendor.subtitle`.
+- `dashboard-nav.test.tsx` — RTL tests: wordmark/badge, active-link rule,
+  kit switcher, trigger subtitle/initials, menu-item order (no Plan item),
+  the switch link, Feedback/Get-help submit wiring and sign-out.
 - `dashboard-tour.tsx` — `DashboardTour({ seen })`: thin adapter wiring
   Merqo's own step content (`tour-steps.ts`), `markTourSeen`, and routing
   into `@merqo/ui`'s shared `DashboardTour`, which owns the tour mechanism
@@ -62,8 +57,8 @@ or scoped to `dashboard/`/`landing/`.
 
 ## Connectivity
 
-`account-menu.tsx` and `dashboard-tour.tsx` are thin wiring layers over
-`@merqo/ui`'s shared `AccountMenu`/`DashboardTour` — see the root
+`dashboard-nav.tsx` and `dashboard-tour.tsx` are thin wiring layers over
+`@merqo/ui`'s shared `DashboardNav`/`DashboardTour` — see the root
 [README.md](../../README.md) for what else `@merqo/ui` provides and where
 each piece is used. `InfoTooltip` and `Section` (formerly local
 `info-tooltip.tsx`/`section.tsx`), `ImageUploader` (formerly local
@@ -73,9 +68,9 @@ each piece is used. `InfoTooltip` and `Section` (formerly local
 imported directly from `@merqo/ui` at their call sites instead of living
 here — see `src/app/login/README.md` and `src/app/profile/README.md` for
 where each is used. `FeedbackForm`/`SupportForm` (formerly local, opened
-from `account-menu.tsx`'s Sheets) are gone entirely — `@merqo/ui`'s
+from the account menu's Sheets) are gone entirely — `@merqo/ui`'s
 `AccountMenu` owns that Sheet chrome directly now.
-`account-menu.test.tsx`'s menu-order test now expects a "Theme · System"
+`dashboard-nav.test.tsx`'s menu-order test now expects a "Theme · System"
 entry, matching `@merqo/ui` v0.19.0's collapsed theme submenu.
 
 ## Parent

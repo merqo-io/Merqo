@@ -13,20 +13,11 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   subtree: calls `requireMerqoTeam()` once so child pages can re-derive the user
   cheaply, resolves `canSwitch` (whether the signed-in team member also has an
   active vendor kit, via `hasActiveVendorAccess`) and the account's
-  email/avatar, and passes them down to `<AdminNav>`.
-- `admin-nav.tsx` — `AdminNav` client component. Owns the entire sticky header
-  (burger button + `Wordmark` + `AccountMenu`) plus the section-tab nav
-  (Overview / Vendors / Products / Team / Feedback / Activity), highlighting
-  the active tab via `usePathname()`. Below `sm`, the tab row is replaced by a
-  burger toggle beside the wordmark that reveals a mobile dropdown panel
-  listing the same tabs — the same burger-beside-logo pattern as the vendor
-  dashboard nav and every kit's own nav. The open/close state lives here (not
-  in the server `layout.tsx`) because both the burger and the panel it
-  reveals need it.
-- `admin-nav.dom.test.tsx` — RTL/jsdom coverage of `AdminNav`: burger renders
-  and toggles `aria-expanded`, clicking it opens/closes the mobile panel, the
-  mobile panel lists the same tabs (and hrefs) as the desktop nav, and
-  active-tab highlighting via a mocked `usePathname()`.
+  email/avatar, and passes them to the shared header (`@/components/dashboard-nav.tsx`,
+  a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the six section links
+  (Overview / Vendors / Products / Team / Feedback / Activity) and an "Admin"
+  badge beside the wordmark. The layout ends with the landing `Footer` (no
+  sign-in link) and hides both header and footer when printing.
 - `page.tsx` — `AdminOverviewPage` (`revalidate = 0`). Fetches live products,
   vendor grants, open support messages, and cross-kit billing settings
   (`getBillingSettings`) in parallel, pulls each product's
@@ -118,8 +109,7 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
 `requireMerqoTeam()` gate and header data-resolution live; every real
 mutating action across those sub-routes (plus this folder's own `actions.ts`)
 calls `recordAudit()`, and `activity/page.tsx` is where those rows surface.
-`AdminNav` reads `usePathname()` to highlight
-whichever sub-route is active. `page.tsx` is the overview dashboard, built
+The shared nav highlights whichever sub-route is active. `page.tsx` is the overview dashboard, built
 from this folder's own components (`StatusBanner`, `OnboardingFunnelView`,
 `ProductTile`, `SupportMessageRow`) plus shared `StatCard`
 (`@/components/dashboard/stat-card`). `actions.ts` is called by
