@@ -8,6 +8,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The kit URL fallbacks in `src/lib/kits.ts`, used when `NEXT_PUBLIC_QKIT_URL`,
+  `NEXT_PUBLIC_LOOPKIT_URL`, `NEXT_PUBLIC_PAYKIT_URL` or
+  `NEXT_PUBLIC_STOCKKIT_URL` is unset, are now each kit's `https://<kit>.merqo.io`
+  host instead of the deleted `*-sg.vercel.app` projects. Production sets all
+  four, so nothing changes live. `.env.example` now lists
+  `NEXT_PUBLIC_STOCKKIT_URL` and its comment matches. Test fixtures use the
+  same hosts.
 - The vendor dashboard and the admin console now share one header, built on `@merqo/ui`'s `DashboardNav` like the kits: the admin section links sit in the same bar, with a burger on phones, and the dashboard account menu gains a "Switch products" list of the kits. Both areas now end with the site footer (no sign-in link), and the profile and vendor-detail "back" links use the shared `BackButton`.
 
 - Pin `@merqo/ui` to commit `7b386558af36a1cbf008a9b4c4073c07ffc105ba` (tag `v0.34.2`) with matching build permission. Signing out from the account menu now keeps reading "Signing out…" until `/login` loads, and the shared component no longer treats the `redirect()` throw as an error, so Merqo's own wrapper that swallowed it is removed.

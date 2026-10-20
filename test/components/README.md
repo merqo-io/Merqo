@@ -11,7 +11,7 @@ path).
 
 - `activate-kits-button.test.tsx` — `src/components/dashboard/activate-kits-button.tsx`'s one-click kit activation flow.
 - `join-waitlist-button.test.tsx` — `src/components/dashboard/join-waitlist-button.tsx`'s waitlist-join flow.
-- `kit-discovery-card.test.tsx` — `src/components/dashboard/kit-discovery-card.tsx`'s card rendering per kit status.
+- `kit-discovery-card.test.tsx` — `src/components/dashboard/kit-discovery-card.tsx`'s card rendering per kit status (fixture `href` is the `qkit.merqo.io` production host).
 - `kit-previews.test.tsx` — the `src/components/dashboard/kit-previews/` mockup-window preview components.
 - `providers.test.tsx` — `src/components/providers.tsx`'s app-wide client providers.
 - `resolve-support-message-button.test.tsx` — `src/app/admin/resolve-support-message-button.tsx`'s resolve-and-refresh flow.

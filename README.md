@@ -31,7 +31,8 @@ System control on top of the existing OS-auto behavior. In production, every kit
 cookie is scoped to `.merqo.io` (`NEXT_PUBLIC_AUTH_COOKIE_DOMAIN`,
 `src/lib/supabase/`), so signing in on one kit signs you in on the rest —
 unset in dev/preview, where each kit still runs on its own `*.vercel.app`
-host. The dashboard's onboarding tour (`src/components/dashboard-tour.tsx`)
+host. Kit links (`src/lib/kits.ts`) default to each kit's
+`https://<kit>.merqo.io` host; `NEXT_PUBLIC_<KIT>_URL` overrides one. The dashboard's onboarding tour (`src/components/dashboard-tour.tsx`)
 stamps its "seen" state as soon as it auto-runs rather than when it
 finishes, so a refresh mid-tour can't make it re-trigger on the next load —
 and since that client-fired stamp is fire-and-forget and can be aborted by

@@ -170,7 +170,7 @@ describe("DashboardPage", () => {
       {
         slug: "qkit",
         name: "qkit",
-        app_url: "https://qkit-sg.vercel.app",
+        app_url: "https://qkit.merqo.io",
         metrics_url: null,
         metrics_secret: "s",
       },
@@ -190,7 +190,7 @@ describe("DashboardPage", () => {
     expect(fetchVendorMetricsMock).toHaveBeenCalledWith(
       expect.objectContaining({
         slug: "qkit",
-        app_url: "https://qkit-sg.vercel.app",
+        app_url: "https://qkit.merqo.io",
       }),
       "vendor@business.sg",
     );
