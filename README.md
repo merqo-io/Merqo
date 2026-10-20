@@ -63,13 +63,11 @@ own README). `useAsyncAction`, `InfoTooltip`, `Section`,
 `TwoColumnSections`, `ImageUploader`, and `DashboardTour` are used directly
 or through a thin per-app adapter (`src/hooks/use-async-action.ts`,
 `src/lib/image-upload-adapter.ts`, `src/components/dashboard-tour.tsx`).
-`account-menu.tsx` composes `@merqo/ui`'s `AccountMenu` for **both** the
-vendor dashboard and admin-console headers — Merqo's own dual-persona
-structure (unlike a single-persona kit) means neither header uses the
-shared package's composed `DashboardNav` (burger + inline nav links): the
-vendor dashboard has no nav links to show, and the admin console's own
-tab-row-below-header nav (`admin-nav.tsx`) is visually distinct enough to
-keep hand-rolled. The profile page composes shared Section, TwoColumnSections, ImageUploader and SocialLinksFields in route-local sections. Each section owns its save state and retains its distinct server-action or Supabase Auth contract.
+`dashboard-nav.tsx` composes `@merqo/ui`'s `DashboardNav` for **both** the
+vendor dashboard and admin-console headers (burger, inline links, account
+menu, kit switcher on the dashboard), and both layouts end with the landing
+`Footer` without its sign-in link. The profile and vendor-detail pages use
+`BackButton`. The profile page composes shared Section, TwoColumnSections, ImageUploader and SocialLinksFields in route-local sections. Each section owns its save state and retains its distinct server-action or Supabase Auth contract.
 `@merqo/ui`'s `AccountMenu` hardcodes its Profile link to
 `/dashboard/profile`; `src/app/dashboard/profile/page.tsx` redirects that
 to Merqo's real, persona-shared `/profile` route. The landing nav
@@ -77,7 +75,7 @@ to Merqo's real, persona-shared `/profile` route. The landing nav
 shell (`wordmark`/`end` slots), added in v0.9.0. v0.10.0 added an optional
 `LinkComponent` prop to `AccountMenu`/`DashboardNav` so Next.js consumers can
 opt their internal nav links out of a plain `<a>`'s full page reload;
-`account-menu.tsx` passes `LinkComponent={Link}` (`next/link`).
+`dashboard-nav.tsx` passes `LinkComponent={Link}` (`next/link`).
 
 `@merqo/ui` bumped to v0.32.0 (2026-09-22), for currency. It adds
 `ImageUploader`'s `deferUpload` mode (upload on save instead of on pick);
@@ -225,6 +223,6 @@ any missing locked commit before running the check. Different UI releases are
 allowed when the legal document versions match. Git uses its standard installed
 path (Windows: `C:/Program Files/Git/cmd/git.exe`; Unix: `/usr/bin/git`).
 
-The shared UI dependency is pinned to immutable commit 9b202ba529dfd8fecbcbb9a2cc9f37efba4bd7d4, tagged `v0.32.3`, carrying the reviewed upload lifecycle, storage URL validation and safe money parsing fixes. Since `v0.32.1`, `Section` title tooltips and default-mode `InfoTooltip`s open on a tap as well as on hover and keyboard focus. Since `v0.32.2` every info icon also takes taps through a 44px touch area on touch devices. Since `v0.32.3` a long tooltip wraps inside the viewport. pnpm 11.10 permits preparation only for that exact locked source URL; update the dependency and its build allowlist together.
+The shared UI dependency is pinned to immutable commit 7b386558af36a1cbf008a9b4c4073c07ffc105ba, tagged `v0.34.2`, carrying the reviewed upload lifecycle, storage URL validation and safe money parsing fixes. Since `v0.32.1`, `Section` title tooltips and default-mode `InfoTooltip`s open on a tap as well as on hover and keyboard focus. Since `v0.32.2` every info icon also takes taps through a 44px touch area on touch devices. Since `v0.32.3` a long tooltip wraps inside the viewport. Since `v0.34.2` a server action that ends in `redirect()` counts as navigation, not an error. pnpm 11.10 permits preparation only for that exact locked source URL; update the dependency and its build allowlist together.
 
 The AI harness follows templateCentral 6.0.4: hook commands are anchored on the project directory, and the guard against committing to `main` reads the branch of the directory a command runs in. The dated entry in `AGENTS.md` lists what was adopted.

@@ -38,6 +38,8 @@ own admin console separately.
   so every card reads consistently regardless of which kit it's reporting
   on.
 
+The page header's way back to the vendor list is `@merqo/ui`'s `BackButton`, given `next/link`.
+
 ## Parent
 
 [admin](../../README.md)

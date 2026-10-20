@@ -65,6 +65,36 @@ describe("DashboardLayout", () => {
     expect(screen.getByText("content")).toBeInTheDocument();
   });
 
+  it("ends with the footer, without a sign-in link", async () => {
+    requireVendorSessionMock.mockResolvedValue({
+      user: { id: "v1", email: "vendor@business.sg" },
+      isTeam: false,
+      links: [],
+    });
+
+    render(await DashboardLayout({ children: <p>content</p> }));
+
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Sign in →" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("gives the account menu a kit switcher", async () => {
+    requireVendorSessionMock.mockResolvedValue({
+      user: { id: "v1", email: "vendor@business.sg" },
+      isTeam: false,
+      links: [],
+    });
+
+    render(await DashboardLayout({ children: <p>content</p> }));
+
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Account menu" }));
+    expect(
+      screen.getByRole("menuitem", { name: "Switch products" }),
+    ).toBeInTheDocument();
+  });
+
   it("shows the admin switch link for a team member", async () => {
     requireVendorSessionMock.mockResolvedValue({
       user: { id: "team-1", email: "team@merqo.io" },

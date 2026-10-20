@@ -2,7 +2,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { AccountMenu } from "./account-menu";
+import { DashboardNav } from "./dashboard-nav";
 import type { ActionResult } from "@/lib/action-result";
 
 const mocks = vi.hoisted(() => ({
@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
     success: true,
   })),
   toastError: vi.fn(),
+  pathname: vi.fn(() => "/admin"),
 }));
 const toastErrorMock = mocks.toastError;
 
@@ -27,12 +28,93 @@ vi.mock("@/app/actions/support", () => ({
   submitSupportMessageAction: mocks.submitSupportMessageAction,
 }));
 vi.mock("sonner", () => ({ toast: { error: mocks.toastError } }));
+vi.mock("next/navigation", () => ({ usePathname: () => mocks.pathname() }));
+
+const LINKS = [
+  { href: "/admin", label: "Overview" },
+  { href: "/admin/vendors", label: "Vendors" },
+];
+
+// Most cases here exercise the account menu the nav carries, so this keeps
+// each render down to the props those cases care about.
+function AccountMenu(props: {
+  email?: string | null;
+  avatarUrl?: string | null;
+  switchTo?: { href: string; label: string };
+}) {
+  return (
+    <DashboardNav
+      homeHref="/admin"
+      homeLabel="merqo admin home"
+      navLinks={LINKS}
+      {...props}
+    />
+  );
+}
 
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.signOutAction.mockResolvedValue(undefined);
   mocks.submitFeedbackAction.mockResolvedValue({ success: true });
   mocks.submitSupportMessageAction.mockResolvedValue({ success: true });
+  mocks.pathname.mockReturnValue("/admin");
+});
+
+describe("DashboardNav", () => {
+  it("links the wordmark home and shows the optional badge beside it", () => {
+    render(
+      <DashboardNav
+        homeHref="/admin"
+        homeLabel="merqo admin home"
+        badge="Admin"
+        navLinks={LINKS}
+      />,
+    );
+    const home = screen.getByRole("link", { name: "merqo admin home" });
+    expect(home).toHaveAttribute("href", "/admin");
+    expect(home).toHaveTextContent("Admin");
+  });
+
+  it("marks only the home link current on the exact home path", () => {
+    render(<AccountMenu />);
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: "Vendors" })).not.toHaveAttribute(
+      "aria-current",
+    );
+  });
+
+  it("marks a section link current by prefix on a nested route, not home", () => {
+    mocks.pathname.mockReturnValue("/admin/vendors/someone@example.com");
+    render(<AccountMenu />);
+    expect(screen.getByRole("link", { name: "Vendors" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: "Overview" })).not.toHaveAttribute(
+      "aria-current",
+    );
+  });
+
+  it("lists the kits to switch to in the account menu", async () => {
+    const user = userEvent.setup();
+    render(
+      <DashboardNav
+        homeHref="/dashboard"
+        homeLabel="merqo dashboard home"
+        navLinks={[{ href: "/dashboard", label: "Dashboard" }]}
+        email="vendor@business.sg"
+        switchKits={[{ label: "qkit", href: "https://qkit.merqo.io" }]}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: /account menu/i }));
+    await user.click(screen.getByRole("menuitem", { name: "Switch products" }));
+    expect(
+      await screen.findByRole("menuitem", { name: "qkit" }),
+    ).toHaveAttribute("href", "https://qkit.merqo.io");
+  });
 });
 
 describe("AccountMenu", () => {
@@ -175,7 +257,7 @@ describe("AccountMenu", () => {
     expect(mocks.signOutAction).toHaveBeenCalled();
   });
 
-  it("signing out swallows the redirect() control-flow error instead of toasting it", async () => {
+  it("signing out treats the redirect() control-flow error as navigation, not a toast", async () => {
     const redirectError = Object.assign(new Error("NEXT_REDIRECT"), {
       digest: "NEXT_REDIRECT;push;/login;307;",
     });
