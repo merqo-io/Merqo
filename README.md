@@ -159,6 +159,8 @@ src/lib/schemas.ts          — Zod schemas for the profile page's forms
 src/lib/merqo-vendor-profile.ts — typed wrapper over the shared vendor_profile RPCs
 src/lib/supabase/           — browser / server (schema=merqo) / service-role clients
 supabase/migrations/        — SQL schema (merqo.* tables) + RLS + grants
+supabase/seed/staging-registry.sql: one-time staging registry wiring (docs/STAGING.md)
+scripts/staging-migrate.sh: applies migrations to the staging project with psql
 scripts/check-legal-version-skew.mjs — asserts merqo + all 5 kit repos pin
                                matching terms/privacy/pilot versions from exact locked UI commits
 ```
@@ -201,6 +203,9 @@ secrets and administrative writes use server-only service clients, so
   `testTimeout` bump from 10s to 30s fixing a real test-isolation leak where a
   timed-out test skipped its cleanup and bled a stale render into the next test)
 - Deploy runbook: `docs/DEPLOY.md`
+- Staging setup and the migration gate: `docs/STAGING.md`. `.gitattributes`
+  keeps `*.sh` on LF line endings so the staging script runs in a Linux
+  container from a Windows checkout.
 - Plans/specs: `docs/superpowers/`
 - AI harness/hooks/skills map: `.claude/README.md`
 

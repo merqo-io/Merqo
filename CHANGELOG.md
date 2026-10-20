@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Staging environment (pilot with qkit): `docs/STAGING.md` covers the staging Supabase project, the `staging` branch served at `staging.merqo.io`, the `Preview` env vars that point previews at staging instead of production, and the staging-first gate for PRs that add a migration. New `scripts/staging-migrate.sh` loads migrations into staging with psql (the kits share one migration history table with overlapping version numbers, so `supabase db push` cannot), `supabase/seed/staging-registry.sql` wires the staging kit registry, and the `staging sync` workflow keeps `staging` on `main`.
+
 ### Changed
 
 - The vendor dashboard and the admin console now share one header, built on `@merqo/ui`'s `DashboardNav` like the kits: the admin section links sit in the same bar, with a burger on phones, and the dashboard account menu gains a "Switch products" list of the kits. Both areas now end with the site footer (no sign-in link), and the profile and vendor-detail "back" links use the shared `BackButton`.
