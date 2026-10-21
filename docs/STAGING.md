@@ -33,6 +33,19 @@ then get the same steps.
 - `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` stays Production-only. Staging and previews log
   in per host.
 
+## Free plan
+
+- Staging is a separate Supabase project, not a Supabase branch. Branching
+  needs a paid plan, and it assumes one repo's migration history, while the
+  kits share one history table.
+- The free plan allows two active projects; `merqo-staging` uses the second.
+- Free projects pause after 7 days without activity. Before testing, open the
+  staging project in the Supabase dashboard and restore it if it is paused.
+  While paused, every preview and staging page fails to load data.
+- Google sign-in (setup step 1.6) and email confirmation work on the free plan.
+  The built-in mailer only sends to members of the Supabase organization and
+  only a few emails per hour, which is enough for a test vendor.
+
 ## One-time setup (owner)
 
 Keep every password, key and secret below in your password manager, never in a
