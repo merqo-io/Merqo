@@ -5,8 +5,11 @@ so Vercel `Preview` deployments never read or write production data. Design:
 `docs/superpowers/specs/2026-09-10-staging-environment-design.md` in the workspace
 root. This file is the setup runbook, the env model and the day-to-day gate.
 
-**Status:** merqo and qkit are live on staging. loopkit, paykit, stockkit and
-printkit follow the [rollout checklist](#rollout-to-loopkit-paykit-stockkit-and-printkit).
+**Status:** all six apps are on staging: every schema is loaded, each project's
+Preview variables point at it and every repo has a `staging` branch with its
+`<kit>-staging.merqo.io` domain. The
+[rollout checklist](#rollout-to-loopkit-paykit-stockkit-and-printkit) records
+the steps, for rebuilding staging or adding a kit.
 
 ## How it fits together
 
@@ -231,7 +234,10 @@ sync workflow). Then, per kit:
    `drop policy "vendor_avatars_public_read" on storage.objects;` in the
    staging SQL Editor: merqo's `0015` and stockkit's `0006` both create that
    identical policy, and `0006` has no guard (on production it ran first).
-   `0006` then recreates it.
+   `0006` then recreates it. Skipping `0006` instead (resume from file 8,
+   setup step 2.5) also loads, but leaves out stockkit's own three avatar
+   write policies; merqo `0015`'s owner policies allow the same writes, so
+   behavior matches, while the policy list differs from production.
 3. Domain, CNAME, Deployment Protection off, deploy hook and GitHub secret
    (setup step 3).
 4. Env vars: the kit's row in the per-project table, plus
