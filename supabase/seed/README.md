@@ -7,12 +7,13 @@ on `supabase start`.
 
 ## Contents
 
-- `staging-registry.sql` points the staging project's `merqo.products` registry
-  at the staging qkit host with the staging-only metrics and provision secrets,
-  blanks the URLs and secrets of kits that have no staging deployment (so staging
-  merqo never calls a production kit), and adds the staging admin to
-  `merqo.merqo_team`. It aborts if the registry points at production hosts. Run
-  it once per staging setup, as described in `docs/STAGING.md`.
+- `staging-registry.sql` points the staging project's `merqo.products` rows for
+  qkit, loopkit, paykit and stockkit at their `<kit>-staging.merqo.io` hosts with
+  each kit's staging-only metrics and provision secrets, blanks the URLs and
+  secrets of every other kit (so staging merqo never calls a production kit),
+  and adds the staging admin to `merqo.merqo_team`. It aborts while a
+  placeholder is left or when the registry points at production hosts, and is
+  safe to re-run as each kit joins staging (`docs/STAGING.md`).
 
 ## Parent
 
