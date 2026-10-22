@@ -51,7 +51,8 @@ of git — it lives only in Vercel env + the DB row.
 ## C. merqo (Vercel)
 
 1. Vercel → New Project → import `merqo-io/merqo`.
-2. Environment Variables (Production + Preview) — **same Supabase project as qkit**:
+2. Environment Variables (Production), **same Supabase project as qkit**.
+   `Preview` points at the staging project instead; see `docs/STAGING.md`.
    - `NEXT_PUBLIC_SUPABASE_URL` = shared project URL
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` = anon key
    - `SUPABASE_SECRET_KEY` = service_role key
@@ -61,6 +62,14 @@ of git — it lives only in Vercel env + the DB row.
 4. **Smoke**: open `/login`, sign in as the account you added to `merqo_team` →
    `/team` shows the qkit card with live numbers + totals; `/products` shows the
    catalog with a Join-waitlist control.
+
+## Staging
+
+Vercel `Preview` deployments run against a separate staging Supabase project,
+and `staging.merqo.io` serves the `staging` branch. Setup and the
+migration gate are in `docs/STAGING.md`. Before merging a PR that adds a
+migration, apply it to staging first, check the PR's preview, merge, then
+apply it to production.
 
 ## Notes
 

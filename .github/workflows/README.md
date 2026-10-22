@@ -24,6 +24,10 @@ this private repo's free tier).
 - `security.yml` — gitleaks secret scan + `pnpm audit`, triggered on push
   to `main`, every PR, and a weekly cron.
   The gitleaks job installs the pinned release binary and checks its SHA-256, because gitleaks-action needs a paid license on organization-owned repos. It scans the PR commits, or the pushed range on `main`.
+- `staging-sync.yml`: on push to `main` (or a manual run), fast-forwards the
+  `staging` branch to `main` so the staging deployment always runs main's code.
+  Fast-forward only: if `staging` has diverged the job fails instead of
+  overwriting it. Only this job gets `contents: write`.
 
 Every third-party action in both workflows is pinned to a full commit SHA,
 not a floating version tag.

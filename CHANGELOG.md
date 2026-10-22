@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Staging environment (pilot with qkit): `docs/STAGING.md` covers the staging Supabase project, the `staging` branch served at `staging.merqo.io`, the `Preview` env vars that point previews at staging instead of production, the staging-first gate for PRs that add a migration, and the Supabase free-plan limits (separate project instead of branching, pause after 7 days idle). New `scripts/staging-migrate.sh` loads migrations into staging with psql (the kits share one migration history table with overlapping version numbers, so `supabase db push` cannot), `supabase/seed/staging-registry.sql` wires the staging kit registry, and the `staging sync` workflow keeps `staging` on `main`.
+
 ### Changed
 
 - The kit URL fallbacks in `src/lib/kits.ts`, used when `NEXT_PUBLIC_QKIT_URL`,
