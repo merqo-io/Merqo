@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Docs
+
+- `docs/TELEGRAM.md`: day-2 runbook for merqo's Telegram bot. It covers where each value lives (the bot token is in both Vercel and Supabase Vault, and both must change together), a `getWebhookInfo` health check, the order for rotating the token or the webhook secret, keeping the owner account safe (two-step verification, Transfer Ownership), and why staging and previews run with Telegram off.
+- `docs/DEPLOY.md`: the three `TELEGRAM_*` variables are Production only, not Production + Preview, because a bot has one webhook. `MERQO_CUSTOMER_SECRET` gets a separate Preview (staging) value. The bot is the family's only one; the text about qkit's and loopkit's own bots is gone.
+
 ### Added
 
 - Staging environment (pilot with qkit): `docs/STAGING.md` covers the staging Supabase project, the `staging` branch served at `staging.merqo.io`, the `Preview` env vars that point previews at staging instead of production, the staging-first gate for PRs that add a migration, and the Supabase free-plan limits (separate project instead of branching, pause after 7 days idle). New `scripts/staging-migrate.sh` loads migrations into staging with psql (the kits share one migration history table with overlapping version numbers, so `supabase db push` cannot), `supabase/seed/staging-registry.sql` wires the staging kit registry, and the `staging sync` workflow keeps `staging` on `main`.
