@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+
+- `next` and `eslint-config-next` 16.3.8 to 16.4.2. next `>=16.0.0 <=16.4.0` has two critical unauthenticated remote code execution advisories, GHSA-2464-fhr4-w9xw (Image Optimization API with SVG files) and GHSA-673q-mjm6-r5xr (`use cache` functions returning typed arrays), and a high Server Actions denial of service, GHSA-p3m5-59mp-jv5r. They failed the dependency-audit job on every open PR. `pnpm audit --prod --audit-level=high` is clean again.
+
 ### Added
 
 - Staging rollout to every kit: `docs/STAGING.md` now documents the env model in use (team shared variables split into Production and Preview copies, per-project staging secrets, the `staging`-branch-only auth cookie domain), Deployment Protection turned off on staging projects (the `all_except_custom_domains` setting still challenged branch domains), the Supabase URL configuration and exposed schemas that must be set before the first sign-in, resuming an interrupted schema load, and a checklist for loopkit, paykit, stockkit and printkit. `staging-registry.sql` covers qkit, loopkit, paykit and stockkit, refuses to run with a placeholder left, and can be re-run. The rollout checklist notes that paykit's seed also sets qkit's hosted-pay-page `return_origin`. The `staging sync` workflow now triggers the Vercel deploy hook in `VERCEL_STAGING_DEPLOY_HOOK`, since Vercel does not git-deploy a commit it already built for production.
