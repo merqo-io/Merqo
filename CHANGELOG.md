@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+
+- `next` and `eslint-config-next` 16.3.8 to 16.4.2. next `>=16.0.0 <=16.4.0` has two critical unauthenticated remote code execution advisories, GHSA-2464-fhr4-w9xw (Image Optimization API with SVG files) and GHSA-673q-mjm6-r5xr (`use cache` functions returning typed arrays), and a high Server Actions denial of service, GHSA-p3m5-59mp-jv5r. They failed the dependency-audit job on every open PR. `pnpm audit --prod --audit-level=high` is clean again.
+
 ### Docs
 
 - `docs/TELEGRAM.md`: day-2 runbook for merqo's Telegram bot. It covers where each value lives (the bot token is in both Vercel and Supabase Vault, and both must change together), a `getWebhookInfo` health check, the order for rotating the token or the webhook secret, keeping the owner account safe (two-step verification, Transfer Ownership), and why staging and previews run with Telegram off.
