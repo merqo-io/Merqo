@@ -108,14 +108,17 @@ apply it to production.
   1. Apply `supabase/migrations/0019_customer_telegram.sql`
      (`pnpm dlx supabase db push`) — widens `merqo.customers` and adds
      `merqo.telegram_link_tokens` plus the three Telegram-identity RPCs.
-  2. Register a **new, separate** bot with [@BotFather](https://t.me/BotFather)
-     — this is merqo's OWN third Telegram bot, distinct from qkit's and
-     loopkit's own Phase A vendor-alert bots (different registration,
-     different token). Note the bot token and the username you set.
-  3. Set `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET`
-     (any random string you choose), and `MERQO_CUSTOMER_SECRET` (any
-     random string you choose) in merqo's Vercel env, Production +
-     Preview, then deploy this branch's code.
+  2. Register the bot with [@BotFather](https://t.me/BotFather). It is the
+     family's only bot: no kit holds a bot token, kits call merqo's
+     `/api/merqo/notify-customer` and `/api/merqo/notify-vendor`. Note the
+     bot token and the username you set.
+  3. Set `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` and
+     `TELEGRAM_WEBHOOK_SECRET` (any random string you choose) in merqo's
+     Vercel env as Sensitive variables, **Production only**. A bot has one
+     webhook, so staging and previews must not share it (see
+     [TELEGRAM.md](TELEGRAM.md)). Set `MERQO_CUSTOMER_SECRET` (any random
+     string you choose) for Production, and a different value for Preview
+     (staging). Then deploy.
   4. Set the **same** `MERQO_CUSTOMER_SECRET` value in the calling kit's
      own Vercel env (qkit first, per its own
      `2026-08-16-customer-telegram-connect.md` plan; loopkit next) — this
@@ -134,6 +137,8 @@ apply it to production.
      None of the above can be done by an agent — no real BotFather bot
      registration, Vercel env write, or outbound `setWebhook` call is
      available in this repo's tooling.
+  6. Day-2 operations (health check, token rotation, bot ownership) are in
+     [TELEGRAM.md](TELEGRAM.md).
 - **Founder Telegram alerts (migration `0029`) — real manual setup, not
   automated by this repo:**
   1. Apply `supabase/migrations/0029_founder_telegram_alerts.sql`
