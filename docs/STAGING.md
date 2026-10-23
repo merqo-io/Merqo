@@ -250,8 +250,10 @@ sync workflow). Then, per kit:
    secrets filled in.
 6. paykit and printkit: generate qkit's staging `*_KIT_SECRET` and
    `*_CALLBACK_SECRET`, set them on qkit's Preview, and run that kit's
-   `supabase/seed/staging-kit-keys.sql` in the staging SQL Editor. Then redeploy
-   qkit's `staging`.
+   `supabase/seed/staging-kit-keys.sql` in the staging SQL Editor. paykit's
+   also sets qkit's `return_origin` to `https://qkit-staging.merqo.io`; with
+   it unset the hosted pay page has no valid return address for qkit and
+   staging checkout silently skips it. Then redeploy qkit's `staging`.
 7. Run **staging sync** on every app whose variables changed, then the smoke
    checks: `curl.exe` the kit's `/api/merqo/metrics` (printkit: `/login`) and
    check `/admin/products`.
