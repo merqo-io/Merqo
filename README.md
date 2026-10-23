@@ -204,7 +204,8 @@ secrets and administrative writes use server-only service clients, so
   `testTimeout` bump from 10s to 30s fixing a real test-isolation leak where a
   timed-out test skipped its cleanup and bled a stale render into the next test)
 - Deploy runbook: `docs/DEPLOY.md`
-- Staging setup and the migration gate: `docs/STAGING.md`. `.gitattributes`
+- Staging setup, the env model, the rollout checklist for every kit and the
+  migration gate: `docs/STAGING.md`. `.gitattributes`
   keeps `*.sh` on LF line endings so the staging script runs in a Linux
   container from a Windows checkout.
 - Plans/specs: `docs/superpowers/`

@@ -27,7 +27,10 @@ this private repo's free tier).
 - `staging-sync.yml`: on push to `main` (or a manual run), fast-forwards the
   `staging` branch to `main` so the staging deployment always runs main's code.
   Fast-forward only: if `staging` has diverged the job fails instead of
-  overwriting it. Only this job gets `contents: write`.
+  overwriting it. It then POSTs the project's Vercel deploy hook (repo secret
+  `VERCEL_STAGING_DEPLOY_HOOK`), because Vercel does not git-deploy a commit it
+  already built for production; without the secret it only warns. Only this job
+  gets `contents: write`.
 
 Every third-party action in both workflows is pinned to a full commit SHA,
 not a floating version tag.

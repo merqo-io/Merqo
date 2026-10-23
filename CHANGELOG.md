@@ -12,6 +12,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Staging rollout to every kit: `docs/STAGING.md` now documents the env model in use (team shared variables split into Production and Preview copies, per-project staging secrets, the `staging`-branch-only auth cookie domain), Deployment Protection turned off on staging projects (the `all_except_custom_domains` setting still challenged branch domains), the Supabase URL configuration and exposed schemas that must be set before the first sign-in, resuming an interrupted schema load, and a checklist for loopkit, paykit, stockkit and printkit. `staging-registry.sql` covers qkit, loopkit, paykit and stockkit, refuses to run with a placeholder left, and can be re-run. The rollout checklist notes that paykit's seed also sets qkit's hosted-pay-page `return_origin`. The `staging sync` workflow now triggers the Vercel deploy hook in `VERCEL_STAGING_DEPLOY_HOOK`, since Vercel does not git-deploy a commit it already built for production.
+
 - Staging environment (pilot with qkit): `docs/STAGING.md` covers the staging Supabase project, the `staging` branch served at `staging.merqo.io`, the `Preview` env vars that point previews at staging instead of production, the staging-first gate for PRs that add a migration, and the Supabase free-plan limits (separate project instead of branching, pause after 7 days idle). New `scripts/staging-migrate.sh` loads migrations into staging with psql (the kits share one migration history table with overlapping version numbers, so `supabase db push` cannot), `supabase/seed/staging-registry.sql` wires the staging kit registry, and the `staging sync` workflow keeps `staging` on `main`.
 
 ### Changed
