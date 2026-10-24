@@ -78,7 +78,7 @@ export function BlockTower({
         );
       })}
       <p className="mt-1 text-center text-xs text-muted-foreground">
-        Every kit runs on its own — one account, one bill.
+        Every kit runs on its own, one account, one bill.
       </p>
       {blocks.length === 1 && (
         <p className="mt-3 text-center text-xs text-muted-foreground">

@@ -40,7 +40,7 @@ export function DowngradeButton({ slug }: { slug: string }) {
   if (state === "done") {
     return (
       <p className="text-sm font-medium text-muted-foreground">
-        Cancelled — you&apos;re back on Free.
+        Cancelled, you&apos;re back on Free.
       </p>
     );
   }

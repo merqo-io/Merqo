@@ -58,8 +58,8 @@ export function Hero({ authed = false }: { authed?: boolean }) {
         </h1>
         <p className="mt-5 max-w-md text-lg text-muted-foreground">
           Merqo builds a family of no-fuss tools for Singapore&rsquo;s small
-          sellers &mdash; hawkers, home businesses, and event-day pop-ups. Take
-          orders, earn loyalty, and get paid &mdash; from a phone, not a POS.
+          sellers: hawkers, home businesses, and event-day pop-ups. Take orders,
+          earn loyalty, and get paid, from a phone, not a POS.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">

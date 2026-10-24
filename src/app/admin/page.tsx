@@ -32,8 +32,7 @@ export default async function AdminOverviewPage() {
   );
   const totals = summarizeOverview(results);
 
-  // Reading the wall clock in an async server component is intentional here.
-  // eslint-disable-next-line react-hooks/purity
+  // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
   const health = results.map((r) => classifyHealth(r, now));
   const lagging = health.filter((h) => h === "lagging").length;
@@ -105,7 +104,7 @@ export default async function AdminOverviewPage() {
           role="status"
           className="mt-6 rounded-xl border border-dashed bg-card p-5 text-sm text-muted-foreground"
         >
-          Metrics unavailable — no product is reporting right now.
+          Metrics unavailable, no product is reporting right now.
         </div>
       ) : (
         <section className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">

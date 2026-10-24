@@ -23,7 +23,7 @@ describe("SupportMessageRow", () => {
     expect(screen.getByText("vendor@example.com")).toBeInTheDocument();
     expect(screen.getByText("paykit", { exact: false })).toBeInTheDocument();
     expect(
-      screen.getByText(/payment — my qr isn't generating\./i),
+      screen.getByText(/payment, my qr isn't generating\./i),
     ).toBeInTheDocument();
   });
 
