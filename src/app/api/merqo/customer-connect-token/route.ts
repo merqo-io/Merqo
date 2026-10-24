@@ -12,7 +12,7 @@ const LINK_TOKEN_TTL_MS = 30 * 60 * 1000;
 // merqo never interprets it, only stores and echoes it back on
 // notify-customer's notify_ref lookup mode.
 const bodySchema = z.object({
-  vendor_id: z.string().uuid(),
+  vendor_id: z.uuid(),
   kit_slug: z.string().min(1),
   notify_ref: z.string().min(1),
 });

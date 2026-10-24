@@ -40,7 +40,7 @@ describe("POST /api/merqo/legal-accept", () => {
     const res = await POST(
       req({
         vendor_email: "vendor@example.com",
-        auth_uid: "11111111-1111-1111-1111-111111111111",
+        auth_uid: "11111111-1111-1111-8111-111111111111",
         doc_type: "terms",
         doc_version: "2026-09-04",
         doc_sha256: "a".repeat(64),
@@ -61,7 +61,7 @@ describe("POST /api/merqo/legal-accept", () => {
       req(
         {
           vendor_email: "vendor@example.com",
-          auth_uid: "11111111-1111-1111-1111-111111111111",
+          auth_uid: "11111111-1111-1111-8111-111111111111",
           doc_type: "terms",
           doc_version: "2026-09-04",
           doc_sha256: "a".repeat(64),
@@ -97,7 +97,7 @@ describe("POST /api/merqo/legal-accept", () => {
       },
       body: JSON.stringify({
         vendor_email: "vendor@example.com",
-        auth_uid: "11111111-1111-1111-1111-111111111111",
+        auth_uid: "11111111-1111-1111-8111-111111111111",
         doc_type: "terms",
         doc_version: "2026-09-04",
         doc_sha256: "a".repeat(64),
@@ -138,7 +138,7 @@ describe("POST /api/merqo/legal-accept", () => {
     const res = await POST(
       req({
         vendor_email: "vendor@example.com",
-        auth_uid: "11111111-1111-1111-1111-111111111111",
+        auth_uid: "11111111-1111-1111-8111-111111111111",
         doc_type: "terms",
         doc_version: "2026-09-04",
         doc_sha256: "a".repeat(64),
@@ -159,7 +159,7 @@ describe("POST /api/merqo/legal-accept", () => {
     const res = await POST(
       req({
         vendor_email: "vendor@example.com",
-        auth_uid: "11111111-1111-1111-1111-111111111111",
+        auth_uid: "11111111-1111-1111-8111-111111111111",
         doc_type: "terms",
         doc_version: "2026-09-04",
         doc_sha256: "a".repeat(64),

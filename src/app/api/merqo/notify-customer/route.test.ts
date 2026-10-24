@@ -18,7 +18,7 @@ vi.mock("@/lib/supabase/server", () => ({
 
 import { POST } from "./route";
 
-const VENDOR_ID = "00000000-0000-0000-0000-000000000001";
+const VENDOR_ID = "00000000-0000-4000-8000-000000000001";
 
 function makeRequest(body: unknown): Request {
   return new Request("https://merqo.example.com/api/merqo/notify-customer", {
