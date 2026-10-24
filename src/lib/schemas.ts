@@ -46,3 +46,17 @@ export const passwordChangeSchema = z
     path: ["confirm"],
   });
 export type PasswordChangeInput = z.infer<typeof passwordChangeSchema>;
+
+// ── Route/action boundaries ───────────────────────────────────────────────────
+
+export const kitSlugSchema = z.string().regex(/^[a-z0-9-]{1,40}$/);
+
+export const authCallbackQuerySchema = z.object({
+  code: z.string().min(1).max(512),
+});
+
+// Same-origin relative path only: a leading "//" or "\" would leave the site.
+export const redirectPathSchema = z
+  .string()
+  .max(512)
+  .regex(/^\/(?![/\\])/);

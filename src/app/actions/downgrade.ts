@@ -1,5 +1,6 @@
 "use server";
 
+import { kitSlugSchema } from "@/lib/schemas";
 import { loadVendorContext, hasActiveLinkFor } from "@/lib/vendor";
 import { listLiveProducts } from "@/lib/products";
 import { requestKitDowngrade } from "@/lib/downgrade-request";
@@ -16,6 +17,9 @@ const GENERIC_ERROR = "Could not send your request. Try again in a moment.";
 export async function requestDowngrade(
   slug: string,
 ): Promise<DowngradeActionResult> {
+  if (!kitSlugSchema.safeParse(slug).success) {
+    return { success: false, error: GENERIC_ERROR };
+  }
   try {
     const { user, links } = await loadVendorContext();
     if (!user?.email) {

@@ -3,11 +3,21 @@ import type { User } from "@supabase/supabase-js";
 import { createServerClient } from "@/lib/supabase/server";
 
 /**
- * Gate an operator page on Merqo-team membership. A missing session bounces to
+ * Gate an operator page on Merqo-team membership and a verified second factor. A missing session bounces to
  * /login; a signed-in non-member lands on /no-access (a clear "not on the team
  * yet" screen) rather than a raw 404, so the operator knows what happened.
  */
 export async function requireMerqoTeam(): Promise<{ user: User }> {
+  const member = await requireTeamMember();
+  const supabase = await createServerClient();
+  const { data, error } =
+    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (error || data?.currentLevel !== "aal2") redirect("/mfa");
+  return member;
+}
+
+/** Team membership only, for the MFA enrol/verify page itself. */
+export async function requireTeamMember(): Promise<{ user: User }> {
   const supabase = await createServerClient();
   let user: User | null = null;
   try {

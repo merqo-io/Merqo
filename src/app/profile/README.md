@@ -40,3 +40,5 @@ policy and cross-kit shared-session behavior need integration validation.
 ## Parent
 
 [app](../README.md)
+
+The Telegram actions import the service client directly; an `eslint-disable` description records why (no client write grant).

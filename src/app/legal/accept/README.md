@@ -41,3 +41,5 @@ page it exists to satisfy, an infinite loop.
 ## Boundary and coverage
 
 Acceptance writes use the versions exported by the shared UI package. The server action resolves the signed-in actor and validates the return path with shared safeRedirectPath before redirecting; callers cannot choose another user for the acceptance records.
+
+The `next` form field is length-checked by Zod before `safeRedirectPath` runs.
