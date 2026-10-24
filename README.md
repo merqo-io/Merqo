@@ -232,3 +232,7 @@ path (Windows: `C:/Program Files/Git/cmd/git.exe`; Unix: `/usr/bin/git`).
 The shared UI dependency is pinned to immutable commit 7b386558af36a1cbf008a9b4c4073c07ffc105ba, tagged `v0.34.2`, carrying the reviewed upload lifecycle, storage URL validation and safe money parsing fixes. Since `v0.32.1`, `Section` title tooltips and default-mode `InfoTooltip`s open on a tap as well as on hover and keyboard focus. Since `v0.32.2` every info icon also takes taps through a 44px touch area on touch devices. Since `v0.32.3` a long tooltip wraps inside the viewport. Since `v0.34.2` a server action that ends in `redirect()` counts as navigation, not an error. pnpm 11.10 permits preparation only for that exact locked source URL; update the dependency and its build allowlist together.
 
 The AI harness follows templateCentral 6.0.4: hook commands are anchored on the project directory, and the guard against committing to `main` reads the branch of the directory a command runs in. The dated entry in `AGENTS.md` lists what was adopted.
+
+## Security headers and MFA
+
+`src/proxy.ts` sets the CSP (nonce on per-request routes) and `X-Robots-Tag` on non-production deployments. The operator console requires TOTP MFA; see `src/app/mfa/README.md` and `docs/security/`.

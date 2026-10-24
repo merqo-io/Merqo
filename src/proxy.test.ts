@@ -98,3 +98,16 @@ describe("proxy X-Robots-Tag", () => {
     expect(response.headers.get("X-Robots-Tag")).toBeNull();
   });
 });
+
+describe("proxy Supabase origins", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("lets the browser reach the configured Supabase project", async () => {
+    signedIn();
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "http://127.0.0.1:54321");
+    const response = await proxy(new NextRequest("https://merqo.io/"));
+
+    expect(csp(response)).toContain("http://127.0.0.1:54321");
+    expect(csp(response)).toContain("ws://127.0.0.1:54321");
+  });
+});

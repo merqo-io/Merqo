@@ -23,17 +23,28 @@ export const THEME_SCRIPT_HASH =
   "'sha256-n46vPwSWuMC0W703pBofImv82Z26xo4LXymv0E9caPk='";
 
 const SUPABASE = ["https://*.supabase.co"];
-const LOCAL_SUPABASE = ["http://127.0.0.1:54321"];
+
+// The configured project origin too, so a local stack (http://127.0.0.1:54321) works in a production build.
+function configuredSupabase(): { http: string[]; ws: string[] } {
+  try {
+    const { origin } = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "");
+    return { http: [origin], ws: [origin.replace(/^http/, "ws")] };
+  } catch {
+    return { http: [], ws: [] };
+  }
+}
 
 export function cspOptions(isDev: boolean): Omit<CspOptions, "nonce"> {
+  const configured = configuredSupabase();
   return {
     isDev,
     connectSrc: [
       ...SUPABASE,
       "wss://*.supabase.co",
-      ...(isDev ? [...LOCAL_SUPABASE, "ws://127.0.0.1:54321"] : []),
+      ...configured.http,
+      ...configured.ws,
     ],
-    imgSrc: [...SUPABASE, ...(isDev ? LOCAL_SUPABASE : [])],
+    imgSrc: [...SUPABASE, ...configured.http],
   };
 }
 
