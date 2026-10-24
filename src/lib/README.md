@@ -68,3 +68,5 @@ integration are verified separately.
 ## Parent
 
 [src](../README.md)
+
+`security-headers.ts` also allows the Vercel toolbar origin (`vercel.live`) outside production.

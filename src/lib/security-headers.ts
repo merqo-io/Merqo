@@ -34,8 +34,14 @@ function configuredSupabase(): { http: string[]; ws: string[] } {
   }
 }
 
+// The Vercel toolbar on preview and staging; production never loads it.
+function previewSources(): string[] {
+  return process.env.VERCEL_ENV === "production" ? [] : ["https://vercel.live"];
+}
+
 export function cspOptions(isDev: boolean): Omit<CspOptions, "nonce"> {
   const configured = configuredSupabase();
+  const preview = previewSources();
   return {
     isDev,
     connectSrc: [
@@ -43,11 +49,15 @@ export function cspOptions(isDev: boolean): Omit<CspOptions, "nonce"> {
       "wss://*.supabase.co",
       ...configured.http,
       ...configured.ws,
+      ...preview,
     ],
-    imgSrc: [...SUPABASE, ...configured.http],
+    imgSrc: [...SUPABASE, ...configured.http, ...preview],
+    frameSrc: preview,
+    scriptSrc: preview,
   };
 }
 
 export function nonceCspOptions(isDev: boolean): Omit<CspOptions, "nonce"> {
-  return { ...cspOptions(isDev), scriptSrc: [THEME_SCRIPT_HASH] };
+  const base = cspOptions(isDev);
+  return { ...base, scriptSrc: [...(base.scriptSrc ?? []), THEME_SCRIPT_HASH] };
 }

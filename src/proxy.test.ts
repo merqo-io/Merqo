@@ -24,6 +24,13 @@ const csp = (response: Response) =>
 afterEach(() => vi.unstubAllEnvs());
 
 describe("proxy nonce CSP", () => {
+  it("keeps frame-ancestors 'none' in production", async () => {
+    signedIn();
+    const response = await proxy(new NextRequest("https://merqo.io/dashboard"));
+
+    expect(csp(response)).toContain("frame-ancestors 'none'");
+  });
+
   it("keeps the static policy in dev, where React needs eval", async () => {
     signedIn();
     vi.stubEnv("NODE_ENV", "development");
@@ -32,6 +39,7 @@ describe("proxy nonce CSP", () => {
     expect(csp(response)).toMatch(
       /script-src 'self' 'unsafe-inline' 'unsafe-eval'/,
     );
+    expect(csp(response)).not.toContain("frame-ancestors");
   });
 
   it("sets a nonce CSP without script unsafe-inline on a dynamic route", async () => {
@@ -109,5 +117,25 @@ describe("proxy Supabase origins", () => {
 
     expect(csp(response)).toContain("http://127.0.0.1:54321");
     expect(csp(response)).toContain("ws://127.0.0.1:54321");
+  });
+});
+
+describe("proxy Vercel toolbar", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("allows vercel.live outside production", async () => {
+    signedIn();
+    vi.stubEnv("VERCEL_ENV", "preview");
+    const response = await proxy(new NextRequest("https://merqo.io/dashboard"));
+
+    expect(csp(response)).toContain("https://vercel.live");
+  });
+
+  it("keeps vercel.live out of the production policy", async () => {
+    signedIn();
+    vi.stubEnv("VERCEL_ENV", "production");
+    const response = await proxy(new NextRequest("https://merqo.io/dashboard"));
+
+    expect(csp(response)).not.toContain("vercel.live");
   });
 });
