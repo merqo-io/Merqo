@@ -7,7 +7,7 @@ import { sendTelegramMessage } from "@/lib/telegram";
 export const revalidate = 0;
 
 const bodySchema = z.object({
-  vendor_id: z.string().uuid(),
+  vendor_id: z.uuid(),
   message: z.string().min(1),
 });
 

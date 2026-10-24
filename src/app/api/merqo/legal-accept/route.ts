@@ -6,8 +6,8 @@ import { createServiceClient } from "@/lib/supabase/server";
 export const revalidate = 0;
 
 const bodySchema = z.object({
-  vendor_email: z.string().email(),
-  auth_uid: z.string().uuid().nullable().optional(),
+  vendor_email: z.email(),
+  auth_uid: z.uuid().nullable().optional(),
   doc_type: z.enum(["terms", "privacy", "pilot"]),
   doc_version: z.string().min(1),
   doc_sha256: z.string().length(64),

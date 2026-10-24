@@ -9,7 +9,7 @@ export const revalidate = 0;
 const LINK_TOKEN_TTL_MS = 30 * 60 * 1000;
 
 const bodySchema = z.object({
-  vendor_id: z.string().uuid(),
+  vendor_id: z.uuid(),
   kit_slug: z.string().min(1),
 });
 

@@ -13,7 +13,7 @@ export const revalidate = 0;
 // neither.
 const bodySchema = z
   .object({
-    vendor_id: z.string().uuid(),
+    vendor_id: z.uuid(),
     message: z.string().min(1),
     notify_ref: z.string().min(1).optional(),
     phone: z.string().min(1).optional(),

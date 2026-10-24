@@ -55,7 +55,7 @@ describe("POST /api/merqo/customer-connect-token", () => {
     customerNotifySecretOk.mockReturnValue(false);
     const res = await POST(
       makeRequest({
-        vendor_id: "00000000-0000-0000-0000-000000000001",
+        vendor_id: "00000000-0000-4000-8000-000000000001",
         kit_slug: "qkit",
         notify_ref: "qkit:order-42",
       }),
@@ -68,7 +68,7 @@ describe("POST /api/merqo/customer-connect-token", () => {
     const before = Date.now();
     const res = await POST(
       makeRequest({
-        vendor_id: "00000000-0000-0000-0000-000000000001",
+        vendor_id: "00000000-0000-4000-8000-000000000001",
         kit_slug: "qkit",
         notify_ref: "qkit:order-42",
       }),
@@ -84,7 +84,7 @@ describe("POST /api/merqo/customer-connect-token", () => {
     const insertedRow = insert.mock.calls[0][0];
     expect(insertedRow).toMatchObject({
       token: "generated-token-abc",
-      vendor_id: "00000000-0000-0000-0000-000000000001",
+      vendor_id: "00000000-0000-4000-8000-000000000001",
       kit_slug: "qkit",
       notify_ref: "qkit:order-42",
     });
@@ -95,7 +95,7 @@ describe("POST /api/merqo/customer-connect-token", () => {
 
   it("400s on a malformed body (missing field)", async () => {
     const res = await POST(
-      makeRequest({ vendor_id: "00000000-0000-0000-0000-000000000001" }),
+      makeRequest({ vendor_id: "00000000-0000-4000-8000-000000000001" }),
     );
     expect(res.status).toBe(400);
     expect(from).not.toHaveBeenCalled();
