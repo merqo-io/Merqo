@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- ImageResponse needs literal CSS colours */
 import type { ReactElement } from "react";
 
 // Merqo's own mark, approximated from the OKLCH theme tokens as

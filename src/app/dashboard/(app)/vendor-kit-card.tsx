@@ -43,7 +43,7 @@ export function VendorKitCard({
             ariaLabel="How this estimate is calculated"
             content={
               <>
-                A flat per-kit, per-plan estimate — not tracked from your actual
+                A flat per-kit, per-plan estimate, not tracked from your actual
                 usage. Based on ~S$18/hr (Singapore hawker-stall staff wage), ×
                 hours/week this kit saves you on your current plan × 4.33
                 weeks/month.

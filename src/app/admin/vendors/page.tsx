@@ -26,7 +26,7 @@ export default async function VendorsPage() {
       <section className="rounded-xl border bg-card p-5 shadow-sm">
         <h2 className="font-display text-lg font-bold">Grant a kit</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Give a vendor active access — even if they never joined the waitlist.
+          Give a vendor active access, even if they never joined the waitlist.
         </p>
         <GrantForm products={products} />
       </section>

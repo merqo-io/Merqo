@@ -100,7 +100,7 @@ export function ActivateKitsButton({
         <ul className="mt-2 space-y-1">
           {failed.map((r) => (
             <li key={r.slug} className="text-xs text-destructive">
-              Couldn&apos;t activate {r.slug} —{" "}
+              Couldn&apos;t activate {r.slug},{" "}
               <button
                 type="button"
                 onClick={() => activate([r.slug])}
@@ -120,7 +120,7 @@ export function ActivateKitsButton({
             const kit = KITS.find((k) => k.slug === r.slug);
             return (
               <li key={r.slug} className="text-xs text-muted-foreground">
-                {kit?.name ?? r.slug} added — payment setup still needed.{" "}
+                {kit?.name ?? r.slug} added, payment setup still needed.{" "}
                 {kit?.href && (
                   <a
                     href={`${kit.href}/dashboard/config`}

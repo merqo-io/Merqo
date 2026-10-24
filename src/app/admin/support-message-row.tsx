@@ -21,7 +21,7 @@ export function SupportMessageRow({
           <span className="font-mono text-[10px] uppercase tracking-wide">
             {message.kit_slug ?? "merqo"}
           </span>{" "}
-          · {message.category} — {message.body}
+          · {message.category}, {message.body}
         </p>
       </div>
       <ResolveSupportMessageButton id={message.id} />
