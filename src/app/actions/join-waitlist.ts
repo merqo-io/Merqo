@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { createServerClient } from "@/lib/supabase/server";
 import { addToWaitlist } from "@/lib/waitlist";
+import { kitSlugSchema } from "@/lib/schemas";
 import { WAITLISTABLE_SLUGS } from "@/lib/kits";
 import type { ActionResult } from "@/lib/action-result";
 
@@ -9,7 +10,10 @@ import type { ActionResult } from "@/lib/action-result";
  *  email field needed (unlike the public landing WaitlistForm), since the
  *  vendor is already authenticated. */
 export async function joinWaitlistAction(slug: string): Promise<ActionResult> {
-  if (!WAITLISTABLE_SLUGS.includes(slug)) {
+  if (
+    !kitSlugSchema.safeParse(slug).success ||
+    !WAITLISTABLE_SLUGS.includes(slug)
+  ) {
     return { success: false, error: "This kit isn't open for waitlist yet." };
   }
   const supabase = await createServerClient();

@@ -24,8 +24,8 @@ importers:
   .:
     dependencies:
       '@merqo/ui':
-        specifier: github:merqo-io/merqo-ui#7b386558af36a1cbf008a9b4c4073c07ffc105ba
-        version: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/7b386558af36a1cbf008a9b4c4073c07ffc105ba(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)
+        specifier: github:merqo-io/merqo-ui#9900246ed1587ab098c9f57923de775416251562
+        version: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/9900246ed1587ab098c9f57923de775416251562(@playwright/test@1.61.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(eslint-plugin-sonarjs@4.1.0(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)(zod@4.6.6)
       '@supabase/ssr':
         specifier: ^0.10.3
         version: 0.10.3(@supabase/supabase-js@2.110.0)
@@ -703,14 +703,33 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/7b386558af36a1cbf008a9b4c4073c07ffc105ba':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/7b386558af36a1cbf008a9b4c4073c07ffc105ba}
-    version: 0.34.2
+  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/9900246ed1587ab098c9f57923de775416251562':
+    resolution: {gitHosted: true, integrity: sha512-PNR5QjnmjfP49QEG7Wnh8PUbd+mVHTDCxsan66FZ49EbApSyqXqE44AqMGW0ia2RFGZDVsXDwQ55QDqEPjC2vg==, tarball: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/9900246ed1587ab098c9f57923de775416251562}
+    version: 0.35.0
     engines: {node: '>=24'}
     peerDependencies:
+      '@eslint-community/eslint-plugin-eslint-comments': '>=4.8.1'
+      '@playwright/test': '>=1.64.1'
+      eslint: ^9.39.5
+      eslint-plugin-sonarjs: '>=4.2.2'
+      next: '>=16.4.2'
       react: ^19.2.7
       react-dom: ^19.2.7
       tailwindcss: ^4.1.0
+      zod: '>=4.6.6 <5'
+    peerDependenciesMeta:
+      '@eslint-community/eslint-plugin-eslint-comments':
+        optional: true
+      '@playwright/test':
+        optional: true
+      eslint:
+        optional: true
+      eslint-plugin-sonarjs:
+        optional: true
+      next:
+        optional: true
+      zod:
+        optional: true
 
   '@napi-rs/wasm-runtime@1.2.5':
     resolution: {integrity: sha512-HshSvXzmBxNzqejd3k/KemgQ3hdREUYFRRrgxOZ+gPljDIsO2SDZrVZMd4Z/HsxudQbE62OVyVFE8z9BCurfjA==}
@@ -4659,7 +4678,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/7b386558af36a1cbf008a9b4c4073c07ffc105ba(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)':
+  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/9900246ed1587ab098c9f57923de775416251562(@playwright/test@1.61.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(eslint-plugin-sonarjs@4.1.0(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)(zod@4.6.6)':
     dependencies:
       '@icons-pack/react-simple-icons': 13.13.0(react@19.2.8)
       '@radix-ui/react-dialog': 1.1.23(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -4680,6 +4699,11 @@ snapshots:
       remark-gfm: 4.0.0
       tailwind-merge: 2.6.1
       tailwindcss: 4.3.2
+    optionalDependencies:
+      '@playwright/test': 1.61.1
+      eslint: 9.39.4(jiti@2.7.0)
+      eslint-plugin-sonarjs: 4.1.0(eslint@9.39.4(jiti@2.7.0))
+      next: 16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       zod: 4.6.6
     transitivePeerDependencies:
       - '@types/react'

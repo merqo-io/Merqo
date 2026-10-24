@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { TEAM_STATE } from "./global-setup";
 
 // Public smoke: the app boots and the login page renders without any
 // Supabase provisioning. Runnable with only `pnpm dev` + `playwright install`.
@@ -52,11 +53,6 @@ test.describe("authed areas", () => {
   // Fixture identities — CI seeds these via the GoTrue admin API + PostgREST
   // (see the e2e job in ci.yml). Overridable so a local run can point at
   // differently-named fixtures without editing this file.
-  const TEAM_EMAIL = process.env.MERQO_E2E_TEAM_EMAIL ?? "e2e-team@merqo.test";
-  // Fixture default for a throwaway local Supabase test account, not a real credential.
-  const TEAM_PASSWORD =
-    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
-    process.env.MERQO_E2E_TEAM_PASSWORD ?? "e2e-test-pass-123";
   const ADDABLE_EMAIL =
     process.env.MERQO_E2E_ADDABLE_EMAIL ?? "e2e-addable@merqo.test";
   // A product row CI seeds so the grant/revoke test has a kit to pick from
@@ -64,13 +60,8 @@ test.describe("authed areas", () => {
   const TEST_KIT_NAME = process.env.MERQO_E2E_TEST_KIT_NAME ?? "E2E Test Kit";
   const TEST_KIT_SLUG = process.env.MERQO_E2E_TEST_KIT_SLUG ?? "e2e-testkit";
 
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.getByPlaceholder("you@business.sg").fill(TEAM_EMAIL);
-    await page.getByPlaceholder("••••••••").fill(TEAM_PASSWORD);
-    await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).not.toHaveURL(/\/login/);
-  });
+  // global-setup.ts signs in and clears the second factor once.
+  test.use({ storageState: TEAM_STATE });
 
   test("admin overview renders", async ({ page }) => {
     await page.goto("/admin");

@@ -4,6 +4,7 @@
 - TELEGRAM.md is the bot's day-2 runbook: where the token and webhook secret live (the token is stored twice), the health check, token and webhook-secret rotation, bot ownership, and why staging runs with Telegram off.
 - STAGING.md is the staging environment runbook: the staging Supabase project, the `staging` branch and its subdomain, `Preview` env vars, the env model (shared variables split Production/Preview, per-project staging secrets), seeding, the end-to-end check, the rollout checklist for the other four kits, and the staging-first gate for migration-bearing PRs.
 - audit-checkpoint-2026-10-09.md records the product review and validation limits.
+- security/ holds the personal-data inventory and its proposed drop list (nothing is dropped until the owner approves).
 - meta/ holds standing operational and product notes.
 - superpowers/plans/ and superpowers/specs/ retain dated implementation and design evidence. They describe the decisions at that time; current source, migrations and root documentation establish present behavior.
 

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+// eslint-disable-next-line no-restricted-imports -- vendor_telegram and link tokens have no client write grant; the vendor is verified first
 import { createServerClient, createServiceClient } from "@/lib/supabase/server";
 import { generateLinkToken } from "@/lib/telegram";
 import { qrSvg } from "@merqo/ui";
