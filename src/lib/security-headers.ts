@@ -23,6 +23,8 @@ export const THEME_SCRIPT_HASH =
   "'sha256-n46vPwSWuMC0W703pBofImv82Z26xo4LXymv0E9caPk='";
 
 const SUPABASE = ["https://*.supabase.co"];
+// Google sign-in profile pictures shown in the account menu.
+const GOOGLE_AVATARS = "https://*.googleusercontent.com";
 
 // The configured project origin too, so a local stack (http://127.0.0.1:54321) works in a production build.
 function configuredSupabase(): { http: string[]; ws: string[] } {
@@ -51,7 +53,7 @@ export function cspOptions(isDev: boolean): Omit<CspOptions, "nonce"> {
       ...configured.ws,
       ...preview,
     ],
-    imgSrc: [...SUPABASE, ...configured.http, ...preview],
+    imgSrc: [...SUPABASE, GOOGLE_AVATARS, ...configured.http, ...preview],
     frameSrc: preview,
     scriptSrc: preview,
   };

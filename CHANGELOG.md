@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-10-25
+
+### Fixed
+
+- The CSP blocked Google profile pictures (`*.googleusercontent.com`), so the account menu showed no avatar for Google sign-ins. `img-src` now allows them, matching the other kits.
+
 ## [0.8.1] - 2026-10-25
 
 ### Fixed
