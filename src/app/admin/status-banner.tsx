@@ -32,8 +32,8 @@ export function StatusBanner({
   if (status === "lagging") {
     return (
       <div className="mt-4 flex items-center gap-3 rounded-xl border border-gold/40 bg-gold/10 p-4">
-        <AlertTriangle className="size-5 shrink-0 text-gold-foreground" />
-        <p className="text-sm font-medium text-gold-foreground">
+        <AlertTriangle className="size-5 shrink-0 text-gold-text" />
+        <p className="text-sm font-medium text-gold-text">
           {reporting} reporting · {lagging} lagging
         </p>
       </div>

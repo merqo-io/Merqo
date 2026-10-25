@@ -37,3 +37,12 @@ export function classifyOverviewHealth(
   if (laggingCount > 0) return "lagging";
   return "ok";
 }
+
+/** Per-status counts, so the banner's "reporting" excludes lagging kits. */
+export function countHealth(
+  statuses: HealthStatus[],
+): Record<HealthStatus, number> {
+  const counts = { reporting: 0, lagging: 0, down: 0 };
+  for (const s of statuses) counts[s] += 1;
+  return counts;
+}
