@@ -43,3 +43,5 @@ See the repo root [README.md](../../README.md) for the full test layout.
 Boundary suites cover admin pagination, team authentication, session/server client creation, callback redirects, plan-action requests and waitlist validation. Assert actor and query parameters as well as results; avoid silently accepting a partial administrator listing or treating a failed read as an empty dataset.
 
 `team-boundary.test.ts` also covers the `aal2` gate and the membership-only `requireTeamMember()`.
+
+`format.test.ts` expects `timeAgo` to return `-` for an unparseable timestamp.

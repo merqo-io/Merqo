@@ -46,7 +46,7 @@ describe("timeAgo", () => {
     expect(timeAgo("2026-07-26T12:05:00Z", now)).toBe("just now");
   });
 
-  it("returns an em dash for an unparseable timestamp", () => {
-    expect(timeAgo("not-a-date", now)).toBe("—");
+  it("returns a dash for an unparseable timestamp", () => {
+    expect(timeAgo("not-a-date", now)).toBe("-");
   });
 });

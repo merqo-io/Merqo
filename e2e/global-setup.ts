@@ -10,9 +10,7 @@ export default async function globalSetup(config: FullConfig) {
   const baseURL = config.projects[0].use.baseURL;
   const email = process.env.MERQO_E2E_TEAM_EMAIL ?? "e2e-team@merqo.test";
   // Fixture default for a throwaway local Supabase test account, not a real credential.
-  const password =
-    // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- local fixture
-    process.env.MERQO_E2E_TEAM_PASSWORD ?? "e2e-test-pass-123";
+  const password = process.env.MERQO_E2E_TEAM_PASSWORD ?? "e2e-test-pass-123";
 
   const browser = await chromium.launch();
   const page = await (await browser.newContext({ baseURL })).newPage();

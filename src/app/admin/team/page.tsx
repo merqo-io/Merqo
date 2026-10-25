@@ -21,7 +21,7 @@ export default async function TeamPage() {
       <section>
         <h2 className="font-display text-lg font-bold">Add a member</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Add by email — the person must have signed in once first.
+          Add by email, the person must have signed in once first.
         </p>
         <div className="mt-3">
           <AddTeamForm />

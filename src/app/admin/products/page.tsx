@@ -12,8 +12,7 @@ export default async function AdminProductsPage() {
     products.map((p) => fetchProductMetrics(p)),
   );
 
-  // Reading the wall clock in an async server component is intentional here.
-  // eslint-disable-next-line react-hooks/purity
+  // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
 
   return (

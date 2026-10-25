@@ -8,7 +8,7 @@ export const money = (cents: number) => `$${(cents / 100).toLocaleString()}`;
  *  at "just now" rather than showing a negative duration. */
 export function timeAgo(iso: string, now: number): string {
   const then = Date.parse(iso);
-  if (Number.isNaN(then)) return "—";
+  if (Number.isNaN(then)) return "-";
   const diffMs = now - then;
   if (diffMs < 60_000) return "just now";
   const mins = Math.floor(diffMs / 60_000);

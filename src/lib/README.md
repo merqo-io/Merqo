@@ -45,7 +45,7 @@ console and dashboard figures. Funnel counts are distinct populations, so do not
 report them as nested conversion stages. `kits.ts` is the family configuration (each live kit's URL
 defaults to `https://<kit>.merqo.io`, overridable with `NEXT_PUBLIC_<KIT>_URL`);
 `ecosystem.ts` derives its diagram status from that configuration.
-`format.ts` and `utils.ts` provide display formatting and class composition.
+`format.ts` and `utils.ts` provide display formatting (`timeAgo` returns `-` for an unparseable timestamp) and class composition.
 `brand-icon.tsx` supplies icon-route markup; `account.ts` safely reads metadata.
 
 `tour-prefs.ts` persists onboarding timestamps best-effort. Both server-render
