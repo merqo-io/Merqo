@@ -67,7 +67,9 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   arrow; renders an "Unavailable"/"Auth error"/"Bad response" placeholder when
   `result.ok` is false.
 - `status-banner.tsx` — `StatusBanner({ reporting, lagging, down })`. Single-
-  line, color-coded, icon-led summary of ecosystem-wide product health.
+  line, color-coded, icon-led summary of ecosystem-wide product health. The
+  lagging state uses `text-gold-text`, not `gold-foreground` (navy, for solid
+  gold only), so it stays readable on the gold tint in dark mode.
 - `support-message-row.tsx` — `SupportMessageRow({ message })`. One row in the
   "Needs attention" support-message list; shows which kit a message came from
   (`kit_slug`, `null` renders as "merqo") plus category and body.

@@ -56,7 +56,7 @@ section; one or more kits gets the savings + per-kit overview.
   for one kit via `requestUpgrade`/`requestDowngrade`, with inline (no
   toast) success/error feedback. These controls intentionally retain their own inline feedback rather than the destructive admin confirmation contract.
 - `vendor-metric-list.tsx` — `VendorMetricList({ result, now })`: renders a
-  kit's headline metric (in the "Harbour Control" theme's amber "value
+  kit's headline metric (in the "Harbour Control" theme's amber `text-gold-text` "value
   moment" accent, as of 2026-08-19) plus up to three supporting figures,
   or a graceful "not connected yet" message when the kit has no metrics
   endpoint or is unreachable.

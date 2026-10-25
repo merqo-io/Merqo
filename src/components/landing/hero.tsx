@@ -36,7 +36,7 @@ function LiveBoard() {
               {r.n}
             </span>
             <span className={r.tone}>{r.label}</span>
-            <span className="ml-auto rounded-full bg-gold/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-gold-foreground">
+            <span className="ml-auto rounded-full bg-gold/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-gold-text">
               Ready
             </span>
           </li>
