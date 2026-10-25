@@ -69,4 +69,4 @@ integration are verified separately.
 
 [src](../README.md)
 
-`security-headers.ts` also allows the Vercel toolbar origin (`vercel.live`) outside production.
+`security-headers.ts` also allows the Vercel toolbar origin (`vercel.live`) outside production. Images also allow `https://*.googleusercontent.com` for Google sign-in avatars.
