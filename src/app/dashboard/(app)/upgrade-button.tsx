@@ -29,7 +29,7 @@ export function UpgradeButton({ slug }: { slug: string }) {
   if (state === "sent") {
     return (
       <p className="text-sm font-medium text-muted-foreground">
-        Request sent — we&apos;ll set you up shortly.
+        Request sent, we&apos;ll set you up shortly.
       </p>
     );
   }

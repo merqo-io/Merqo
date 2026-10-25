@@ -28,6 +28,13 @@ const STEP_MS = 780;
 
 type JourneyStep = { slug: string; caption: string };
 
+type JourneyHandlers = {
+  timers: React.RefObject<number[]>;
+  setLit: Dispatch<SetStateAction<Set<string>>>;
+  setCaption: Dispatch<SetStateAction<string | null>>;
+  setJourney: Dispatch<SetStateAction<Journey | null>>;
+};
+
 /** Recursively schedules each journey hop `STEP_MS` apart, lighting the next
  *  node and advancing the caption/overlay as it goes. Declared at module
  *  scope (not nested inside the component) to keep the setTimeout-driven
@@ -35,11 +42,9 @@ type JourneyStep = { slug: string; caption: string };
 function scheduleJourneyStep(
   route: JourneyStep[],
   i: number,
-  timers: React.RefObject<number[]>,
-  setLit: Dispatch<SetStateAction<Set<string>>>,
-  setCaption: Dispatch<SetStateAction<string | null>>,
-  setJourney: Dispatch<SetStateAction<Journey | null>>,
+  handlers: JourneyHandlers,
 ) {
+  const { timers, setLit, setCaption, setJourney } = handlers;
   if (i >= route.length - 1) {
     setJourney(null);
     return;
@@ -50,7 +55,7 @@ function scheduleJourneyStep(
   const t = window.setTimeout(() => {
     setLit((prev) => new Set(prev).add(to));
     setCaption(route[i + 1].caption);
-    scheduleJourneyStep(route, i + 1, timers, setLit, setCaption, setJourney);
+    scheduleJourneyStep(route, i + 1, handlers);
   }, STEP_MS);
   timers.current.push(t);
 }
@@ -114,7 +119,12 @@ export function KitStacker() {
     setCaption(route[0].caption);
     setJourney(null);
 
-    scheduleJourneyStep(route, 0, timers, setLit, setCaption, setJourney);
+    scheduleJourneyStep(route, 0, {
+      timers,
+      setLit,
+      setCaption,
+      setJourney,
+    });
   }
 
   const allStacked = ALL_SLUGS.every((s) => stacked.has(s));
@@ -129,7 +139,7 @@ export function KitStacker() {
           One queue. Watch how the kits connect.
         </h2>
         <p className="mt-4 max-w-xl text-muted-foreground">
-          Each kit runs on its own — add the ones you need and see how they
+          Each kit runs on its own, add the ones you need and see how they
           connect, then play the journey to watch an order move through them.
         </p>
 

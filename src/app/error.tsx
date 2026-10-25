@@ -29,7 +29,7 @@ export default function ErrorBoundary({
         That didn&apos;t load
       </h1>
       <p className="text-sm text-muted-foreground">
-        A hiccup on our end — usually a flaky connection. Try again.
+        A hiccup on our end, usually a flaky connection. Try again.
       </p>
       <Button onClick={reset} className="h-11 rounded-xl px-6 font-semibold">
         Try again

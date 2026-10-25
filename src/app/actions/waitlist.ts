@@ -26,7 +26,7 @@ export async function joinKitWaitlist(
     await addToWaitlist(parsed.data.email, parsed.data.slug);
     return {
       status: "success",
-      message: "You're on the list — we'll email you when it opens.",
+      message: "You're on the list, we'll email you when it opens.",
     };
   } catch {
     return {

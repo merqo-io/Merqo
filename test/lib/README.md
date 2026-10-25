@@ -41,3 +41,5 @@ See the repo root [README.md](../../README.md) for the full test layout.
 ## Boundary and coverage
 
 Boundary suites cover admin pagination, team authentication, session/server client creation, callback redirects, plan-action requests and waitlist validation. Assert actor and query parameters as well as results; avoid silently accepting a partial administrator listing or treating a failed read as an empty dataset.
+
+`format.test.ts` expects `timeAgo` to return `-` for an unparseable timestamp.

@@ -26,6 +26,21 @@ function edgePath(from: string, to: string): string {
   return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
 }
 
+function nodeClasses(on: boolean, live: boolean) {
+  if (!on) {
+    return {
+      nodeStrokeClass: "fill-transparent stroke-border [stroke-dasharray:4_4]",
+      nodeTextClass: "fill-muted-foreground",
+    };
+  }
+  return {
+    nodeStrokeClass: live
+      ? "fill-primary stroke-gold"
+      : "fill-card stroke-primary/40",
+    nodeTextClass: live ? "fill-primary-foreground" : "fill-foreground",
+  };
+}
+
 export function GraphCanvas({
   stacked,
   highlight,
@@ -115,15 +130,7 @@ export function GraphCanvas({
           highlight && highlight !== n.slug && !hotNeighbors?.has(n.slug);
         const live = n.status === "live";
         const lit = litNodes?.has(n.slug);
-        let nodeStrokeClass =
-          "fill-transparent stroke-border [stroke-dasharray:4_4]";
-        let nodeTextClass = "fill-muted-foreground";
-        if (on) {
-          nodeStrokeClass = live
-            ? "fill-primary stroke-gold"
-            : "fill-card stroke-primary/40";
-          nodeTextClass = live ? "fill-primary-foreground" : "fill-foreground";
-        }
+        const { nodeStrokeClass, nodeTextClass } = nodeClasses(on, live);
         return (
           <g
             key={n.slug}

@@ -6,6 +6,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.7.8] - 2026-10-24
+
+### Changed
+
+- Lint config now consumes the shared `@merqo/ui/eslint` preset (`@merqo/ui` v0.35.0): comment and directive hygiene, size and complexity limits, and a ban on colour literals and the em dash in `src`. `eslint-plugin-sonarjs` 4.2.2 and `@eslint-community/eslint-plugin-eslint-comments` 4.8.1 pinned. `eslint.config.test.ts` asserts the key rules resolve to `error`.
+- `DashboardPage`, the kit-stacker graph and journey scheduler split into helpers to meet the complexity and parameter limits. No behaviour change.
+- Em dashes removed from user-facing copy; an unparseable timestamp now shows `-`.
+
 ## [0.7.7] - 2026-10-24
 
 ### Security

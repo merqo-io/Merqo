@@ -35,8 +35,7 @@ export default async function VendorDetailPage({
       .filter((p) => activeSlugs.has(p.slug))
       .map((p) => getVendorActivity(p, grant.email)),
   );
-  // Reading the wall clock in an async server component is intentional here.
-  // eslint-disable-next-line react-hooks/purity
+  // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
 
   return (
@@ -56,7 +55,7 @@ export default async function VendorDetailPage({
         <h2 className="font-display text-lg font-bold">Kits</h2>
         {grant.kits.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            No kits yet — grant one below.
+            No kits yet, grant one below.
           </p>
         ) : (
           <ul className="mt-3 space-y-2">

@@ -55,7 +55,6 @@ test.describe("authed areas", () => {
   const TEAM_EMAIL = process.env.MERQO_E2E_TEAM_EMAIL ?? "e2e-team@merqo.test";
   // Fixture default for a throwaway local Supabase test account, not a real credential.
   const TEAM_PASSWORD =
-    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
     process.env.MERQO_E2E_TEAM_PASSWORD ?? "e2e-test-pass-123";
   const ADDABLE_EMAIL =
     process.env.MERQO_E2E_ADDABLE_EMAIL ?? "e2e-addable@merqo.test";

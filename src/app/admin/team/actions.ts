@@ -49,7 +49,7 @@ export async function addTeamMemberAction(
       return {
         status: "error",
         message:
-          "No Merqo account for that email yet — they must sign in once first.",
+          "No Merqo account for that email yet, they must sign in once first.",
       };
     }
     await recordAudit(user.id, "add_team_member", addedUserId, {

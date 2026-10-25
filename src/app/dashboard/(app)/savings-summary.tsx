@@ -20,7 +20,7 @@ export function SavingsSummary({ totals }: { totals: VendorSavings }) {
           ariaLabel="How this estimate is calculated"
           content={
             <>
-              A flat per-kit, per-plan estimate — not tracked from your actual
+              A flat per-kit, per-plan estimate, not tracked from your actual
               usage. Based on ~S$18/hr (Singapore hawker-stall staff wage), ×
               hours/week the kit saves you on that plan × 4.33 weeks/month. Free
               vs. Pro estimates differ per kit.

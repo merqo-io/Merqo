@@ -22,6 +22,19 @@ import { ActivateKitsButton } from "@/components/dashboard/activate-kits-button"
 
 export const revalidate = 0;
 
+/** Best-effort: a registry read failure degrades to "nothing is provisionable" instead of crashing the page. */
+async function loadLiveProducts() {
+  try {
+    return await listLiveProducts();
+  } catch (err) {
+    console.error(
+      "listLiveProducts failed; treating no kits as provisionable",
+      err,
+    );
+    return [];
+  }
+}
+
 export default async function DashboardPage() {
   const { user, links: initialLinks } = await requireVendorSession();
   // Re-sync on every load (throttled in syncVendorKits) so a kit joined
@@ -31,18 +44,7 @@ export default async function DashboardPage() {
   const { active, pending, needsSetup } = tilesForLinks(links);
   const savings = computeVendorSavings(links);
   const savingsBySlug = new Map(savings.perKit.map((s) => [s.slug, s]));
-  // Best-effort: a products-registry read failure degrades to "nothing is
-  // provisionable" rather than crashing the whole dashboard — matches
-  // syncVendorKits' graceful-degradation philosophy on this same page.
-  let liveProducts: Awaited<ReturnType<typeof listLiveProducts>> = [];
-  try {
-    liveProducts = await listLiveProducts();
-  } catch (err) {
-    console.error(
-      "listLiveProducts failed; treating no kits as provisionable",
-      err,
-    );
-  }
+  const liveProducts = await loadLiveProducts();
   // "Ready to add" shows a card for every kit.ts-live kit the vendor doesn't
   // already have (addableKits) — paykit included, even though it can't yet be
   // one-click-activated. provisionableSlugs narrows just which of those cards
@@ -63,10 +65,7 @@ export default async function DashboardPage() {
   const hasNoKits =
     active.length === 0 && pending.length === 0 && needsSetup.length === 0;
 
-  // Reading the wall clock in an async server component is intentional here,
-  // same as admin's overview page — a stable "now" for every freshness label
-  // rendered below.
-  // eslint-disable-next-line react-hooks/purity
+  // eslint-disable-next-line react-hooks/purity -- one stable now for every freshness label
   const now = Date.now();
 
   const registryBySlug = new Map(liveProducts.map((r) => [r.slug, r]));
@@ -120,7 +119,7 @@ export default async function DashboardPage() {
               <div className="min-w-0">
                 <span className="font-medium">{t.name}</span>
                 <p className="text-xs text-muted-foreground">
-                  Requested — we&apos;ll email you when it opens.
+                  Requested, we&apos;ll email you when it opens.
                 </p>
               </div>
             </div>
@@ -250,7 +249,7 @@ export default async function DashboardPage() {
       </section>
 
       <p className="mt-10 text-sm text-muted-foreground">
-        More kits coming —{" "}
+        More kits coming,{" "}
         <Link
           href="/#kits"
           className="font-medium text-foreground hover:underline"
