@@ -3,6 +3,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireMerqoTeam } from "@/lib/team";
 import { recordAudit } from "@/lib/admin";
+// eslint-disable-next-line no-restricted-imports -- no client role can write these tables; each action is gated by requireMerqoTeam
 import { createServiceClient } from "@/lib/supabase/server";
 import type { ActionResult } from "@/lib/action-result";
 

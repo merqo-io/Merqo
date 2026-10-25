@@ -20,7 +20,10 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center gap-4 px-6 text-center">
+    <div
+      data-error-boundary="true"
+      className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center gap-4 px-6 text-center"
+    >
       <Wordmark className="text-2xl" />
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
         Something went wrong

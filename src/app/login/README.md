@@ -26,3 +26,5 @@ Google branding uses `GoogleMark` from `@merqo/ui`; Merqo branding uses the sing
 
 See the repo root [README.md](../../../README.md) for the full `src/app/`
 layout.
+
+`layout.tsx` forces per-request rendering so the nonce CSP from `proxy.ts` reaches this page's scripts.
