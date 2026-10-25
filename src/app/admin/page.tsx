@@ -6,7 +6,7 @@ import { listVendorGrants } from "@/lib/admin";
 import { listOpenSupportMessages } from "@/lib/support";
 import { fetchProductMetrics } from "@/lib/metrics-client";
 import { summarizeOverview } from "@/lib/overview";
-import { classifyHealth } from "@/lib/health";
+import { classifyHealth, countHealth } from "@/lib/health";
 import { onboardingFunnel } from "@/lib/funnel";
 import { money, computeTrend } from "@/lib/format";
 import { getBillingSettings } from "@/lib/billing-settings";
@@ -35,7 +35,7 @@ export default async function AdminOverviewPage() {
   // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
   const health = results.map((r) => classifyHealth(r, now));
-  const lagging = health.filter((h) => h === "lagging").length;
+  const counts = countHealth(health);
 
   const links = grants.flatMap((g) => g.kits);
   const funnel = onboardingFunnel(links, totals.active_vendors);
@@ -59,9 +59,9 @@ export default async function AdminOverviewPage() {
       </div>
 
       <StatusBanner
-        reporting={totals.products_reporting}
-        lagging={lagging}
-        down={totals.products_down}
+        reporting={counts.reporting}
+        lagging={counts.lagging}
+        down={counts.down}
       />
 
       {attention > 0 && (

@@ -11,6 +11,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Gold text on tinted or card surfaces used `gold-foreground` (navy, meant for solid gold), so the admin "lagging" banner and the vendor headline metric were unreadable in dark mode. New `--gold-text` token (AA on every surface it sits on, light and dark) replaces it there and on the landing hero pill.
+- Admin overview banner counted lagging kits as reporting too ("4 reporting · 4 lagging" with 4 kits). Each kit now counts once, via `countHealth`.
 
 ## [0.8.0] - 2026-10-24
 

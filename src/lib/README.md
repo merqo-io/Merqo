@@ -41,7 +41,7 @@ contracts; mocked network tests do not establish those database guarantees.
 ## Pure logic and presentation
 
 `health.ts`, `overview.ts`, `funnel.ts`, `nps.ts` and `savings.ts` derive
-console and dashboard figures. Funnel counts are distinct populations, so do not
+console and dashboard figures (`countHealth` counts each kit once, so a lagging kit is not also "reporting"). Funnel counts are distinct populations, so do not
 report them as nested conversion stages. `kits.ts` is the family configuration (each live kit's URL
 defaults to `https://<kit>.merqo.io`, overridable with `NEXT_PUBLIC_<KIT>_URL`);
 `ecosystem.ts` derives its diagram status from that configuration.
