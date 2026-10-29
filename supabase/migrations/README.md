@@ -163,6 +163,7 @@ landing — a later migration corrects an earlier one.
   synchronization to trusted service and owner-trigger paths, makes founder
   notification helpers owner-only, and grants the admin service the missing
   billing singleton read/update permissions.
+- `0035_fk_indexes.sql` — indexes every foreign key column the Supabase advisor flagged as unindexed (`admin_audit.admin_id`, `feedback.user_id`, `support_messages.user_id`, `telegram_link_tokens.vendor_id`, `vendor_feedback.vendor_id`, `vendor_links.product_slug`).
 
 ## Connectivity
 
