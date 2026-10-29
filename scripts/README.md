@@ -20,6 +20,14 @@ Founder-run maintenance scripts, invoked manually.
   if the `merqo` schema already exists; with file arguments it applies only
   those, for the staging-first migration gate.
 
+- `schema-fingerprint.sql` returns one `(schema, kind, name, md5)` row per
+  table, column, constraint, index, trigger, policy, function and grant in the
+  six kit schemas. Read-only; the owner runs it on staging and production.
+- `drift-compare.mjs <expected.csv> <actual.csv> [--known <file>]` lists
+  objects missing, extra or changed between two fingerprints and exits 1 on
+  any. `schema-drift-known.txt` is the accepted-drift list it takes with
+  `--known`. Runbook: `docs/SCHEMA-DRIFT.md`.
+
 ## Parent
 
 [merqo](../README.md)

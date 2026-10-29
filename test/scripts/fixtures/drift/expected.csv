@@ -1,0 +1,5 @@
+schema,kind,name,md5
+merqo,table,products,aaa
+qkit,function,"place_order(p_booth uuid, p_items jsonb)",bbb
+qkit,routine_grant,"place_order(p_booth uuid, p_items jsonb):anon",ccc
+stockkit,table,products,ddd

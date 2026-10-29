@@ -1,0 +1,15 @@
+# Known drift for drift-compare.mjs --known: prod-only stockkit objects parked
+# 2026-10-23 (backlog SK-01). Remove these lines once SK-01 lands.
+stockkit,table,product_components
+stockkit,column,product_components.*
+stockkit,constraint,product_components.*
+stockkit,index,product_components.*
+stockkit,policy,product_components.*
+stockkit,trigger,product_components.*
+stockkit,grant,product_components:*
+stockkit,column,stock_movements.linked_movement_id
+stockkit,constraint,stock_movements.*linked_movement*
+stockkit,function,prevent_nested_components(*
+stockkit,routine_grant,prevent_nested_components(*
+stockkit,function,record_linked_movement(*
+stockkit,routine_grant,record_linked_movement(*

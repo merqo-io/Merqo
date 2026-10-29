@@ -1,0 +1,61 @@
+name: schema fingerprint
+
+# Builds the expected schema fingerprint from every kit's repo migrations, for
+# docs/SCHEMA-DRIFT.md. It never connects to staging or production.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 2 * * 1"
+  pull_request:
+    paths:
+      - scripts/schema-fingerprint.sql
+      - .github/workflows/schema-fingerprint.yml
+
+permissions:
+  contents: read
+
+jobs:
+  fingerprint:
+    name: expected fingerprint
+    runs-on: ubuntu-latest
+    env:
+      DB_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: Check out the kit repos
+        run: |
+          for repo in Qkit Loopkit Paykit Stockkit Printkit; do
+            git clone --depth 1 "https://github.com/merqo-io/$repo.git" "kits/$(echo "$repo" | tr '[:upper:]' '[:lower:]')"
+          done
+      - uses: supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1 # v1.7.1
+        with:
+          version: 2.109.0
+      # Applies merqo's migrations first, the same order staging uses.
+      - run: supabase start
+      - name: Apply the kit migrations
+        run: |
+          migrate() {
+            docker run --rm --network host -e STAGING_DB_URL="$DB_URL" \
+              -v "$PWD/kits/$1:/repo" postgres:17.6-alpine sh /repo/scripts/staging-migrate.sh
+          }
+          migrate qkit
+          migrate loopkit
+          migrate paykit
+          # merqo 0015 and stockkit 0006 both create this policy (docs/STAGING.md).
+          docker run --rm --network host postgres:17.6-alpine psql "$DB_URL" -X -q \
+            -c 'drop policy if exists "vendor_avatars_public_read" on storage.objects'
+          migrate stockkit
+          migrate printkit
+      - name: Fingerprint
+        run: |
+          docker run --rm --network host -v "$PWD/scripts:/scripts" postgres:17.6-alpine \
+            psql "$DB_URL" -X -q --csv -v ON_ERROR_STOP=1 -f /scripts/schema-fingerprint.sql \
+            > expected-fingerprint.csv
+          test "$(wc -l < expected-fingerprint.csv)" -gt 100
+          node scripts/drift-compare.mjs expected-fingerprint.csv expected-fingerprint.csv
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: expected-fingerprint
+          path: expected-fingerprint.csv
+      - if: always()
+        run: supabase stop

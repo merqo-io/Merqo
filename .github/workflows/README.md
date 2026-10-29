@@ -31,6 +31,10 @@ this private repo's free tier).
   `VERCEL_STAGING_DEPLOY_HOOK`), because Vercel does not git-deploy a commit it
   already built for production; without the secret it only warns. Only this job
   gets `contents: write`.
+- `schema-fingerprint.yml`: on demand, weekly and on PRs that touch the
+  fingerprint SQL, loads all six repos' migrations into a fresh local Supabase
+  stack in staging order and uploads `expected-fingerprint.csv` as an
+  artifact for `docs/SCHEMA-DRIFT.md`. It never connects to a real project.
 
 Every third-party action in both workflows is pinned to a full commit SHA,
 not a floating version tag.

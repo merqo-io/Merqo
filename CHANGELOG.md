@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-29
+
+### Added
+
+- Schema drift check: `scripts/schema-fingerprint.sql` fingerprints every table, column, constraint, index, trigger, policy, function and grant in the six kit schemas; the `schema fingerprint` workflow builds the expected fingerprint from all six repos' migrations; `scripts/drift-compare.mjs` lists missing, extra and changed objects. Owner runbook: `docs/SCHEMA-DRIFT.md`.
+
 ## [0.8.2] - 2026-10-25
 
 ### Fixed
