@@ -8,6 +8,7 @@ const ADMIN_LINKS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/vendors", label: "Vendors" },
   { href: "/admin/products", label: "Products" },
+  { href: "/admin/health", label: "Health" },
   { href: "/admin/team", label: "Team" },
   { href: "/admin/feedback", label: "Feedback" },
   { href: "/admin/activity", label: "Activity" },

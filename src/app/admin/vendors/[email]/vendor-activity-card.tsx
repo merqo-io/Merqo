@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import type { VendorActivityResult } from "@/lib/vendor-activity-client";
 import { VENDOR_ACTIVITY_STATUS_CONFIG } from "./vendor-activity-status-config";
 import { timeAgo } from "@/lib/format";
+import { IncidentList } from "./incident-list";
 
 /** One kit's activity summary on the vendor detail page. A kit that
  *  hasn't implemented `/api/merqo/vendor-activity` yet, or is briefly
@@ -18,7 +19,8 @@ export function VendorActivityCard({
   now: number;
 }) {
   if (!result.ok || !result.data.active) return null;
-  const { plan, status, metrics, lastActivityAt } = result.data;
+  const { plan, status, metrics, lastActivityAt, incidents, recent } =
+    result.data;
 
   return (
     <div className="rounded-xl border bg-card p-4 shadow-sm">
@@ -52,6 +54,8 @@ export function VendorActivityCard({
           ))}
         </div>
       )}
+
+      <IncidentList incidents={incidents} recent={recent} now={now} />
 
       <p className="mt-3 text-[0.7rem] text-muted-foreground">
         {lastActivityAt
