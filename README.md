@@ -165,6 +165,7 @@ supabase/seed/staging-registry.sql: one-time staging registry wiring (docs/STAGI
 scripts/staging-migrate.sh: applies migrations to the staging project with psql
 scripts/check-legal-version-skew.mjs — asserts merqo + all 5 kit repos pin
                                matching terms/privacy/pilot versions from exact locked UI commits
+scripts/schema-fingerprint.sql, scripts/drift-compare.mjs — schema drift check (docs/SCHEMA-DRIFT.md)
 ```
 
 ## Data model
@@ -209,6 +210,8 @@ secrets and administrative writes use server-only service clients, so
   migration gate: `docs/STAGING.md`. `.gitattributes`
   keeps `*.sh` on LF line endings so the staging script runs in a Linux
   container from a Windows checkout.
+- Schema drift check (fingerprint SQL, compare script, owner runbook):
+  `docs/SCHEMA-DRIFT.md`
 - Plans/specs: `docs/superpowers/`
 - AI harness/hooks/skills map: `.claude/README.md`
 

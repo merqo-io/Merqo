@@ -1,0 +1,2 @@
+# prod-only stockkit objects, parked
+stockkit,table,product_components
