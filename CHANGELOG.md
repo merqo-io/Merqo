@@ -6,11 +6,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [0.9.0] - 2026-10-29
+## [0.10.0] - 2026-10-30
 
 ### Added
 
 - Schema drift check: `scripts/schema-fingerprint.sql` fingerprints every table, column, constraint, index, trigger, policy, function and grant in the six kit schemas; the `schema fingerprint` workflow builds the expected fingerprint from all six repos' migrations; `scripts/drift-compare.mjs` lists missing, extra and changed objects. Owner runbook: `docs/SCHEMA-DRIFT.md`.
+
+## [0.9.0] - 2026-10-29
+
+### Added
+
+- `/admin/health` (nav link "Health"): one table of vendors with incidents in the last 72 hours, or an `attention`/`stuck` status, on any kit they are active on, worst first. Each row links to the vendor page; a kit that fails or times out shows "No data" in its cell.
+- Vendor detail kit cards show "Incidents (last 72 h)": kind, count, last time, and recent reference ids with their codes. No names, phones, messages or amounts.
+- Overview "Needs attention" counts vendors flagged on the health page and links there.
+- Opening a vendor detail page writes a `view_vendor` audit row carrying only `email_hash` (first 12 hex chars of sha256 of the lowercased email), shown as "Viewed vendor" on `/admin/activity`.
+- `getTenantHealth()` (`src/lib/tenant-health.ts`): pooled per-vendor kit reads (6 at a time, 3000 ms timeout each).
+
+### Changed
+
+- Vendor-activity payloads are validated with `vendorActivityPayloadSchema` from `@merqo/ui/contracts`; the local copy is removed. Kits that return no `incidents` still parse.
 
 ## [0.8.2] - 2026-10-25
 

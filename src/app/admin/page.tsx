@@ -10,6 +10,7 @@ import { classifyHealth, countHealth } from "@/lib/health";
 import { onboardingFunnel } from "@/lib/funnel";
 import { money, computeTrend } from "@/lib/format";
 import { getBillingSettings } from "@/lib/billing-settings";
+import { getTenantHealth } from "@/lib/tenant-health";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { OnboardingFunnelView } from "./onboarding-funnel";
 import { ProductTile } from "./product-tile";
@@ -27,9 +28,21 @@ export default async function AdminOverviewPage() {
     listOpenSupportMessages(),
     getBillingSettings(),
   ]);
-  const results = await Promise.all(
-    products.map((p) => fetchProductMetrics(p)),
-  );
+  const [results, tenantHealth] = await Promise.all([
+    Promise.all(products.map((p) => fetchProductMetrics(p))),
+    getTenantHealth(
+      products,
+      grants
+        .map((g) => ({
+          email: g.email,
+          kits: g.kits.filter((k) => k.status === "active").map((k) => k.slug),
+        }))
+        .filter((v) => v.kits.length > 0),
+    ),
+  ]);
+  const flaggedVendors = tenantHealth.filter(
+    (r) => r.worst === "attention",
+  ).length;
   const totals = summarizeOverview(results);
 
   // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
@@ -43,7 +56,10 @@ export default async function AdminOverviewPage() {
     .flatMap((g) => g.kits.map((k) => ({ email: g.email, kit: k })))
     .filter((x) => x.kit.status === "waitlist");
   const attention =
-    waitlist.length + totals.pending_upgrade_requests + openSupport.length;
+    waitlist.length +
+    totals.pending_upgrade_requests +
+    openSupport.length +
+    flaggedVendors;
 
   const allDown = products.length > 0 && totals.products_reporting === 0;
 
@@ -69,6 +85,20 @@ export default async function AdminOverviewPage() {
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Needs attention · {attention}
           </h2>
+          {flaggedVendors > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-destructive/50 bg-card px-4 py-3 text-sm">
+              <p>
+                {flaggedVendors} vendor{flaggedVendors === 1 ? "" : "s"} with
+                incidents or stuck work
+              </p>
+              <Link
+                href="/admin/health"
+                className="font-medium text-primary hover:underline"
+              >
+                View health
+              </Link>
+            </div>
+          )}
           {waitlist.map((w) => (
             <div
               key={`${w.email}-${w.kit.slug}`}
