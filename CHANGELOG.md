@@ -6,13 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-<<<<<<< HEAD
-## [0.8.3] - 2026-10-29
+## [0.9.1] - 2026-10-30
 
 ### Changed
 
 - Every foreign key column in the `merqo` schema has an index (migration `0035`), so RLS filters and cascading deletes no longer scan whole tables. New pgTAP test covers those indexes, RLS on every table, and `admin_audit` access.
-=======
+
 ## [0.9.0] - 2026-10-29
 
 ### Added
@@ -26,7 +25,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Vendor-activity payloads are validated with `vendorActivityPayloadSchema` from `@merqo/ui/contracts`; the local copy is removed. Kits that return no `incidents` still parse.
->>>>>>> origin/main
 
 ## [0.8.2] - 2026-10-25
 
