@@ -12,6 +12,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Schema drift check: `scripts/schema-fingerprint.sql` fingerprints every table, column, constraint, index, trigger, policy, function and grant in the six kit schemas; the `schema fingerprint` workflow builds the expected fingerprint from all six repos' migrations; `scripts/drift-compare.mjs` lists missing, extra and changed objects. Owner runbook: `docs/SCHEMA-DRIFT.md`.
 
+## [0.9.1] - 2026-10-30
+
+### Changed
+
+- Every foreign key column in the `merqo` schema has an index (migration `0035`), so RLS filters and cascading deletes no longer scan whole tables. New pgTAP test covers those indexes, RLS on every table, and `admin_audit` access.
+
 ## [0.9.0] - 2026-10-29
 
 ### Added
