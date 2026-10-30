@@ -1,8 +1,9 @@
+import { createHash } from "node:crypto";
 import Link from "next/link";
 import { BackButton } from "@merqo/ui";
 import { notFound } from "next/navigation";
 import { requireMerqoTeam } from "@/lib/team";
-import { getVendorGrant, listProducts } from "@/lib/admin";
+import { getVendorGrant, listProducts, recordAudit } from "@/lib/admin";
 import { Badge } from "@/components/ui/badge";
 import { GrantForm } from "../grant-form";
 import { RevokeButton } from "../revoke-button";
@@ -17,7 +18,7 @@ export default async function VendorDetailPage({
 }: {
   params: Promise<{ email: string }>;
 }) {
-  await requireMerqoTeam();
+  const { user } = await requireMerqoTeam();
   const { email: raw } = await params;
   const email = decodeURIComponent(raw);
   const [grant, products] = await Promise.all([
@@ -25,6 +26,13 @@ export default async function VendorDetailPage({
     listProducts(),
   ]);
   if (!grant) notFound();
+
+  // A short hash keeps a second copy of the email out of the audit log.
+  const emailHash = createHash("sha256")
+    .update(grant.email.toLowerCase())
+    .digest("hex")
+    .slice(0, 12);
+  await recordAudit(user.id, "view_vendor", null, { email_hash: emailHash });
 
   const activeSlugs = new Set(
     grant.kits.filter((k) => k.status === "active").map((k) => k.slug),

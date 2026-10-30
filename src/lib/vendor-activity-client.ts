@@ -1,7 +1,7 @@
 import {
   vendorActivityPayloadSchema,
   type VendorActivityPayload,
-} from "@/lib/vendor-activity-schema";
+} from "@merqo/ui/contracts";
 import type { RegistryRow } from "@/lib/products";
 import { fetchKitJson } from "@/lib/kit-action-request";
 

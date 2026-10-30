@@ -43,6 +43,7 @@ describe("AdminLayout", () => {
       ["Vendors", "/admin/vendors"],
       ["Products", "/admin/products"],
       ["Team", "/admin/team"],
+      ["Health", "/admin/health"],
       ["Feedback", "/admin/feedback"],
       ["Activity", "/admin/activity"],
     ]) {

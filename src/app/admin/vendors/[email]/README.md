@@ -19,19 +19,34 @@ own admin console separately.
   registry (`listLiveProducts`), and renders one `VendorActivityCard` per
   successful result. A kit with no grant, a kit that 404s/times out, or a
   kit that hasn't implemented `/api/merqo/vendor-activity` yet all just
-  render no card — never an error state.
+  render no card — never an error state. After the grant lookup succeeds the
+  page calls `recordAudit(user.id, "view_vendor", null, { email_hash })`,
+  where `email_hash` is the first 12 hex chars of sha256 of the lowercased
+  email, so the audit trail shows who opened which tenant without a second
+  copy of the email.
 - `page.test.tsx` — mocked-dependency coverage: renders a card only for
   active-status kits (not waitlist), renders no Activity section at all
   when the vendor has zero active kits, and calls `notFound()` when the
-  grant doesn't exist.
+  grant doesn't exist. Also asserts a kit card's incident list (with and
+  without `incidents`) and that the `view_vendor` audit row is written once
+  with the expected hash and never the raw email.
 - `vendor-activity-card.tsx` — `VendorActivityCard({ slug, result, now })`.
   Renders nothing when `!result.ok` or the kit reports `active: false`;
   otherwise a `StatusBadge` (skipped entirely when `status` is `null` —
   e.g. loopkit, which has no per-vendor health concept yet), a plan
   `Badge`, the kit's `metrics` rows via `@merqo/ui`'s `StatTile`, and a
-  relative "last activity" timestamp.
+  relative "last activity" timestamp, with `IncidentList` between them.
+- `incident-list.tsx` — `IncidentList({ incidents, recent, now })` and
+  `INCIDENT_LABELS` (human label per `IncidentKind` from
+  `@merqo/ui/contracts`). Renders "Incidents (last 72 h)": each kind with a
+  count badge and relative last time, then `recent` entries as reference id
+  plus code. "No incidents in the last 72 hours" when both are empty or
+  missing (a kit that does not report incidents yet).
+- `incident-list.dom.test.tsx` — labels, counts, relative time, recent ref
+  and code, and both empty-state cases.
 - `vendor-activity-status-config.ts` — the shared `StatusBadge` `config`
-  for the 6-value cross-kit `VendorActivityStatus` union
+  for the 6-value cross-kit `VendorActivityStatus` union (from
+  `@merqo/ui/contracts`)
   (`attention`/`expiring`/`stuck`/`quiet`/`new`/`healthy`), mapped onto
   merqo's own semantic tokens — unlike each kit's own status-badge (which
   maps onto that kit's own brand tokens), this is merqo's single console,

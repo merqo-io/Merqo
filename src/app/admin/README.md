@@ -14,8 +14,8 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   cheaply, resolves `canSwitch` (whether the signed-in team member also has an
   active vendor kit, via `hasActiveVendorAccess`) and the account's
   email/avatar, and passes them to the shared header (`@/components/dashboard-nav.tsx`,
-  a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the six section links
-  (Overview / Vendors / Products / Team / Feedback / Activity) and an "Admin"
+  a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the seven section links
+  (Overview / Vendors / Products / Health / Team / Feedback / Activity) and an "Admin"
   badge beside the wordmark. The layout ends with the landing `Footer` (no
   sign-in link) and hides both header and footer when printing.
 - `page.tsx` — `AdminOverviewPage` (`revalidate = 0`). Fetches live products,
@@ -24,9 +24,13 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   metrics via `fetchProductMetrics`, and derives ecosystem totals
   (`summarizeOverview`), per-product health (`classifyHealth`), and the
   onboarding funnel (`onboardingFunnel`). Renders `StatusBanner`, a
-  "Needs attention" section (waitlisted vendors, open support messages,
+  "Needs attention" section (vendors flagged by `getTenantHealth`, with a
+  "View health" link to `health/`; waitlisted vendors, open support messages,
   pending upgrade requests), summary `StatCard`s, `OnboardingFunnelView`, a
   "Settings" section (`BundleDiscountToggle`), and a `ProductTile` grid.
+- `page.test.tsx` — mocked-dependency coverage for the overview's flagged-vendor
+  count: only active kits are passed to `getTenantHealth`, only `attention` rows
+  count, and the row links to `/admin/health`.
 - `loading.tsx` — skeleton for `page.tsx` (stat-card and product-tile shapes).
 - `actions.ts` — `"use server"` module; `resolveSupportMessageAction(id)` marks
   a hub-level `support_messages` row resolved (team-gated, writes via the
@@ -80,6 +84,8 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   kit-tagged vendor-comments list, backed by `merqo.vendor_feedback`.
 - `products/` — sub-route: product/kit registry health list
   (`product-health-card.tsx`).
+- `health/` — sub-route: per-tenant incident table across kits, built from
+  `getTenantHealth()` (`@/lib/tenant-health`). Read-only, no actions.
 - `team/` — sub-route: add/remove Merqo-team members (`add-team-form.tsx`,
   `remove-member.tsx`, server `actions.ts`). Both actions call
   `recordAudit()` after a successful write (`add_team_member`,
@@ -93,8 +99,10 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   no stable uuid at grant time, so `target_id` is `null` and the vendor
   email + kit slug travel in `detail` instead. `[email]/page.tsx` also
   renders an "Activity" section — one card per kit the vendor is `active`
-  on, pulled live via `getVendorActivity()` (`@/lib/vendor-activity-client`)
-  — see `[email]/README.md`.
+  on, pulled live via `getVendorActivity()` (`@/lib/vendor-activity-client`),
+  each card carrying that kit's 72-hour incident list. Opening the page
+  records a `view_vendor` audit row with only an email hash. See
+  `[email]/README.md`.
 - `activity/` — sub-route (`page.tsx` + `page.test.tsx`): `AdminActivityPage`
   server-fetches the most recent 100 `merqo.admin_audit` rows via
   `listAdminAuditEntries()` (`@/lib/admin`) and maps each row to an
