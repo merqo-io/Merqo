@@ -11,6 +11,7 @@ const ACTION_LABELS: Record<string, string> = {
   remove_team_member: "Removed team member",
   toggle_bundle_discount: "Toggled bundle discount",
   resolve_support_message: "Resolved support message",
+  view_vendor: "Viewed vendor",
 };
 
 function formatAction(action: string): string {

@@ -1,4 +1,4 @@
-import type { VendorActivityStatus } from "@/lib/vendor-activity-schema";
+import type { VendorActivityStatus } from "@merqo/ui/contracts";
 
 // One shared config across every kit's card, unlike each kit's own
 // status-badge (which maps onto that kit's own brand tokens) — this is

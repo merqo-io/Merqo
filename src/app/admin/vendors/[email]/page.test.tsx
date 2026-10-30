@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { createHash } from "node:crypto";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -8,6 +9,7 @@ const {
   listProductsMock,
   listLiveProductsMock,
   getVendorActivityMock,
+  recordAuditMock,
   notFoundMock,
 } = vi.hoisted(() => ({
   requireMerqoTeamMock: vi.fn(),
@@ -15,6 +17,7 @@ const {
   listProductsMock: vi.fn(),
   listLiveProductsMock: vi.fn(),
   getVendorActivityMock: vi.fn(),
+  recordAuditMock: vi.fn(),
   notFoundMock: vi.fn(() => {
     throw new Error("NEXT_NOT_FOUND");
   }),
@@ -24,6 +27,7 @@ vi.mock("@/lib/team", () => ({ requireMerqoTeam: requireMerqoTeamMock }));
 vi.mock("@/lib/admin", () => ({
   getVendorGrant: getVendorGrantMock,
   listProducts: listProductsMock,
+  recordAudit: recordAuditMock,
 }));
 vi.mock("@/lib/products", () => ({ listLiveProducts: listLiveProductsMock }));
 vi.mock("@/lib/vendor-activity-client", () => ({
@@ -44,7 +48,7 @@ const GRANT = {
 describe("VendorDetailPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    requireMerqoTeamMock.mockResolvedValue(undefined);
+    requireMerqoTeamMock.mockResolvedValue({ user: { id: "admin-1" } });
     getVendorGrantMock.mockResolvedValue(GRANT);
     listProductsMock.mockResolvedValue([]);
     listLiveProductsMock.mockResolvedValue([
@@ -86,6 +90,40 @@ describe("VendorDetailPage", () => {
     expect(screen.getAllByText("qkit")).toHaveLength(2);
     expect(screen.getByText("42")).toBeInTheDocument();
     expect(screen.getByText("healthy")).toBeInTheDocument();
+    // A kit that does not report incidents yet still renders the empty list.
+    expect(
+      screen.getByText("No incidents in the last 72 hours"),
+    ).toBeInTheDocument();
+  });
+
+  it("renders a kit's incidents on its activity card", async () => {
+    getVendorActivityMock.mockResolvedValue({
+      ok: true,
+      slug: "qkit",
+      data: {
+        active: true,
+        plan: "free",
+        status: "attention",
+        metrics: [],
+        lastActivityAt: null,
+        incidents: [
+          {
+            kind: "webhook_rejected",
+            count: 2,
+            lastAt: "2026-10-28T00:00:00Z",
+          },
+        ],
+      },
+    });
+
+    render(
+      await VendorDetailPage({
+        params: Promise.resolve({ email: "vendor@business.sg" }),
+      }),
+    );
+
+    expect(screen.getByText("Webhook rejected")).toBeInTheDocument();
+    expect(screen.getByText("×2")).toBeInTheDocument();
   });
 
   it("renders no Activity section when the vendor has no active kits", async () => {
@@ -102,6 +140,28 @@ describe("VendorDetailPage", () => {
 
     expect(getVendorActivityMock).not.toHaveBeenCalled();
     expect(screen.queryByText("Activity")).not.toBeInTheDocument();
+  });
+
+  it("audits the drill-in once with a 12-char email hash, never the raw email", async () => {
+    getVendorActivityMock.mockResolvedValue({ ok: false, slug: "qkit" });
+
+    render(
+      await VendorDetailPage({
+        params: Promise.resolve({ email: "Vendor%40Business.sg" }),
+      }),
+    );
+
+    expect(recordAuditMock).toHaveBeenCalledTimes(1);
+    const [adminId, action, target, detail] = recordAuditMock.mock.calls[0];
+    expect(adminId).toBe("admin-1");
+    expect(action).toBe("view_vendor");
+    expect(target).toBeNull();
+    const expected = createHash("sha256")
+      .update("vendor@business.sg")
+      .digest("hex")
+      .slice(0, 12);
+    expect(detail).toEqual({ email_hash: expected });
+    expect(JSON.stringify(recordAuditMock.mock.calls)).not.toMatch(/business/i);
   });
 
   it("calls notFound when the vendor has no grant at all", async () => {

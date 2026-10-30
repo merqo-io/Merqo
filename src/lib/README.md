@@ -27,8 +27,11 @@ that the primary mutation failed.
 ## Cross-kit calls
 
 `kit-action-request.ts` centralizes timeout, parse and Zod validation for peer
-HTTP calls. Metrics and vendor metrics/activities have separate response schemas
-and clients. `upgrade-request.ts` and `downgrade-request.ts` request plan changes;
+HTTP calls. Metrics and vendor metrics have separate response schemas and
+clients; `vendor-activity-client.ts` validates with `vendorActivityPayloadSchema`
+from `@merqo/ui/contracts` (optional `incidents`/`recent`). `tenant-health.ts`
+`getTenantHealth()` pools those activity reads (6 at a time, 3000 ms timeout)
+into per-vendor incident rows for `/admin/health`, never throwing on a dead kit. `upgrade-request.ts` and `downgrade-request.ts` request plan changes;
 `vendor-sync.ts` refreshes grants against the live registry with an email-scoped
 throttle. `vendor-grants.ts` provides client-safe grant-state helpers.
 

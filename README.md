@@ -154,7 +154,8 @@ src/components/brand/       — shared Merqo wordmark
 src/hooks/use-async-action.ts — shared pending/error state for server-action buttons
 src/lib/kits.ts             — kit family config (landing roadmap source of truth)
 src/lib/metrics-client.ts   — fetch of a kit's HTTP metrics endpoint
-src/lib/vendor-activity-client.ts — fetch of a single vendor's per-kit triage status/metrics
+src/lib/vendor-activity-client.ts — fetch of a single vendor's per-kit triage status/metrics/incidents
+src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-up for /admin/health
                                (admin/vendors/[email]'s Activity cards)
 src/lib/schemas.ts          — Zod schemas for the profile page's forms
 src/lib/merqo-vendor-profile.ts — typed wrapper over the shared vendor_profile RPCs
