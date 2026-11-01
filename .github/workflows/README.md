@@ -29,8 +29,11 @@ this private repo's free tier).
   Fast-forward only: if `staging` has diverged the job fails instead of
   overwriting it. It then POSTs the project's Vercel deploy hook (repo secret
   `VERCEL_STAGING_DEPLOY_HOOK`), because Vercel does not git-deploy a commit it
-  already built for production; without the secret it only warns. Only this job
-  gets `contents: write`.
+  already built for production; without the secret it only warns. The push uses
+  a token from the `merqo-staging-sync` GitHub App (org secrets
+  `STAGING_SYNC_APP_ID` and `STAGING_SYNC_APP_PRIVATE_KEY`) because a ruleset
+  limits pushes to `staging` to that app; the job itself only has
+  `contents: read`.
 - `schema-fingerprint.yml`: on demand, weekly and on PRs that touch the
   fingerprint SQL, loads all six repos' migrations into a fresh local Supabase
   stack in staging order and uploads `expected-fingerprint.csv` as an

@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
+
 ## [0.10.0] - 2026-10-30
 
 ### Added
