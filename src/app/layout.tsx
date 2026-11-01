@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s · Merqo",
   },
   description:
-    "Merqo builds a family of no-fuss tools for Singapore's small sellers — starting with qkit, live queues and orders with no app and no hardware.",
+    "Merqo builds a family of no-fuss tools for Singapore's small sellers, starting with qkit, queues and orders with no app and no hardware.",
 };
 
 export default function RootLayout({

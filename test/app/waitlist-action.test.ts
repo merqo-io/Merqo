@@ -17,15 +17,15 @@ function form(fields: Record<string, string>): FormData {
 describe("joinKitWaitlist", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("upserts a normalized email for a valid coming kit and reports success", async () => {
+  it("upserts a normalized email for a valid in-build kit and reports success", async () => {
     addToWaitlistMock.mockResolvedValue(undefined);
     const res = await joinKitWaitlist(
       WAITLIST_IDLE,
-      form({ email: "  Vendor@Example.COM ", slug: "shopkit" }),
+      form({ email: "  Vendor@Example.COM ", slug: "loopkit" }),
     );
     expect(addToWaitlistMock).toHaveBeenCalledWith(
       "vendor@example.com",
-      "shopkit",
+      "loopkit",
     );
     expect(res.status).toBe("success");
   });
@@ -33,13 +33,13 @@ describe("joinKitWaitlist", () => {
   it("rejects an invalid email without touching the DB", async () => {
     const res = await joinKitWaitlist(
       WAITLIST_IDLE,
-      form({ email: "not-an-email", slug: "shopkit" }),
+      form({ email: "not-an-email", slug: "loopkit" }),
     );
     expect(res.status).toBe("error");
     expect(addToWaitlistMock).not.toHaveBeenCalled();
   });
 
-  it("rejects a slug that is not an open waitlist (e.g. live or planned kit)", async () => {
+  it("rejects a slug that is not an open waitlist (e.g. a piloting kit)", async () => {
     const res = await joinKitWaitlist(
       WAITLIST_IDLE,
       form({ email: "v@x.com", slug: "qkit" }),
@@ -52,7 +52,7 @@ describe("joinKitWaitlist", () => {
     addToWaitlistMock.mockRejectedValue(new Error("db down"));
     const res = await joinKitWaitlist(
       WAITLIST_IDLE,
-      form({ email: "v@x.com", slug: "shopkit" }),
+      form({ email: "v@x.com", slug: "loopkit" }),
     );
     expect(res.status).toBe("error");
     expect(res.message).toMatch(/try again/i);

@@ -26,7 +26,7 @@ function edgePath(from: string, to: string): string {
   return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
 }
 
-function nodeClasses(on: boolean, live: boolean) {
+function nodeClasses(on: boolean, piloting: boolean) {
   if (!on) {
     return {
       nodeStrokeClass: "fill-transparent stroke-border [stroke-dasharray:4_4]",
@@ -34,10 +34,10 @@ function nodeClasses(on: boolean, live: boolean) {
     };
   }
   return {
-    nodeStrokeClass: live
+    nodeStrokeClass: piloting
       ? "fill-primary stroke-gold"
       : "fill-card stroke-primary/40",
-    nodeTextClass: live ? "fill-primary-foreground" : "fill-foreground",
+    nodeTextClass: piloting ? "fill-primary-foreground" : "fill-foreground",
   };
 }
 
@@ -128,9 +128,9 @@ export function GraphCanvas({
         const on = stacked.has(n.slug);
         const dim =
           highlight && highlight !== n.slug && !hotNeighbors?.has(n.slug);
-        const live = n.status === "live";
+        const piloting = n.status === "piloting";
         const lit = litNodes?.has(n.slug);
-        const { nodeStrokeClass, nodeTextClass } = nodeClasses(on, live);
+        const { nodeStrokeClass, nodeTextClass } = nodeClasses(on, piloting);
         return (
           <g
             key={n.slug}
@@ -158,7 +158,7 @@ export function GraphCanvas({
               width={NODE_W}
               height={NODE_H}
               rx={13}
-              strokeWidth={live && on ? 2.5 : 1.5}
+              strokeWidth={piloting && on ? 2.5 : 1.5}
               className={cn(nodeStrokeClass)}
             />
             <text
@@ -178,14 +178,14 @@ export function GraphCanvas({
               textAnchor="middle"
               className={cn(
                 "font-mono text-[9px]",
-                on && live
+                on && piloting
                   ? "fill-primary-foreground/80"
                   : "fill-muted-foreground/80",
               )}
             >
               {n.slug}
             </text>
-            {live && (
+            {piloting && (
               <circle cx={NODE_W - 13} cy={13} r={4} className="fill-gold" />
             )}
           </g>

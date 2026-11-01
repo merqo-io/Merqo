@@ -38,7 +38,7 @@ export function AddTeamForm() {
           type="email"
           required
           autoComplete="off"
-          placeholder="person@merqo.sg"
+          placeholder="person@merqo.io"
           className="sm:max-w-xs"
         />
         <Button type="submit" disabled={pending}>

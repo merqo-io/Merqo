@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { PRICING_LINE } from "@/lib/kits";
 
-const TRUST = ["No app", "No hardware", "Free to start"];
+const TRUST = ["No app", "No hardware"];
 
-/** A tiny "now serving" board — the hero thesis is the live product made
- *  visible, not a big number. Pure markup, no image asset, renders in the
+/** A tiny "now serving" board: the product idea made visible, not a big
+ *  number. Pure markup, no image asset, renders in the
  *  initial HTML for a fast LCP. */
-function LiveBoard() {
+function NowServingBoard() {
   const rows = [
     { n: "05", label: "Kaya toast set", tone: "text-muted-foreground" },
     { n: "04", label: "Iced kopi ×2", tone: "text-muted-foreground" },
@@ -58,8 +59,8 @@ export function Hero({ authed = false }: { authed?: boolean }) {
         </h1>
         <p className="mt-5 max-w-md text-lg text-muted-foreground">
           Merqo builds a family of no-fuss tools for Singapore&rsquo;s small
-          sellers: hawkers, home businesses, and event-day pop-ups. Take orders,
-          earn loyalty, and get paid, from a phone, not a POS.
+          sellers: hawkers, home businesses, and event-day pop-ups. qkit is in
+          pilot for orders and queues, and the rest of the family is in build.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
@@ -80,9 +81,12 @@ export function Hero({ authed = false }: { authed?: boolean }) {
             </li>
           ))}
         </ul>
+        <p className="mt-3 max-w-md text-sm text-muted-foreground">
+          {PRICING_LINE}
+        </p>
       </div>
       <div className="flex justify-center lg:justify-end">
-        <LiveBoard />
+        <NowServingBoard />
       </div>
     </section>
   );

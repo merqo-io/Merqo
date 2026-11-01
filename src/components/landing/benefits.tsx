@@ -4,17 +4,17 @@ const BENEFITS = [
   {
     icon: Boxes,
     title: "One brand, many tools",
-    body: "Merqo is a growing kit of small-business tools. Pick the ones you need — they're built to work together, not against each other.",
+    body: "Merqo is a growing kit of small-business tools. Pick the ones you need.",
   },
   {
     icon: KeyRound,
     title: "One account across every kit",
-    body: "Sign in once. Your customers, orders, and settings carry across the kits you switch on, so nothing is entered twice.",
+    body: "Sign in once and use the same account on every kit.",
   },
   {
     icon: Store,
     title: "Built for SG micro-sellers",
-    body: "Made for home kitchens, pop-ups, and new cafes — plain language, PayNow-friendly, and priced for a stall, not a chain.",
+    body: "Made for home kitchens, pop-ups, and new cafes. Plain language and PayNow-friendly.",
   },
 ];
 

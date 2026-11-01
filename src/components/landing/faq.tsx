@@ -3,15 +3,15 @@ type FaqEntry = { q: string; a: string };
 const FAQ: FaqEntry[] = [
   {
     q: "What is Merqo?",
-    a: 'Merqo is the house brand behind a family of small-business tools ("kits") for Singapore micro/small sellers — qkit, loopkit, paykit, and stockkit today.',
+    a: 'Merqo is the house brand behind a family of small-business tools ("kits") for Singapore micro/small sellers. qkit is piloting, and loopkit, paykit, and stockkit are in build.',
   },
   {
     q: "Do I need to sign up for every kit separately?",
-    a: "No — one account works across the whole family. Your stall name and social links carry over automatically between kits.",
+    a: "No. One Merqo sign-in works across the whole family.",
   },
   {
     q: "Can I use just one kit?",
-    a: "Yes. Every kit works standalone — use only the ones you need.",
+    a: "Yes. Every kit works standalone. Use only the ones you need.",
   },
   {
     q: "Is Merqo itself something I sign up for separately?",

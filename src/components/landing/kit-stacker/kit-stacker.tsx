@@ -19,10 +19,9 @@ const ALL_SLUGS = KIT_NODES.map((n) => n.slug);
 
 // The order's journey through the stack. Only the stacked stops play.
 const JOURNEY_STEPS = [
-  { slug: "shopkit", caption: "A customer orders from your store." },
   { slug: "qkit", caption: "The order drops into your queue." },
-  { slug: "paykit", caption: "Payment is taken on the spot." },
-  { slug: "loopkit", caption: "They earn points — and come back." },
+  { slug: "paykit", caption: "The customer pays by PayNow QR." },
+  { slug: "loopkit", caption: "They claim a stamp and come back." },
 ];
 const STEP_MS = 780;
 
@@ -136,11 +135,11 @@ export function KitStacker() {
           Stack your kit
         </p>
         <h2 className="mt-3 max-w-2xl text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          One queue. Watch how the kits connect.
+          One queue. See how the kits fit together.
         </h2>
         <p className="mt-4 max-w-xl text-muted-foreground">
-          Each kit runs on its own, add the ones you need and see how they
-          connect, then play the journey to watch an order move through them.
+          Each kit runs on its own. qkit is piloting, and the others are in
+          build. Add kits to see how they connect, then play the journey.
         </p>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">

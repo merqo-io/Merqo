@@ -9,17 +9,18 @@ const qkit = {
   tagline: "Take orders and run your queue.",
   description: "Take orders and run your queue from a QR code.",
   features: ["QR ordering", "Live dashboard", "No app needed"],
-  status: "live" as const,
+  status: "piloting" as const,
   href: "https://qkit.merqo.io",
 };
 
-const shopkit = {
-  slug: "shopkit",
-  name: "shopkit",
-  tagline: "A simple storefront.",
-  description: "A lightweight online storefront for your catalog.",
-  features: ["Storefront", "Checkout", "Pre-orders"],
-  status: "planned" as const,
+const loopkit = {
+  slug: "loopkit",
+  name: "loopkit",
+  tagline: "Stamp cards.",
+  description: "Digital stamp cards that bring customers back.",
+  features: ["Stamp cards", "Points", "Rewards"],
+  status: "in-build" as const,
+  href: "https://loopkit.merqo.io",
 };
 
 describe("KitDiscoveryCard", () => {
@@ -38,7 +39,7 @@ describe("KitDiscoveryCard", () => {
   });
 
   it("renders no preview for a kit without one", () => {
-    render(<KitDiscoveryCard kit={shopkit} />);
+    render(<KitDiscoveryCard kit={loopkit} />);
     expect(screen.queryByText("Now serving")).not.toBeInTheDocument();
   });
 
@@ -50,7 +51,7 @@ describe("KitDiscoveryCard", () => {
   });
 
   it("renders no cta when the slot is omitted", () => {
-    render(<KitDiscoveryCard kit={shopkit} />);
+    render(<KitDiscoveryCard kit={loopkit} />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 });

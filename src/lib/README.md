@@ -45,7 +45,7 @@ contracts; mocked network tests do not establish those database guarantees.
 
 `health.ts`, `overview.ts`, `funnel.ts`, `nps.ts` and `savings.ts` derive
 console and dashboard figures (`countHealth` counts each kit once, so a lagging kit is not also "reporting"). Funnel counts are distinct populations, so do not
-report them as nested conversion stages. `kits.ts` is the family configuration (each live kit's URL
+report them as nested conversion stages. `kits.ts` is the family configuration (each kit's readiness, `piloting` or `in-build`, and URL
 defaults to `https://<kit>.merqo.io`, overridable with `NEXT_PUBLIC_<KIT>_URL`);
 `ecosystem.ts` derives its diagram status from that configuration.
 `format.ts` and `utils.ts` provide display formatting (`timeAgo` returns `-` for an unparseable timestamp) and class composition.

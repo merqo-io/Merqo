@@ -32,7 +32,8 @@ per file. Presentational only — no data fetching, no client state beyond the
 - `footer.test.tsx` — asserts the wordmark link, tagline, copyright line,
   sign-in link, the About link, and the Terms/Privacy footer links all
   render.
-- `waitlist-form.tsx` — email capture for kits not yet live.
+- `waitlist-form.tsx` — kit picker + email capture for the in-build kits, with
+  the WhatsApp notice and an unticked updates opt-in; rendered by `/waitlist`.
 - `@/components/brand/wordmark` — the shared Merqo brand mark.
 - `BackToTop` — shared scroll-to-top control imported from `@merqo/ui`.
 
