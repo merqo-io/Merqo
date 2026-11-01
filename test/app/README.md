@@ -4,4 +4,6 @@ Application boundary tests using mocked Supabase and shared UI dependencies. Cov
 
 Profile regressions verify independent simultaneous saves, rejected-save feedback and retry with values retained. Avatar storage cleanup regressions are colocated in src/app/profile/.
 
+`admin-overview-health.test.tsx` renders the overview and products pages with only the registry, grants, support and metrics dependencies mocked.
+
 `slug-boundary.test.ts` proves malformed kit slugs never reach the vendor context.
