@@ -76,7 +76,7 @@ landing — a later migration corrects an earlier one.
   tour without having seen Merqo's own.
 - `0017_billing_settings.sql` — `merqo.billing_settings`: a public-read,
   service-role-write-only singleton row backing the cross-kit
-  bundle-discount toggle (same shape as qkit's own `platform_settings`).
+  bundle-discount toggle. Dropped by `0036`.
 - `0018_customers.sql` — `merqo.customers`: shared cross-kit customer
   identity keyed on `(vendor_id, phone)`, mirroring loopkit's own proven
   shape — closes the gap where only vendor identity, not customer identity,
@@ -163,6 +163,7 @@ landing — a later migration corrects an earlier one.
   synchronization to trusted service and owner-trigger paths, makes founder
   notification helpers owner-only, and grants the admin service the missing
   billing singleton read/update permissions.
+- `0036_pricing_catalog.sql`: drops `billing_settings` and adds `plans` (seeded ladder, All-Access bundle and Event Pass; public read of active rows), `subscriptions` (locked price and kit snapshot, `founder` flag with a race-safe cap of 20 founders, one active row per vendor and plan) and `billing_credits`. Writes are service-role only; vendors read their own rows.
 - `0035_fk_indexes.sql`: indexes every foreign key column the Supabase advisor flagged as unindexed (`admin_audit.admin_id`, `feedback.user_id`, `support_messages.user_id`, `telegram_link_tokens.vendor_id`, `vendor_feedback.vendor_id`, `vendor_links.product_slug`).
 
 ## Connectivity

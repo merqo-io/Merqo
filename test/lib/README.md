@@ -4,7 +4,7 @@
 
 Unit tests for `src/lib/*` modules that don't need DOM rendering (schemas,
 formatters, gating logic, API-payload validation) — mirrors `src/lib`'s file
-names one-to-one. Kit URL fixtures use the `*.merqo.io` production hosts.
+names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use the `*.merqo.io` production hosts.
 
 ## Contents
 

@@ -19,10 +19,15 @@ action; `requireTeamMember()` is the membership-only check the `/mfa` page uses.
 `security-headers.ts` lists the routes that get a nonce CSP and the CSP source lists;
 `proxy.ts` applies them. `theme-props.ts` is shared by the root layout and the CSP.
 
-`billing-settings.ts`, `products.ts`, `support.ts` and `vendor-feedback.ts`
-read console data. Registry secrets remain server-side. `admin.ts` owns the
+`products.ts`, `support.ts` and `vendor-feedback.ts` read console data. Registry secrets remain server-side. `admin.ts` owns the
 best-effort audit writer and recent-entry read; an audit failure is not proof
 that the primary mutation failed.
+
+## Pricing
+
+`pricing/` holds the plan catalog loader and the integer-cent price math
+(annual price, co-term proration, All-Access upgrade credit, Event Pass
+charges). See `pricing/README.md`.
 
 ## Cross-kit calls
 
