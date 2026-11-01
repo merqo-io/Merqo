@@ -1,5 +1,4 @@
 "use server";
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireMerqoTeam } from "@/lib/team";
 import { recordAudit } from "@/lib/admin";
@@ -23,34 +22,6 @@ export async function resolveSupportMessageAction(
     return { success: false, error: "Could not resolve" };
   }
   await recordAudit(user.id, "resolve_support_message", id, null);
-  revalidatePath("/admin");
-  return { success: true };
-}
-
-/** Flip the cross-kit bundle-discount flag. Team-gated; writes the
- *  singleton `merqo.billing_settings` row via the service client — no
- *  RLS policy grants UPDATE to any client role. No kit reads this flag
- *  yet (see docs/superpowers/specs/2026-08-16-bundle-discount-toggle-design.md);
- *  this only persists the switch's state. */
-export async function setBundleDiscountEnabledAction(
-  enabled: boolean,
-): Promise<ActionResult> {
-  const { user } = await requireMerqoTeam();
-  const parsed = z.boolean().safeParse(enabled);
-  if (!parsed.success) return { success: false, error: "Invalid setting" };
-  const supabase = await createServiceClient();
-  const { error } = await supabase
-    .from("billing_settings")
-    .update({
-      bundle_discount_enabled: enabled,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", 1);
-  if (error) {
-    console.error("setBundleDiscountEnabledAction failed", error.message);
-    return { success: false, error: "Could not update setting" };
-  }
-  await recordAudit(user.id, "toggle_bundle_discount", null, { enabled });
   revalidatePath("/admin");
   return { success: true };
 }

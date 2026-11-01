@@ -53,15 +53,9 @@ cross join (values
   ('merqo.trg_notify_founder_vendor_feedback()'),
   ('merqo.trg_notify_founder_hub_feedback()')) functions(signature);
 
-select ok(has_table_privilege('service_role', 'merqo.billing_settings', 'SELECT'), 'service can read the billing singleton');
-select ok(has_table_privilege('service_role', 'merqo.billing_settings', 'UPDATE'), 'service can update the billing singleton');
-select ok(not has_table_privilege('authenticated', 'merqo.billing_settings', 'UPDATE'), 'vendor cannot update billing');
-select ok(not has_table_privilege('anon', 'merqo.billing_settings', 'UPDATE'), 'anonymous caller cannot update billing');
 set local role service_role;
 select lives_ok($$ select merqo.upsert_customer('00340000-0000-0000-0000-000000000001', '+6593400001', 'Trusted backend') $$,
   'trusted service customer synchronization remains available');
-select lives_ok($$ update merqo.billing_settings set bundle_discount_enabled = not bundle_discount_enabled where id = 1 $$,
-  'service can change billing through the existing admin path');
 select throws_ok($$ select merqo.notify_founder_telegram('unsolicited') $$,
   '42501', null, 'service cannot invoke the trigger-only notification helper');
 reset role;
