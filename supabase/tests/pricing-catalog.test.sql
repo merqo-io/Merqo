@@ -95,7 +95,7 @@ select throws_ok($$ insert into merqo.billing_credits (vendor_id, amount_cents, 
   '23514', null, 'a zero credit is rejected');
 insert into merqo.billing_credits (vendor_id, amount_cents, reason, source_subscription_id)
 select vendor_id, 6667, 'aa upgrade', id from merqo.subscriptions
-where vendor_id = '36000000-0000-0000-0000-000000000001' and status = 'active';
+where vendor_id = '36000000-0000-0000-0000-000000000001' and plan_slug = 'qkit' and status = 'active';
 
 -- RLS and grants.
 select ok(not has_table_privilege('authenticated', 'merqo.subscriptions', p), 'authenticated has no ' || p || ' on subscriptions')
