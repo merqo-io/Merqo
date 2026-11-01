@@ -10,6 +10,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
 
+## [0.11.0] - 2026-11-02
+
+### Added
+
+- Pricing foundation (migration `0036`): `merqo.plans` seeded with the approved ladder, All-Access bundle and Event Pass; `merqo.subscriptions` with a locked price and kit snapshot, a `founder` flag whose cap of 20 founders is enforced in the database, and one active subscription per vendor and plan; `merqo.billing_credits`. Active plans are publicly readable; writes are service-role only.
+- `src/lib/pricing/`: integer-cent price math (annual, co-term proration, All-Access upgrade credit, Event Pass charge and settle) and a typed plan catalog loader. Nothing charges anyone yet.
+
+### Removed
+
+- The bundle-discount toggle on `/admin`, its server action, `src/lib/billing-settings.ts` and the `merqo.billing_settings` table. The approved pricing has no per-count or combination discounts.
+
 ## [0.10.0] - 2026-10-30
 
 ### Added

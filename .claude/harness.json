@@ -67,11 +67,11 @@
       "path": ".claude/hooks/subagent-stop.sh"
     },
     ".claude/skills/next-verify/SKILL.md": {
-      "origin_hash": "bce9095dcc32ca4e80409d009e99c3980d9cf52664bfbe8ba74d97e48fe31a80",
+      "origin_hash": "f968164f5c681dcc6f5700d8925d557172342e7f198350b854b759c2e31fc566",
       "path": ".claude/skills/next-verify/SKILL.md"
     },
     ".claude/skills/supabase-migrate/SKILL.md": {
-      "origin_hash": "1b2a2963ef427b22f7d2ff8d7c7c3e6cb4b2757acfb2c1de5b79a8e57b96d15b",
+      "origin_hash": "de24dbe9be00d7fad9c7c7ed9526d2b9f894b6cd9880cc63ba32996ad1908f11",
       "path": ".claude/skills/supabase-migrate/SKILL.md"
     },
     ".husky/pre-commit": {

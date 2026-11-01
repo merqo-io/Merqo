@@ -8,7 +8,6 @@ const {
   listVendorGrantsMock,
   listOpenSupportMessagesMock,
   fetchProductMetricsMock,
-  getBillingSettingsMock,
   getTenantHealthMock,
 } = vi.hoisted(() => ({
   requireMerqoTeamMock: vi.fn(),
@@ -16,7 +15,6 @@ const {
   listVendorGrantsMock: vi.fn(),
   listOpenSupportMessagesMock: vi.fn(),
   fetchProductMetricsMock: vi.fn(),
-  getBillingSettingsMock: vi.fn(),
   getTenantHealthMock: vi.fn(),
 }));
 
@@ -29,14 +27,8 @@ vi.mock("@/lib/support", () => ({
 vi.mock("@/lib/metrics-client", () => ({
   fetchProductMetrics: fetchProductMetricsMock,
 }));
-vi.mock("@/lib/billing-settings", () => ({
-  getBillingSettings: getBillingSettingsMock,
-}));
 vi.mock("@/lib/tenant-health", () => ({
   getTenantHealth: getTenantHealthMock,
-}));
-vi.mock("./bundle-discount-toggle", () => ({
-  BundleDiscountToggle: () => null,
 }));
 vi.mock("./support-message-row", () => ({ SupportMessageRow: () => null }));
 
@@ -65,9 +57,6 @@ describe("AdminOverviewPage needs-attention health count", () => {
     ]);
     listOpenSupportMessagesMock.mockResolvedValue([]);
     fetchProductMetricsMock.mockResolvedValue({ ok: false, reason: "down" });
-    getBillingSettingsMock.mockResolvedValue({
-      bundle_discount_enabled: false,
-    });
   });
 
   it("counts vendors needing attention and links to /admin/health", async () => {

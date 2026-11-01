@@ -12,12 +12,6 @@ vi.mock("@/lib/products", () => ({ listLiveProducts: mocks.products }));
 vi.mock("@/lib/admin", () => ({ listVendorGrants: mocks.grants }));
 vi.mock("@/lib/support", () => ({ listOpenSupportMessages: mocks.support }));
 vi.mock("@/lib/metrics-client", () => ({ fetchProductMetrics: mocks.metrics }));
-vi.mock("@/lib/billing-settings", () => ({
-  getBillingSettings: async () => ({ bundle_discount_enabled: true }),
-}));
-vi.mock("@/app/admin/bundle-discount-toggle", () => ({
-  BundleDiscountToggle: () => <span>Bundle discount</span>,
-}));
 vi.mock("@/app/admin/support-message-row", () => ({
   SupportMessageRow: () => <span>Support request</span>,
 }));
