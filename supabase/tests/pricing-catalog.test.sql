@@ -80,6 +80,9 @@ select throws_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, inter
 select lives_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, founder, founder_until)
   values ('36000000-0000-0000-0000-000000000005', 'stockkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1500, true, '2027-01-01') $$,
   'an existing founder can hold a second founder subscription');
+select throws_ok($$ update merqo.subscriptions set vendor_id = '36000000-0000-0000-0000-000000000022'
+  where vendor_id = '36000000-0000-0000-0000-000000000005' and plan_slug = 'stockkit' $$,
+  '23514', 'founder cap of 20 reached', 'moving a founder subscription to a new vendor is refused at the cap');
 select lives_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents)
   values ('36000000-0000-0000-0000-000000000021', 'loopkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1000) $$,
   'a non-founder subscription is unaffected by the cap');

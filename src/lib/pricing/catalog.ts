@@ -4,7 +4,7 @@ import type { EventPassTerms } from "./calc";
 
 const PlanRowSchema = z.object({
   slug: z.string(),
-  kind: z.enum(["free", "kit", "starter", "bundle", "founder", "event_pass"]),
+  kind: z.enum(["free", "kit", "starter", "bundle", "event_pass"]),
   monthly_cents: z.number().int().nonnegative(),
   included_kits: z.array(z.string()),
   active: z.boolean(),

@@ -9,6 +9,7 @@ const ACTION_LABELS: Record<string, string> = {
   revoke_kit_access: "Revoked kit access",
   add_team_member: "Added team member",
   remove_team_member: "Removed team member",
+  // Retired action, kept so historical audit rows still read well.
   toggle_bundle_discount: "Toggled bundle discount",
   resolve_support_message: "Resolved support message",
   view_vendor: "Viewed vendor",

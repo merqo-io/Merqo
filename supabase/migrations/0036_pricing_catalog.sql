@@ -8,7 +8,7 @@ drop table merqo.billing_settings;
 
 create table merqo.plans (
   slug            text primary key,
-  kind            text not null check (kind in ('free', 'kit', 'starter', 'bundle', 'founder', 'event_pass')),
+  kind            text not null check (kind in ('free', 'kit', 'starter', 'bundle', 'event_pass')),
   monthly_cents   integer not null check (monthly_cents >= 0),
   included_kits   text[] not null default '{}',
   active          boolean not null default true,
