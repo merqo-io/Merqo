@@ -4,7 +4,11 @@ import { listLiveProducts, type RegistryRow } from "@/lib/products";
 import { createServiceClient } from "@/lib/supabase/server";
 import { entitlementResponseSchema, type EntitlementPayload } from "./contract";
 import { deriveEntitlements } from "./derive";
-import { loadVendorEventPasses, loadVendorSubscriptions } from "./store";
+import {
+  findVendorId,
+  loadVendorEventPasses,
+  loadVendorSubscriptions,
+} from "./store";
 
 type PushTarget = Pick<RegistryRow, "slug" | "app_url" | "provision_secret">;
 
@@ -83,14 +87,59 @@ async function recordPush(
   );
   if (error) console.error("entitlement sync: record failed", error.message);
 
+  await mirrorPlan(supabase, payload.email, payload.kit, payload.tier);
+}
+
+async function mirrorPlan(
+  supabase: Awaited<ReturnType<typeof createServiceClient>>,
+  email: string,
+  kit: string,
+  tier: string,
+): Promise<void> {
   // The derived tier is the dashboard's plan; kits no longer report one.
-  const { error: linkError } = await supabase
+  const { error } = await supabase
     .from("vendor_links")
-    .update({ plan: payload.tier })
-    .eq("email", payload.email.toLowerCase())
-    .eq("product_slug", payload.kit);
-  if (linkError) {
-    console.error("entitlement sync: plan mirror failed", linkError.message);
+    .update({ plan: tier })
+    .eq("email", email.toLowerCase())
+    .eq("product_slug", kit);
+  if (error)
+    console.error("entitlement sync: plan mirror failed", error.message);
+}
+
+async function deriveForVendor(vendorId: string, now: Date) {
+  const [subscriptions, eventPasses, catalog, live] = await Promise.all([
+    loadVendorSubscriptions(vendorId),
+    loadVendorEventPasses(vendorId),
+    loadPlanCatalog(),
+    listLiveProducts(),
+  ]);
+  const derived = deriveEntitlements({
+    subscriptions,
+    eventPasses,
+    catalog,
+    liveKits: live.map((k) => k.slug),
+    now,
+  });
+  return { derived, live };
+}
+
+/** Rewrite vendor_links.plan from merqo's records without contacting any kit,
+ *  so legacy kit-reported values and lapsed subscriptions are corrected on
+ *  the normal dashboard sync. A vendor with no Merqo account has no records
+ *  to derive from and is left alone. Never throws. */
+export async function mirrorDerivedPlans(email: string): Promise<void> {
+  try {
+    const vendorId = await findVendorId(email.toLowerCase());
+    if (!vendorId) return;
+    const { derived } = await deriveForVendor(vendorId, new Date());
+    const supabase = await createServiceClient();
+    await Promise.all(
+      Object.entries(derived).map(([kit, e]) =>
+        mirrorPlan(supabase, email, kit, e.tier),
+      ),
+    );
+  } catch (err) {
+    console.error("entitlement sync: plan mirror failed", err);
   }
 }
 
@@ -102,19 +151,7 @@ export async function syncVendorEntitlements(
 ): Promise<KitPushOutcome[]> {
   try {
     const now = opts.now ?? new Date();
-    const [subscriptions, eventPasses, catalog, live] = await Promise.all([
-      loadVendorSubscriptions(vendor.id),
-      loadVendorEventPasses(vendor.id),
-      loadPlanCatalog(),
-      listLiveProducts(),
-    ]);
-    const derived = deriveEntitlements({
-      subscriptions,
-      eventPasses,
-      catalog,
-      liveKits: live.map((k) => k.slug),
-      now,
-    });
+    const { derived, live } = await deriveForVendor(vendor.id, now);
     const targets = live.filter(
       (k) => !opts.kits || opts.kits.includes(k.slug),
     );
@@ -133,7 +170,14 @@ export async function syncVendorEntitlements(
         return { kit: kit.slug, result };
       }),
     );
-    return settled.flatMap((s) => (s.status === "fulfilled" ? [s.value] : []));
+    return settled.map((s, i): KitPushOutcome => {
+      if (s.status === "fulfilled") return s.value;
+      console.error("entitlement sync: push failed", s.reason);
+      return {
+        kit: targets[i].slug,
+        result: { ok: false, status: null, kind: "network" },
+      };
+    });
   } catch (err) {
     console.error("entitlement sync: unexpected failure", err);
     return [];

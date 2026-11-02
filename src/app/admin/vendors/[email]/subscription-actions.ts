@@ -11,6 +11,7 @@ import {
   cancelSubscription,
   findVendorId,
   grantSubscription,
+  loadVendorSubscriptions,
   mintEventPass,
 } from "@/lib/entitlements/store";
 import { syncVendorEntitlements } from "@/lib/entitlements/push";
@@ -34,6 +35,7 @@ const grantSchema = z.object({
   periodStart: dateSchema,
   renewalAnchor: dateSchema,
   founder: z.boolean(),
+  replaceCurrent: z.boolean().default(true),
   requestId: uuidSchema.optional(),
 });
 
@@ -56,6 +58,11 @@ function utcDay(day: string): Date {
   return new Date(`${day}T00:00:00.000Z`);
 }
 
+// Event passes are for Singapore events, so a pass starts at local midnight.
+function sgDay(day: string): Date {
+  return new Date(`${day}T00:00:00+08:00`);
+}
+
 /** Mark the request this change answers as resolved, if it is still open. */
 async function resolveRequest(
   adminId: string,
@@ -65,6 +72,26 @@ async function resolveRequest(
   if (!requestId || !(await getPendingRequest(requestId, vendorId))) return;
   if (await closeRequest(requestId, "resolved", adminId)) {
     await recordAudit(adminId, "resolve_subscription_request", requestId, {});
+  }
+}
+
+/** Close the vendor's other active subscriptions so a plan change replaces
+ *  the old plan instead of stacking on it. */
+async function cancelSuperseded(
+  adminId: string,
+  vendorId: string,
+  email: string,
+  keepId: string,
+): Promise<void> {
+  const subs = await loadVendorSubscriptions(vendorId);
+  for (const sub of subs) {
+    if (sub.id === keepId || sub.status !== "active") continue;
+    if (await cancelSubscription(vendorId, sub.id)) {
+      await recordAudit(adminId, "cancel_subscription", sub.id, {
+        email,
+        replaced_by: keepId,
+      });
+    }
   }
 }
 
@@ -122,6 +149,9 @@ export async function grantSubscriptionAction(
       price_cents: data.priceCents,
       founder: data.founder,
     });
+    if (data.replaceCurrent) {
+      await cancelSuperseded(user.id, vendorId, data.email, subscriptionId);
+    }
     await resolveRequest(user.id, vendorId, data.requestId);
     await afterChange({ id: vendorId, email: data.email });
     return { success: true };
@@ -183,7 +213,7 @@ export async function mintEventPassAction(
           "That vendor has no Merqo account yet. Ask them to sign in once.",
       };
     }
-    const startsAt = utcDay(data.startsAt);
+    const startsAt = sgDay(data.startsAt);
     const prepaidCents = data.prepaidCents ?? terms.minCents;
     const passId = await mintEventPass({
       vendorId,

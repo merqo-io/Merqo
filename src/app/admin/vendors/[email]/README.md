@@ -40,7 +40,7 @@ own admin console separately.
   the last push per kit (status, HTTP code, last success).
 - `subscription-controls.tsx`: client controls. `GrantSubscriptionForm` (active
   plans only, price defaulting from the catalog via `annualCents` for annual,
-  founder switch locked at 0 slots left, period start and renewal anchor),
+  founder switch locked at 0 slots left, a "Replace current plan" switch when an active plan exists, period start and renewal anchor),
   `CancelSubscriptionButton`, `MintEventPassForm`, `CancelEventPassButton`,
   `RepushButton`. `subscription-controls.dom.test.tsx` covers them.
 - `subscription-actions.ts`: zod-validated, team-gated server actions

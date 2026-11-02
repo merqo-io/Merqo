@@ -1,12 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { fromMock, createServiceClientMock, listLiveProductsMock } = vi.hoisted(
-  () => ({
-    fromMock: vi.fn(),
-    createServiceClientMock: vi.fn(),
-    listLiveProductsMock: vi.fn(),
-  }),
-);
+const {
+  fromMock,
+  createServiceClientMock,
+  listLiveProductsMock,
+  mirrorPlansMock,
+} = vi.hoisted(() => ({
+  fromMock: vi.fn(),
+  createServiceClientMock: vi.fn(),
+  listLiveProductsMock: vi.fn(),
+  mirrorPlansMock: vi.fn(),
+}));
 vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: createServiceClientMock,
 }));
@@ -15,6 +19,7 @@ vi.mock("@/lib/products", () => ({
 }));
 vi.mock("@/lib/entitlements/push", () => ({
   syncVendorEntitlements: vi.fn().mockResolvedValue([]),
+  mirrorDerivedPlans: mirrorPlansMock,
 }));
 
 import { provisionVendorKits, syncVendorKits } from "./vendor-sync";
@@ -183,6 +188,20 @@ describe("syncVendorKits throttle", () => {
       expect.objectContaining({ email: "vendor@business.sg" }),
       { onConflict: "email" },
     );
+  });
+
+  it("rewrites vendor_links.plan from merqo's records on a full sync only", async () => {
+    syncClient({
+      last_synced_at: new Date(Date.now() - 120_000).toISOString(),
+    });
+    listLiveProductsMock.mockResolvedValue([]);
+    await syncVendorKits("Vendor@Business.SG");
+    expect(mirrorPlansMock).toHaveBeenCalledWith("vendor@business.sg");
+
+    mirrorPlansMock.mockClear();
+    syncClient({ last_synced_at: new Date().toISOString() });
+    await syncVendorKits("vendor@business.sg");
+    expect(mirrorPlansMock).not.toHaveBeenCalled();
   });
 
   it("bypasses the TTL when force is passed", async () => {

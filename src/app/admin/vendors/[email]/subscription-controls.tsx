@@ -48,12 +48,14 @@ export function GrantSubscriptionForm({
   plans,
   today,
   founderSlotsLeft,
+  current,
   request,
 }: {
   email: string;
   plans: SellablePlan[];
   today: string;
   founderSlotsLeft: number;
+  current: string[];
   request: RequestPrefill | null;
 }) {
   const { pending, run } = useAsyncAction();
@@ -64,6 +66,7 @@ export function GrantSubscriptionForm({
   const [interval, setInterval] = useState<"month" | "year">("month");
   const [priceInput, setPriceInput] = useState<string | null>(null);
   const [founder, setFounder] = useState(false);
+  const [replaceCurrent, setReplaceCurrent] = useState(true);
   const [periodStart, setPeriodStart] = useState(today);
   const [anchorInput, setAnchorInput] = useState<string | null>(null);
 
@@ -83,6 +86,7 @@ export function GrantSubscriptionForm({
         periodStart,
         renewalAnchor: anchor,
         founder,
+        replaceCurrent,
         requestId: request?.id,
       });
       if (res.success) {
@@ -171,6 +175,18 @@ export function GrantSubscriptionForm({
           Founder (All Access benefits for 12 months)
         </Label>
       </div>
+      {current.length > 0 && (
+        <div className="flex items-center gap-3 sm:col-span-2">
+          <Switch
+            id="sub-replace"
+            checked={replaceCurrent}
+            onCheckedChange={setReplaceCurrent}
+          />
+          <Label htmlFor="sub-replace">
+            Replace current plan ({current.join(", ")})
+          </Label>
+        </div>
+      )}
       <div className="sm:col-span-2">
         <Button type="submit" disabled={pending || !slug}>
           {pending ? "Saving…" : "Save subscription"}

@@ -59,6 +59,20 @@ vi.mock("@/lib/entitlements/store", () => ({
       founder: true,
       founderUntil: "2099-01-01T00:00:00Z",
     },
+    {
+      id: "sub-2",
+      planSlug: "starter",
+      interval: "month",
+      status: "active",
+      currentPeriodStart: "2020-01-01T00:00:00Z",
+      currentPeriodEnd: "2020-02-01T00:00:00Z",
+      renewalAnchor: "2020-02-01T00:00:00Z",
+      lockedPriceCents: 900,
+      includedKits: ["paykit"],
+      source: "admin_manual",
+      founder: false,
+      founderUntil: null,
+    },
   ]),
   loadVendorEventPasses: vi.fn().mockResolvedValue([
     {
@@ -281,8 +295,12 @@ describe("VendorDetailPage", () => {
 
     expect(
       screen.getByText(
-        "S$16.00 per month, period 2026-11-01 to 2026-12-01, renews around 2026-12-01",
+        "S$16.00 per month, period 2026-11-01 to 2026-12-01. Ends 2026-12-01; renew by granting again.",
       ),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("Lapsed")).toHaveLength(1);
+    expect(
+      screen.getByRole("switch", { name: /Replace current plan \(.*\)/ }),
     ).toBeInTheDocument();
     expect(screen.getByText(/Founder until 2099-01-01/)).toBeInTheDocument();
     expect(

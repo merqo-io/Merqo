@@ -73,14 +73,29 @@ function subscriptionGrants(
   if (periodEndMs <= nowMs) return [];
 
   const grants = planGrants(sub, plan, allKits, periodEndMs);
-  const founderUntilMs = sub.founderUntil ? Date.parse(sub.founderUntil) : NaN;
-  const founderEndMs = Math.min(founderUntilMs, periodEndMs);
-  if (sub.founder && founderEndMs > nowMs) {
+  const founderEnd = founderEndMs(sub, nowMs);
+  if (founderEnd > nowMs) {
     for (const kit of allKits) {
-      grants.push({ kit, level: 2, untilMs: founderEndMs });
+      grants.push({ kit, level: 2, untilMs: founderEnd });
     }
   }
   return grants;
+}
+
+/** When a subscription's founder benefits end; NaN when none are running
+ *  (not founder, not active, or past its paid period). */
+function founderEndMs(sub: SubscriptionInput, nowMs: number): number {
+  const periodEndMs = Date.parse(sub.currentPeriodEnd);
+  if (
+    !sub.founder ||
+    sub.status !== "active" ||
+    Number.isNaN(periodEndMs) ||
+    periodEndMs <= nowMs
+  ) {
+    return NaN;
+  }
+  const founderUntilMs = sub.founderUntil ? Date.parse(sub.founderUntil) : NaN;
+  return Math.min(founderUntilMs, periodEndMs);
 }
 
 function pickEventPass(
@@ -133,7 +148,7 @@ export function deriveEntitlements(input: {
     }
   }
 
-  const founder = subscriptions.some((s) => s.founder);
+  const founder = subscriptions.some((s) => founderEndMs(s, nowMs) > nowMs);
   const fullQkit = grants.some((g) => g.kit === QKIT && g.level === 2);
   const eventPlan = catalog.find((p) => p.kind === "event_pass");
   const pass = pickEventPass(eventPasses, nowMs);

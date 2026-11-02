@@ -86,6 +86,15 @@ export function SubscriptionSection({
                     >
                       {s.status}
                     </Badge>
+                    {s.status === "active" &&
+                      Date.parse(s.currentPeriodEnd) <= nowMs && (
+                        <Badge
+                          variant="destructive"
+                          className="border-0 px-1.5 py-0"
+                        >
+                          Lapsed
+                        </Badge>
+                      )}
                     {s.founder && (
                       <Badge variant="gold" className="border-0 px-1.5 py-0">
                         {founderLabel(s.founderUntil, nowMs)}
@@ -94,8 +103,8 @@ export function SubscriptionSection({
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {formatSgd(s.lockedPriceCents)} per {s.interval}, period{" "}
-                    {day(s.currentPeriodStart)} to {day(s.currentPeriodEnd)},
-                    renews around {day(s.renewalAnchor)}
+                    {day(s.currentPeriodStart)} to {day(s.currentPeriodEnd)}.
+                    Ends {day(s.currentPeriodEnd)}; renew by granting again.
                   </p>
                 </div>
                 {s.status === "active" && (
@@ -123,6 +132,9 @@ export function SubscriptionSection({
             plans={plans}
             today={today}
             founderSlotsLeft={slotsLeft}
+            current={subscriptions
+              .filter((s) => s.status === "active")
+              .map((s) => planLabel(s.planSlug))}
             request={request}
           />
         </div>

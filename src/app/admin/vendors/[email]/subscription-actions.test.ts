@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => ({
   findVendorId: vi.fn(),
   grantSubscription: vi.fn(),
   cancelSubscription: vi.fn(),
+  loadVendorSubscriptions: vi.fn(),
   mintEventPass: vi.fn(),
   cancelEventPass: vi.fn(),
   syncVendorEntitlements: vi.fn(),
@@ -27,6 +28,7 @@ vi.mock("@/lib/entitlements/store", () => {
     findVendorId: mocks.findVendorId,
     grantSubscription: mocks.grantSubscription,
     cancelSubscription: mocks.cancelSubscription,
+    loadVendorSubscriptions: mocks.loadVendorSubscriptions,
     mintEventPass: mocks.mintEventPass,
     cancelEventPass: mocks.cancelEventPass,
   };
@@ -85,6 +87,7 @@ beforeEach(() => {
   mocks.findVendorId.mockResolvedValue("vendor-1");
   mocks.grantSubscription.mockResolvedValue("sub-1");
   mocks.cancelSubscription.mockResolvedValue(true);
+  mocks.loadVendorSubscriptions.mockResolvedValue([]);
   mocks.mintEventPass.mockResolvedValue("pass-1");
   mocks.cancelEventPass.mockResolvedValue(true);
   mocks.syncVendorEntitlements.mockResolvedValue([]);
@@ -114,6 +117,41 @@ describe("grantSubscriptionAction", () => {
     });
     expect(mocks.revalidatePath).toHaveBeenCalledWith("/admin/requests");
     expect(mocks.closeRequest).not.toHaveBeenCalled();
+  });
+
+  it("replaces the vendor's other active plans by default and audits both", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      { id: "sub-1", status: "active" },
+      { id: "old-1", status: "active" },
+      { id: "old-2", status: "canceled" },
+    ]);
+    await grantSubscriptionAction(grant);
+    expect(mocks.cancelSubscription).toHaveBeenCalledTimes(1);
+    expect(mocks.cancelSubscription).toHaveBeenCalledWith("vendor-1", "old-1");
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "cancel_subscription",
+      "old-1",
+      { email: "vendor@business.sg", replaced_by: "sub-1" },
+    );
+    expect(mocks.syncVendorEntitlements).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the other active plans when replace is switched off", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      { id: "old-1", status: "active" },
+    ]);
+    await grantSubscriptionAction({ ...grant, replaceCurrent: false });
+    expect(mocks.cancelSubscription).not.toHaveBeenCalled();
+  });
+
+  it("does not audit a replaced plan that was already closed", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      { id: "old-1", status: "active" },
+    ]);
+    mocks.cancelSubscription.mockResolvedValue(false);
+    await grantSubscriptionAction(grant);
+    expect(mocks.recordAudit).toHaveBeenCalledTimes(1);
   });
 
   it("resolves the request it answers", async () => {
@@ -244,8 +282,8 @@ describe("mintEventPassAction", () => {
     ).toEqual({ success: true });
     expect(mocks.mintEventPass).toHaveBeenCalledWith({
       vendorId: "vendor-1",
-      startsAt: new Date("2026-12-01T00:00:00.000Z"),
-      endsAt: new Date("2026-12-03T00:00:00.000Z"),
+      startsAt: new Date("2026-11-30T16:00:00.000Z"),
+      endsAt: new Date("2026-12-02T16:00:00.000Z"),
       prepaidCents: 1400,
       createdBy: "admin-1",
     });

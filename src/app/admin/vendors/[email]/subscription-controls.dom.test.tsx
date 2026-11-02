@@ -44,6 +44,7 @@ function grantForm(
       plans={plans}
       today="2026-11-02"
       founderSlotsLeft={5}
+      current={[]}
       request={null}
       {...overrides}
     />
@@ -64,8 +65,30 @@ it("submits the catalog price, today's dates and the first plan by default", asy
     periodStart: "2026-11-02",
     renewalAnchor: "2026-11-02",
     founder: false,
+    replaceCurrent: true,
     requestId: undefined,
   });
+});
+
+it("offers to replace the current plan and sends the choice", async () => {
+  const user = userEvent.setup();
+  render(grantForm({ current: ["Qkit"] }));
+  const toggle = screen.getByRole("switch", {
+    name: "Replace current plan (Qkit)",
+  });
+  expect(toggle).toBeChecked();
+  await user.click(toggle);
+  await user.click(screen.getByRole("button", { name: "Save subscription" }));
+  await waitFor(() =>
+    expect(actions.grantSubscriptionAction).toHaveBeenCalledWith(
+      expect.objectContaining({ replaceCurrent: false }),
+    ),
+  );
+});
+
+it("hides the replace switch when the vendor has no active plan", () => {
+  render(grantForm());
+  expect(screen.queryByRole("switch", { name: /Replace current/ })).toBeNull();
 });
 
 it("prefills the plan from a request and sends its id", async () => {

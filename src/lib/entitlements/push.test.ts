@@ -6,11 +6,13 @@ const mocks = vi.hoisted(() => ({
   passes: vi.fn(),
   catalog: vi.fn(),
   live: vi.fn(),
+  findVendorId: vi.fn(),
   createServiceClient: vi.fn(),
 }));
 vi.mock("./store", () => ({
   loadVendorSubscriptions: mocks.subscriptions,
   loadVendorEventPasses: mocks.passes,
+  findVendorId: mocks.findVendorId,
 }));
 vi.mock("@/lib/pricing/catalog", () => ({ loadPlanCatalog: mocks.catalog }));
 vi.mock("@/lib/products", () => ({ listLiveProducts: mocks.live }));
@@ -18,7 +20,11 @@ vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: mocks.createServiceClient,
 }));
 
-import { pushKitEntitlement, syncVendorEntitlements } from "./push";
+import {
+  mirrorDerivedPlans,
+  pushKitEntitlement,
+  syncVendorEntitlements,
+} from "./push";
 
 const payload: EntitlementPayload = {
   email: "v@x.com",
@@ -215,12 +221,67 @@ describe("syncVendorEntitlements", () => {
     expect(log).toHaveBeenCalledTimes(2);
   });
 
+  it("reports a push whose recording throws as failed instead of dropping it", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ ok: true })),
+    );
+    mocks.createServiceClient.mockRejectedValue(new Error("db down"));
+    const outcomes = await syncVendorEntitlements(
+      { id: "v1", email: "v@x.com" },
+      { kits: ["qkit", "printkit"] },
+    );
+    expect(outcomes.map((o) => [o.kit, o.result.ok])).toEqual([
+      ["qkit", false],
+      ["printkit", false],
+    ]);
+  });
+
   it("returns nothing instead of throwing when the records cannot be read", async () => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     mocks.subscriptions.mockRejectedValue(new Error("db down"));
     expect(
       await syncVendorEntitlements({ id: "v1", email: "v@x.com" }),
     ).toEqual([]);
+    expect(log).toHaveBeenCalled();
+  });
+});
+
+describe("mirrorDerivedPlans", () => {
+  const eq2 = vi.fn();
+  const update = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    eq2.mockResolvedValue({ error: null });
+    update.mockReturnValue({ eq: () => ({ eq: eq2 }) });
+    mocks.createServiceClient.mockResolvedValue({ from: () => ({ update }) });
+    mocks.findVendorId.mockResolvedValue("v1");
+    mocks.subscriptions.mockResolvedValue([]);
+    mocks.passes.mockResolvedValue([]);
+    mocks.catalog.mockResolvedValue([]);
+    mocks.live.mockResolvedValue([kit, { ...kit, slug: "printkit" }]);
+  });
+
+  it("writes the derived tier to every live kit's link without calling a kit", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    await mirrorDerivedPlans("V@x.com");
+    expect(mocks.findVendorId).toHaveBeenCalledWith("v@x.com");
+    expect(update).toHaveBeenCalledTimes(2);
+    expect(update).toHaveBeenCalledWith({ plan: "free" });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("leaves a vendor with no Merqo account alone", async () => {
+    mocks.findVendorId.mockResolvedValue(null);
+    await mirrorDerivedPlans("v@x.com");
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it("logs instead of throwing when the lookup fails", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.findVendorId.mockRejectedValue(new Error("db down"));
+    await expect(mirrorDerivedPlans("v@x.com")).resolves.toBeUndefined();
     expect(log).toHaveBeenCalled();
   });
 });

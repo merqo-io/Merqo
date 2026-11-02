@@ -139,12 +139,34 @@ describe("deriveEntitlements", () => {
     expect(out.stockkit.tier).toBe("paid");
   });
 
-  it("reverts an expired founder to the plain plan and keeps the badge", () => {
+  it("reverts an expired founder to the plain plan and drops the badge", () => {
     const out = derive([sub("loopkit", { founder: true, founderUntil: PAST })]);
     expect(out.qkit.tier).toBe("free");
     expect(out.loopkit.tier).toBe("paid");
-    expect(out.loopkit.founder).toBe(true);
+    expect(out.loopkit.founder).toBe(false);
     expect(out.qkit.stats_window).toBe("24h");
+  });
+
+  it("drops the founder badge for a cancelled founder subscription", () => {
+    const out = derive([
+      sub("loopkit", {
+        founder: true,
+        founderUntil: FUTURE,
+        status: "canceled",
+      }),
+    ]);
+    expect(out.qkit).toMatchObject({ tier: "free", founder: false });
+  });
+
+  it("drops the founder badge once the paid period has passed", () => {
+    const out = derive([
+      sub("loopkit", {
+        founder: true,
+        founderUntil: FUTURE,
+        currentPeriodEnd: PAST,
+      }),
+    ]);
+    expect(out.qkit).toMatchObject({ tier: "free", founder: false });
   });
 
   it("ends founder benefits when the paid period ends first", () => {

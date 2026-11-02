@@ -4,7 +4,10 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { listLiveProducts } from "@/lib/products";
 import type { VendorLink } from "@/lib/vendor";
 import { fetchKitJson } from "@/lib/kit-action-request";
-import { syncVendorEntitlements } from "@/lib/entitlements/push";
+import {
+  mirrorDerivedPlans,
+  syncVendorEntitlements,
+} from "@/lib/entitlements/push";
 
 type VendorStatusSource = Pick<
   RegistryRow,
@@ -137,6 +140,8 @@ export async function syncVendorKits(
         return [];
       }
     }
+
+    await mirrorDerivedPlans(normalizedEmail);
 
     const { error: stateError } = await supabase
       .from("vendor_sync_state")

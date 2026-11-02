@@ -28,7 +28,9 @@ charges anyone; prices and payment stay manual until billing exists.
 - `push.ts`: `pushKitEntitlement()` posts one payload with the kit's
   `provision_secret`; `syncVendorEntitlements()` derives, pushes to every live
   kit (or `opts.kits`), records each result in `merqo.entitlement_sync` and
-  mirrors the derived tier into `vendor_links.plan`. Neither throws: a 404
+  mirrors the derived tier into `vendor_links.plan`. `mirrorDerivedPlans()`
+  rewrites that mirror without pushing, run by the dashboard sync so legacy
+  kit-reported values and lapsed subscriptions are corrected. Neither throws: a 404
   (kit has no route yet), a timeout or a network error is recorded as `failed`,
   a kit with no `app_url` or secret as `skipped`. `push.test.ts` covers it.
 
@@ -58,22 +60,29 @@ per vendor, JSON body:
 - `tier`: `qkit` takes `free | starter | qkit`; every other kit takes
   `free | paid`. printkit is `paid` when the qkit tier is `qkit` (qkit plan,
   All Access or an active founder).
-- `founder`: the founder badge, true for good once granted. Founder benefits
-  (All Access for 12 months) arrive as `tier`, so a kit never computes them.
+- `founder`: true only while a founder subscription is active and inside its
+  12-month founder window and paid period. The benefits (All Access) arrive as
+  `tier`, so a kit never computes them.
 - `stats_window`: `24h` for free and starter; `90d` when the vendor has the full
   qkit tier (qkit plan, All Access, founder). Same value on every kit.
 - `event_pass`: the running pass, else the soonest upcoming one, only on qkit,
-  printkit and paykit; `null` otherwise. It is not folded into `tier`; the kit
-  applies the window itself (and its stats depth is the pass window).
+  printkit and paykit; `null` otherwise. While `now` is inside the window the
+  vendor gets qkit core, printkit labels and paykit for it, even though `tier`
+  stays as derived. It is not folded into `tier`; the kit applies the window
+  itself (and its stats depth is the pass window). Passes start at Singapore
+  midnight (UTC+8).
 - `valid_until`: when the tier lapses unless pushed again; `null` for free.
+  Kits MUST enforce `valid_until` and the `event_pass` window themselves
+  (treat the tier as `free` once `valid_until` has passed): merqo has no
+  scheduled job, so a lapse takes effect without a fresh push.
 - `issued_at`: ISO timestamp; a kit ignores a payload older than the last one
   it applied.
 - A kit answers `200` with `{ "ok": true }`. Any other answer is recorded as
   failed and the admin can press Re-push.
 
 Subscriptions count while `status` is `active` and `current_period_end` is in
-the future. There is no renewal job, so the admin re-saves a subscription to
-extend it.
+the future. There is no renewal job: admin-collected (`admin_manual`)
+subscriptions end at `current_period_end` and a renewal is a re-grant.
 
 ## Parent
 
