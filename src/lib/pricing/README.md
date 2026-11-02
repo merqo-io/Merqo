@@ -17,6 +17,7 @@ billing will build on. Nothing here charges anyone.
   values, Event Pass minimum, per-cup and cap cases) plus input validation.
 - `catalog.ts`: `loadPlanCatalog()` reads `merqo.plans` through the service
   client and returns typed `Plan` objects; `parsePlanRows` validates rows.
+- `format.ts`: `formatSgd` (cents to `S$16.00`) and `planLabel` (slug to display name) for admin screens; `format.test.ts` covers them.
 - `catalog.test.ts`: row mapping, event pass terms, query order and errors.
 
 [Parent](../README.md)

@@ -64,7 +64,7 @@ export function computeVendorSavings(links: VendorLink[]): VendorSavings {
     const assumptions = SAVINGS_ASSUMPTIONS[link.product_slug];
     if (!assumptions) continue;
 
-    const isPro = link.plan === "pro";
+    const isPro = Boolean(link.plan) && link.plan !== "free";
     const tier = isPro ? assumptions.pro : assumptions.free;
     const upsideHoursPerWeek = isPro
       ? 0

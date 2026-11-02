@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { z } from "zod";
-import { fetchKitJson, postKitAction } from "@/lib/kit-action-request";
+import { fetchKitJson } from "@/lib/kit-action-request";
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -63,43 +63,5 @@ describe("fetchKitJson", () => {
     expect((init.headers as Record<string, string>).Authorization).toBe(
       "Bearer s",
     );
-  });
-});
-
-describe("postKitAction", () => {
-  const kit = { app_url: "https://kit.test", metrics_secret: "s" };
-
-  it("returns success:false without calling fetch when app_url/metrics_secret are missing", async () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch");
-    const r = await postKitAction(
-      { app_url: null, metrics_secret: null },
-      "/api/merqo/x",
-      "a@x.com",
-    );
-    expect(r).toEqual({
-      success: false,
-      error: "Could not send your request. Try again in a moment.",
-    });
-    expect(fetchSpy).not.toHaveBeenCalled();
-  });
-
-  it("resolves the path against app_url and posts the email", async () => {
-    const fetchSpy = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(
-        new Response(JSON.stringify({ success: true }), { status: 200 }),
-      );
-    const r = await postKitAction(kit, "/api/merqo/x", "a@x.com");
-    expect(r).toEqual({ success: true });
-    const [url] = fetchSpy.mock.calls[0] as [URL];
-    expect(url.toString()).toBe("https://kit.test/api/merqo/x");
-  });
-
-  it("returns success:false when the response body doesn't say success:true", async () => {
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ success: false }), { status: 200 }),
-    );
-    const r = await postKitAction(kit, "/api/merqo/x", "a@x.com");
-    expect(r.success).toBe(false);
   });
 });

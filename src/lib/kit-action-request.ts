@@ -1,6 +1,3 @@
-import { z } from "zod";
-import type { RegistryRow } from "@/lib/products";
-
 export type FetchKitJsonResult<T> =
   | { ok: true; status: number; data: T }
   | {
@@ -52,52 +49,4 @@ export async function fetchKitJson<T>(
   } finally {
     clearTimeout(timer);
   }
-}
-
-type KitActionSource = Pick<RegistryRow, "app_url" | "metrics_secret">;
-
-export type KitActionResult =
-  { success: true } | { success: false; error: string };
-
-const GENERIC_ERROR = "Could not send your request. Try again in a moment.";
-
-const kitActionResponseSchema = z.object({ success: z.literal(true) });
-
-/** POST an email-keyed action to one kit's merqo-integration API and report
- *  success/failure. Never throws — shared by requestKitUpgrade and
- *  requestKitDowngrade so a kit being down degrades to a vendor-facing
- *  error message, not a crash. */
-export async function postKitAction(
-  kit: KitActionSource,
-  path: string,
-  email: string,
-  opts: { timeoutMs?: number } = {},
-): Promise<KitActionResult> {
-  if (!kit.app_url || !kit.metrics_secret) {
-    return { success: false, error: GENERIC_ERROR };
-  }
-
-  let url: URL;
-  try {
-    url = new URL(path, kit.app_url);
-  } catch {
-    return { success: false, error: GENERIC_ERROR };
-  }
-
-  const result = await fetchKitJson(
-    url,
-    kitActionResponseSchema,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${kit.metrics_secret}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    },
-    opts.timeoutMs ?? 5000,
-  );
-  return result.ok
-    ? { success: true }
-    : { success: false, error: GENERIC_ERROR };
 }

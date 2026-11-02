@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { z } from "zod";
 import Link from "next/link";
 import { BackButton } from "@merqo/ui";
 import { notFound } from "next/navigation";
@@ -9,18 +10,61 @@ import { GrantForm } from "../grant-form";
 import { RevokeButton } from "../revoke-button";
 import { listLiveProducts } from "@/lib/products";
 import { getVendorActivity } from "@/lib/vendor-activity-client";
+import { loadPlanCatalog } from "@/lib/pricing/catalog";
+import {
+  countFounders,
+  findVendorId,
+  loadSyncRows,
+  loadVendorEventPasses,
+  loadVendorSubscriptions,
+} from "@/lib/entitlements/store";
+import { getPendingRequest } from "@/lib/subscription-requests";
 import { VendorActivityCard } from "./vendor-activity-card";
+import { SubscriptionSection } from "./subscription-section";
 
 export const revalidate = 0;
 
+async function loadBilling(vendorId: string, requestId: string | undefined) {
+  const [subscriptions, eventPasses, syncRows, founderCount, catalog, request] =
+    await Promise.all([
+      loadVendorSubscriptions(vendorId),
+      loadVendorEventPasses(vendorId),
+      loadSyncRows(vendorId),
+      countFounders(),
+      loadPlanCatalog(),
+      z.string().uuid().safeParse(requestId).success
+        ? getPendingRequest(requestId as string, vendorId)
+        : null,
+    ]);
+  const pass = catalog.find((p) => p.kind === "event_pass" && p.active);
+  return {
+    subscriptions,
+    eventPasses,
+    syncRows,
+    founderCount,
+    plans: catalog.filter(
+      (p) =>
+        p.active &&
+        (p.kind === "kit" || p.kind === "starter" || p.kind === "bundle"),
+    ),
+    eventTerms: pass?.eventPass ?? null,
+    request: request
+      ? { id: request.id, planSlug: request.planSlug, kind: request.kind }
+      : null,
+  };
+}
+
 export default async function VendorDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ email: string }>;
+  searchParams: Promise<{ request?: string }>;
 }) {
   const { user } = await requireMerqoTeam();
   const { email: raw } = await params;
   const email = decodeURIComponent(raw);
+  const { request: requestId } = await searchParams;
   const [grant, products] = await Promise.all([
     getVendorGrant(email),
     listProducts(),
@@ -43,6 +87,8 @@ export default async function VendorDetailPage({
       .filter((p) => activeSlugs.has(p.slug))
       .map((p) => getVendorActivity(p, grant.email)),
   );
+  const vendorId = await findVendorId(grant.email);
+  const billing = vendorId ? await loadBilling(vendorId, requestId) : null;
   // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
 
@@ -87,6 +133,20 @@ export default async function VendorDetailPage({
           </ul>
         )}
       </section>
+
+      {billing ? (
+        <SubscriptionSection
+          email={grant.email}
+          {...billing}
+          today={new Date(now).toISOString().slice(0, 10)}
+          nowMs={now}
+        />
+      ) : (
+        <p className="rounded-xl border border-dashed bg-card p-4 text-sm text-muted-foreground">
+          This vendor has no Merqo account yet, so subscriptions and event
+          passes unlock after they sign in once.
+        </p>
+      )}
 
       {activeSlugs.size > 0 && (
         <section>

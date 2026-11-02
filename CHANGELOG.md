@@ -14,6 +14,24 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
 
+## [0.13.0] - 2026-11-02
+
+### Added
+
+- Entitlements: `src/lib/entitlements/` derives what each vendor may use per kit from `merqo.subscriptions` and the new `merqo.event_passes`, and pushes it to each live kit with `POST {app_url}/api/merqo/entitlement` (bearer `provision_secret`). A 404, timeout or network error is recorded in `merqo.entitlement_sync`, never thrown. Contract documented in `src/lib/entitlements/README.md`.
+- Vendor admin page: grant, change and cancel subscriptions, mint and cancel event passes, per-kit push state with Re-push. The vendors list shows "Founder slots left: N of 20".
+- `/admin/requests`: queue of plan-change requests from vendors (`merqo.subscription_requests`), resolved from the vendor page or declined.
+- Migration `0037_entitlements.sql` (event passes, subscription requests, entitlement sync, `user_id_for_email`) with pgTAP coverage. Apply together with 0036.
+
+### Changed
+
+- `vendor_links.plan` now comes from the merqo-derived tier; the plan a kit reports no longer overwrites it.
+- Dashboard upgrade and downgrade buttons file a merqo request instead of calling qkit. qkit's own request routes stay until slice 3a removes them.
+
+### Removed
+
+- `upgrade-request`, `downgrade-request` and `postKitAction` (merqo-to-qkit request calls).
+
 ## [0.12.0] - 2026-11-02
 
 ### Changed

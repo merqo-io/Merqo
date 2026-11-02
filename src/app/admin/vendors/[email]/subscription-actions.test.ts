@@ -1,0 +1,369 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({
+  requireMerqoTeam: vi.fn(),
+  recordAudit: vi.fn(),
+  revalidatePath: vi.fn(),
+  loadPlanCatalog: vi.fn(),
+  findVendorId: vi.fn(),
+  grantSubscription: vi.fn(),
+  cancelSubscription: vi.fn(),
+  mintEventPass: vi.fn(),
+  cancelEventPass: vi.fn(),
+  syncVendorEntitlements: vi.fn(),
+  closeRequest: vi.fn(),
+  getPendingRequest: vi.fn(),
+}));
+vi.mock("@/lib/team", () => ({ requireMerqoTeam: mocks.requireMerqoTeam }));
+vi.mock("@/lib/admin", () => ({ recordAudit: mocks.recordAudit }));
+vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidatePath }));
+vi.mock("@/lib/pricing/catalog", () => ({
+  loadPlanCatalog: mocks.loadPlanCatalog,
+}));
+vi.mock("@/lib/entitlements/store", () => {
+  class FounderCapError extends Error {}
+  return {
+    FounderCapError,
+    findVendorId: mocks.findVendorId,
+    grantSubscription: mocks.grantSubscription,
+    cancelSubscription: mocks.cancelSubscription,
+    mintEventPass: mocks.mintEventPass,
+    cancelEventPass: mocks.cancelEventPass,
+  };
+});
+vi.mock("@/lib/entitlements/push", () => ({
+  syncVendorEntitlements: mocks.syncVendorEntitlements,
+}));
+vi.mock("@/lib/subscription-requests", () => ({
+  closeRequest: mocks.closeRequest,
+  getPendingRequest: mocks.getPendingRequest,
+}));
+
+import { FounderCapError } from "@/lib/entitlements/store";
+import {
+  cancelEventPassAction,
+  cancelSubscriptionAction,
+  grantSubscriptionAction,
+  mintEventPassAction,
+  repushEntitlementsAction,
+} from "./subscription-actions";
+
+const UUID = "11111111-1111-4111-8111-111111111111";
+const REQ = "22222222-2222-4222-8222-222222222222";
+const plan = (
+  slug: string,
+  kind: string,
+  active = true,
+  eventPass: unknown = null,
+) => ({
+  slug,
+  kind,
+  active,
+  monthlyCents: 1600,
+  includedKits: ["qkit"],
+  eventPass,
+});
+const grant = {
+  email: "Vendor@Business.sg",
+  planSlug: "qkit",
+  interval: "month" as const,
+  priceCents: 1600,
+  periodStart: "2026-11-02",
+  renewalAnchor: "2026-11-02",
+  founder: false,
+};
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mocks.requireMerqoTeam.mockResolvedValue({ user: { id: "admin-1" } });
+  mocks.loadPlanCatalog.mockResolvedValue([
+    plan("qkit", "kit"),
+    plan("paykit", "kit", false),
+    plan("free", "free"),
+    plan("event_pass", "event_pass", true, { minCents: 1400, durationDays: 2 }),
+  ]);
+  mocks.findVendorId.mockResolvedValue("vendor-1");
+  mocks.grantSubscription.mockResolvedValue("sub-1");
+  mocks.cancelSubscription.mockResolvedValue(true);
+  mocks.mintEventPass.mockResolvedValue("pass-1");
+  mocks.cancelEventPass.mockResolvedValue(true);
+  mocks.syncVendorEntitlements.mockResolvedValue([]);
+  mocks.getPendingRequest.mockResolvedValue({ id: REQ });
+  mocks.closeRequest.mockResolvedValue(true);
+});
+
+describe("grantSubscriptionAction", () => {
+  it("grants, audits, pushes and revalidates", async () => {
+    expect(await grantSubscriptionAction(grant)).toEqual({ success: true });
+    expect(mocks.grantSubscription).toHaveBeenCalledWith(
+      expect.objectContaining({
+        vendorId: "vendor-1",
+        priceCents: 1600,
+        periodStart: new Date("2026-11-02T00:00:00.000Z"),
+      }),
+    );
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "grant_subscription",
+      "sub-1",
+      expect.objectContaining({ email: "vendor@business.sg", plan: "qkit" }),
+    );
+    expect(mocks.syncVendorEntitlements).toHaveBeenCalledWith({
+      id: "vendor-1",
+      email: "vendor@business.sg",
+    });
+    expect(mocks.revalidatePath).toHaveBeenCalledWith("/admin/requests");
+    expect(mocks.closeRequest).not.toHaveBeenCalled();
+  });
+
+  it("resolves the request it answers", async () => {
+    await grantSubscriptionAction({ ...grant, requestId: REQ });
+    expect(mocks.closeRequest).toHaveBeenCalledWith(REQ, "resolved", "admin-1");
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "resolve_subscription_request",
+      REQ,
+      {},
+    );
+  });
+
+  it("leaves a request alone when it is not pending for this vendor", async () => {
+    mocks.getPendingRequest.mockResolvedValue(null);
+    await grantSubscriptionAction({ ...grant, requestId: REQ });
+    expect(mocks.closeRequest).not.toHaveBeenCalled();
+  });
+
+  it("does not audit a resolve when someone else closed the request first", async () => {
+    mocks.closeRequest.mockResolvedValue(false);
+    await grantSubscriptionAction({ ...grant, requestId: REQ });
+    expect(mocks.recordAudit).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects bad input before any lookup", async () => {
+    const res = await grantSubscriptionAction({
+      ...grant,
+      periodStart: "soon",
+    });
+    expect(res.success).toBe(false);
+    expect(mocks.loadPlanCatalog).not.toHaveBeenCalled();
+  });
+
+  it("refuses plans that are inactive, unknown, free or not a subscription", async () => {
+    for (const planSlug of ["paykit", "ghost", "free", "event_pass"]) {
+      expect(await grantSubscriptionAction({ ...grant, planSlug })).toEqual({
+        success: false,
+        error: "That plan is not on sale.",
+      });
+    }
+    expect(mocks.grantSubscription).not.toHaveBeenCalled();
+  });
+
+  it("asks for a sign-in when the vendor has no Merqo account", async () => {
+    mocks.findVendorId.mockResolvedValue(null);
+    const res = await grantSubscriptionAction(grant);
+    expect(res).toMatchObject({ success: false });
+    expect(mocks.grantSubscription).not.toHaveBeenCalled();
+  });
+
+  it("explains a full founder cap", async () => {
+    mocks.grantSubscription.mockRejectedValue(new FounderCapError());
+    expect(await grantSubscriptionAction({ ...grant, founder: true })).toEqual({
+      success: false,
+      error: "All 20 founder slots are taken.",
+    });
+    expect(mocks.recordAudit).not.toHaveBeenCalled();
+  });
+
+  it("returns a generic error on other failures", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.grantSubscription.mockRejectedValue(new Error("db down"));
+    expect(await grantSubscriptionAction(grant)).toMatchObject({
+      success: false,
+    });
+    expect(log).toHaveBeenCalled();
+  });
+});
+
+describe("cancelSubscriptionAction", () => {
+  it("cancels, audits and pushes", async () => {
+    expect(
+      await cancelSubscriptionAction({
+        email: "vendor@business.sg",
+        subscriptionId: UUID,
+        requestId: REQ,
+      }),
+    ).toEqual({ success: true });
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "cancel_subscription",
+      UUID,
+      { email: "vendor@business.sg" },
+    );
+    expect(mocks.closeRequest).toHaveBeenCalled();
+    expect(mocks.syncVendorEntitlements).toHaveBeenCalled();
+  });
+
+  it("reports an already closed subscription and bad input", async () => {
+    mocks.cancelSubscription.mockResolvedValue(false);
+    expect(
+      await cancelSubscriptionAction({
+        email: "v@x.com",
+        subscriptionId: UUID,
+      }),
+    ).toMatchObject({ success: false });
+    expect(
+      await cancelSubscriptionAction({ email: "v@x.com", subscriptionId: "x" }),
+    ).toMatchObject({ success: false });
+    mocks.findVendorId.mockResolvedValue(null);
+    expect(
+      await cancelSubscriptionAction({
+        email: "v@x.com",
+        subscriptionId: UUID,
+      }),
+    ).toMatchObject({ success: false });
+    expect(mocks.recordAudit).not.toHaveBeenCalled();
+  });
+
+  it("returns a generic error on failure", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.cancelSubscription.mockRejectedValue(new Error("db down"));
+    expect(
+      await cancelSubscriptionAction({
+        email: "v@x.com",
+        subscriptionId: UUID,
+      }),
+    ).toMatchObject({ success: false });
+    expect(log).toHaveBeenCalled();
+  });
+});
+
+describe("mintEventPassAction", () => {
+  it("mints a window from the plan terms, defaulting the prepaid minimum", async () => {
+    expect(
+      await mintEventPassAction({ email: "v@x.com", startsAt: "2026-12-01" }),
+    ).toEqual({ success: true });
+    expect(mocks.mintEventPass).toHaveBeenCalledWith({
+      vendorId: "vendor-1",
+      startsAt: new Date("2026-12-01T00:00:00.000Z"),
+      endsAt: new Date("2026-12-03T00:00:00.000Z"),
+      prepaidCents: 1400,
+      createdBy: "admin-1",
+    });
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "mint_event_pass",
+      "pass-1",
+      expect.objectContaining({ prepaid_cents: 1400 }),
+    );
+  });
+
+  it("honours an explicit prepaid amount", async () => {
+    await mintEventPassAction({
+      email: "v@x.com",
+      startsAt: "2026-12-01",
+      prepaidCents: 2000,
+    });
+    expect(mocks.mintEventPass).toHaveBeenCalledWith(
+      expect.objectContaining({ prepaidCents: 2000 }),
+    );
+  });
+
+  it("refuses when passes are not on sale, the vendor is unknown or input is bad", async () => {
+    mocks.loadPlanCatalog.mockResolvedValue([
+      plan("event_pass", "event_pass", false, null),
+    ]);
+    expect(
+      await mintEventPassAction({ email: "v@x.com", startsAt: "2026-12-01" }),
+    ).toMatchObject({ success: false });
+    mocks.loadPlanCatalog.mockResolvedValue([
+      plan("event_pass", "event_pass", true, {
+        minCents: 1400,
+        durationDays: 2,
+      }),
+    ]);
+    mocks.findVendorId.mockResolvedValue(null);
+    expect(
+      await mintEventPassAction({ email: "v@x.com", startsAt: "2026-12-01" }),
+    ).toMatchObject({ success: false });
+    expect(
+      await mintEventPassAction({ email: "v@x.com", startsAt: "tomorrow" }),
+    ).toMatchObject({ success: false });
+    expect(mocks.mintEventPass).not.toHaveBeenCalled();
+  });
+
+  it("returns a generic error on failure", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.mintEventPass.mockRejectedValue(new Error("db down"));
+    expect(
+      await mintEventPassAction({ email: "v@x.com", startsAt: "2026-12-01" }),
+    ).toMatchObject({ success: false });
+    expect(log).toHaveBeenCalled();
+  });
+});
+
+describe("cancelEventPassAction", () => {
+  it("cancels, audits and pushes", async () => {
+    expect(
+      await cancelEventPassAction({ email: "v@x.com", passId: UUID }),
+    ).toEqual({ success: true });
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "cancel_event_pass",
+      UUID,
+      { email: "v@x.com" },
+    );
+    expect(mocks.syncVendorEntitlements).toHaveBeenCalled();
+  });
+
+  it("reports closed passes, bad input and failures", async () => {
+    mocks.cancelEventPass.mockResolvedValue(false);
+    expect(
+      await cancelEventPassAction({ email: "v@x.com", passId: UUID }),
+    ).toMatchObject({ success: false });
+    expect(
+      await cancelEventPassAction({ email: "v@x.com", passId: "x" }),
+    ).toMatchObject({ success: false });
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.cancelEventPass.mockRejectedValue(new Error("db down"));
+    expect(
+      await cancelEventPassAction({ email: "v@x.com", passId: UUID }),
+    ).toMatchObject({ success: false });
+    expect(log).toHaveBeenCalled();
+  });
+});
+
+describe("repushEntitlementsAction", () => {
+  it("counts accepted and failed pushes and audits", async () => {
+    mocks.syncVendorEntitlements.mockResolvedValue([
+      { kit: "qkit", result: { ok: true, status: 200 } },
+      { kit: "loopkit", result: { ok: false, status: 404, kind: "http" } },
+    ]);
+    expect(await repushEntitlementsAction({ email: "v@x.com" })).toEqual({
+      success: true,
+      pushed: 1,
+      failed: 1,
+    });
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "repush_entitlements",
+      "vendor-1",
+      { email: "v@x.com" },
+    );
+  });
+
+  it("rejects bad input, unknown vendors and failures", async () => {
+    expect(await repushEntitlementsAction({ email: "nope" })).toMatchObject({
+      success: false,
+    });
+    mocks.findVendorId.mockResolvedValue(null);
+    expect(await repushEntitlementsAction({ email: "v@x.com" })).toMatchObject({
+      success: false,
+    });
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.findVendorId.mockRejectedValue(new Error("db down"));
+    expect(await repushEntitlementsAction({ email: "v@x.com" })).toMatchObject({
+      success: false,
+    });
+    expect(log).toHaveBeenCalled();
+  });
+});

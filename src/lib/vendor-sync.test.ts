@@ -13,6 +13,9 @@ vi.mock("@/lib/supabase/server", () => ({
 vi.mock("@/lib/products", () => ({
   listLiveProducts: listLiveProductsMock,
 }));
+vi.mock("@/lib/entitlements/push", () => ({
+  syncVendorEntitlements: vi.fn().mockResolvedValue([]),
+}));
 
 import { provisionVendorKits, syncVendorKits } from "./vendor-sync";
 

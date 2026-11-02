@@ -163,6 +163,7 @@ landing — a later migration corrects an earlier one.
   synchronization to trusted service and owner-trigger paths, makes founder
   notification helpers owner-only, and grants the admin service the missing
   billing singleton read/update permissions.
+- `0037_entitlements.sql`: adds `event_passes` (a vendor's prepaid event window, its own table so metering fields can follow), `subscription_requests` (vendor-raised upgrade/downgrade/cancel asks, one pending per vendor), `entitlement_sync` (last push of each vendor's entitlement to each kit; team-read only) and the service-role-only `user_id_for_email` helper. Writes are service-role only; vendors read their own passes and requests. Apply together with `0036`.
 - `0036_pricing_catalog.sql`: drops `billing_settings` and adds `plans` (seeded ladder, All-Access bundle and Event Pass; public read of active rows), `subscriptions` (locked price and kit snapshot, `founder` flag with a race-safe cap of 20 founders, one active row per vendor and plan) and `billing_credits`. Writes are service-role only; vendors read their own rows.
 - `0035_fk_indexes.sql`: indexes every foreign key column the Supabase advisor flagged as unindexed (`admin_audit.admin_id`, `feedback.user_id`, `support_messages.user_id`, `telegram_link_tokens.vendor_id`, `vendor_feedback.vendor_id`, `vendor_links.product_slug`).
 
