@@ -20,15 +20,18 @@ const BEARER_WINDOW_SECONDS = 60;
 export async function guardBearerRoute(
   request: Request,
   route: string,
+  opts: { rateLimited?: boolean } = {},
 ): Promise<Response | null> {
   const ip = clientIp(request.headers);
-  const allowed = await rateLimit({
-    bucket: `bearer:${route}`,
-    key: ip,
-    limit: BEARER_LIMIT,
-    windowSeconds: BEARER_WINDOW_SECONDS,
-    failOpen: true,
-  });
+  const allowed =
+    opts.rateLimited === false ||
+    (await rateLimit({
+      bucket: `bearer:${route}`,
+      key: ip,
+      limit: BEARER_LIMIT,
+      windowSeconds: BEARER_WINDOW_SECONDS,
+      failOpen: true,
+    }));
   if (!allowed) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }

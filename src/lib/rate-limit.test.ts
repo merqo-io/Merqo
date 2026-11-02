@@ -65,6 +65,13 @@ describe("rateLimit", () => {
     });
   });
 
+  it("does not meter an unresolvable IP, even when failOpen is false", async () => {
+    expect(await rateLimit({ ...OPTS, key: "unknown", failOpen: false })).toBe(
+      true,
+    );
+    expect(rpc).not.toHaveBeenCalled();
+  });
+
   it("returns false when the limit is hit", async () => {
     rpc.mockResolvedValue({ data: false, error: null });
     expect(await rateLimit({ ...OPTS, failOpen: true })).toBe(false);

@@ -32,6 +32,18 @@ describe("guardBearerRoute", () => {
     expect(await guardBearerRoute(req(), "notify-vendor")).toBeNull();
   });
 
+  it("skips the counter but still checks the secret when rateLimited is false", async () => {
+    expect(
+      await guardBearerRoute(req(), "legal-status", { rateLimited: false }),
+    ).toBeNull();
+    expect(rateLimit).not.toHaveBeenCalled();
+    customerNotifySecretOk.mockReturnValue(false);
+    const res = await guardBearerRoute(req(), "legal-status", {
+      rateLimited: false,
+    });
+    expect(res?.status).toBe(401);
+  });
+
   it("429s when the limit is hit, before checking the secret", async () => {
     rateLimit.mockResolvedValue(false);
     const res = await guardBearerRoute(req(), "notify-vendor");

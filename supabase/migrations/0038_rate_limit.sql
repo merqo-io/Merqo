@@ -19,7 +19,7 @@ revoke all on merqo.rate_limit_hits from public, anon, authenticated;
 grant select, insert, update, delete on merqo.rate_limit_hits to service_role;
 
 -- Counts one hit for p_key in the current window and returns true while the
--- count is within p_limit. Expired windows are swept on every call so the
+-- count is within p_limit. Expired windows are swept on ~1% of calls so the
 -- table stays small without a scheduled job.
 create or replace function merqo.rate_limit_hit(
   p_key text,
@@ -43,8 +43,12 @@ begin
     floor(extract(epoch from now()) / p_window_seconds) * p_window_seconds
   );
 
-  delete from merqo.rate_limit_hits
-  where window_start < now() - interval '1 day';
+  -- Sampled so the sweep cost is not paid on every request; the window_start
+  -- index keeps each sweep bounded, and any row is eventually collected.
+  if random() < 0.01 then
+    delete from merqo.rate_limit_hits
+    where window_start < now() - interval '1 day';
+  end if;
 
   insert into merqo.rate_limit_hits as h (bucket_key, window_start, hits)
   values (p_key, v_start, 1)

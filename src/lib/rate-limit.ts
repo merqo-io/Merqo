@@ -34,6 +34,9 @@ type RateLimitOptions = {
 
 /** Counts one hit and returns whether the caller is still within the limit. */
 export async function rateLimit(opts: RateLimitOptions): Promise<boolean> {
+  // An unresolvable IP would put every such caller in one shared bucket and
+  // let a single noisy client throttle everyone, so it goes unmetered.
+  if (opts.key === "unknown") return true;
   try {
     const supabase = await createServiceClient();
     const { data, error } = await supabase.rpc("rate_limit_hit", {
