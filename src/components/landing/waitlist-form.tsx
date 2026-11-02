@@ -3,6 +3,7 @@ import { useActionState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { joinKitWaitlist } from "@/app/actions/waitlist";
 import { WAITLIST_IDLE } from "@/lib/waitlist-state";
+import { UPDATES_OPT_IN_WORDING } from "@/lib/waitlist-consent";
 import { Button } from "@/components/ui/button";
 
 const INPUT =
@@ -74,6 +75,14 @@ export function WaitlistForm({
       <p className="text-sm text-muted-foreground">
         Clarence may email you about this kit.
       </p>
+      <label className="flex items-start gap-2 text-sm">
+        <input
+          type="checkbox"
+          name="updatesOptIn"
+          className="mt-0.5 size-4 shrink-0"
+        />
+        {UPDATES_OPT_IN_WORDING}
+      </label>
       {state.status === "error" && (
         <p role="alert" className="text-xs text-destructive">
           {state.message}

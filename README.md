@@ -197,6 +197,7 @@ secrets and administrative writes use server-only service clients, so
 
 ## Docs
 
+- Public waitlist: an unticked general-updates checkbox is recorded in `merqo.marketing_consents` (migration `0040`) with the wording shown and the time, only when ticked.
 - Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - Changelog: `CHANGELOG.md` (includes the new admin-audit trail, plus a fix
   restoring card/background contrast in both modes after the Harbour

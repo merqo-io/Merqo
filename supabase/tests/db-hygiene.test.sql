@@ -41,5 +41,11 @@ select set_config('request.jwt.claims', json_build_object('sub', 'a0000000-0000-
 select is((select count(*)::int from merqo.admin_audit where action = 'hygiene_probe'), 1, 'a team member reads the audit rows');
 reset role;
 
+select is(
+  (select count(*)::int from pg_policies where schemaname = 'merqo' and tablename = 'marketing_consents'),
+  0, 'marketing_consents has no policies (default-deny)');
+select ok(not has_table_privilege('anon', 'merqo.marketing_consents', 'SELECT'), 'anon cannot read marketing_consents');
+select ok(not has_table_privilege('authenticated', 'merqo.marketing_consents', 'SELECT'), 'authenticated cannot read marketing_consents');
+
 select * from finish();
 rollback;
