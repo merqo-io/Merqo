@@ -6,7 +6,8 @@ Run the rollback-only pgTAP suites with `supabase test db` against local Supabas
 - `metric-emitter.test.sql`: service-only metric emission and trusted trigger access.
 - `vendor-profile-partial-updates.test.sql`: owner-scoped atomic partial profile writes.
 - `vendor-profile-reader-permissions.test.sql`: owner/service profile creation and permitted existing reads.
-- `private-helper-acl.test.sql`: private customer synchronization, owner-trigger continuity, billing service grants, and founder helper denial.
+- `private-helper-acl.test.sql`: private customer synchronization, owner-trigger continuity, and founder helper denial.
+- `pricing-catalog.test.sql`: `0036` seeded plan values, plan and subscription CHECKs, the 20-founder cap, one active subscription per vendor and plan, and RLS/grants on plans, subscriptions and billing credits.
 - `db-hygiene.test.sql`: `0035` foreign key indexes, RLS on every table, and `admin_audit` access (no anon access, team-only reads, no client writes).
 
 The latest prepared migrations and fixtures still need local database execution; their presence is not a passing runtime result. Keep fixed pgTAP plans aligned with assertion counts; focused suites using `no_plan()` report their count automatically.

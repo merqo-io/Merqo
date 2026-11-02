@@ -265,9 +265,9 @@ describe("listAdminAuditEntries", () => {
       {
         id: "2",
         admin_id: "u2",
-        action: "toggle_bundle_discount",
+        action: "resolve_support_message",
         target_id: null,
-        detail: { enabled: true },
+        detail: null,
         created_at: "2026-08-02T00:00:00Z",
       },
     ];

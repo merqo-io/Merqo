@@ -34,5 +34,5 @@ tables live in the `merqo` schema; qkit owns the `qkit` schema. Migrations live 
 - RLS must stay enabled on `merqo.merqo_team`, `merqo.products`, `merqo.vendor_links` —
   never disable it to make a query work; fix the policy or use the service client
   (server-only) instead.
-- Never touch qkit's `public.*` tables from a merqo migration — cross-kit reads go
+- Never touch qkit's `qkit.*` tables from a merqo migration — cross-kit reads go
   over the HTTP metrics API, never a direct cross-schema query.

@@ -8,6 +8,11 @@ select has_index('merqo', 'telegram_link_tokens', 'telegram_link_tokens_vendor_i
 select has_index('merqo', 'vendor_feedback', 'vendor_feedback_vendor_id_idx', 'merqo.vendor_feedback (vendor_id) is indexed');
 select has_index('merqo', 'vendor_links', 'vendor_links_product_slug_idx', 'merqo.vendor_links (product_slug) is indexed');
 
+select has_index('merqo', 'subscriptions', 'subscriptions_vendor_id_idx', 'merqo.subscriptions (vendor_id) is indexed');
+select has_index('merqo', 'subscriptions', 'subscriptions_plan_slug_idx', 'merqo.subscriptions (plan_slug) is indexed');
+select has_index('merqo', 'billing_credits', 'billing_credits_vendor_id_idx', 'merqo.billing_credits (vendor_id) is indexed');
+select has_index('merqo', 'billing_credits', 'billing_credits_source_subscription_id_idx', 'merqo.billing_credits (source_subscription_id) is indexed');
+
 select is(
   (select count(*)::int from pg_tables where schemaname = 'merqo' and not rowsecurity),
   0, 'every merqo table has row level security on');
