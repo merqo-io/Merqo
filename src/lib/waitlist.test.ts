@@ -26,15 +26,29 @@ describe("addToWaitlist", () => {
     expect(fromMock.mock.calls.map((c) => c[0])).toEqual(["vendor_links"]);
   });
 
-  it("stores the shown wording once, never overwriting, when ticked", async () => {
+  it("upserts the shown wording and clears withdrawal when ticked", async () => {
     await addToWaitlist("A@b.co", "paykit", true);
     expect(fromMock.mock.calls.map((c) => c[0])).toEqual([
       "vendor_links",
       "marketing_consents",
     ]);
     expect(upsertMock).toHaveBeenLastCalledWith(
-      { email: "a@b.co", wording: UPDATES_OPT_IN_WORDING },
-      { onConflict: "email", ignoreDuplicates: true },
+      {
+        email: "a@b.co",
+        wording: UPDATES_OPT_IN_WORDING,
+        consented_at: expect.any(String),
+        withdrawn_at: null,
+      },
+      { onConflict: "email" },
+    );
+  });
+
+  it("throws when the consent write fails so the user sees an error", async () => {
+    upsertMock
+      .mockResolvedValueOnce({ error: null })
+      .mockResolvedValueOnce({ error: { message: "boom" } });
+    await expect(addToWaitlist("a@b.co", "paykit", true)).rejects.toThrow(
+      /marketing consent upsert: boom/,
     );
   });
 });

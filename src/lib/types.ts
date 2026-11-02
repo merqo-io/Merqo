@@ -28,4 +28,5 @@ export type MarketingConsent = {
   email: string;
   wording: string;
   consented_at: string;
+  withdrawn_at: string | null;
 };

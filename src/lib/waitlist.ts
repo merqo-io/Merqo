@@ -8,18 +8,21 @@ import { UPDATES_OPT_IN_WORDING } from "@/lib/waitlist-consent";
  * session, see src/app/actions/join-waitlist.ts).
  *
  * `updatesOptIn` records the separate general-updates consent. It is only
- * written when true and never cleared, so an unticked resubmission cannot
- * erase an earlier opt-in.
+ * written when true (ticking again refreshes the record and clears any
+ * withdrawal), so an unticked resubmission cannot erase an earlier opt-in.
  */
 export async function addToWaitlist(
   email: string,
   productSlug: string,
   updatesOptIn = false,
 ): Promise<void> {
+  const normalized = email.toLowerCase();
   const supabase = await createServiceClient();
+  // The kit row goes first so a failed consent write can be retried: the
+  // vendor_links upsert is idempotent and the consent upsert overwrites.
   const { error } = await supabase.from("vendor_links").upsert(
     {
-      email: email.toLowerCase(),
+      email: normalized,
       product_slug: productSlug,
       status: "waitlist",
     },
@@ -30,8 +33,13 @@ export async function addToWaitlist(
   const { error: consentError } = await supabase
     .from("marketing_consents")
     .upsert(
-      { email: email.toLowerCase(), wording: UPDATES_OPT_IN_WORDING },
-      { onConflict: "email", ignoreDuplicates: true },
+      {
+        email: normalized,
+        wording: UPDATES_OPT_IN_WORDING,
+        consented_at: new Date().toISOString(),
+        withdrawn_at: null,
+      },
+      { onConflict: "email" },
     );
   if (consentError) {
     throw new Error(`marketing consent upsert: ${consentError.message}`);

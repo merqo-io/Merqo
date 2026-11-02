@@ -168,6 +168,7 @@ landing — a later migration corrects an earlier one.
 - `0037_retention_purges.sql`: SECURITY DEFINER purge functions with no client execute grant, scheduled daily by `pg_cron`. They delete `telegram_link_tokens` one day after expiry, null `legal_acceptances.ip` after 12 months, and delete `support_messages` and `feedback` after 24 months.
 - `0038_entitlements.sql`: adds `event_passes` (a vendor's prepaid event window, its own table so metering fields can follow), `subscription_requests` (vendor-raised upgrade/downgrade/cancel asks, one pending per vendor), `entitlement_sync` (last push of each vendor's entitlement to each kit; team-read only) and the service-role-only `user_id_for_email` helper. Writes are service-role only; vendors read their own passes and requests. Apply after `0036`.
 - `0039_entitlement_sync_error_kind.sql`: adds a nullable, checked `last_error_kind` column to `entitlement_sync` so the admin page can show why a push failed. Existing RLS and grants cover it. Apply after `0038`.
+- `0040_marketing_consents.sql`: adds `marketing_consents` (email, the wording shown, `consented_at`, nullable `withdrawn_at`), one row per address that ticked the general-updates box on `/waitlist`. RLS on with no policies; service role gets select, insert and update. Withdrawal is an operator SQL update (snippet in the migration header). Apply after `0039`.
 
 ## Connectivity
 
@@ -180,8 +181,6 @@ silently excluded from vendor sync, provisioning, metrics, and activity
 pulls even once its own app-side endpoints exist. `src/lib/types.ts` mirrors
 the resulting schema by hand and must be kept in sync after any migration
 lands.
-
-`0040_marketing_consents.sql` adds `merqo.marketing_consents` (email, wording shown, consent time) with RLS on and no policies.
 
 ## Parent
 

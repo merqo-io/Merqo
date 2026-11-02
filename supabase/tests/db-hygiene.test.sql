@@ -47,5 +47,24 @@ select is(
 select ok(not has_table_privilege('anon', 'merqo.marketing_consents', 'SELECT'), 'anon cannot read marketing_consents');
 select ok(not has_table_privilege('authenticated', 'merqo.marketing_consents', 'SELECT'), 'authenticated cannot read marketing_consents');
 
+select ok(
+  (select relrowsecurity from pg_class where oid = 'merqo.marketing_consents'::regclass),
+  'marketing_consents has row level security on');
+select ok(not has_table_privilege('anon', 'merqo.marketing_consents', p), 'anon has no ' || p || ' on marketing_consents')
+from unnest(array['INSERT', 'UPDATE', 'DELETE']) p;
+select ok(not has_table_privilege('authenticated', 'merqo.marketing_consents', p), 'authenticated has no ' || p || ' on marketing_consents')
+from unnest(array['INSERT', 'UPDATE', 'DELETE']) p;
+select ok(has_table_privilege('service_role', 'merqo.marketing_consents', p), 'service_role has ' || p || ' on marketing_consents')
+from unnest(array['SELECT', 'INSERT', 'UPDATE']) p;
+select ok(not has_table_privilege('service_role', 'merqo.marketing_consents', 'DELETE'), 'service_role cannot delete marketing_consents');
+
+set local role service_role;
+insert into merqo.marketing_consents (email, wording) values ('consent-probe@test.local', 'probe wording');
+update merqo.marketing_consents set withdrawn_at = now() where email = 'consent-probe@test.local';
+select isnt(
+  (select withdrawn_at from merqo.marketing_consents where email = 'consent-probe@test.local'),
+  null, 'service_role can record a withdrawal');
+reset role;
+
 select * from finish();
 rollback;

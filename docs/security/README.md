@@ -9,4 +9,4 @@ Security records for merqo.
 - `subprocessors.md` - third parties that process personal data, with purpose, data categories, region and DPA status.
 - `dnc.md` - Do Not Call statement and the policy requirement before any marketing call or SMS.
 
-The data inventory lists `marketing_consents` (general-updates opt-in from `/waitlist`, kept while subscribed).
+The data inventory lists `marketing_consents` (general-updates opt-in from `/waitlist`, kept as consent evidence, withdrawal recorded in `withdrawn_at`).
