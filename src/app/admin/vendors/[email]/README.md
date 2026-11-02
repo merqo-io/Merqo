@@ -37,7 +37,11 @@ own admin console separately.
 - `subscription-section.tsx`: server-rendered Subscriptions, Event passes and
   Kit entitlements sections. Shows each subscription's locked price, period and
   founder window, an open request banner, the grant form, event pass minting and
-  the last push per kit (status, HTTP code, last success).
+  the last push per kit (status, failure kind and HTTP code, last success).
+  Dates are shown in Singapore time (`sgDay`), a canceled or lapsed
+  subscription reads "Cancelled. Period was A to B." instead of the renew hint,
+  and both stored cancel spellings display as "Cancelled"
+  (`subscription-labels.ts`, with `subscription-labels.test.ts`).
 - `subscription-controls.tsx`: client controls. `GrantSubscriptionForm` (active
   plans only, price defaulting from the catalog via `annualCents` for annual,
   founder switch locked at 0 slots left, a "Replace current plan" switch when an active plan exists, period start and renewal anchor),
@@ -52,8 +56,7 @@ own admin console separately.
 - `vendor-activity-card.tsx` — `VendorActivityCard({ slug, result, now })`.
   Renders nothing when `!result.ok` or the kit reports `active: false`;
   otherwise a `StatusBadge` (skipped entirely when `status` is `null` —
-  e.g. loopkit, which has no per-vendor health concept yet), a plan
-  `Badge`, the kit's `metrics` rows via `@merqo/ui`'s `StatTile`, and a
+  e.g. loopkit, which has no per-vendor health concept yet), the kit's `metrics` rows via `@merqo/ui`'s `StatTile`, and a
   relative "last activity" timestamp, with `IncidentList` between them.
 - `incident-list.tsx` — `IncidentList({ incidents, recent, now })` and
   `INCIDENT_LABELS` (human label per `IncidentKind` from

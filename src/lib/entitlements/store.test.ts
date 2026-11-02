@@ -152,6 +152,7 @@ describe("reads", () => {
             payload: { tier: "qkit" },
             last_status: "ok",
             last_http_status: 200,
+            last_error_kind: "schema",
             last_attempt_at: "a",
             last_success_at: "a",
           },
@@ -171,6 +172,7 @@ describe("reads", () => {
       kitSlug: "qkit",
       tier: "qkit",
       lastStatus: "ok",
+      lastErrorKind: "schema",
     });
     expect(rows[1]).toMatchObject({ kitSlug: "loopkit", tier: null });
 

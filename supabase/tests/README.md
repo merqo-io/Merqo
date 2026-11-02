@@ -9,7 +9,7 @@ Run the rollback-only pgTAP suites with `supabase test db` against local Supabas
 - `private-helper-acl.test.sql`: private customer synchronization, owner-trigger continuity, and founder helper denial.
 - `pricing-catalog.test.sql`: `0036` seeded plan values, plan and subscription CHECKs, the 20-founder cap, one active subscription per vendor and plan, and RLS/grants on plans, subscriptions and billing credits.
 - `retention-purges.test.sql`: `0037` purge functions delete or null only rows past retention and are not executable by anon or authenticated.
-- `entitlements.test.sql`: `0038` event pass, request and push-log CHECKs, one pending request per vendor, `user_id_for_email` access, and RLS/grants (vendors read their own passes and requests, only the team reads the push log).
+- `entitlements.test.sql`: `0038` event pass, request and push-log CHECKs (including `0039`'s `last_error_kind`), one pending request per vendor, `user_id_for_email` access, and RLS/grants (vendors read their own passes and requests, only the team reads the push log).
 - `db-hygiene.test.sql`: `0035` foreign key indexes, RLS on every table, and `admin_audit` access (no anon access, team-only reads, no client writes).
 
 The latest prepared migrations and fixtures still need local database execution; their presence is not a passing runtime result. Keep fixed pgTAP plans aligned with assertion counts; focused suites using `no_plan()` report their count automatically.

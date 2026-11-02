@@ -167,6 +167,7 @@ landing — a later migration corrects an earlier one.
 - `0036_pricing_catalog.sql`: drops `billing_settings` and adds `plans` (seeded ladder, All-Access bundle and Event Pass; public read of active rows), `subscriptions` (locked price and kit snapshot, `founder` flag with a race-safe cap of 20 founders, one active row per vendor and plan) and `billing_credits`. Writes are service-role only; vendors read their own rows.
 - `0037_retention_purges.sql`: SECURITY DEFINER purge functions with no client execute grant, scheduled daily by `pg_cron`. They delete `telegram_link_tokens` one day after expiry, null `legal_acceptances.ip` after 12 months, and delete `support_messages` and `feedback` after 24 months.
 - `0038_entitlements.sql`: adds `event_passes` (a vendor's prepaid event window, its own table so metering fields can follow), `subscription_requests` (vendor-raised upgrade/downgrade/cancel asks, one pending per vendor), `entitlement_sync` (last push of each vendor's entitlement to each kit; team-read only) and the service-role-only `user_id_for_email` helper. Writes are service-role only; vendors read their own passes and requests. Apply after `0036`.
+- `0039_entitlement_sync_error_kind.sql`: adds a nullable, checked `last_error_kind` column to `entitlement_sync` so the admin page can show why a push failed. Existing RLS and grants cover it. Apply after `0038`.
 
 ## Connectivity
 

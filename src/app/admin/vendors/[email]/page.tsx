@@ -18,6 +18,7 @@ import {
   loadVendorEventPasses,
   loadVendorSubscriptions,
 } from "@/lib/entitlements/store";
+import { sgDay } from "@/lib/sg-date";
 import { getPendingRequest } from "@/lib/subscription-requests";
 import { VendorActivityCard } from "./vendor-activity-card";
 import { SubscriptionSection } from "./subscription-section";
@@ -100,7 +101,7 @@ export default async function VendorDetailPage({
           label="All vendors"
           LinkComponent={Link}
         />
-        <h1 className="mt-4 font-display text-2xl font-bold tracking-tight">
+        <h1 className="mt-4 break-all font-display text-2xl font-bold tracking-tight">
           {grant.email}
         </h1>
       </div>
@@ -138,7 +139,7 @@ export default async function VendorDetailPage({
         <SubscriptionSection
           email={grant.email}
           {...billing}
-          today={new Date(now).toISOString().slice(0, 10)}
+          today={sgDay(now)}
           nowMs={now}
         />
       ) : (
