@@ -173,8 +173,9 @@ scripts/schema-fingerprint.sql, scripts/drift-compare.mjs — schema drift check
 One shared Supabase project, schema per kit. Merqo owns `merqo.*`:
 `merqo_team` (team membership), `products` (kit registry + per-product
 `metrics_secret`), `vendor_links` (vendor↔kit access, email-keyed),
-`billing_settings` (cross-kit pricing levers — currently just the
-bundle-discount toggle, public-read, service-role-only write),
+`plans` (the single price catalog: ladder, bundle and Event Pass, public
+read of active rows), `subscriptions` (one per vendor and plan, with a
+locked price and kit snapshot), `billing_credits` (proration credits),
 `customers` (cross-kit customer identity — phone-keyed OR Telegram-chat-keyed
 per vendor since the 2026-08-16 widening, the shared counterpart to
 `vendor_profile`, reachable only through `upsert_customer` and three
