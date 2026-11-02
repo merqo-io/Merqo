@@ -55,6 +55,7 @@ report them as nested conversion stages. `kits.ts` is the family configuration (
 defaults to `https://<kit>.merqo.io`, overridable with `NEXT_PUBLIC_<KIT>_URL`);
 `ecosystem.ts` derives its diagram status from that configuration.
 `format.ts` and `utils.ts` provide display formatting (`timeAgo` returns `-` for an unparseable timestamp) and class composition.
+`sg-date.ts` provides `sgDay`, the Asia/Singapore YYYY-MM-DD formatter the vendor admin page uses for every date it shows.
 `brand-icon.tsx` supplies icon-route markup; `account.ts` safely reads metadata.
 
 `tour-prefs.ts` persists onboarding timestamps best-effort. Both server-render
