@@ -213,6 +213,8 @@ secrets and administrative writes use server-only service clients, so
   container from a Windows checkout.
 - Schema drift check (fingerprint SQL, compare script, owner runbook):
   `docs/SCHEMA-DRIFT.md`
+- Security records (data inventory, incident response runbook, subprocessor
+  list, Do Not Call statement): `docs/security/`
 - Plans/specs: `docs/superpowers/`
 - AI harness/hooks/skills map: `.claude/README.md`
 
