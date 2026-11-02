@@ -5,7 +5,7 @@ const STEPS = [
   },
   {
     title: "Sign up once",
-    body: "One Merqo sign-in works across every kit.",
+    body: "One Merqo sign-in covers the kits you use.",
   },
   {
     title: "Run your stall",

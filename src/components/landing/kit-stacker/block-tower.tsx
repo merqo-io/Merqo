@@ -82,7 +82,7 @@ export function BlockTower({
         );
       })}
       <p className="mt-1 text-center text-xs text-muted-foreground">
-        Every kit runs on its own. One sign-in for all of them.
+        Each kit runs on its own. One sign-in for the ones you use.
       </p>
       {blocks.length === 1 && (
         <p className="mt-3 text-center text-xs text-muted-foreground">

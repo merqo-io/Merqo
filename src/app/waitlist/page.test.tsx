@@ -31,6 +31,12 @@ describe("WaitlistPage", () => {
     expect(await selected()).toBe("");
   });
 
+  it("preselects the first valid value of a repeated ?kit=", async () => {
+    expect(await selected(["loopkit", "paykit"])).toBe("loopkit");
+    cleanup();
+    expect(await selected(["nope", "paykit"])).toBe("");
+  });
+
   it("lists only in-build kits and shows the consent copy", async () => {
     await selected("stockkit");
     const options = screen

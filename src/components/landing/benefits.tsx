@@ -8,8 +8,8 @@ const BENEFITS = [
   },
   {
     icon: KeyRound,
-    title: "One account across every kit",
-    body: "Sign in once and use the same account on every kit.",
+    title: "One account for the kits you use",
+    body: "Sign in once and use the same account on each kit you use.",
   },
   {
     icon: Store,

@@ -7,7 +7,7 @@ const FAQ: FaqEntry[] = [
   },
   {
     q: "Do I need to sign up for every kit separately?",
-    a: "No. One Merqo sign-in works across the whole family.",
+    a: "No. One Merqo sign-in covers the kits you use.",
   },
   {
     q: "Can I use just one kit?",
