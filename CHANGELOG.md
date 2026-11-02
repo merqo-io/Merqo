@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Migration `0037_retention_purges.sql`: daily `pg_cron` purges for expired `telegram_link_tokens` (1 day after expiry), `legal_acceptances.ip` (nulled after 12 months, row kept), `support_messages` and `feedback` (24 months). Periods are conservative defaults pending owner confirmation and privacy-copy update.
 - `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
 
 ### Changed
@@ -23,7 +24,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `/admin/requests`: queue of plan-change requests from vendors (`merqo.subscription_requests`), resolved from the vendor page or declined.
 - Admin-collected (`admin_manual`) subscriptions end at `current_period_end` and renewal is a re-grant; the vendor page shows "Ends {date}" and a Lapsed badge. Kits must enforce `valid_until` and the event pass window themselves.
 - Granting a plan offers "Replace current plan" (on by default), cancelling the superseded subscriptions in the same action. Event passes start at Singapore midnight.
-- Migration `0037_entitlements.sql` (event passes, subscription requests, entitlement sync, `user_id_for_email`) with pgTAP coverage. Apply together with 0036.
+- Migration `0038_entitlements.sql` (event passes, subscription requests, entitlement sync, `user_id_for_email`) with pgTAP coverage. Apply after 0036.
 
 ### Changed
 
