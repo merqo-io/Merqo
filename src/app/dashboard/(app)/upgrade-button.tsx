@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { requestUpgrade } from "@/app/actions/upgrade";
 
-/** Request monthly Pro without leaving the dashboard; show the result inline. */
+/** Ask the team for an upgrade without leaving the dashboard; show the result inline. */
 export function UpgradeButton({ slug }: { slug: string }) {
   const [pending, startTransition] = useTransition();
   const [state, setState] = useState<"idle" | "sent" | "error">("idle");
@@ -42,7 +42,7 @@ export function UpgradeButton({ slug }: { slug: string }) {
         disabled={pending}
         className="text-sm font-medium text-foreground hover:underline disabled:opacity-60"
       >
-        {pending ? "Sending…" : "Upgrade to Pro"}
+        {pending ? "Sending…" : "Request upgrade"}
       </button>
       {state === "error" && error && (
         <p className="mt-1 text-xs text-destructive">{error}</p>

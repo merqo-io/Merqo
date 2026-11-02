@@ -1,5 +1,5 @@
 -- Merqo lives in the SHARED Supabase project (one project, schema per kit —
--- arch-v2 §2). qkit owns `public.*`; merqo owns `merqo.*`. Cross-kit reads still
+-- arch-v2 §2). qkit owns `qkit.*`; merqo owns `merqo.*`. Cross-kit reads still
 -- go over the HTTP metrics API (arch-v2 §6), never a direct cross-schema query.
 --
 -- PROVISIONING: `merqo` must be added to the project's exposed API schemas

@@ -7,14 +7,19 @@ import {
   type ProvisionResult,
 } from "@/lib/vendor-sync";
 
-const { selectMock, eqMock, createServiceClientMock } = vi.hoisted(() => ({
-  selectMock: vi.fn(),
-  eqMock: vi.fn(),
-  createServiceClientMock: vi.fn(),
-}));
+const { selectMock, eqMock, createServiceClientMock, syncEntitlementsMock } =
+  vi.hoisted(() => ({
+    selectMock: vi.fn(),
+    syncEntitlementsMock: vi.fn(),
+    eqMock: vi.fn(),
+    createServiceClientMock: vi.fn(),
+  }));
 
 vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: createServiceClientMock,
+}));
+vi.mock("@/lib/entitlements/push", () => ({
+  syncVendorEntitlements: syncEntitlementsMock,
 }));
 
 function fakeSupabase() {
@@ -42,12 +47,12 @@ afterEach(() => vi.restoreAllMocks());
 describe("checkVendorStatus", () => {
   it("calls the kit's vendor-status endpoint with the bearer and email", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ active: true, plan: "pro" }), {
+      new Response(JSON.stringify({ active: true }), {
         status: 200,
       }),
     );
     const r = await checkVendorStatus(kit, "a@x.com");
-    expect(r).toEqual({ ok: true, slug: "qkit", active: true, plan: "pro" });
+    expect(r).toEqual({ ok: true, slug: "qkit", active: true });
     const [url, init] = fetchSpy.mock.calls[0] as [URL, RequestInit];
     expect(url.toString()).toBe(
       "https://qkit.vercel.app/api/merqo/vendor-status?email=a%40x.com",
@@ -57,14 +62,14 @@ describe("checkVendorStatus", () => {
     );
   });
 
-  it("returns active:false, plan:null verbatim from a negative match", async () => {
+  it("returns active:false verbatim from a negative match", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ active: false, plan: null }), {
+      new Response(JSON.stringify({ active: false }), {
         status: 200,
       }),
     );
     const r = await checkVendorStatus(kit, "a@x.com");
-    expect(r).toEqual({ ok: true, slug: "qkit", active: false, plan: null });
+    expect(r).toEqual({ ok: true, slug: "qkit", active: false });
   });
 
   it("ok:false on a 401", async () => {
@@ -113,12 +118,12 @@ describe("checkVendorStatus", () => {
 });
 
 describe("upsertsFromChecks", () => {
-  it("keeps only active:true, ok:true checks, lowercases the email, carries plan", () => {
+  it("keeps only active:true, ok:true checks, lowercases the email", () => {
     const out = upsertsFromChecks(
       "A@X.com",
       [
-        { ok: true, slug: "qkit", active: true, plan: "pro" },
-        { ok: true, slug: "loopkit", active: false, plan: null },
+        { ok: true, slug: "qkit", active: true },
+        { ok: true, slug: "loopkit", active: false },
         { ok: false, slug: "shopkit" },
       ],
       "2026-07-09T00:00:00.000Z",
@@ -129,18 +134,8 @@ describe("upsertsFromChecks", () => {
         product_slug: "qkit",
         status: "active",
         last_verified_at: "2026-07-09T00:00:00.000Z",
-        plan: "pro",
       },
     ]);
-  });
-
-  it("carries a null plan through when the kit reports one", () => {
-    const out = upsertsFromChecks(
-      "a@x.com",
-      [{ ok: true, slug: "qkit", active: true, plan: null }],
-      "2026-07-09T00:00:00.000Z",
-    );
-    expect(out[0].plan).toBeNull();
   });
 
   it("returns an empty array when nothing matched", () => {
@@ -219,20 +214,16 @@ describe("provisionVendorKit", () => {
   afterEach(() => vi.restoreAllMocks());
 
   it("calls the kit's vendor-provision endpoint with the bearer and user_id", async () => {
-    const fetchSpy = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(
-        new Response(
-          JSON.stringify({ ok: true, already_existed: false, plan: "free" }),
-          { status: 200 },
-        ),
-      );
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ ok: true, already_existed: false }), {
+        status: 200,
+      }),
+    );
     const r = await provisionVendorKit(provisionKit, "u1");
     expect(r).toEqual({
       ok: true,
       slug: "qkit",
       alreadyExisted: false,
-      plan: "free",
     });
     const [url, init] = fetchSpy.mock.calls[0] as [URL, RequestInit];
     expect(url.toString()).toBe(
@@ -258,17 +249,15 @@ describe("provisionVendorKit", () => {
       .spyOn(globalThis, "fetch")
       .mockRejectedValueOnce(new Error("ECONNREFUSED"))
       .mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({ ok: true, already_existed: true, plan: "free" }),
-          { status: 200 },
-        ),
+        new Response(JSON.stringify({ ok: true, already_existed: true }), {
+          status: 200,
+        }),
       );
     const r = await provisionVendorKit(provisionKit, "u1", { retryDelayMs: 1 });
     expect(r).toEqual({
       ok: true,
       slug: "qkit",
       alreadyExisted: true,
-      plan: "free",
     });
     expect(fetchSpy).toHaveBeenCalledTimes(2);
   });
@@ -326,7 +315,6 @@ describe("provisionVendorKits", () => {
               JSON.stringify({
                 ok: true,
                 already_existed: false,
-                plan: "free",
               }),
               { status: 200 },
             ),
@@ -366,9 +354,12 @@ describe("provisionVendorKits", () => {
         product_slug: "qkit",
         status: "active",
         last_verified_at: expect.any(String),
-        plan: "free",
       },
     ]);
+    expect(syncEntitlementsMock).toHaveBeenCalledWith(
+      { id: "u1", email: "v@x.com" },
+      { kits: ["qkit"] },
+    );
     expect(links).toEqual([
       { product_slug: "qkit", status: "active", plan: "free" },
     ]);
@@ -392,10 +383,9 @@ describe("provisionVendorKits", () => {
     ]);
 
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(
-        JSON.stringify({ ok: true, already_existed: false, plan: "free" }),
-        { status: 200 },
-      ),
+      new Response(JSON.stringify({ ok: true, already_existed: false }), {
+        status: 200,
+      }),
     );
 
     const vendorLinksUpsertMock = vi.fn().mockResolvedValue({ error: null });

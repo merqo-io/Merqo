@@ -132,6 +132,66 @@ test.describe("authed areas", () => {
     await expect(page.getByText(vendorEmail).first()).toBeVisible();
   });
 
+  test("grants then cancels a subscription and logs both", async ({ page }) => {
+    // The team fixture is the one seeded identity with a Merqo account; the
+    // vendor page only opens for an email that already holds a kit grant.
+    const vendorEmail =
+      process.env.MERQO_E2E_TEAM_EMAIL ?? "e2e-team@merqo.test";
+    await page.goto("/admin/vendors");
+    const grantForm = page.locator("form").filter({
+      has: page.getByPlaceholder("vendor@business.sg"),
+    });
+    await grantForm.getByPlaceholder("vendor@business.sg").fill(vendorEmail);
+    await grantForm.getByLabel("Kit").click();
+    await page.getByRole("option", { name: TEST_KIT_NAME }).click();
+    await grantForm.getByRole("button", { name: "Grant access" }).click();
+    await expect(
+      page.getByRole("button", {
+        name: `Revoke ${TEST_KIT_SLUG} from ${vendorEmail}`,
+      }),
+    ).toBeVisible();
+    await page.goto(`/admin/vendors/${encodeURIComponent(vendorEmail)}`);
+
+    await page.getByLabel("Plan").click();
+    await page.getByRole("option").first().click();
+    await page.getByRole("button", { name: "Save subscription" }).click();
+
+    const cancelButton = page
+      .getByRole("button", {
+        name: new RegExp(`^Cancel .* for ${vendorEmail}$`),
+      })
+      .first();
+    await expect(cancelButton).toBeVisible();
+    await cancelButton.click();
+    await page
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Cancel subscription" })
+      .click();
+    await expect(cancelButton).toHaveCount(0);
+
+    await page.goto("/admin/activity");
+    await expect(page.getByText("Granted subscription").first()).toBeVisible();
+    await expect(
+      page.getByText("Cancelled subscription").first(),
+    ).toBeVisible();
+
+    await page.goto("/admin/vendors");
+    await page
+      .getByRole("button", {
+        name: `Revoke ${TEST_KIT_SLUG} from ${vendorEmail}`,
+      })
+      .click();
+    await page
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Revoke" })
+      .click();
+    await expect(
+      page.getByRole("button", {
+        name: `Revoke ${TEST_KIT_SLUG} from ${vendorEmail}`,
+      }),
+    ).toHaveCount(0);
+  });
+
   test("adds and removes a team member", async ({ page }) => {
     await page.goto("/admin/team");
     const memberRow = page

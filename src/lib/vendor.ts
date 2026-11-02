@@ -13,7 +13,7 @@ export type KitTile = {
   name: string;
   tagline: string;
   href: string | null;
-  /** Only meaningful on an active tile — the tier the kit last reported. */
+  /** Only meaningful on an active tile — the tier Merqo last derived for it. */
   plan?: string | null;
   /** Only meaningful on an active tile — when syncVendorKits last confirmed
    *  this link, null if it's never been through a sync (e.g. granted by

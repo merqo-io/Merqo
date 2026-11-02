@@ -17,19 +17,38 @@ own admin console separately.
   `getVendorGrant`), calls `getVendorActivity()`
   (`@/lib/vendor-activity-client`) in parallel against the live kit
   registry (`listLiveProducts`), and renders one `VendorActivityCard` per
-  successful result. A kit with no grant, a kit that 404s/times out, or a
+  successful result. When the vendor has a Merqo account (`findVendorId`) it
+  also renders `SubscriptionSection`; `?request=<id>` prefills the grant form
+  from a pending request. A kit with no grant, a kit that 404s/times out, or a
   kit that hasn't implemented `/api/merqo/vendor-activity` yet all just
   render no card — never an error state. After the grant lookup succeeds the
   page calls `recordAudit(user.id, "view_vendor", null, { email_hash })`,
   where `email_hash` is the first 12 hex chars of sha256 of the lowercased
   email, so the audit trail shows who opened which tenant without a second
   copy of the email.
-- `page.test.tsx` — mocked-dependency coverage: renders a card only for
+- `page.test.tsx` — also covers the subscription, event pass and push state
+  sections, the prefilled request, and a vendor with no Merqo account.
+  Mocked-dependency coverage: renders a card only for
   active-status kits (not waitlist), renders no Activity section at all
   when the vendor has zero active kits, and calls `notFound()` when the
   grant doesn't exist. Also asserts a kit card's incident list (with and
   without `incidents`) and that the `view_vendor` audit row is written once
   with the expected hash and never the raw email.
+- `subscription-section.tsx`: server-rendered Subscriptions, Event passes and
+  Kit entitlements sections. Shows each subscription's locked price, period and
+  founder window, an open request banner, the grant form, event pass minting and
+  the last push per kit (status, HTTP code, last success).
+- `subscription-controls.tsx`: client controls. `GrantSubscriptionForm` (active
+  plans only, price defaulting from the catalog via `annualCents` for annual,
+  founder switch locked at 0 slots left, a "Replace current plan" switch when an active plan exists, period start and renewal anchor),
+  `CancelSubscriptionButton`, `MintEventPassForm`, `CancelEventPassButton`,
+  `RepushButton`. `subscription-controls.dom.test.tsx` covers them.
+- `subscription-actions.ts`: zod-validated, team-gated server actions
+  (`grantSubscriptionAction`, `cancelSubscriptionAction`, `mintEventPassAction`,
+  `cancelEventPassAction`, `repushEntitlementsAction`). Each write is audited,
+  pushes the vendor's entitlements to the kits and revalidates; a grant or cancel
+  that carries a `requestId` also resolves that request. A full founder cap shows
+  "All 20 founder slots are taken." `subscription-actions.test.ts` covers them.
 - `vendor-activity-card.tsx` — `VendorActivityCard({ slug, result, now })`.
   Renders nothing when `!result.ok` or the kit reports `active: false`;
   otherwise a `StatusBadge` (skipped entirely when `status` is `null` —
