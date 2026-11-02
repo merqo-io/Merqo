@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { LIVE_KITS } from "@/lib/kits";
+import { KITS } from "@/lib/kits";
 import DashboardPage from "./page";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -138,7 +138,7 @@ describe("DashboardPage", () => {
     );
   });
 
-  it("states how many of the live kits the vendor has connected", async () => {
+  it("states how many of the kits the vendor has connected", async () => {
     requireVendorSessionMock.mockResolvedValue({
       user: { email: "vendor@business.sg" },
       isTeam: false,
@@ -151,7 +151,7 @@ describe("DashboardPage", () => {
     render(<TooltipProvider>{await DashboardPage()}</TooltipProvider>);
 
     expect(
-      screen.getByText(`1 of ${LIVE_KITS.length} kits connected`, {
+      screen.getByText(`1 of ${KITS.length} kits connected`, {
         exact: false,
       }),
     ).toBeInTheDocument();

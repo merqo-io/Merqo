@@ -29,14 +29,15 @@ describe("KitStacker", () => {
     expect(screen.getByText(/Your stack has 2 kits:/)).toBeInTheDocument();
     // the relationship shows in the a11y summary and the block tower
     expect(
-      screen.getAllByText(/Finished orders earn loyalty points/i).length,
+      screen.getAllByText(/claim a loyalty stamp from their order page/i)
+        .length,
     ).toBeGreaterThan(0);
   });
 
   it("stacks every kit with Stack all", () => {
     render(<KitStacker />);
     fireEvent.click(screen.getByRole("button", { name: "Stack all" }));
-    expect(screen.getByText(/Your stack has 6 kits:/)).toBeInTheDocument();
+    expect(screen.getByText(/Your stack has 4 kits:/)).toBeInTheDocument();
   });
 
   it("removes qkit itself, since no kit is a required flagship", () => {
@@ -50,11 +51,11 @@ describe("KitStacker", () => {
   it("removes a kit when toggled off again", () => {
     render(<KitStacker />);
     fireEvent.click(
-      screen.getByRole("button", { name: /Add shopkit to the stack/i }),
+      screen.getByRole("button", { name: /Add stockkit to the stack/i }),
     );
     expect(screen.getByText(/Your stack has 2 kits:/)).toBeInTheDocument();
     fireEvent.click(
-      screen.getByRole("button", { name: /Remove shopkit from the stack/i }),
+      screen.getByRole("button", { name: /Remove stockkit from the stack/i }),
     );
     expect(screen.getByText(/Your stack has 1 kit:/)).toBeInTheDocument();
   });
@@ -66,21 +67,21 @@ describe("KitStacker", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Play journey/i }));
     expect(
-      screen.getByText(/A customer orders from your store\./i),
+      screen.getByText(/The order drops into your queue\./i),
     ).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(780);
     });
     expect(
-      screen.getByText(/The order drops into your queue\./i),
+      screen.getByText(/The customer pays by PayNow QR\./i),
     ).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(780 * 3);
     });
     expect(
-      screen.queryByText(/A customer orders from your store\./i),
+      screen.queryByText(/The order drops into your queue\./i),
     ).not.toBeInTheDocument();
 
     vi.useRealTimers();

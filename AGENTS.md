@@ -12,7 +12,7 @@
 
 The house brand + dashboard for a modular family of small-business tools ("kits")
 for Singapore micro/small sellers. `qkit` (queue/orders), `loopkit` (stamp-card
-loyalty), and `paykit` (payments) are live (see `src/lib/kits.ts`).
+loyalty), and `paykit` (payments): qkit is piloting; loopkit, paykit and stockkit are in build (see `src/lib/kits.ts`).
 This app is the public brand landing + a role-gated operator console:
 `/dashboard` (cross-product metrics overview, post-login home), `/admin/vendors`
 (grant/revoke kit access per vendor), `/admin/team` (manage Merqo-team members),

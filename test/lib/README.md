@@ -17,9 +17,8 @@ names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use
 - `format.test.ts` — `money()` and the other display formatters in `src/lib/format.ts`.
 - `funnel.test.ts` — the onboarding funnel counts in `src/lib/funnel.ts`.
 - `health.test.ts` — the `reporting`/`lagging`/`down` classifier in `src/lib/health.ts`.
-- `join-waitlist.test.ts` — the dashboard "Join waitlist" Server Action.
 - `kit-action-request.test.ts` — `src/lib/kit-action-request.ts`'s shared `fetchKitJson`/`postKitAction` helpers (network/HTTP/parse/schema failure modes).
-- `kits.test.ts` — the kit family config in `src/lib/kits.ts` (slugs, live/coming/planned status, hrefs).
+- `kits.test.ts` — the kit family config in `src/lib/kits.ts` (slugs, piloting/in-build/planned status, waitlistable slugs, hrefs).
 - `merqo-vendor-profile.test.ts` — the vendor-profile RPC wrapper.
 - `metrics-client.test.ts` — the platform metrics fetch + schema validation.
 - `nps.test.ts` — NPS bucketing/scoring in `src/lib/nps.ts`.
@@ -32,7 +31,7 @@ names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use
 - `vendor-grants.test.ts` — the client-safe `GrantStatus` helpers in `src/lib/vendor-grants.ts`.
 - `vendor-metrics-client.test.ts` — the per-vendor stats fetch + schema validation.
 - `vendor-sync.test.ts` — vendor kit-grant provisioning/sync.
-- `vendor.test.ts` — the vendor dashboard session/grant gate in `src/lib/vendor.ts`.
+- `vendor.test.ts` — the vendor dashboard session/grant gate in `src/lib/vendor.ts`, plus `kitCardAction` (activate, waitlist or login CTA).
 
 ## Parent
 

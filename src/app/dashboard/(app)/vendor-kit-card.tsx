@@ -28,7 +28,7 @@ export function VendorKitCard({
         <div className="flex items-center gap-1.5">
           {tile.plan === "pro" && <Badge variant="gold">Pro</Badge>}
           {tile.plan === "free" && <Badge variant="muted">Free</Badge>}
-          <Badge variant="success">Live</Badge>
+          <Badge variant="success">Active</Badge>
         </div>
       </div>
       <p className="mt-2 text-sm text-muted-foreground">{tile.tagline}</p>

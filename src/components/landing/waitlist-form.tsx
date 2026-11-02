@@ -5,9 +5,18 @@ import { joinKitWaitlist } from "@/app/actions/waitlist";
 import { WAITLIST_IDLE } from "@/lib/waitlist-state";
 import { Button } from "@/components/ui/button";
 
-/** A one-field email capture for a
- *  "coming soon" kit. Progressive: works as a plain form action. */
-export function WaitlistForm({ slug }: { slug: string }) {
+const INPUT =
+  "h-9 w-full rounded-md border bg-background px-3 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
+
+/** Email capture for an in-build kit. Works as a plain form action. */
+export function WaitlistForm({
+  kits,
+  initialSlug,
+}: {
+  kits: { slug: string; name: string }[];
+  /** Empty string leaves the select on its placeholder. */
+  initialSlug: string;
+}) {
   const [state, action, pending] = useActionState(
     joinKitWaitlist,
     WAITLIST_IDLE,
@@ -26,37 +35,60 @@ export function WaitlistForm({ slug }: { slug: string }) {
   }
 
   return (
-    <form action={action} className="flex flex-col gap-1.5">
-      <input type="hidden" name="slug" value={slug} />
-      <div className="flex gap-2">
-        <label htmlFor={`waitlist-${slug}`} className="sr-only">
-          Email for {slug} early access
+    <form action={action} className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="waitlist-kit" className="text-sm font-medium">
+          Kit
+        </label>
+        <select
+          id="waitlist-kit"
+          name="slug"
+          required
+          defaultValue={initialSlug}
+          className={INPUT}
+        >
+          <option value="" disabled>
+            Choose a kit
+          </option>
+          {kits.map((k) => (
+            <option key={k.slug} value={k.slug}>
+              {k.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="waitlist-email" className="text-sm font-medium">
+          Email
         </label>
         <input
-          id={`waitlist-${slug}`}
+          id="waitlist-email"
           name="email"
           type="email"
           required
           autoComplete="email"
-          placeholder="you@business.sg"
-          className="h-9 min-w-0 flex-1 rounded-md border bg-background px-3 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          placeholder="you@business.com"
+          className={INPUT}
         />
-        <Button type="submit" size="sm" variant="secondary" disabled={pending}>
-          {pending ? (
-            "…"
-          ) : (
-            <>
-              Notify me
-              <ArrowRight className="size-3.5" />
-            </>
-          )}
-        </Button>
       </div>
+      <p className="text-sm text-muted-foreground">
+        Clarence may email you about this kit.
+      </p>
       {state.status === "error" && (
         <p role="alert" className="text-xs text-destructive">
           {state.message}
         </p>
       )}
+      <Button type="submit" disabled={pending} className="self-start">
+        {pending ? (
+          "…"
+        ) : (
+          <>
+            Join the waitlist
+            <ArrowRight className="size-4" />
+          </>
+        )}
+      </Button>
     </form>
   );
 }

@@ -1,14 +1,12 @@
-import Link from "next/link";
 import {
   requireVendorSession,
   tilesForLinks,
   addableKits,
   provisionableKits,
-  comingKits,
 } from "@/lib/vendor";
 import { listLiveProducts } from "@/lib/products";
 import { syncVendorKits } from "@/lib/vendor-sync";
-import { KITS, LIVE_KITS } from "@/lib/kits";
+import { KITS } from "@/lib/kits";
 import { computeVendorSavings } from "@/lib/savings";
 import { SavingsSummary } from "./savings-summary";
 import {
@@ -17,8 +15,8 @@ import {
 } from "@/lib/vendor-metrics-client";
 import { VendorKitCard } from "./vendor-kit-card";
 import { KitDiscoveryCard } from "@/components/dashboard/kit-discovery-card";
-import { JoinWaitlistButton } from "@/components/dashboard/join-waitlist-button";
 import { ActivateKitsButton } from "@/components/dashboard/activate-kits-button";
+import { KitCardCta } from "@/components/dashboard/kit-card-cta";
 
 export const revalidate = 0;
 
@@ -45,10 +43,10 @@ export default async function DashboardPage() {
   const savings = computeVendorSavings(links);
   const savingsBySlug = new Map(savings.perKit.map((s) => [s.slug, s]));
   const liveProducts = await loadLiveProducts();
-  // "Ready to add" shows a card for every kit.ts-live kit the vendor doesn't
-  // already have (addableKits) — paykit included, even though it can't yet be
-  // one-click-activated. provisionableSlugs narrows just which of those cards
-  // get the ActivateKitsButton vs. the old external "log in on that kit" link.
+  // "Ready to add" shows a card for every kit the vendor doesn't already have
+  // (addableKits). provisionableSlugs narrows which of those get the
+  // ActivateKitsButton; the rest link to the waitlist (in-build kits) or the
+  // kit's own login (see kitCardAction).
   const readyToAdd = addableKits(links);
   const provisionableSlugs = new Set(
     provisionableKits(
@@ -58,8 +56,6 @@ export default async function DashboardPage() {
       ),
     ).map((k) => k.slug),
   );
-  const comingSoon = comingKits(links);
-  const planned = KITS.filter((k) => k.status === "planned");
   // The dashboard is open to every signed-in user; someone who hasn't joined
   // any kit yet gets a "pick a kit" surface instead of the overview.
   const hasNoKits =
@@ -94,7 +90,7 @@ export default async function DashboardPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           {hasNoKits
             ? "Merqo is your control room for every kit you run — add one below and it shows up here."
-            : `${active.length} of ${LIVE_KITS.length} kits connected — everything you run through Merqo, in one place.`}
+            : `${active.length} of ${KITS.length} kits connected — everything you run through Merqo, in one place.`}
         </p>
         {hasNoKits && provisionableSlugs.size > 0 && (
           <div className="mt-4">
@@ -175,7 +171,7 @@ export default async function DashboardPage() {
           Complete your toolkit
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Each kit stands on its own, but they&apos;re built to work together.
+          Each kit stands on its own. Use the ones you need.
         </p>
 
         {readyToAdd.length > 0 && (
@@ -189,75 +185,17 @@ export default async function DashboardPage() {
                   key={kit.slug}
                   kit={kit}
                   cta={
-                    provisionableSlugs.has(kit.slug) ? (
-                      <ActivateKitsButton
-                        slugs={[kit.slug]}
-                        label={`Add ${kit.name}`}
-                        variant="secondary"
-                        size="sm"
-                      />
-                    ) : (
-                      kit.href && (
-                        <a
-                          href={`${kit.href}/login`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-sm font-medium text-foreground hover:underline"
-                        >
-                          Add {kit.name}
-                        </a>
-                      )
-                    )
+                    <KitCardCta
+                      kit={kit}
+                      provisionable={provisionableSlugs.has(kit.slug)}
+                    />
                   }
                 />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {comingSoon.length > 0 && (
-          <div className="mt-6">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Coming soon
-            </h3>
-            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {comingSoon.map((kit) => (
-                <KitDiscoveryCard
-                  key={kit.slug}
-                  kit={kit}
-                  cta={
-                    <JoinWaitlistButton slug={kit.slug} kitName={kit.name} />
-                  }
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {planned.length > 0 && (
-          <div className="mt-6">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Planned
-            </h3>
-            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {planned.map((kit) => (
-                <KitDiscoveryCard key={kit.slug} kit={kit} />
               ))}
             </div>
           </div>
         )}
       </section>
-
-      <p className="mt-10 text-sm text-muted-foreground">
-        More kits coming,{" "}
-        <Link
-          href="/#kits"
-          className="font-medium text-foreground hover:underline"
-        >
-          see the family
-        </Link>
-        .
-      </p>
     </>
   );
 }

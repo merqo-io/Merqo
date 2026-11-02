@@ -34,7 +34,7 @@ import DashboardPage from "@/app/dashboard/(app)/page";
 describe("DashboardPage — Ready to add kits", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("still shows a KitDiscoveryCard for paykit (kits.ts-live but no provisioning capability), with the old external login link instead of an activate button; loopkit gets the activate button", async () => {
+  it("still shows a KitDiscoveryCard for paykit (in build, no provisioning capability), linking to the waitlist instead of an activate button; loopkit gets the activate button", async () => {
     requireVendorSessionMock.mockResolvedValue({
       user: { id: "u1", email: "v@x.com" },
       isTeam: false,
@@ -82,15 +82,16 @@ describe("DashboardPage — Ready to add kits", () => {
       screen.getByTestId("activate-kits-button-loopkit"),
     ).toBeInTheDocument();
 
-    // paykit is display-live but not provisionable — it must still get a
-    // discovery card, just with the old external "log in on that kit" link
-    // instead of an ActivateKitsButton.
+    // paykit is in build and not provisionable, so its card links to the
+    // waitlist instead of an activate button or the kit's login.
     expect(
       screen.queryByTestId("activate-kits-button-paykit"),
     ).not.toBeInTheDocument();
-    const paykitLink = screen.getByRole("link", { name: "Add paykit" });
-    expect(paykitLink).toHaveAttribute("href", "https://paykit.merqo.io/login");
-    expect(paykitLink).toHaveAttribute("target", "_blank");
+    expect(
+      screen
+        .getAllByRole("link", { name: "Join the waitlist" })
+        .map((a) => a.getAttribute("href")),
+    ).toContain("/waitlist?kit=paykit");
   });
 
   it("degrades to no provisionable kits (old external links for every ready-to-add kit) when listLiveProducts throws", async () => {

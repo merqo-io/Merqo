@@ -14,6 +14,26 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
 
+## [0.12.0] - 2026-11-02
+
+### Changed
+
+- Landing copy now follows the readiness ladder: qkit is piloting; loopkit, paykit and stockkit are in build. `KitStatus` is `piloting | in-build`, with labels in the kit list, timeline, graph, and dashboard discovery cards. Claims for features that are not built (cards, e-invoices, automatic receipts, stock alerts, cross-kit syncing) are removed or reduced to what exists.
+
+### Added
+
+- `/waitlist?kit=<loopkit|paykit|stockkit>` page: the waitlist form with the kit preselected (validated with Zod), and a "Clarence may email you about this kit." notice.
+- Kit badges with a one-line explainer (Running with a few vendors / Built, not yet tried with vendors) on the landing, and the single pilot pricing line on the hero.
+
+### Removed
+
+- shopkit and reachkit from every public surface (the `vendor_links` waitlist status and tables stay). The dashboard Coming soon/Planned sections, its waitlist button and action are removed too, since no kit is left in those states.
+- The public `/legal/pilot-agreement` page.
+
+### Fixed
+
+- Add-team placeholder used a `merqo.sg` domain; now `merqo.io`.
+
 ## [0.11.0] - 2026-11-02
 
 ### Added

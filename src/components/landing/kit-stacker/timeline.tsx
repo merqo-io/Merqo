@@ -4,9 +4,8 @@ import { cn } from "@/lib/utils";
 const ORDER = KITS.map((k) => ({ slug: k.slug, status: k.status }));
 
 const DOT_CLASS: Record<KitStatus, string> = {
-  live: "bg-gold",
-  coming: "bg-primary",
-  planned: "bg-border",
+  piloting: "bg-gold",
+  "in-build": "bg-primary",
 };
 
 export function Timeline() {
@@ -28,15 +27,15 @@ export function Timeline() {
             <span
               className={cn(
                 "font-mono text-[10px]",
-                k.status === "live"
+                k.status === "piloting"
                   ? "font-semibold text-foreground"
                   : "text-muted-foreground",
               )}
             >
               {k.slug}
             </span>
-            {k.status === "live" && (
-              <span className="text-[9px] text-muted-foreground">now</span>
+            {k.status === "piloting" && (
+              <span className="text-[9px] text-muted-foreground">pilot</span>
             )}
           </div>
         ))}

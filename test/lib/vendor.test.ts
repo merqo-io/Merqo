@@ -4,8 +4,8 @@ import {
   tilesForLinks,
   hasRenderableActiveKit,
   addableKits,
-  comingKits,
   provisionableKits,
+  kitCardAction,
   hasActiveLinkFor,
 } from "@/lib/vendor";
 
@@ -96,103 +96,50 @@ describe("tilesForLinks lastVerifiedAt passthrough", () => {
   });
 });
 
-describe("addableKits", () => {
-  const kits = [
-    {
-      slug: "qkit",
-      name: "qkit",
-      tagline: "Take orders and run your queue.",
-      description: "Take orders and run your queue from a QR code.",
-      features: ["QR ordering", "Live dashboard", "No app needed"],
-      status: "live" as const,
-      href: "https://qkit.merqo.io",
-    },
-    {
-      slug: "loopkit",
-      name: "loopkit",
-      tagline: "Stamp cards and points.",
-      description: "Digital stamp cards and points that bring customers back.",
-      features: ["Stamp cards", "Points", "Rewards"],
-      status: "coming" as const,
-    },
-    {
-      slug: "shopkit",
-      name: "shopkit",
-      tagline: "A simple storefront.",
-      description: "A lightweight online storefront for your catalog.",
-      features: ["Storefront", "Checkout", "Pre-orders"],
-      status: "planned" as const,
-    },
-  ];
+const kit = (slug: string, status: "piloting" | "in-build") => ({
+  slug,
+  name: slug,
+  tagline: `${slug} tagline for vendors.`,
+  description: `${slug} does something useful for a small seller.`,
+  features: ["One", "Two", "Three"],
+  status,
+  href: `https://${slug}.merqo.io`,
+});
 
-  it("includes a live kit the vendor has no vendor_links row for", () => {
+describe("addableKits", () => {
+  const kits = [kit("qkit", "piloting"), kit("loopkit", "in-build")];
+
+  it("includes every kit the vendor has no vendor_links row for", () => {
     const out = addableKits([], kits);
-    expect(out.map((t) => t.slug)).toEqual(["qkit"]);
+    expect(out.map((t) => t.slug)).toEqual(["qkit", "loopkit"]);
     expect(out[0].href).toBe("https://qkit.merqo.io");
     expect(out[0].description).toBeTruthy();
   });
 
-  it("excludes a live kit that already has any vendor_links row", () => {
-    expect(addableKits([{ product_slug: "qkit" }], kits)).toEqual([]);
-  });
-
-  it("never includes a non-live kit regardless of link state", () => {
-    const out = addableKits([], kits);
-    expect(out.map((t) => t.slug)).not.toContain("loopkit");
-    expect(out.map((t) => t.slug)).not.toContain("shopkit");
+  it("excludes a kit that already has any vendor_links row", () => {
+    expect(
+      addableKits([{ product_slug: "qkit" }], kits).map((t) => t.slug),
+    ).toEqual(["loopkit"]);
   });
 });
 
 describe("provisionableKits", () => {
-  // paykit deliberately mirrors the real bug this was found from: kits.ts
-  // marks it "live" (a display tier) but it has no vendor-provision route,
-  // so it's absent from `liveSlugs` (the actual capability signal, derived
-  // from merqo.products.provision_secret).
+  // paykit mirrors a real case: it is in kits.ts but has no vendor-provision
+  // route, so it is absent from `liveSlugs` (derived from
+  // merqo.products.provision_secret).
   const kits = [
-    {
-      slug: "qkit",
-      name: "qkit",
-      tagline: "Take orders and run your queue.",
-      description: "Take orders and run your queue from a QR code.",
-      features: ["QR ordering", "Live dashboard", "No app needed"],
-      status: "live" as const,
-      href: "https://qkit.merqo.io",
-    },
-    {
-      slug: "loopkit",
-      name: "loopkit",
-      tagline: "Stamp cards and points.",
-      description: "Digital stamp cards and points that bring customers back.",
-      features: ["Stamp cards", "Points", "Rewards"],
-      status: "live" as const,
-      href: "https://loopkit.merqo.io",
-    },
-    {
-      slug: "paykit",
-      name: "paykit",
-      tagline: "Collect PayNow, cards and cash.",
-      description: "Collect payment however your customer prefers.",
-      features: ["PayNow", "Cards", "Receipts"],
-      status: "live" as const,
-      href: "https://paykit.merqo.io",
-    },
-    {
-      slug: "shopkit",
-      name: "shopkit",
-      tagline: "A simple storefront.",
-      description: "A lightweight online storefront for your catalog.",
-      features: ["Storefront", "Checkout", "Pre-orders"],
-      status: "coming" as const,
-    },
+    kit("qkit", "piloting"),
+    kit("loopkit", "in-build"),
+    kit("paykit", "in-build"),
   ];
   const liveSlugs = new Set(["qkit", "loopkit"]);
 
-  it("includes a live-and-provisionable kit the vendor has no vendor_links row for", () => {
+  it("includes a provisionable kit the vendor has no vendor_links row for", () => {
     const out = provisionableKits([], liveSlugs, kits);
     expect(out.map((k) => k.slug)).toEqual(["qkit", "loopkit"]);
   });
 
-  it("excludes a kit marked live in kits.ts but absent from liveSlugs (no provisioning capability)", () => {
+  it("excludes a kit in kits.ts but absent from liveSlugs (no provisioning capability)", () => {
     const out = provisionableKits([], liveSlugs, kits);
     expect(out.map((k) => k.slug)).not.toContain("paykit");
   });
@@ -201,60 +148,6 @@ describe("provisionableKits", () => {
     expect(
       provisionableKits([{ product_slug: "qkit" }], liveSlugs, kits),
     ).toEqual([kits[1]]);
-  });
-
-  it("never includes a non-live kit even if its slug is (implausibly) in liveSlugs", () => {
-    const out = provisionableKits(
-      [],
-      new Set(["qkit", "loopkit", "shopkit"]),
-      kits,
-    );
-    expect(out.map((k) => k.slug)).not.toContain("shopkit");
-  });
-});
-
-describe("comingKits", () => {
-  const kits = [
-    {
-      slug: "qkit",
-      name: "qkit",
-      tagline: "Take orders and run your queue.",
-      description: "Take orders and run your queue from a QR code.",
-      features: ["QR ordering", "Live dashboard", "No app needed"],
-      status: "live" as const,
-      href: "https://qkit.merqo.io",
-    },
-    {
-      slug: "loopkit",
-      name: "loopkit",
-      tagline: "Stamp cards and points.",
-      description: "Digital stamp cards and points that bring customers back.",
-      features: ["Stamp cards", "Points", "Rewards"],
-      status: "coming" as const,
-    },
-    {
-      slug: "shopkit",
-      name: "shopkit",
-      tagline: "A simple storefront.",
-      description: "A lightweight online storefront for your catalog.",
-      features: ["Storefront", "Checkout", "Pre-orders"],
-      status: "planned" as const,
-    },
-  ];
-
-  it("includes a coming kit the vendor has no vendor_links row for", () => {
-    const out = comingKits([], kits);
-    expect(out.map((k) => k.slug)).toEqual(["loopkit"]);
-  });
-
-  it("excludes a coming kit the vendor already waitlisted for", () => {
-    expect(comingKits([{ product_slug: "loopkit" }], kits)).toEqual([]);
-  });
-
-  it("never includes a live or planned kit", () => {
-    const out = comingKits([], kits);
-    expect(out.map((k) => k.slug)).not.toContain("qkit");
-    expect(out.map((k) => k.slug)).not.toContain("shopkit");
   });
 });
 
@@ -279,5 +172,13 @@ describe("hasActiveLinkFor", () => {
     expect(
       hasActiveLinkFor([{ product_slug: "loopkit", status: "active" }], "qkit"),
     ).toBe(false);
+  });
+});
+
+describe("kitCardAction", () => {
+  it("activates a provisionable kit, waitlists an in-build kit, logs in to a piloting kit", () => {
+    expect(kitCardAction(kit("loopkit", "in-build"), true)).toBe("activate");
+    expect(kitCardAction(kit("paykit", "in-build"), false)).toBe("waitlist");
+    expect(kitCardAction(kit("qkit", "piloting"), false)).toBe("login");
   });
 });

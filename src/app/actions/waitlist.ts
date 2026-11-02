@@ -4,8 +4,7 @@ import type { WaitlistState } from "@/lib/waitlist-state";
 import { addToWaitlist } from "@/lib/waitlist";
 import { WAITLISTABLE_SLUGS } from "@/lib/kits";
 
-/** Public landing waitlist. Email comes from the form (no auth) — this is the
- *  only waitlist entry point now that vendors have no self-serve surface. */
+/** Public waitlist (/waitlist). Email comes from the form (no auth). */
 const schema = z.object({
   email: z.string().trim().toLowerCase().max(254).email(),
   slug: z.enum(WAITLISTABLE_SLUGS as [string, ...string[]]),

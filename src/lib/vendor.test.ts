@@ -184,11 +184,11 @@ describe("tilesForLinks", () => {
   it("buckets active, waitlist, and needs_setup links separately", () => {
     const { active, pending, needsSetup } = tilesForLinks([
       { product_slug: "qkit", status: "active", plan: "free" },
-      { product_slug: "shopkit", status: "waitlist", plan: null },
+      { product_slug: "loopkit", status: "waitlist", plan: null },
       { product_slug: "paykit", status: "needs_setup", plan: null },
     ]);
     expect(active.map((t) => t.slug)).toEqual(["qkit"]);
-    expect(pending.map((t) => t.slug)).toEqual(["shopkit"]);
+    expect(pending.map((t) => t.slug)).toEqual(["loopkit"]);
     expect(needsSetup.map((t) => t.slug)).toEqual(["paykit"]);
   });
 

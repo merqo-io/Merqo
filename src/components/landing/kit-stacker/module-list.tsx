@@ -1,13 +1,18 @@
 import { Check, Plus } from "lucide-react";
-import { KITS, WAITLISTABLE_SLUGS, type Kit } from "@/lib/kits";
+import Link from "next/link";
+import {
+  KITS,
+  KIT_STATUS_EXPLAINER,
+  KIT_STATUS_LABEL,
+  WAITLISTABLE_SLUGS,
+  type KitStatus,
+} from "@/lib/kits";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { WaitlistForm } from "../waitlist-form";
 
-const GROUPS: { status: Kit["status"]; label: string }[] = [
-  { status: "live", label: "Live now" },
-  { status: "coming", label: "Coming soon" },
-  { status: "planned", label: "Planned" },
+const GROUPS: { status: KitStatus; label: string }[] = [
+  { status: "piloting", label: "Piloting" },
+  { status: "in-build", label: "In build" },
 ];
 
 export function ModuleList({
@@ -32,7 +37,6 @@ export function ModuleList({
             <ul className="mt-2 space-y-2">
               {kits.map((k) => {
                 const on = stacked.has(k.slug);
-                const waitlistable = WAITLISTABLE_SLUGS.includes(k.slug);
                 return (
                   <li
                     key={k.slug}
@@ -71,25 +75,29 @@ export function ModuleList({
                           <span className="font-display font-bold">
                             {k.name}
                           </span>
-                          {k.status === "live" && (
-                            <Badge
-                              variant="gold"
-                              className="px-1.5 py-0 text-[10px]"
-                            >
-                              LIVE
-                            </Badge>
-                          )}
+                          <Badge
+                            variant={k.status === "piloting" ? "gold" : "muted"}
+                            className="px-1.5 py-0 text-[10px]"
+                          >
+                            {KIT_STATUS_LABEL[k.status]}
+                          </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
+                          {KIT_STATUS_EXPLAINER[k.status]}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           {k.tagline}
                         </p>
+                        {WAITLISTABLE_SLUGS.includes(k.slug) && (
+                          <Link
+                            href={`/waitlist?kit=${k.slug}`}
+                            className="mt-1 inline-block text-xs font-medium text-foreground hover:underline"
+                          >
+                            Join the waitlist
+                          </Link>
+                        )}
                       </div>
                     </div>
-                    {on && waitlistable && (
-                      <div className="mt-2.5 pl-10">
-                        <WaitlistForm slug={k.slug} />
-                      </div>
-                    )}
                   </li>
                 );
               })}

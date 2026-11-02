@@ -38,7 +38,7 @@ section; one or more kits gets the savings + per-kit overview.
   `src/components/README.md`'s `tour-steps.ts` entry), then a
   `border-t`-divided "Explore more kits" / "Complete your toolkit"
   discovery section (`KitDiscoveryCard` +
-  `ActivateKitsButton`/`JoinWaitlistButton`). When the vendor has no kits at
+  `ActivateKitsButton`). When the vendor has no kits at
   all, the `h1` block is a "pick a kit to get started" hero with the bulk
   `ActivateKitsButton`, and the savings/overview are skipped.
 - `page.test.tsx` — RTL coverage of the page's kit-grouping and re-sync

@@ -34,7 +34,7 @@ export function BlockTower({
     <div className="mx-auto flex w-full max-w-sm flex-col items-stretch">
       {blocks.map((slug) => {
         const node = nodeBySlug(slug)!;
-        const live = node.status === "live";
+        const piloting = node.status === "piloting";
         const hot = highlight === slug;
         const dim = highlight && !hot;
         return (
@@ -44,7 +44,7 @@ export function BlockTower({
             onMouseLeave={() => onHighlight(null)}
             className={cn(
               "mb-2 rounded-xl border border-b-4 px-4 py-3 shadow-sm transition-all",
-              live
+              piloting
                 ? "border-gold bg-primary text-primary-foreground"
                 : "border-primary/30 border-b-primary/40 bg-card",
               hot && "ring-2 ring-primary/40",
@@ -58,7 +58,9 @@ export function BlockTower({
               <span
                 className={cn(
                   "font-mono text-xs",
-                  live ? "text-primary-foreground/80" : "text-muted-foreground",
+                  piloting
+                    ? "text-primary-foreground/80"
+                    : "text-muted-foreground",
                 )}
               >
                 {slug}
@@ -67,18 +69,20 @@ export function BlockTower({
             <p
               className={cn(
                 "mt-0.5 text-xs",
-                live ? "text-primary-foreground/80" : "text-muted-foreground",
+                piloting
+                  ? "text-primary-foreground/80"
+                  : "text-muted-foreground",
               )}
             >
               {slug === "qkit"
-                ? "Your live queue."
+                ? "Your queue."
                 : queueLink(slug) || "Runs on its own."}
             </p>
           </div>
         );
       })}
       <p className="mt-1 text-center text-xs text-muted-foreground">
-        Every kit runs on its own, one account, one bill.
+        Each kit runs on its own. One sign-in for the ones you use.
       </p>
       {blocks.length === 1 && (
         <p className="mt-3 text-center text-xs text-muted-foreground">

@@ -15,9 +15,9 @@ discovery cards, and stat tiles — as distinct from `src/components/landing/`
   failure via `sonner`.
 - `activate-kits-button.test.tsx` — unit tests for the merge/retry logic
   above.
-- `join-waitlist-button.tsx` — `JoinWaitlistButton({ slug, kitName })`:
-  calls `joinWaitlistAction` for a "planned" kit with no real activation
-  path yet, toasts confirmation.
+- `kit-card-cta.tsx` — `KitCardCta({ kit, provisionable })`: the action on an unadded kit's
+  discovery card, chosen by `kitCardAction`: one-click add, "Join the waitlist"
+  (`/waitlist?kit=<slug>`, in-build kits) or the kit's own login.
 - `kit-discovery-card.tsx` — `KitDiscoveryCard({ kit, cta })`: the one
   discovery-bucket card used across all three of `/dashboard`'s "Explore
   more kits" subsections (Ready to add / Coming soon / Planned). `cta` is

@@ -1,48 +1,65 @@
 import { describe, it, expect } from "vitest";
-import { KITS, LIVE_KITS, COMING_KITS, WAITLISTABLE_SLUGS } from "@/lib/kits";
+import {
+  KITS,
+  KIT_STATUS_EXPLAINER,
+  KIT_STATUS_LABEL,
+  PRICING_LINE,
+  WAITLISTABLE_SLUGS,
+} from "@/lib/kits";
 
 describe("kit family config", () => {
-  it("has the six consolidated kits", () => {
+  it("has the four kits shown publicly", () => {
     expect(KITS.map((k) => k.slug)).toEqual([
       "qkit",
       "loopkit",
-      "shopkit",
-      "paykit",
-      "stockkit",
-      "reachkit",
-    ]);
-  });
-
-  it("has qkit, loopkit, paykit, and stockkit as live kits, each with a link", () => {
-    expect(LIVE_KITS.map((k) => k.slug)).toEqual([
-      "qkit",
-      "loopkit",
       "paykit",
       "stockkit",
     ]);
-    for (const k of LIVE_KITS) expect(k.href).toBeTruthy();
   });
 
-  it("sets href only on live kits (no dead links to unlaunched kits)", () => {
-    for (const k of KITS) {
-      if (k.status !== "live") expect(k.href).toBeUndefined();
+  it("lists only qkit as piloting; the rest are in build", () => {
+    const byStatus = (s: string) =>
+      KITS.filter((k) => k.status === s).map((k) => k.slug);
+    expect(byStatus("piloting")).toEqual(["qkit"]);
+    expect(byStatus("in-build")).toEqual(["loopkit", "paykit", "stockkit"]);
+  });
+
+  it("labels and explains each status without any live signal", () => {
+    expect(KIT_STATUS_LABEL).toEqual({
+      piloting: "Piloting",
+      "in-build": "In build",
+    });
+    expect(KIT_STATUS_EXPLAINER).toEqual({
+      piloting: "Running with a few vendors",
+      "in-build": "Built, not yet tried with vendors",
+    });
+  });
+
+  it("never publishes unreleased or retired kits", () => {
+    const slugs = KITS.map((k) => k.slug);
+    for (const gone of ["shopkit", "reachkit", "slotkit", "tapkit"]) {
+      expect(slugs).not.toContain(gone);
     }
   });
 
-  it("dropped slotkit and renamed tapkit away", () => {
-    const slugs = KITS.map((k) => k.slug);
-    expect(slugs).not.toContain("slotkit");
-    expect(slugs).not.toContain("tapkit");
+  it("every kit has a link and a plain-language tagline", () => {
+    for (const k of KITS) {
+      expect(k.href).toBeTruthy();
+      expect(k.tagline.length).toBeGreaterThan(10);
+    }
   });
 
-  it("every kit has a plain-language tagline", () => {
-    for (const k of KITS) expect(k.tagline.length).toBeGreaterThan(10);
+  it("only in-build kits are waitlistable", () => {
+    expect(WAITLISTABLE_SLUGS).toEqual(["loopkit", "paykit", "stockkit"]);
   });
 
-  it("only coming kits are waitlistable (not live or planned)", () => {
-    expect(WAITLISTABLE_SLUGS).toEqual(COMING_KITS.map((k) => k.slug));
-    expect(WAITLISTABLE_SLUGS).not.toContain("qkit");
-    expect(WAITLISTABLE_SLUGS.length).toBeGreaterThan(0);
+  it("states one pricing line with the 30 days' notice condition", () => {
+    expect(PRICING_LINE).toBe(
+      "Free during the pilot. If we start charging, you'll get at least 30 days' notice first.",
+    );
+    for (const k of KITS) {
+      expect(k.features.join(" ")).not.toMatch(/free|pro tier/i);
+    }
   });
 
   it("has unique slugs", () => {

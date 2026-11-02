@@ -140,7 +140,7 @@ test.describe("authed areas", () => {
       .filter({ hasText: ADDABLE_EMAIL });
     await expect(memberRow).toHaveCount(0);
 
-    await page.getByPlaceholder("person@merqo.sg").fill(ADDABLE_EMAIL);
+    await page.getByPlaceholder("person@merqo.io").fill(ADDABLE_EMAIL);
     await page.getByRole("button", { name: "Add member" }).click();
     await expect(memberRow).toBeVisible();
 

@@ -71,7 +71,7 @@ describe("computeVendorSavings", () => {
   it("skips an active link to a slug with no assumption entry, without polluting totals", () => {
     const result = computeVendorSavings([
       link({ product_slug: "qkit", plan: "free" }),
-      link({ product_slug: "shopkit", plan: "free" }),
+      link({ product_slug: "unknown-kit", plan: "free" }),
     ]);
     expect(result.perKit.map((k) => k.slug)).toEqual(["qkit"]);
     expect(result.totalCostCentsPerMonth).toBe(23000);

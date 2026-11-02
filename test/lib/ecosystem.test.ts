@@ -11,17 +11,17 @@ import { KITS } from "@/lib/kits";
 const slugs = new Set(KIT_NODES.map((n) => n.slug));
 
 describe("ecosystem graph config", () => {
-  it("has the six kits and no retired slugs", () => {
-    expect(slugs).toEqual(
-      new Set(["qkit", "loopkit", "shopkit", "paykit", "stockkit", "reachkit"]),
-    );
+  it("has the four public kits and no retired or unreleased slugs", () => {
+    expect(slugs).toEqual(new Set(["qkit", "loopkit", "paykit", "stockkit"]));
+    expect(slugs.has("shopkit")).toBe(false);
+    expect(slugs.has("reachkit")).toBe(false);
     expect(slugs.has("slotkit")).toBe(false);
     expect(slugs.has("tapkit")).toBe(false);
   });
 
-  it("defaults the stack to qkit (the live kit), but it is not special", () => {
+  it("defaults the stack to qkit (the kit being piloted), but it is not special", () => {
     expect(DEFAULT_STACKED).toBe("qkit");
-    expect(nodeBySlug("qkit")?.status).toBe("live");
+    expect(nodeBySlug("qkit")?.status).toBe("piloting");
   });
 
   it("every edge references real nodes", () => {

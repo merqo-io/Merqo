@@ -1,15 +1,15 @@
 const STEPS = [
   {
     title: "Pick a kit",
-    body: "Start with qkit for booth ordering, loopkit for loyalty, paykit for PayNow, or stockkit for inventory — use one or several.",
+    body: "qkit is piloting with a few vendors, for booth ordering and queues. loopkit, paykit, and stockkit are in build.",
   },
   {
     title: "Sign up once",
-    body: "One account works across every Merqo kit — your stall identity carries over automatically.",
+    body: "One Merqo sign-in covers the kits you use.",
   },
   {
     title: "Run your stall",
-    body: "Each kit runs independently day to day; Merqo's dashboard gives you the cross-kit view.",
+    body: "Each kit runs on its own day to day. Merqo's dashboard is where you manage them.",
   },
 ];
 
