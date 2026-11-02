@@ -15,3 +15,5 @@ Run the rollback-only pgTAP suites with `supabase test db` against local Supabas
 The latest prepared migrations and fixtures still need local database execution; their presence is not a passing runtime result. Keep fixed pgTAP plans aligned with assertion counts; focused suites using `no_plan()` report their count automatically.
 
 [Repository README](../../README.md)
+
+`db-hygiene.test.sql` also checks `marketing_consents` has no policies and no anon/authenticated read.

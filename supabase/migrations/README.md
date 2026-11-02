@@ -181,6 +181,8 @@ pulls even once its own app-side endpoints exist. `src/lib/types.ts` mirrors
 the resulting schema by hand and must be kept in sync after any migration
 lands.
 
+`0040_marketing_consents.sql` adds `merqo.marketing_consents` (email, wording shown, consent time) with RLS on and no policies.
+
 ## Parent
 
 See the repo root [README.md](../../README.md) for the full repo layout.

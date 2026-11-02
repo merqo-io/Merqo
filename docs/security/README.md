@@ -8,3 +8,5 @@ Security records for merqo.
 - `incident-response.md` - runbook for detecting, containing and reporting an incident, with PDPA breach notification steps, secret rotation, contacts and a log template.
 - `subprocessors.md` - third parties that process personal data, with purpose, data categories, region and DPA status.
 - `dnc.md` - Do Not Call statement and the policy requirement before any marketing call or SMS.
+
+The data inventory lists `marketing_consents` (general-updates opt-in from `/waitlist`, kept while subscribed).
