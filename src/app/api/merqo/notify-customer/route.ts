@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { customerNotifySecretOk } from "@/lib/customer-notify-auth";
+import { guardBearerRoute } from "@/lib/bearer-guard";
 import { createServiceClient } from "@/lib/supabase/server";
 import { sendTelegramMessage } from "@/lib/telegram";
+import { TELEGRAM_MESSAGE_MAX } from "@/lib/telegram-limits";
 
 export const revalidate = 0;
 
@@ -14,7 +15,7 @@ export const revalidate = 0;
 const bodySchema = z
   .object({
     vendor_id: z.uuid(),
-    message: z.string().min(1),
+    message: z.string().min(1).max(TELEGRAM_MESSAGE_MAX),
     notify_ref: z.string().min(1).optional(),
     phone: z.string().min(1).optional(),
   })
@@ -31,9 +32,8 @@ const bodySchema = z
  * connected. Gated by `customerNotifySecretOk`.
  */
 export async function POST(request: Request): Promise<Response> {
-  if (!customerNotifySecretOk(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const rejected = await guardBearerRoute(request, "notify-customer");
+  if (rejected) return rejected;
 
   let json: unknown;
   try {

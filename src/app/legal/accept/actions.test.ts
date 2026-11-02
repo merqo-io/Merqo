@@ -179,10 +179,10 @@ describe("acceptLegalTerms", () => {
       insertMock.mockResolvedValue({ error: null });
     });
 
-    it("takes the first hop of a multi-value x-forwarded-for", async () => {
+    it("takes the last hop of a multi-value x-forwarded-for", async () => {
       headersMock.mockResolvedValue(
         new Headers({
-          "x-forwarded-for": "203.0.113.9, 10.0.0.1, 10.0.0.2",
+          "x-forwarded-for": "6.6.6.6, 10.0.0.1, 203.0.113.9",
         }),
       );
 

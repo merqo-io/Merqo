@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { customerNotifySecretOk } from "@/lib/customer-notify-auth";
+import { guardBearerRoute } from "@/lib/bearer-guard";
 import { createServiceClient } from "@/lib/supabase/server";
 import { generateLinkToken } from "@/lib/telegram";
 
@@ -23,9 +23,8 @@ const bodySchema = z.object({
  * one order/event.
  */
 export async function POST(request: Request): Promise<Response> {
-  if (!customerNotifySecretOk(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const rejected = await guardBearerRoute(request, "vendor-connect-token");
+  if (rejected) return rejected;
 
   let json: unknown;
   try {

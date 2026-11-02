@@ -1,7 +1,7 @@
 import { latestLegalVersions } from "@/lib/legal-versions";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { customerNotifySecretOk } from "@/lib/customer-notify-auth";
+import { guardBearerRoute } from "@/lib/bearer-guard";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const revalidate = 0;
@@ -20,9 +20,8 @@ type LegalStatus = {
  * request.
  */
 export async function GET(request: Request): Promise<Response> {
-  if (!customerNotifySecretOk(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const rejected = await guardBearerRoute(request, "legal-status");
+  if (rejected) return rejected;
 
   const email = z
     .string()

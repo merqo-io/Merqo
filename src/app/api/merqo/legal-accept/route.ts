@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { customerNotifySecretOk } from "@/lib/customer-notify-auth";
+import { guardBearerRoute } from "@/lib/bearer-guard";
+import { clientIp } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const revalidate = 0;
@@ -12,7 +13,7 @@ const bodySchema = z.object({
   doc_version: z.string().min(1),
   doc_sha256: z.string().length(64),
   kit_slug: z.string().min(1),
-  ip: z.string().optional(),
+  ip: z.string().max(64).optional(),
   user_agent: z.string().optional(),
 });
 
@@ -27,9 +28,8 @@ const bodySchema = z.object({
  * only reflect the kit's server-to-server call, not the vendor's browser.
  */
 export async function POST(request: Request): Promise<Response> {
-  if (!customerNotifySecretOk(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const rejected = await guardBearerRoute(request, "legal-accept");
+  if (rejected) return rejected;
 
   let json: unknown;
   try {
@@ -54,7 +54,7 @@ export async function POST(request: Request): Promise<Response> {
     doc_version: parsed.data.doc_version,
     doc_sha256: parsed.data.doc_sha256,
     kit_slug: parsed.data.kit_slug,
-    ip: parsed.data.ip ?? request.headers.get("x-forwarded-for"),
+    ip: parsed.data.ip ?? clientIp(request.headers),
     user_agent: parsed.data.user_agent ?? request.headers.get("user-agent"),
   });
 

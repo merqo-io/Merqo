@@ -5,20 +5,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 // eslint-disable-next-line no-restricted-imports -- legal_acceptances has no client insert policy; the vendor is verified first
 import { createServerClient, createServiceClient } from "@/lib/supabase/server";
+import { clientIp } from "@/lib/rate-limit";
 import { safeRedirectPath } from "@merqo/ui";
 import { z } from "zod";
 import { getLegalDocSource, LEGAL_VERSIONS } from "@merqo/ui";
 
 function sha256(input: string): string {
   return createHash("sha256").update(input).digest("hex");
-}
-
-function clientIp(hdrs: Headers): string {
-  return (
-    hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    hdrs.get("x-real-ip") ||
-    "unknown"
-  );
 }
 
 /**
