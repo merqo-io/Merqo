@@ -10,12 +10,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Migration `0037_retention_purges.sql`: daily `pg_cron` purges for expired `telegram_link_tokens` (1 day after expiry), `legal_acceptances.ip` (nulled after 12 months, row kept), `support_messages` and `feedback` (24 months). Periods are conservative defaults pending owner confirmation and privacy-copy update.
 - `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
-
 - Migration `0039_entitlement_sync_error_kind.sql`: `entitlement_sync.last_error_kind`, so the vendor page shows why a kit push failed (route missing, response not understood, network) instead of only the HTTP code.
 
 ### Fixed
 
 - Vendor admin page: dates and the date-input defaults are shown in Singapore time (an event pass minted for 2 Nov no longer reads 1 Nov to 3 Nov); canceled subscriptions read "Cancelled. Period was A to B." without the renew hint; both cancel spellings display as "Cancelled"; the kit-reported Pro/Free badge is gone from activity cards (the tier lives in Kit entitlements); long emails and sync rows no longer cause horizontal scroll.
+- `block-no-verify.sh` no longer blocks commits made from a git worktree on a feature branch: Windows drive-letter paths (`C:\...`, `C:/...`) in the hook cwd, `cd` and `git -C` targets are normalised for Git Bash, and quoted paths containing spaces stay one token. Regression test: `bash .claude/hooks/block-no-verify.test.sh`.
 
 ### Changed
 

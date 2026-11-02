@@ -14,6 +14,8 @@ export function syncFailureLabel(
   const code =
     row.lastHttpStatus === null ? "" : ` (HTTP ${row.lastHttpStatus})`;
   switch (row.lastErrorKind) {
+    case "unconfigured":
+      return "kit not configured";
     case "network":
       return "network error or timed out";
     case "parse":

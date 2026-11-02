@@ -24,6 +24,12 @@ describe("syncFailureLabel", () => {
     ).toBe("kit returned an error (HTTP 500)");
   });
 
+  it("labels a kit that has no URL or secret", () => {
+    expect(
+      syncFailureLabel({ lastErrorKind: "unconfigured", lastHttpStatus: null }),
+    ).toBe("kit not configured");
+  });
+
   it("labels a network failure", () => {
     expect(
       syncFailureLabel({ lastErrorKind: "network", lastHttpStatus: null }),

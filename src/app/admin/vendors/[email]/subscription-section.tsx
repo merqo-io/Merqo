@@ -223,7 +223,7 @@ export function SubscriptionSection({
                     >
                       {badge.label}
                     </Badge>
-                    {r.lastStatus === "failed" && failure && (
+                    {r.lastStatus !== "ok" && failure && (
                       <span className="text-xs text-muted-foreground">
                         {failure}
                       </span>
