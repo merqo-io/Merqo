@@ -50,5 +50,14 @@ set local role authenticated;
 select throws_ok($$ select merqo.purge_old_feedback() $$, '42501', null, 'authenticated purge call is denied');
 reset role;
 
+-- The scheduling block in 0037 is skipped without pg_cron, so only assert the jobs when it is installed.
+select case
+  when exists (select 1 from pg_extension where extname = 'pg_cron')
+  then is((select count(*)::int from cron.job where jobname in (
+      'merqo_purge_telegram_link_tokens', 'merqo_purge_legal_acceptance_ips',
+      'merqo_purge_support_messages', 'merqo_purge_feedback')), 4, 'all four purge jobs are scheduled')
+  else pass('pg_cron not installed; schedule check skipped')
+end;
+
 select * from finish();
 rollback;
