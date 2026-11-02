@@ -12,7 +12,9 @@ with their source (mirrored by name/path under `app/`, `components/`,
   loads `@testing-library/jest-dom/vitest` matchers and raises
   `@testing-library/react`'s `waitFor`/`findBy*` default timeout
   (`asyncUtilTimeout`) to 10s, matching `testTimeout`, so async assertions
-  don't flake under CI's parallel load.
+  don't flake under CI's parallel load. It also stubs `ResizeObserver`,
+  `hasPointerCapture` and `scrollIntoView` (absent in jsdom) so Radix
+  Select and Switch controls can be driven in component tests.
 - `app/` — tests for `src/app/**` pages/components not colocated with source.
 - `components/` — tests for `src/components/**` components not colocated with source.
 - `contract/` — cross-kit HTTP contract tests (e.g. qkit metrics API).

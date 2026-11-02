@@ -137,6 +137,19 @@ describe("grantSubscriptionAction", () => {
     expect(mocks.syncVendorEntitlements).toHaveBeenCalledTimes(1);
   });
 
+  it("still pushes and tells the admin when cancelling the old plan fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.loadVendorSubscriptions.mockRejectedValue(new Error("db down"));
+    const res = await grantSubscriptionAction(grant);
+    expect(res).toEqual({
+      success: false,
+      error:
+        "Plan saved, but the old plan was not cancelled. Cancel it from the list.",
+    });
+    expect(mocks.syncVendorEntitlements).toHaveBeenCalledTimes(1);
+    expect(mocks.revalidatePath).toHaveBeenCalledWith("/admin/requests");
+  });
+
   it("keeps the other active plans when replace is switched off", async () => {
     mocks.loadVendorSubscriptions.mockResolvedValue([
       { id: "old-1", status: "active" },

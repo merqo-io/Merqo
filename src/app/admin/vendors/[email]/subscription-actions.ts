@@ -149,11 +149,24 @@ export async function grantSubscriptionAction(
       price_cents: data.priceCents,
       founder: data.founder,
     });
+    let replaced = true;
     if (data.replaceCurrent) {
-      await cancelSuperseded(user.id, vendorId, data.email, subscriptionId);
+      try {
+        await cancelSuperseded(user.id, vendorId, data.email, subscriptionId);
+      } catch (err) {
+        console.error("cancelSuperseded failed", err);
+        replaced = false;
+      }
     }
     await resolveRequest(user.id, vendorId, data.requestId);
     await afterChange({ id: vendorId, email: data.email });
+    if (!replaced) {
+      return {
+        success: false,
+        error:
+          "Plan saved, but the old plan was not cancelled. Cancel it from the list.",
+      };
+    }
     return { success: true };
   } catch (err) {
     if (err instanceof FounderCapError) {
