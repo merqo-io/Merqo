@@ -53,6 +53,11 @@ check 2 "block: bare commit, Windows-form cwd" "$mn_win"  "git commit -m \"msg h
 # A cd target that cannot be resolved keeps the project-root (main) fallback.
 check 2 "block: cd to unresolvable target"     "$wt"      "cd \"\$SOMEWHERE\" && git commit -m x"
 
+# A hook cwd that does not exist must not weaken any check.
+check 2 "block: missing cwd, --no-verify"      "C:\\nonexistent dir" "git commit --no-verify -m x"
+check 2 "block: missing cwd, -n"               "C:\\nonexistent dir" "git commit -n -m x"
+check 2 "block: missing cwd, bare commit (project root on main)" "C:\\nonexistent dir" "git commit -m x"
+
 # Pre-existing protections.
 check 2 "block: --no-verify"                   "$wt"      "git commit --no-verify -m x"
 check 2 "block: force push to main"            "$wt"      "git push --force origin main"

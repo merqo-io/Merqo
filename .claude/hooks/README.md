@@ -15,6 +15,10 @@ behavioral description of each hook and the events they're wired to.
   hook-layer bypasses (`HUSKY=0`, `HUSKY_SKIP_HOOKS`, `core.hooksPath=…`),
   direct commits to `main`, force-pushes to `main`, `checkout`/`restore` of
   guard-layer files, and recursive-forced `rm` on source directories.
+  Windows drive-letter paths (`C:\…`, `C:/…`) and quoted paths with spaces
+  are normalised before the branch is judged, so worktree commits on feature
+  branches pass.
+- `block-no-verify.test.sh` — regression tests for the hook (run `bash .claude/hooks/block-no-verify.test.sh`).
 - `user-prompt-guard.cjs` — reports injection phrases as advisory context and blocks embedded credentials (OWASP LLM02).
 - `post-edit-typecheck.sh` — PostToolUse(Edit|Write): runs
   `tsc --noEmit --incremental` on TS edits, feedback-only.
