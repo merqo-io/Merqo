@@ -2,7 +2,7 @@
  * Data for the landing "kit stacker" graph: four standalone kits and the
  * integrations that exist between them. Positions are fixed (art-directed, not physics) in a
  * stable viewBox; edges render only when BOTH their endpoints are stacked. No kit
- * is a required flagship — the graph shows connections, not dependencies.
+ * is a required flagship, the graph shows connections, not dependencies.
  * Display-only. `status` is derived from kits.ts (not hand-duplicated here)
  * so the graph can't drift out of sync with the real readiness.
  */
@@ -62,7 +62,7 @@ export const KIT_EDGES: KitEdge[] = [
   },
 ];
 
-/** The kit the stacker starts (and resets) with — qkit, the one being piloted. It is a
+/** The kit the stacker starts (and resets) with, qkit, the one being piloted. It is a
  *  sensible starting point, NOT a required anchor: it can be unstacked like any
  *  other kit (no flagship). */
 export const DEFAULT_STACKED = "qkit";

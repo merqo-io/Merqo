@@ -74,12 +74,12 @@ export const KITS: Kit[] = [
   {
     slug: "loopkit",
     name: "loopkit",
-    tagline: "Stamp cards, points and tiers that bring customers back.",
+    tagline: "Stamp cards and points that bring customers back.",
     description:
       "Digital stamp cards and a points system that turns one-time buyers into regulars. Customers collect stamps or points on every visit and redeem rewards you set, no punch cards to lose.",
     features: [
       "Digital stamp cards and points",
-      "Custom rewards and tiers",
+      "Custom rewards you set",
       "Stamps for qkit orders",
     ],
     status: "in-build",

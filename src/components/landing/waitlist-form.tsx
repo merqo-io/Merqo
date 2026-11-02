@@ -72,17 +72,8 @@ export function WaitlistForm({
         />
       </div>
       <p className="text-sm text-muted-foreground">
-        Clarence may WhatsApp you about this kit.
+        Clarence may email you about this kit.
       </p>
-      <label className="flex items-start gap-2 text-sm">
-        <input
-          type="checkbox"
-          name="updatesOptIn"
-          value="yes"
-          className="mt-0.5 size-4"
-        />
-        <span>Send me updates about Merqo kits.</span>
-      </label>
       {state.status === "error" && (
         <p role="alert" className="text-xs text-destructive">
           {state.message}

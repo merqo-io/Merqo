@@ -14,12 +14,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- `/waitlist?kit=<loopkit|paykit|stockkit>` page: the waitlist form with the kit preselected (validated with Zod), a WhatsApp notice, and an unticked updates opt-in. The opt-in is not stored because `vendor_links` has no consent columns.
+- `/waitlist?kit=<loopkit|paykit|stockkit>` page: the waitlist form with the kit preselected (validated with Zod), and a "Clarence may email you about this kit." notice.
 - Kit badges with a one-line explainer (Running with a few vendors / Built, not yet tried with vendors) on the landing, and the single pilot pricing line on the hero.
 
 ### Removed
 
-- shopkit and reachkit from every public surface, from every public surface (the `vendor_links` waitlist status and tables stay). The dashboard Coming soon/Planned sections, its waitlist button and action are removed too, since no kit is left in those states.
+- shopkit and reachkit from every public surface (the `vendor_links` waitlist status and tables stay). The dashboard Coming soon/Planned sections, its waitlist button and action are removed too, since no kit is left in those states.
 - The public `/legal/pilot-agreement` page.
 
 ### Fixed

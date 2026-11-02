@@ -38,8 +38,8 @@ describe("WaitlistPage", () => {
       .map((o) => (o as HTMLOptionElement).value);
     expect(options).toEqual(["", "loopkit", "paykit", "stockkit"]);
     expect(
-      screen.getByText("Clarence may WhatsApp you about this kit."),
+      screen.getByText("Clarence may email you about this kit."),
     ).toBeInTheDocument();
-    expect(screen.getByRole("checkbox")).not.toBeChecked();
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
   });
 });

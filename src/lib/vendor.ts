@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
-import { KITS, type Kit } from "@/lib/kits";
+import { KITS, WAITLISTABLE_SLUGS, type Kit } from "@/lib/kits";
 import type { GrantStatus } from "@/lib/admin";
 import { createServerClient } from "@/lib/supabase/server";
 import { isLegalCurrent, LEGAL_VERSIONS } from "@merqo/ui";
@@ -93,6 +93,17 @@ export function provisionableKits(
   const linked = new Set(links.map((l) => l.product_slug));
   const live = liveSlugs instanceof Set ? liveSlugs : new Set(liveSlugs);
   return kits.filter((k) => live.has(k.slug) && !linked.has(k.slug));
+}
+
+/** What the dashboard offers on an unadded kit's card. An in-build kit with no
+ *  one-click provisioning has nothing to log in to yet, so it points at the
+ *  waitlist instead of the kit's login. */
+export function kitCardAction(
+  kit: Kit,
+  provisionable: boolean,
+): "activate" | "waitlist" | "login" {
+  if (provisionable) return "activate";
+  return WAITLISTABLE_SLUGS.includes(kit.slug) ? "waitlist" : "login";
 }
 
 /** True when the vendor has at least one active kit that is renderable (its slug

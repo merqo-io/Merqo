@@ -16,6 +16,7 @@ import {
 import { VendorKitCard } from "./vendor-kit-card";
 import { KitDiscoveryCard } from "@/components/dashboard/kit-discovery-card";
 import { ActivateKitsButton } from "@/components/dashboard/activate-kits-button";
+import { KitCardCta } from "@/components/dashboard/kit-card-cta";
 
 export const revalidate = 0;
 
@@ -42,10 +43,10 @@ export default async function DashboardPage() {
   const savings = computeVendorSavings(links);
   const savingsBySlug = new Map(savings.perKit.map((s) => [s.slug, s]));
   const liveProducts = await loadLiveProducts();
-  // "Ready to add" shows a card for every kit the vendor doesn't
-  // already have (addableKits) — paykit included, even though it can't yet be
-  // one-click-activated. provisionableSlugs narrows just which of those cards
-  // get the ActivateKitsButton vs. the old external "log in on that kit" link.
+  // "Ready to add" shows a card for every kit the vendor doesn't already have
+  // (addableKits). provisionableSlugs narrows which of those get the
+  // ActivateKitsButton; the rest link to the waitlist (in-build kits) or the
+  // kit's own login (see kitCardAction).
   const readyToAdd = addableKits(links);
   const provisionableSlugs = new Set(
     provisionableKits(
@@ -184,25 +185,10 @@ export default async function DashboardPage() {
                   key={kit.slug}
                   kit={kit}
                   cta={
-                    provisionableSlugs.has(kit.slug) ? (
-                      <ActivateKitsButton
-                        slugs={[kit.slug]}
-                        label={`Add ${kit.name}`}
-                        variant="secondary"
-                        size="sm"
-                      />
-                    ) : (
-                      kit.href && (
-                        <a
-                          href={`${kit.href}/login`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-sm font-medium text-foreground hover:underline"
-                        >
-                          Add {kit.name}
-                        </a>
-                      )
-                    )
+                    <KitCardCta
+                      kit={kit}
+                      provisionable={provisionableSlugs.has(kit.slug)}
+                    />
                   }
                 />
               ))}
