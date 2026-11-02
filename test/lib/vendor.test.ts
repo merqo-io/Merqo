@@ -5,6 +5,7 @@ import {
   hasRenderableActiveKit,
   addableKits,
   provisionableKits,
+  kitCardAction,
   hasActiveLinkFor,
 } from "@/lib/vendor";
 
@@ -171,5 +172,13 @@ describe("hasActiveLinkFor", () => {
     expect(
       hasActiveLinkFor([{ product_slug: "loopkit", status: "active" }], "qkit"),
     ).toBe(false);
+  });
+});
+
+describe("kitCardAction", () => {
+  it("activates a provisionable kit, waitlists an in-build kit, logs in to a piloting kit", () => {
+    expect(kitCardAction(kit("loopkit", "in-build"), true)).toBe("activate");
+    expect(kitCardAction(kit("paykit", "in-build"), false)).toBe("waitlist");
+    expect(kitCardAction(kit("qkit", "piloting"), false)).toBe("login");
   });
 });

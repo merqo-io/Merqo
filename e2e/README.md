@@ -8,7 +8,7 @@ render without any Supabase provisioning. Runnable with only `pnpm dev` +
 
 ## Contents
 
-- `smoke.spec.ts` — login page renders; landing renders with a "Sign in"
+- `smoke.spec.ts` — login page renders (add-team placeholder uses `merqo.io`); landing renders with a "Sign in"
   action and the interactive kit stacker; a signed-out visitor hitting
   `/dashboard` is bounced to `/login`. Also gates an `authed areas` block
   behind `MERQO_E2E_AUTH=1` (CI's `e2e-admin` job only): admin
