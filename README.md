@@ -160,7 +160,7 @@ src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-
 src/lib/schemas.ts          — Zod schemas for the profile page's forms
 src/lib/merqo-vendor-profile.ts — typed wrapper over the shared vendor_profile RPCs
 src/lib/supabase/           — browser / server (schema=merqo) / service-role clients
-supabase/migrations/        — SQL schema (merqo.* tables) + RLS + grants
+supabase/migrations/        — SQL schema (merqo.* tables) + RLS + grants; 0037 adds pg_cron retention purges
 supabase/seed/staging-registry.sql: one-time staging registry wiring (docs/STAGING.md)
 scripts/staging-migrate.sh: applies migrations to the staging project with psql
 scripts/check-legal-version-skew.mjs — asserts merqo + all 5 kit repos pin
