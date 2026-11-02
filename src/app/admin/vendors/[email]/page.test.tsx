@@ -295,7 +295,7 @@ describe("VendorDetailPage", () => {
 
     expect(
       screen.getByText(
-        "S$16.00 per month, period 2026-11-01 to 2026-12-01. Ends 2026-12-01; renew by granting again.",
+        "S$16.00 per month. Period 2026-11-01 to 2026-12-01. Ends 2026-12-01; renew by granting again.",
       ),
     ).toBeInTheDocument();
     expect(screen.getAllByText("Lapsed")).toHaveLength(1);

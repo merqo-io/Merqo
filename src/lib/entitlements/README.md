@@ -32,7 +32,9 @@ charges anyone; prices and payment stay manual until billing exists.
   rewrites that mirror without pushing, run by the dashboard sync so legacy
   kit-reported values and lapsed subscriptions are corrected. Neither throws: a 404
   (kit has no route yet), a timeout or a network error is recorded as `failed`,
-  a kit with no `app_url` or secret as `skipped`. `push.test.ts` covers it.
+  a kit with no `app_url` or secret as `skipped`. A failure also stores its
+  kind (`last_error_kind`: network, http, parse, schema) so the admin page can
+  tell a missing route from an unparseable reply. `push.test.ts` covers it.
 
 ## Entitlement contract
 

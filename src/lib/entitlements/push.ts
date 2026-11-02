@@ -80,6 +80,7 @@ async function recordPush(
       payload,
       last_status: status,
       last_http_status: result.status,
+      last_error_kind: result.ok ? null : result.kind,
       last_attempt_at: nowIso,
       ...(result.ok ? { last_success_at: nowIso } : {}),
     },

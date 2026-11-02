@@ -65,6 +65,11 @@ select throws_ok($$ insert into merqo.entitlement_sync (vendor_id, kit_slug, pay
   values ('37000000-0000-0000-0000-000000000001', 'loopkit', '{}', 'weird') $$,
   '23514', null, 'an unknown sync status is rejected');
 
+select has_column('merqo', 'entitlement_sync', 'last_error_kind', 'the push log records why a push failed');
+select throws_ok($$ insert into merqo.entitlement_sync (vendor_id, kit_slug, payload, last_status, last_error_kind)
+  values ('37000000-0000-0000-0000-000000000001', 'paykit', '{}', 'failed', 'weird') $$,
+  '23514', null, 'an unknown error kind is rejected');
+
 -- user_id_for_email.
 select is(merqo.user_id_for_email('Entitlements-2@test.local'), '37000000-0000-0000-0000-000000000002'::uuid,
   'user_id_for_email matches case-insensitively');

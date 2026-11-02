@@ -29,10 +29,14 @@ export interface EventPassRow extends EventPassInput {
   prepaidCents: number;
 }
 
+export type SyncErrorKind =
+  "unconfigured" | "network" | "http" | "parse" | "schema";
+
 export interface SyncRow {
   kitSlug: string;
   lastStatus: "ok" | "failed" | "skipped";
   lastHttpStatus: number | null;
+  lastErrorKind: SyncErrorKind | null;
   lastAttemptAt: string;
   lastSuccessAt: string | null;
   tier: string | null;
@@ -128,7 +132,7 @@ export async function loadSyncRows(vendorId: string): Promise<SyncRow[]> {
   const { data, error } = await supabase
     .from("entitlement_sync")
     .select(
-      "kit_slug, payload, last_status, last_http_status, last_attempt_at, last_success_at",
+      "kit_slug, payload, last_status, last_http_status, last_error_kind, last_attempt_at, last_success_at",
     )
     .eq("vendor_id", vendorId)
     .order("kit_slug");
@@ -139,6 +143,7 @@ export async function loadSyncRows(vendorId: string): Promise<SyncRow[]> {
       payload: Partial<EntitlementPayload> | null;
       last_status: SyncRow["lastStatus"];
       last_http_status: number | null;
+      last_error_kind: SyncErrorKind | null;
       last_attempt_at: string;
       last_success_at: string | null;
     }[]
@@ -146,6 +151,7 @@ export async function loadSyncRows(vendorId: string): Promise<SyncRow[]> {
     kitSlug: r.kit_slug,
     lastStatus: r.last_status,
     lastHttpStatus: r.last_http_status,
+    lastErrorKind: r.last_error_kind,
     lastAttemptAt: r.last_attempt_at,
     lastSuccessAt: r.last_success_at,
     tier: r.payload?.tier ?? null,

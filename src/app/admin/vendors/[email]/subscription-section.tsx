@@ -1,5 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { formatSgd, planLabel } from "@/lib/pricing/format";
+import { sgDay } from "@/lib/sg-date";
+import {
+  statusLabel,
+  subscriptionPeriodLine,
+  syncFailureLabel,
+} from "./subscription-labels";
 import { FOUNDER_CAP } from "@/lib/entitlements/store";
 import type {
   EventPassRow,
@@ -16,7 +22,7 @@ import {
   type SellablePlan,
 } from "./subscription-controls";
 
-const day = (iso: string) => iso.slice(0, 10);
+const day = sgDay;
 
 function founderLabel(until: string | null, nowMs: number): string {
   if (!until) return "Founder";
@@ -77,14 +83,14 @@ export function SubscriptionSection({
                 key={s.id}
                 className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-card p-3.5 shadow-sm"
               >
-                <div className="space-y-1">
+                <div className="min-w-0 space-y-1">
                   <p className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="font-medium">{planLabel(s.planSlug)}</span>
                     <Badge
                       variant={s.status === "active" ? "success" : "muted"}
                       className="border-0 px-1.5 py-0"
                     >
-                      {s.status}
+                      {statusLabel(s.status)}
                     </Badge>
                     {s.status === "active" &&
                       Date.parse(s.currentPeriodEnd) <= nowMs && (
@@ -102,9 +108,11 @@ export function SubscriptionSection({
                     )}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {formatSgd(s.lockedPriceCents)} per {s.interval}, period{" "}
-                    {day(s.currentPeriodStart)} to {day(s.currentPeriodEnd)}.
-                    Ends {day(s.currentPeriodEnd)}; renew by granting again.
+                    {formatSgd(s.lockedPriceCents)} per {s.interval}.{" "}
+                    {subscriptionPeriodLine(s, nowMs, {
+                      start: day(s.currentPeriodStart),
+                      end: day(s.currentPeriodEnd),
+                    })}
                   </p>
                 </div>
                 {s.status === "active" && (
@@ -157,7 +165,7 @@ export function SubscriptionSection({
                     variant={p.status === "active" ? "success" : "muted"}
                     className="border-0 px-1.5 py-0"
                   >
-                    {p.status}
+                    {statusLabel(p.status)}
                   </Badge>
                   <span className="text-xs text-muted-foreground">
                     {formatSgd(p.prepaidCents)} prepaid
@@ -198,12 +206,13 @@ export function SubscriptionSection({
           <ul className="space-y-2">
             {syncRows.map((r) => {
               const badge = SYNC_BADGES[r.lastStatus];
+              const failure = syncFailureLabel(r);
               return (
                 <li
                   key={r.kitSlug}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-card p-3.5 shadow-sm"
                 >
-                  <p className="flex items-center gap-2 text-sm">
+                  <p className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="font-mono">{r.kitSlug}</span>
                     {r.tier && (
                       <span className="text-muted-foreground">{r.tier}</span>
@@ -214,9 +223,9 @@ export function SubscriptionSection({
                     >
                       {badge.label}
                     </Badge>
-                    {r.lastHttpStatus !== null && r.lastStatus === "failed" && (
+                    {r.lastStatus === "failed" && failure && (
                       <span className="text-xs text-muted-foreground">
-                        HTTP {r.lastHttpStatus}
+                        {failure}
                       </span>
                     )}
                   </p>

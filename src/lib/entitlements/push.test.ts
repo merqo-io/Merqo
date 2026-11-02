@@ -179,11 +179,13 @@ describe("syncVendorEntitlements", () => {
         kit_slug: "printkit",
         last_status: "failed",
         last_http_status: 404,
+        last_error_kind: "http",
       }),
       expect.objectContaining({
         kit_slug: "qkit",
         last_status: "ok",
         last_success_at: expect.any(String),
+        last_error_kind: null,
         payload: expect.objectContaining({ email: "v@x.com", tier: "qkit" }),
       }),
     ]);
