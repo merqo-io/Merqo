@@ -1,6 +1,6 @@
 # merqo personal-data inventory (2026-10-24)
 
-Source: `supabase/migrations/0001` to `0040` on `origin/main`. Nothing is dropped by this PR. "Candidate to drop" rows need owner approval, then a follow-up migration PR.
+Source: `supabase/migrations/0001` to `0040` (0040 lands with Merqo#117, the rest on `origin/main`). Nothing is dropped by this PR. "Candidate to drop" rows need owner approval, then a follow-up migration PR.
 
 | Table                              | Column                                                       | Purpose                                                | Read by                                        | Retention today                   | Verdict                                                                                                                                                                     |
 | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

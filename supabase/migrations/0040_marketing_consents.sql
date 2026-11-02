@@ -28,4 +28,5 @@ create table if not exists merqo.marketing_consents (
 
 alter table merqo.marketing_consents enable row level security;
 
+revoke all on merqo.marketing_consents from anon, authenticated;
 grant select, insert, update on merqo.marketing_consents to service_role;
