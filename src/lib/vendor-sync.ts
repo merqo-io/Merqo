@@ -4,6 +4,10 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { listLiveProducts } from "@/lib/products";
 import type { VendorLink } from "@/lib/vendor";
 import { fetchKitJson } from "@/lib/kit-action-request";
+import {
+  mirrorDerivedPlans,
+  syncVendorEntitlements,
+} from "@/lib/entitlements/push";
 
 type VendorStatusSource = Pick<
   RegistryRow,
@@ -11,12 +15,10 @@ type VendorStatusSource = Pick<
 >;
 
 export type VendorStatusCheck =
-  | { ok: true; slug: string; active: boolean; plan: string | null }
-  | { ok: false; slug: string };
+  { ok: true; slug: string; active: boolean } | { ok: false; slug: string };
 
 const vendorStatusSchema = z.object({
   active: z.boolean(),
-  plan: z.string().nullable(),
 });
 
 /** One kit's answer to "is this email an active vendor of yours?" Never
@@ -46,12 +48,7 @@ export async function checkVendorStatus(
     opts.timeoutMs ?? 5000,
   );
   if (!result.ok) return { ok: false, slug: kit.slug };
-  return {
-    ok: true,
-    slug: kit.slug,
-    active: result.data.active,
-    plan: result.data.plan,
-  };
+  return { ok: true, slug: kit.slug, active: result.data.active };
 }
 
 /** Which check results should become active vendor_links rows. Pure. */
@@ -64,7 +61,6 @@ export function upsertsFromChecks(
   product_slug: string;
   status: "active";
   last_verified_at: string;
-  plan: string | null;
 }[] {
   return checks
     .filter(
@@ -75,7 +71,6 @@ export function upsertsFromChecks(
       product_slug: c.slug,
       status: "active" as const,
       last_verified_at: nowIso,
-      plan: c.plan,
     }));
 }
 
@@ -146,6 +141,8 @@ export async function syncVendorKits(
       }
     }
 
+    await mirrorDerivedPlans(normalizedEmail);
+
     const { error: stateError } = await supabase
       .from("vendor_sync_state")
       .upsert(
@@ -176,7 +173,6 @@ export type ProvisionResult =
       ok: true;
       slug: string;
       alreadyExisted: boolean;
-      plan: string | null;
       needsSetup?: boolean;
     }
   | { ok: false; slug: string };
@@ -184,7 +180,6 @@ export type ProvisionResult =
 const provisionResponseSchema = z.object({
   ok: z.literal(true),
   already_existed: z.boolean(),
-  plan: z.string().nullable(),
   needs_setup: z.boolean().optional(),
 });
 
@@ -222,7 +217,6 @@ async function provisionOnce(
     ok: true,
     slug: kit.slug,
     alreadyExisted: result.data.already_existed,
-    plan: result.data.plan,
     needsSetup: result.data.needs_setup,
   };
 }
@@ -293,7 +287,6 @@ export async function provisionVendorKits(
       status: (s.needsSetup ? "needs_setup" : "active") as
         "active" | "needs_setup",
       last_verified_at: nowIso,
-      plan: s.plan,
     }));
     const { error } = await supabase
       .from("vendor_links")
@@ -301,6 +294,8 @@ export async function provisionVendorKits(
     if (error) {
       console.error("provisionVendorKits: upsert failed", error.message);
     }
+    // A newly provisioned tenant starts on the kit's default tier; give it the vendor's real one.
+    await syncVendorEntitlements(user, { kits: successes.map((s) => s.slug) });
   }
 
   const { data, error: readError } = await supabase

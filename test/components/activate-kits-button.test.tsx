@@ -45,8 +45,8 @@ describe("ActivateKitsButton", () => {
     resolveAction({
       success: true,
       results: [
-        { ok: true, slug: "qkit", alreadyExisted: false, plan: "free" },
-        { ok: true, slug: "loopkit", alreadyExisted: false, plan: "free" },
+        { ok: true, slug: "qkit", alreadyExisted: false },
+        { ok: true, slug: "loopkit", alreadyExisted: false },
       ],
     });
     await waitFor(() => expect(button).not.toBeDisabled());
@@ -56,7 +56,7 @@ describe("ActivateKitsButton", () => {
     vi.mocked(activateKitsAction).mockResolvedValue({
       success: true,
       results: [
-        { ok: true, slug: "qkit", alreadyExisted: false, plan: "free" },
+        { ok: true, slug: "qkit", alreadyExisted: false },
         { ok: false, slug: "loopkit" },
       ],
     });
@@ -91,9 +91,7 @@ describe("ActivateKitsButton", () => {
       })
       .mockResolvedValueOnce({
         success: true,
-        results: [
-          { ok: true, slug: "loopkit", alreadyExisted: false, plan: "free" },
-        ],
+        results: [{ ok: true, slug: "loopkit", alreadyExisted: false }],
       });
     render(<ActivateKitsButton slugs={["loopkit"]} label="Add loopkit" />);
     fireEvent.click(screen.getByRole("button", { name: "Add loopkit" }));
@@ -113,8 +111,8 @@ describe("ActivateKitsButton", () => {
     vi.mocked(activateKitsAction).mockResolvedValue({
       success: true,
       results: [
-        { ok: true, slug: "qkit", alreadyExisted: false, plan: "free" },
-        { ok: true, slug: "loopkit", alreadyExisted: false, plan: "free" },
+        { ok: true, slug: "qkit", alreadyExisted: false },
+        { ok: true, slug: "loopkit", alreadyExisted: false },
       ],
     });
     render(
@@ -140,9 +138,7 @@ describe("ActivateKitsButton", () => {
       })
       .mockResolvedValueOnce({
         success: true,
-        results: [
-          { ok: true, slug: "loopkit", alreadyExisted: false, plan: "free" },
-        ],
+        results: [{ ok: true, slug: "loopkit", alreadyExisted: false }],
       });
     render(<ActivateKitsButton slugs={["loopkit"]} label="Add loopkit" />);
     fireEvent.click(screen.getByRole("button", { name: "Add loopkit" }));

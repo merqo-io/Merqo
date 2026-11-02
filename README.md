@@ -8,7 +8,8 @@ House brand + operator console for a modular family of small-business tools
 This app is the public brand landing plus a role-gated operator console:
 
 - `/dashboard` — cross-product metrics overview (post-login home)
-- `/admin/vendors` — grant/revoke kit access per vendor
+- `/admin/vendors` — grant/revoke kit access per vendor, plus subscriptions, event passes and the entitlements pushed to each kit
+- `/admin/requests` — plan-change requests vendors raised from their dashboard
 - `/admin/team` — manage Merqo-team members
 - `/admin/products` — per-kit health from the metrics API
 - `/admin/feedback` — vendor NPS + comments per kit
@@ -140,7 +141,7 @@ src/app/                    — app router (landing, dashboard, admin console, s
 src/app/page.tsx            — public brand landing with session-aware CTAs
 src/app/dashboard/          — vendor dashboard: (app)/ (overview + kit discovery,
                                open to every signed-in user)
-src/app/admin/              — Merqo-team console: overview (page.tsx) + vendors/, team/,
+src/app/admin/              — Merqo-team console: overview (page.tsx) + vendors/, requests/, team/,
                                products/, feedback/, activity/ (all auth-gated)
 src/app/profile/            — shared account page (signed-in gate only — reachable from
                                both the vendor dashboard and the admin console)
@@ -157,6 +158,7 @@ src/lib/metrics-client.ts   — fetch of a kit's HTTP metrics endpoint
 src/lib/vendor-activity-client.ts — fetch of a single vendor's per-kit triage status/metrics/incidents
 src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-up for /admin/health
                                (admin/vendors/[email]'s Activity cards)
+src/lib/entitlements/     — derive what a vendor may use per kit from subscriptions + event passes, push it to the kits
 src/lib/schemas.ts          — Zod schemas for the profile page's forms
 src/lib/merqo-vendor-profile.ts — typed wrapper over the shared vendor_profile RPCs
 src/lib/supabase/           — browser / server (schema=merqo) / service-role clients

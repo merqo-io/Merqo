@@ -1,5 +1,6 @@
 import { requireMerqoTeam } from "@/lib/team";
 import { listVendorGrants, listProducts } from "@/lib/admin";
+import { FOUNDER_CAP, countFounders } from "@/lib/entitlements/store";
 import { GrantForm } from "./grant-form";
 import { VendorList } from "./vendor-list";
 
@@ -7,9 +8,10 @@ export const revalidate = 0;
 
 export default async function VendorsPage() {
   await requireMerqoTeam();
-  const [grants, products] = await Promise.all([
+  const [grants, products, founders] = await Promise.all([
     listVendorGrants(),
     listProducts(),
+    countFounders(),
   ]);
 
   return (
@@ -19,7 +21,8 @@ export default async function VendorsPage() {
           Vendors
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Grant kit access and see who owns what.
+          Grant kit access and see who owns what. Founder slots left:{" "}
+          {Math.max(0, FOUNDER_CAP - founders)} of {FOUNDER_CAP}.
         </p>
       </div>
 
