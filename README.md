@@ -211,6 +211,9 @@ secrets and administrative writes use server-only service clients, so
   migration gate: `docs/STAGING.md`. `.gitattributes`
   keeps `*.sh` on LF line endings so the staging script runs in a Linux
   container from a Windows checkout.
+- The `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync`
+  GitHub App token (a ruleset limits that branch to the app); see
+  `.github/workflows/README.md`.
 - Schema drift check (fingerprint SQL, compare script, owner runbook):
   `docs/SCHEMA-DRIFT.md`
 - Security records (data inventory, incident response runbook, subprocessor

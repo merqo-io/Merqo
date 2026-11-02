@@ -10,6 +10,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
 
+### Changed
+
+- `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
+
 ## [0.11.0] - 2026-11-02
 
 ### Added
