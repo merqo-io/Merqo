@@ -37,3 +37,5 @@ never by a browser directly. The token it mints is resolved by
 ## Parent
 
 [merqo](../README.md)
+
+Guarded by guardBearerRoute (per-IP rate limit, then the bearer secret).

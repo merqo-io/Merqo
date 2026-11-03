@@ -182,3 +182,5 @@ lands.
 ## Parent
 
 See the repo root [README.md](../../README.md) for the full repo layout.
+
+ 038_rate_limit.sql adds the service-role-only merqo.rate_limit_hit counter and its table.

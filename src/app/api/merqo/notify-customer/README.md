@@ -44,3 +44,5 @@ point in this ecosystem. Reads `merqo.customers` rows written by
 ## Parent
 
 [merqo](../README.md)
+
+Guarded by guardBearerRoute. message is capped at 4096 characters, Telegram's own limit.

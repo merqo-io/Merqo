@@ -78,3 +78,6 @@ integration are verified separately.
 [src](../README.md)
 
 `security-headers.ts` also allows the Vercel toolbar origin (`vercel.live`) outside production. Images also allow `https://*.googleusercontent.com` for Google sign-in avatars.
+
+ate-limit.ts holds clientIp (x-vercel-forwarded-for, x-real-ip, then the last x-forwarded-for hop) and
+ateLimit, a Postgres fixed-window counter that fails open or closed per caller. An unresolvable IP is metered in one shared bucket at 10x the limit. earer-guard.ts fronts the kit-to-Merqo routes and elegram-limits.ts holds Telegram's 4096-character message cap.

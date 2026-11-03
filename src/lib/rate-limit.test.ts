@@ -65,11 +65,42 @@ describe("rateLimit", () => {
     });
   });
 
-  it("does not meter an unresolvable IP, even when failOpen is false", async () => {
-    expect(await rateLimit({ ...OPTS, key: "unknown", failOpen: false })).toBe(
-      true,
+  it("meters the unknown bucket at 10x the limit", async () => {
+    rpc.mockResolvedValue({ data: true, error: null });
+    await rateLimit({ ...OPTS, key: "unknown", failOpen: true });
+    expect(rpc).toHaveBeenCalledWith("rate_limit_hit", {
+      p_key: "waitlist:unknown",
+      p_limit: 50,
+      p_window_seconds: 3600,
+    });
+  });
+
+  it.each([
+    ["x-forwarded-for of only a comma", { "x-forwarded-for": "," }],
+    [
+      "whitespace-only headers",
+      {
+        "x-forwarded-for": "  ",
+        "x-real-ip": "   ",
+        "x-vercel-forwarded-for": " ",
+      },
+    ],
+    ["no headers at all", {}],
+  ])("%s is metered in the unknown bucket", async (_name, hdrs) => {
+    rpc.mockResolvedValue({ data: true, error: null });
+    const key = clientIp(new Headers(hdrs));
+    expect(key).toBe("unknown");
+    await rateLimit({ ...OPTS, key, failOpen: true });
+    expect(rpc).toHaveBeenCalledWith(
+      "rate_limit_hit",
+      expect.objectContaining({ p_key: "waitlist:unknown", p_limit: 50 }),
     );
-    expect(rpc).not.toHaveBeenCalled();
+  });
+
+  it("ignores empty x-forwarded-for hops when picking the last one", () => {
+    expect(
+      clientIp(new Headers({ "x-forwarded-for": "203.0.113.9, ,  ," })),
+    ).toBe("203.0.113.9");
   });
 
   it("returns false when the limit is hit", async () => {

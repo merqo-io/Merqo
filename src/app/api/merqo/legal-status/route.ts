@@ -20,7 +20,9 @@ type LegalStatus = {
  * request.
  */
 export async function GET(request: Request): Promise<Response> {
-  // Unmetered: kits call this on every gated render and treat any non-OK reply as "not accepted", so a shared egress IP hitting a cap would lock vendors out.
+  // Unmetered: kits call this on every gated render and treat any non-OK
+  // reply as "not accepted", so a shared egress IP hitting a cap would lock
+  // vendors out.
   const rejected = await guardBearerRoute(request, "legal-status", {
     rateLimited: false,
   });
