@@ -46,6 +46,14 @@ describe("WaitlistPage", () => {
     expect(
       screen.getByText("Clarence may email you about this kit."),
     ).toBeInTheDocument();
-    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+  });
+
+  it("shows an unticked, separate general-updates checkbox", async () => {
+    await selected("stockkit");
+    const box = screen.getByRole("checkbox", {
+      name: "Also send me occasional Merqo updates.",
+    }) as HTMLInputElement;
+    expect(box.checked).toBe(false);
+    expect(box.name).toBe("updatesOptIn");
   });
 });

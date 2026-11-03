@@ -38,7 +38,9 @@ describe("VendorTelegramConnect", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /connect telegram/i }));
 
-    expect(await screen.findByTestId("qr")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("img", { name: /telegram connect qr code/i }),
+    ).toHaveAttribute("src", expect.stringContaining("data:image/svg+xml"));
     expect(
       screen.getByRole("link", { name: /t\.me\/MerqoNotifyBot/ }),
     ).toHaveAttribute("href", "https://t.me/MerqoNotifyBot?start=abc123");

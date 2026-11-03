@@ -10,6 +10,8 @@ import { WAITLISTABLE_SLUGS } from "@/lib/kits";
 const schema = z.object({
   email: z.string().trim().toLowerCase().max(254).email(),
   slug: z.enum(WAITLISTABLE_SLUGS as [string, ...string[]]),
+  // An unticked checkbox is absent from FormData; a ticked one posts "on".
+  updatesOptIn: z.literal("on").nullish(),
 });
 
 export async function joinKitWaitlist(
@@ -19,6 +21,7 @@ export async function joinKitWaitlist(
   const parsed = schema.safeParse({
     email: formData.get("email"),
     slug: formData.get("slug"),
+    updatesOptIn: formData.get("updatesOptIn"),
   });
   if (!parsed.success) {
     return { status: "error", message: "Enter a valid email address." };
@@ -38,7 +41,11 @@ export async function joinKitWaitlist(
     };
   }
   try {
-    await addToWaitlist(parsed.data.email, parsed.data.slug);
+    await addToWaitlist(
+      parsed.data.email,
+      parsed.data.slug,
+      parsed.data.updatesOptIn === "on",
+    );
     return {
       status: "success",
       message: "You're on the list, we'll email you when it opens.",

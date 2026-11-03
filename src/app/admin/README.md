@@ -14,8 +14,8 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   cheaply, resolves `canSwitch` (whether the signed-in team member also has an
   active vendor kit, via `hasActiveVendorAccess`) and the account's
   email/avatar, and passes them to the shared header (`@/components/dashboard-nav.tsx`,
-  a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the seven section links
-  (Overview / Vendors / Products / Health / Team / Feedback / Activity) and an "Admin"
+  a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the eight section links
+  (Overview / Vendors / Requests / Products / Health / Team / Feedback / Activity) and an "Admin"
   badge beside the wordmark. The layout ends with the landing `Footer` (no
   sign-in link) and hides both header and footer when printing.
 - `page.tsx` — `AdminOverviewPage` (`revalidate = 0`). Fetches live products,
@@ -27,6 +27,7 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   "View health" link to `health/`; waitlisted vendors, open support messages,
   pending upgrade requests), summary `StatCard`s, `OnboardingFunnelView`, and
   a `ProductTile` grid.
+- `confirm-admin-action.dom.test.tsx` — also pins that the page behind an open confirm dialog is hidden from role queries until the action succeeds, which the e2e specs rely on.
 - `page.test.tsx` — mocked-dependency coverage for the overview's flagged-vendor
   count: only active kits are passed to `getTenantHealth`, only `attention` rows
   count, and the row links to `/admin/health`.
@@ -83,8 +84,15 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   renders an "Activity" section — one card per kit the vendor is `active`
   on, pulled live via `getVendorActivity()` (`@/lib/vendor-activity-client`),
   each card carrying that kit's 72-hour incident list. Opening the page
-  records a `view_vendor` audit row with only an email hash. See
-  `[email]/README.md`.
+  records a `view_vendor` audit row with only an email hash. The vendors page
+  header shows "Founder slots left: N of 20". `[email]/` also holds the
+  subscription card, event pass minting and per-kit push state, all audited
+  (`grant_subscription`, `cancel_subscription`, `mint_event_pass`,
+  `cancel_event_pass`, `repush_entitlements`, `resolve_subscription_request`).
+  See `[email]/README.md`.
+- `requests/` — sub-route: the queue of plan changes vendors asked for from
+  their dashboard; resolve on the vendor page or decline. See
+  `requests/README.md`.
 - `activity/` — sub-route (`page.tsx` + `page.test.tsx`): `AdminActivityPage`
   server-fetches the most recent 100 `merqo.admin_audit` rows via
   `listAdminAuditEntries()` (`@/lib/admin`) and maps each row to an

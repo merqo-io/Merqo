@@ -10,14 +10,13 @@ names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use
 
 - `account.test.ts` — `src/lib/account.ts` metadata field reads.
 - `admin.test.ts` — `src/lib/admin.ts`'s read helpers (team/grant listing, `listAdminAuditEntries`'s admin-id-to-email resolution) and write paths (`grantKit`/`revokeKit`/`removeTeamMember`/`addTeamMemberByEmail` — the last now returns the added member's user id, or `null` when no account matches — plus `recordAudit`'s best-effort insert), incl. duplicate-grant and not-found edge cases, all against a mocked Supabase service client.
-- `downgrade-request.test.ts` — `src/lib/downgrade-request.ts`'s metrics-API call.
 - `ecosystem.test.ts` — the kit-stacker graph data/edge logic in `src/lib/ecosystem.ts`.
 - `feedback-action.test.ts` — the vendor feedback Server Action.
 - `feedback-support-schemas.test.ts` — the feedback/support Zod schemas.
 - `format.test.ts` — `money()` and the other display formatters in `src/lib/format.ts`.
 - `funnel.test.ts` — the onboarding funnel counts in `src/lib/funnel.ts`.
 - `health.test.ts` — the `reporting`/`lagging`/`down` classifier in `src/lib/health.ts`.
-- `kit-action-request.test.ts` — `src/lib/kit-action-request.ts`'s shared `fetchKitJson`/`postKitAction` helpers (network/HTTP/parse/schema failure modes).
+- `kit-action-request.test.ts` — `src/lib/kit-action-request.ts`'s shared `fetchKitJson` helper (network/HTTP/parse/schema failure modes).
 - `kits.test.ts` — the kit family config in `src/lib/kits.ts` (slugs, piloting/in-build/planned status, waitlistable slugs, hrefs).
 - `merqo-vendor-profile.test.ts` — the vendor-profile RPC wrapper.
 - `metrics-client.test.ts` — the platform metrics fetch + schema validation.
@@ -27,7 +26,6 @@ names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use
 - `schemas.test.ts` — the shared vendor-profile social/website link schemas.
 - `support-action.test.ts` — the vendor support-message submission Server Action.
 - `support.test.ts` — the open-support-messages read in `src/lib/support.ts`.
-- `upgrade-request.test.ts` — `src/lib/upgrade-request.ts`'s metrics-API call.
 - `vendor-grants.test.ts` — the client-safe `GrantStatus` helpers in `src/lib/vendor-grants.ts`.
 - `vendor-metrics-client.test.ts` — the per-vendor stats fetch + schema validation.
 - `vendor-sync.test.ts` — vendor kit-grant provisioning/sync.

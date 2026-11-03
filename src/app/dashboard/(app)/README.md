@@ -48,13 +48,14 @@ section; one or more kits gets the savings + per-kit overview.
   of the per-card savings estimates, with an `InfoTooltip` (`@merqo/ui`)
   explaining the estimate's basis.
 - `vendor-kit-card.tsx` — `VendorKitCard({ tile, savings, metrics, now })`:
-  one active kit's card — plan badge, per-kit savings line (same
+  one active kit's card — plan badge (the tier Merqo derived, not one the kit reported), per-kit savings line (same
   `InfoTooltip` from `@merqo/ui`), `VendorMetricList`, and the
   `UpgradeButton`/`DowngradeButton` pair.
 - `upgrade-button.tsx` / `downgrade-button.tsx` — `UpgradeButton`/
-  `DowngradeButton({ slug })`: file a Free→Pro/Pro→Free plan-change request
-  for one kit via `requestUpgrade`/`requestDowngrade`, with inline (no
-  toast) success/error feedback. These controls intentionally retain their own inline feedback rather than the destructive admin confirmation contract.
+  `DowngradeButton({ slug })`: file an upgrade or cancel request for
+  one kit via `requestUpgrade`/`requestDowngrade`; the request lands in the
+  Merqo admin Requests queue, and the team resolves it. Inline (no toast)
+  success/error feedback. These controls intentionally retain their own inline feedback rather than the destructive admin confirmation contract.
 - `vendor-metric-list.tsx` — `VendorMetricList({ result, now })`: renders a
   kit's headline metric (in the "Harbour Control" theme's amber `text-gold-text` "value
   moment" accent, as of 2026-08-19) plus up to three supporting figures,

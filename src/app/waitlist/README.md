@@ -13,6 +13,8 @@ Public waitlist page for the kits still in build.
 
 Submits through `../actions/waitlist.ts`. Kit landings link here with `/waitlist?kit=loopkit`.
 
+The form has a separate, unticked general-updates checkbox, stored only when ticked (see `marketing_consents`).
+
 ## Parent
 
 [app](../README.md)

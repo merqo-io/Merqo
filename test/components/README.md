@@ -9,7 +9,7 @@ path).
 
 ## Contents
 
-- `activate-kits-button.test.tsx` — `src/components/dashboard/activate-kits-button.tsx`'s one-click kit activation flow.
+- `activate-kits-button.test.tsx` — `src/components/dashboard/activate-kits-button.tsx`'s one-click kit activation flow (its fixtures carry no `plan`, since a kit's own plan is no longer read).
 - `kit-discovery-card.test.tsx` — `src/components/dashboard/kit-discovery-card.tsx`'s card rendering per kit status (fixture `href` is the `qkit.merqo.io` production host).
 - `kit-previews.test.tsx` — the `src/components/dashboard/kit-previews/` mockup-window preview components.
 - `providers.test.tsx` — `src/components/providers.tsx`'s app-wide client providers.

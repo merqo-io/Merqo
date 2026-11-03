@@ -9,6 +9,12 @@ import { UpgradeButton } from "./upgrade-button";
 import { DowngradeButton } from "./downgrade-button";
 import { VendorMetricList } from "./vendor-metric-list";
 
+const PLAN_LABELS: Record<string, string> = {
+  starter: "Starter",
+  qkit: "Qkit",
+  paid: "Paid",
+};
+
 export function VendorKitCard({
   tile,
   savings,
@@ -20,14 +26,20 @@ export function VendorKitCard({
   metrics: VendorMetricsResult;
   now: number;
 }) {
+  const paid = Boolean(tile.plan) && tile.plan !== "free";
   return (
     // primary treatment — this is the vendor's own live, active kit, not a pitch
     <div className="rounded-xl border bg-card p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md">
       <div className="flex items-center justify-between gap-3">
         <h3 className="font-display text-lg font-bold">{tile.name}</h3>
         <div className="flex items-center gap-1.5">
-          {tile.plan === "pro" && <Badge variant="gold">Pro</Badge>}
-          {tile.plan === "free" && <Badge variant="muted">Free</Badge>}
+          {paid ? (
+            <Badge variant="gold">
+              {PLAN_LABELS[tile.plan ?? ""] ?? "Paid"}
+            </Badge>
+          ) : (
+            <Badge variant="muted">Free</Badge>
+          )}
           <Badge variant="success">Active</Badge>
         </div>
       </div>
@@ -63,20 +75,21 @@ export function VendorKitCard({
             </a>
           </Button>
         )}
-        {tile.plan === "free" && <UpgradeButton slug={tile.slug} />}
-        {tile.plan === "pro" && <DowngradeButton slug={tile.slug} />}
-      </div>
-      {tile.plan === "free" &&
-        savings &&
-        savings.upsideCostCentsPerMonth > 0 && (
-          <p className="mt-2 text-xs text-muted-foreground">
-            Pro saves{" "}
-            <span className="font-medium text-foreground">
-              +{money(savings.upsideCostCentsPerMonth)}
-            </span>{" "}
-            more (+{savings.upsideHoursPerWeek} hrs/week)
-          </p>
+        {paid ? (
+          <DowngradeButton slug={tile.slug} />
+        ) : (
+          <UpgradeButton slug={tile.slug} />
         )}
+      </div>
+      {!paid && savings && savings.upsideCostCentsPerMonth > 0 && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Pro saves{" "}
+          <span className="font-medium text-foreground">
+            +{money(savings.upsideCostCentsPerMonth)}
+          </span>{" "}
+          more (+{savings.upsideHoursPerWeek} hrs/week)
+        </p>
+      )}
 
       {tile.lastVerifiedAt && (
         <p className="mt-3 text-[0.7rem] text-muted-foreground">

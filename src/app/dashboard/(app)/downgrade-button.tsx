@@ -14,7 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-/** Confirm an immediate move to Free and show the result inline. */
+/** Confirm a cancellation request and show the result inline. */
 export function DowngradeButton({ slug }: { slug: string }) {
   const [pending, startTransition] = useTransition();
   const [state, setState] = useState<"idle" | "done" | "error">("idle");
@@ -32,7 +32,7 @@ export function DowngradeButton({ slug }: { slug: string }) {
         }
       } catch {
         setState("error");
-        setError("Unable to cancel Pro. Please try again.");
+        setError("Unable to send your request. Please try again.");
       }
     });
   }
@@ -40,7 +40,7 @@ export function DowngradeButton({ slug }: { slug: string }) {
   if (state === "done") {
     return (
       <p className="text-sm font-medium text-muted-foreground">
-        Cancelled, you&apos;re back on Free.
+        Request sent, we&apos;ll confirm shortly.
       </p>
     );
   }
@@ -54,20 +54,22 @@ export function DowngradeButton({ slug }: { slug: string }) {
             disabled={pending}
             className="text-sm font-medium text-foreground hover:underline disabled:opacity-60"
           >
-            {pending ? "Cancelling…" : "Cancel Pro"}
+            {pending ? "Sending…" : "Request cancellation"}
           </button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel your Pro subscription?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Ask to cancel your subscription?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              You&apos;ll be moved back to the free tier immediately.
+              The Merqo team will confirm and move you back to the free tier.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Never mind</AlertDialogCancel>
             <AlertDialogAction onClick={onConfirm}>
-              Cancel subscription
+              Send request
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -3,17 +3,18 @@
 import { kitSlugSchema } from "@/lib/schemas";
 import { loadVendorContext, hasActiveLinkFor } from "@/lib/vendor";
 import { listLiveProducts } from "@/lib/products";
-import { requestKitDowngrade } from "@/lib/downgrade-request";
+import { loadVendorSubscriptions } from "@/lib/entitlements/store";
+import { createSubscriptionRequest } from "@/lib/subscription-requests";
 
 export type DowngradeActionResult =
   { success: true } | { success: false; error: string };
 
 const GENERIC_ERROR = "Could not send your request. Try again in a moment.";
 
-/** Flip `slug` back to free for the signed-in vendor. Independently
- *  re-checks that the vendor actually holds an active link to that kit —
- *  the UI only ever renders this action's button for a kit the vendor
- *  uses, but a direct invocation must not bypass that. */
+/** Ask the Merqo team to cancel the subscription that covers `slug`.
+ *  Independently re-checks that the vendor actually holds an active link to
+ *  that kit — the UI only ever renders this action's button for a kit the
+ *  vendor uses, but a direct invocation must not bypass that. */
 export async function requestDowngrade(
   slug: string,
 ): Promise<DowngradeActionResult> {
@@ -30,12 +31,20 @@ export async function requestDowngrade(
     }
 
     const products = await listLiveProducts();
-    const kit = products.find((p) => p.slug === slug);
-    if (!kit) {
+    if (!products.some((p) => p.slug === slug)) {
       return { success: false, error: GENERIC_ERROR };
     }
 
-    return requestKitDowngrade(kit, user.email);
+    const covering = (await loadVendorSubscriptions(user.id)).find(
+      (s) => s.status === "active" && s.includedKits.includes(slug),
+    );
+    await createSubscriptionRequest({
+      vendorId: user.id,
+      planSlug: covering?.planSlug ?? "free",
+      kind: "cancel",
+      note: `Asked from the ${slug} card`,
+    });
+    return { success: true };
   } catch (err) {
     console.error("requestDowngrade: unexpected failure", err);
     return { success: false, error: GENERIC_ERROR };

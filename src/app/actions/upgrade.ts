@@ -3,17 +3,21 @@
 import { kitSlugSchema } from "@/lib/schemas";
 import { loadVendorContext, hasActiveLinkFor } from "@/lib/vendor";
 import { listLiveProducts } from "@/lib/products";
-import { requestKitUpgrade } from "@/lib/upgrade-request";
+import { loadPlanCatalog } from "@/lib/pricing/catalog";
+import {
+  createSubscriptionRequest,
+  upgradePlanForKit,
+} from "@/lib/subscription-requests";
 
 export type UpgradeActionResult =
   { success: true } | { success: false; error: string };
 
 const GENERIC_ERROR = "Could not send your request. Try again in a moment.";
 
-/** File a monthly-Pro upgrade request for `slug` on the signed-in vendor's
- *  behalf. Independently re-checks that the vendor actually holds an active
- *  link to that kit — the UI only ever renders this action's button for a
- *  kit the vendor uses, but a direct invocation must not bypass that. */
+/** Ask the Merqo team to upgrade the signed-in vendor for `slug`. Independently
+ *  re-checks that the vendor actually holds an active link to that kit — the
+ *  UI only ever renders this action's button for a kit the vendor uses, but a
+ *  direct invocation must not bypass that. */
 export async function requestUpgrade(
   slug: string,
 ): Promise<UpgradeActionResult> {
@@ -30,12 +34,20 @@ export async function requestUpgrade(
     }
 
     const products = await listLiveProducts();
-    const kit = products.find((p) => p.slug === slug);
-    if (!kit) {
+    if (!products.some((p) => p.slug === slug)) {
       return { success: false, error: GENERIC_ERROR };
     }
 
-    return requestKitUpgrade(kit, user.email);
+    const plan = upgradePlanForKit(await loadPlanCatalog(), slug);
+    if (!plan) return { success: false, error: GENERIC_ERROR };
+
+    await createSubscriptionRequest({
+      vendorId: user.id,
+      planSlug: plan.slug,
+      kind: "upgrade",
+      note: `Asked from the ${slug} card`,
+    });
+    return { success: true };
   } catch (err) {
     console.error("requestUpgrade: unexpected failure", err);
     return { success: false, error: GENERIC_ERROR };

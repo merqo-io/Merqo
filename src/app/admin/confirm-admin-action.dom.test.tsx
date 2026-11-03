@@ -66,3 +66,27 @@ it("disables confirmation and cancellation while a save is pending", async () =>
   expect(action).toHaveBeenCalledTimes(1);
   await act(async () => resolve({ success: true }));
 });
+it("hides the page behind it while pending, so only the dialog closing proves the save", async () => {
+  let resolve!: (result: { success: true }) => void;
+  const action = vi.fn(
+    () =>
+      new Promise<{ success: true }>((done) => {
+        resolve = done;
+      }),
+  );
+  const user = userEvent.setup();
+  render(<ConfirmAdminAction {...props} action={action} />);
+  await user.click(screen.getByRole("button", { name: "Open confirmation" }));
+  await user.click(screen.getByRole("button", { name: "Confirm" }));
+  expect(
+    screen.queryByRole("button", { name: "Open confirmation" }),
+  ).not.toBeInTheDocument();
+  expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+  await act(async () => resolve({ success: true }));
+  await waitFor(() =>
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument(),
+  );
+  expect(
+    screen.getByRole("button", { name: "Open confirmation" }),
+  ).toBeInTheDocument();
+});

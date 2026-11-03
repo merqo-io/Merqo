@@ -41,6 +41,7 @@ describe("AdminLayout", () => {
     for (const [label, href] of [
       ["Overview", "/admin"],
       ["Vendors", "/admin/vendors"],
+      ["Requests", "/admin/requests"],
       ["Products", "/admin/products"],
       ["Team", "/admin/team"],
       ["Health", "/admin/health"],

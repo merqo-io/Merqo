@@ -36,7 +36,8 @@ HTTP calls. Metrics and vendor metrics have separate response schemas and
 clients; `vendor-activity-client.ts` validates with `vendorActivityPayloadSchema`
 from `@merqo/ui/contracts` (optional `incidents`/`recent`). `tenant-health.ts`
 `getTenantHealth()` pools those activity reads (6 at a time, 3000 ms timeout)
-into per-vendor incident rows for `/admin/health`, never throwing on a dead kit. `upgrade-request.ts` and `downgrade-request.ts` request plan changes;
+into per-vendor incident rows for `/admin/health`, never throwing on a dead kit. `subscription-requests.ts` files and closes vendor upgrade/cancel requests for the admin queue;
+`entitlements/` derives what each vendor may use per kit and pushes it to the kits (see its README);
 `vendor-sync.ts` refreshes grants against the live registry with an email-scoped
 throttle. `vendor-grants.ts` provides client-safe grant-state helpers.
 
@@ -54,6 +55,7 @@ report them as nested conversion stages. `kits.ts` is the family configuration (
 defaults to `https://<kit>.merqo.io`, overridable with `NEXT_PUBLIC_<KIT>_URL`);
 `ecosystem.ts` derives its diagram status from that configuration.
 `format.ts` and `utils.ts` provide display formatting (`timeAgo` returns `-` for an unparseable timestamp) and class composition.
+`sg-date.ts` provides `sgDay`, the Asia/Singapore YYYY-MM-DD formatter the vendor admin page uses for every date it shows. Its test pins the 16:00Z to 24:00Z window, where the Singapore date is a day ahead of UTC.
 `brand-icon.tsx` supplies icon-route markup; `account.ts` safely reads metadata.
 
 `tour-prefs.ts` persists onboarding timestamps best-effort. Both server-render
@@ -73,6 +75,8 @@ See [supabase](supabase/README.md) for browser/session/service clients.
 Co-located tests cover boundary errors and pure behavior; live RLS and cross-kit
 integration are verified separately.
 
+`waitlist.ts` writes `marketing_consents` only when the updates box is ticked (re-ticking refreshes it and clears `withdrawn_at`); the wording lives in `waitlist-consent.ts`.
+
 ## Parent
 
 [src](../README.md)
@@ -81,3 +85,5 @@ integration are verified separately.
 
 ate-limit.ts holds clientIp (x-vercel-forwarded-for, x-real-ip, then the last x-forwarded-for hop) and
 ateLimit, a Postgres fixed-window counter that fails open or closed per caller. An unresolvable IP is metered in one shared bucket at 10x the limit. earer-guard.ts fronts the kit-to-Merqo routes and elegram-limits.ts holds Telegram's 4096-character message cap.
+
+`rate-limit.ts` is the Postgres-backed fixed-window limiter (`rate_limit_hit`, migration `0041`). `clientIp` resolves the caller from `x-vercel-forwarded-for`, then `x-real-ip`, then the last non-empty `x-forwarded-for` hop (never the spoofable first), trimmed and capped at 64 characters; anything unresolvable becomes `unknown` and shares one bucket at 10x the route's limit. `bearer-guard.ts` fronts the `/api/merqo` routes with a 300/min per-IP cap (`legal-status` is exempt) and logs rejected bearers without the secret. `telegram-limits.ts` holds Telegram's 4096-character message cap. Counter failures fail open.

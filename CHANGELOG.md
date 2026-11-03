@@ -8,17 +8,48 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
-- CCSP C3: Postgres-backed fixed-window rate limiter (migration `0038_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.
+- CCSP C3: Postgres-backed fixed-window rate limiter (migration `0041_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.
 - Client IP now comes from `x-vercel-forwarded-for`, then `x-real-ip`, then the last `x-forwarded-for` hop, never the spoofable first hop. `legal-accept` caps `ip` at 64 characters; `notify-customer` and `notify-vendor` cap `message` at 4096.
 
 ### Added
 
+- `/waitlist`: separate, unticked "Also send me occasional Merqo updates." checkbox. Migration `0040_marketing_consents.sql` stores the email, the exact wording shown and the consent time only when ticked; an unticked resubmission never erases an earlier opt-in, re-ticking refreshes it, and `withdrawn_at` records an operator-run withdrawal.
 - Migration `0037_retention_purges.sql`: daily `pg_cron` purges for expired `telegram_link_tokens` (1 day after expiry), `legal_acceptances.ip` (nulled after 12 months, row kept), `support_messages` and `feedback` (24 months). Periods are conservative defaults pending owner confirmation and privacy-copy update.
 - `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
+- Migration `0039_entitlement_sync_error_kind.sql`: `entitlement_sync.last_error_kind`, so the vendor page shows why a kit push failed (route missing, response not understood, network) instead of only the HTTP code.
+
+### Fixed
+
+- e2e: confirming an admin dialog now waits for the dialog to close before the next step. The page behind an open dialog is aria-hidden, so the cancel-subscription test read the trigger as gone while the action was still in flight, then loaded the activity log before the audit row existed.
+- Vendor admin page: dates and the date-input defaults are shown in Singapore time (an event pass minted for 2 Nov no longer reads 1 Nov to 3 Nov); canceled subscriptions read "Cancelled. Period was A to B." without the renew hint; both cancel spellings display as "Cancelled"; the kit-reported Pro/Free badge is gone from activity cards (the tier lives in Kit entitlements); long emails and sync rows no longer cause horizontal scroll.
+- `block-no-verify.sh` no longer blocks commits made from a git worktree on a feature branch: Windows drive-letter paths (`C:\...`, `C:/...`) in the hook cwd, `cd` and `git -C` targets are normalised for Git Bash, and quoted paths containing spaces stay one token. Regression test: `bash .claude/hooks/block-no-verify.test.sh`.
 
 ### Changed
 
+- Bump `@merqo/ui` to v0.37.0. `VendorTelegramSection` now renders the connect QR as an `<img>` data URI rather than injecting SVG markup, and checks the Telegram deep link against an allowlist before showing it. merqo's `https://t.me/<bot>?start=<token>` links pass unchanged.
+- `vercel.json` sets `git.deploymentEnabled` so Vercel builds only `main`. PR branches no longer get a Vercel preview, which keeps the Hobby team under its daily deployment cap; CI's `build` job still builds every PR. For an on-demand preview, run `vercel` from the branch (see `docs/STAGING.md`).
 - `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
+
+## [0.13.0] - 2026-11-02
+
+### Added
+
+- Entitlements: `src/lib/entitlements/` derives what each vendor may use per kit from `merqo.subscriptions` and the new `merqo.event_passes`, and pushes it to each live kit with `POST {app_url}/api/merqo/entitlement` (bearer `provision_secret`). A 404, timeout or network error is recorded in `merqo.entitlement_sync`, never thrown. Contract documented in `src/lib/entitlements/README.md`.
+- Vendor admin page: grant, change and cancel subscriptions, mint and cancel event passes, per-kit push state with Re-push. The vendors list shows "Founder slots left: N of 20".
+- `/admin/requests`: queue of plan-change requests from vendors (`merqo.subscription_requests`), resolved from the vendor page or declined.
+- Admin-collected (`admin_manual`) subscriptions end at `current_period_end` and renewal is a re-grant; the vendor page shows "Ends {date}" and a Lapsed badge. Kits must enforce `valid_until` and the event pass window themselves.
+- Granting a plan offers "Replace current plan" (on by default), cancelling the superseded subscriptions in the same action. Event passes start at Singapore midnight.
+- Migration `0038_entitlements.sql` (event passes, subscription requests, entitlement sync, `user_id_for_email`) with pgTAP coverage. Apply after 0036.
+
+### Changed
+
+- The `founder` flag in the entitlement payload is true only while founder benefits run.
+- `vendor_links.plan` now comes from the merqo-derived tier, refreshed on every dashboard sync; the plan a kit reports no longer overwrites it.
+- Dashboard upgrade and downgrade buttons file a merqo request instead of calling qkit. qkit's own request routes stay until slice 3a removes them.
+
+### Removed
+
+- `upgrade-request`, `downgrade-request` and `postKitAction` (merqo-to-qkit request calls).
 
 ## [0.12.0] - 2026-11-02
 

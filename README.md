@@ -8,7 +8,8 @@ House brand + operator console for a modular family of small-business tools
 This app is the public brand landing plus a role-gated operator console:
 
 - `/dashboard` — cross-product metrics overview (post-login home)
-- `/admin/vendors` — grant/revoke kit access per vendor
+- `/admin/vendors` — grant/revoke kit access per vendor, plus subscriptions, event passes and the entitlements pushed to each kit
+- `/admin/requests` — plan-change requests vendors raised from their dashboard
 - `/admin/team` — manage Merqo-team members
 - `/admin/products` — per-kit health from the metrics API
 - `/admin/feedback` — vendor NPS + comments per kit
@@ -49,6 +50,8 @@ badge actually looks like — see
 `../docs/superpowers/specs/2026-08-25-tour-example-badge-drift-fix-design.md`
 (workspace root, cross-kit spec). The landing footer matches qkit's exactly
 (single-row wordmark/tagline/credit-line/sign-in link, no CTA band above it).
+
+`@merqo/ui` is pinned at v0.37.0 (`40c591b`).
 
 Merqo uses `@merqo/ui`, the shared component package for the kit family (see
 qkit/loopkit/paykit/stockkit for the same dependency). `/about`'s own story
@@ -117,7 +120,7 @@ Playwright · pnpm 11 · Node ≥24 · deploy target: Vercel
 pnpm dev          # dev server — http://localhost:3000
 pnpm build        # production build
 pnpm test         # run test suite (vitest)
-pnpm test:e2e     # playwright public smoke
+pnpm test:e2e     # playwright public smoke (admin flows wait for confirm dialogs to close)
 pnpm check        # prettier --check + eslint + tsc --noEmit
 pnpm format       # prettier --write
 pnpm check:legal-versions  # compare actual legal versions at each product's locked UI commit
@@ -140,7 +143,7 @@ src/app/                    — app router (landing, dashboard, admin console, s
 src/app/page.tsx            — public brand landing with session-aware CTAs
 src/app/dashboard/          — vendor dashboard: (app)/ (overview + kit discovery,
                                open to every signed-in user)
-src/app/admin/              — Merqo-team console: overview (page.tsx) + vendors/, team/,
+src/app/admin/              — Merqo-team console: overview (page.tsx) + vendors/, requests/, team/,
                                products/, feedback/, activity/ (all auth-gated)
 src/app/profile/            — shared account page (signed-in gate only — reachable from
                                both the vendor dashboard and the admin console)
@@ -157,6 +160,7 @@ src/lib/metrics-client.ts   — fetch of a kit's HTTP metrics endpoint
 src/lib/vendor-activity-client.ts — fetch of a single vendor's per-kit triage status/metrics/incidents
 src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-up for /admin/health
                                (admin/vendors/[email]'s Activity cards)
+src/lib/entitlements/     — derive what a vendor may use per kit from subscriptions + event passes, push it to the kits
 src/lib/schemas.ts          — Zod schemas for the profile page's forms
 src/lib/merqo-vendor-profile.ts — typed wrapper over the shared vendor_profile RPCs
 src/lib/supabase/           — browser / server (schema=merqo) / service-role clients
@@ -195,6 +199,8 @@ secrets and administrative writes use server-only service clients, so
 
 ## Docs
 
+- Public waitlist: an unticked general-updates checkbox is recorded in `merqo.marketing_consents` (migration `0040`) with the wording shown and the time, only when ticked.
+- Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - Changelog: `CHANGELOG.md` (includes the new admin-audit trail, plus a fix
   restoring card/background contrast in both modes after the Harbour
   Control rebrand had accidentally collapsed them to the same color and a
@@ -206,7 +212,13 @@ secrets and administrative writes use server-only service clients, so
   `browserslist` to `4.28.9`, and `vitest` to `4.1.11`, and a `vitest.config.ts`
   `testTimeout` bump from 10s to 30s fixing a real test-isolation leak where a
   timed-out test skipped its cleanup and bled a stale render into the next test)
-- Deploy runbook: `docs/DEPLOY.md`
+- Agent reference docs split out of `AGENTS.md`: `docs/FILE-LAYOUT.md`,
+  `docs/DATA-MODEL.md`, `docs/meta/ai-harness-reference.md` and
+  `docs/meta/templatecentral-adoption-log.md`.
+- Deploy runbook: `docs/DEPLOY.md`. Git deploys only `main` (`vercel.json`
+  `git.deploymentEnabled` turns every other branch off, previews included);
+  staging deploys through the `staging-sync` deploy hook and on-demand
+  previews come from the `vercel` CLI.
 - Staging setup, the env model, the rollout checklist for every kit and the
   migration gate: `docs/STAGING.md`. `.gitattributes`
   keeps `*.sh` on LF line endings so the staging script runs in a Linux

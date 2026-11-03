@@ -30,13 +30,16 @@ the steps, for rebuilding staging or adding a kit.
   does not start a git deployment for a commit it has already built, and `main`'s
   production deploy always builds it first. Never commit to `staging` directly:
   the next sync then fails instead of overwriting it.
-- Every per-PR preview gets the `Preview` env vars, so it uses the staging
+- Vercel builds only `main` on push (`git.deploymentEnabled` in `vercel.json`),
+  so PRs get no automatic preview. A preview built on demand with the `vercel`
+  CLI (no `--prod`) gets the `Preview` env vars, so it uses the staging
   database and calls the other apps' staging hosts.
+  The `staging` branch still deploys: the sync workflow calls its deploy hook.
 - **Deployment Protection is off** (`ssoProtection: null`) on every project that
   has a staging host. The `all_except_custom_domains` setting only exempts
   production custom domains: a domain assigned to the `staging` branch still
   showed the Vercel login, which broke both browsers and server-to-server calls.
-  The cost: per-PR preview URLs are public. They only reach staging data.
+  On-demand previews are public too. They only reach staging data.
 
 ## Env model
 
@@ -269,13 +272,14 @@ Before merging a PR that adds a file under `supabase/migrations/`:
    docker run --rm -e STAGING_DB_URL -v "${PWD}:/repo:ro" postgres:17.6-alpine sh /repo/scripts/staging-migrate.sh supabase/migrations/<new-file>.sql
    ```
 
-2. Check the PR's own Vercel preview end to end. It already uses the staging
-   database and the other apps' staging hosts.
+2. Check the PR end to end on a preview built on demand: from the PR branch,
+   run `vercel` (no `--prod`). It uses the staging database and the other apps'
+   staging hosts. Vercel does not build PR branches automatically.
 3. Merge the PR.
 4. Apply the same file to production the usual way (Supabase SQL Editor).
 
-A PR without a migration needs no extra step: its preview already runs against
-staging.
+A PR without a migration needs no extra step: CI's build job covers it, and
+its on-demand preview is optional.
 
 ## Known limits
 

@@ -1,5 +1,4 @@
 import { StatTile, StatusBadge } from "@merqo/ui";
-import { Badge } from "@/components/ui/badge";
 import type { VendorActivityResult } from "@/lib/vendor-activity-client";
 import { VENDOR_ACTIVITY_STATUS_CONFIG } from "./vendor-activity-status-config";
 import { timeAgo } from "@/lib/format";
@@ -19,26 +18,20 @@ export function VendorActivityCard({
   now: number;
 }) {
   if (!result.ok || !result.data.active) return null;
-  const { plan, status, metrics, lastActivityAt, incidents, recent } =
-    result.data;
+  const { status, metrics, lastActivityAt, incidents, recent } = result.data;
 
   return (
-    <div className="rounded-xl border bg-card p-4 shadow-sm">
+    <div className="min-w-0 rounded-xl border bg-card p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
-        <span className="font-mono text-sm font-semibold">{slug}</span>
+        <span className="min-w-0 break-all font-mono text-sm font-semibold">
+          {slug}
+        </span>
         <div className="flex items-center gap-1.5">
           {status && (
             <StatusBadge
               status={status}
               config={VENDOR_ACTIVITY_STATUS_CONFIG}
             />
-          )}
-          {plan === "pro" ? (
-            <Badge className="border-0 px-1.5 py-0">Pro</Badge>
-          ) : (
-            <Badge variant="muted" className="border-0 px-1.5 py-0">
-              Free
-            </Badge>
           )}
         </div>
       </div>

@@ -13,6 +13,13 @@ const ACTION_LABELS: Record<string, string> = {
   toggle_bundle_discount: "Toggled bundle discount",
   resolve_support_message: "Resolved support message",
   view_vendor: "Viewed vendor",
+  grant_subscription: "Granted subscription",
+  cancel_subscription: "Cancelled subscription",
+  mint_event_pass: "Minted event pass",
+  cancel_event_pass: "Cancelled event pass",
+  repush_entitlements: "Re-pushed entitlements",
+  resolve_subscription_request: "Resolved plan request",
+  decline_subscription_request: "Declined plan request",
 };
 
 function formatAction(action: string): string {

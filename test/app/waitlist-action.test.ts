@@ -31,6 +31,7 @@ describe("joinKitWaitlist", () => {
     expect(addToWaitlistMock).toHaveBeenCalledWith(
       "vendor@example.com",
       "loopkit",
+      false,
     );
     expect(res.status).toBe("success");
   });
@@ -61,5 +62,23 @@ describe("joinKitWaitlist", () => {
     );
     expect(res.status).toBe("error");
     expect(res.message).toMatch(/try again/i);
+  });
+
+  it("passes updatesOptIn=true only when the box is ticked", async () => {
+    addToWaitlistMock.mockResolvedValue(undefined);
+    await joinKitWaitlist(
+      WAITLIST_IDLE,
+      form({ email: "v@x.com", slug: "loopkit", updatesOptIn: "on" }),
+    );
+    expect(addToWaitlistMock).toHaveBeenCalledWith("v@x.com", "loopkit", true);
+  });
+
+  it("rejects an unexpected checkbox value", async () => {
+    const res = await joinKitWaitlist(
+      WAITLIST_IDLE,
+      form({ email: "v@x.com", slug: "loopkit", updatesOptIn: "yes" }),
+    );
+    expect(res.status).toBe("error");
+    expect(addToWaitlistMock).not.toHaveBeenCalled();
   });
 });

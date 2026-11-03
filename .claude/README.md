@@ -22,7 +22,8 @@ map of what lives where.
   Supabase, not Drizzle).
 - `harness.json` — the templateCentral-seeded-file manifest (`origin_hash`
   per file, `templatecentral_version`), checked by `verify-harness.sh` on
-  pre-push and in CI against committed HEAD blobs.
+  pre-push and in CI against committed HEAD blobs. The AGENTS.md entry was re-blessed after
+  its content moved into docs/ (only its first 30 lines are injected at session start).
 - `verify-harness.sh` / `regen-harness.sh` — drift check / human-run baseline
   regen for the files listed in `harness.json`.
 
