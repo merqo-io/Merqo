@@ -10,6 +10,8 @@ individual feature specs, with nothing tying them together.
 
 - [Component reuse specification](2026-10-10-component-reuse-spec.md): confirmed cleanup scope, acceptance and intentional exclusions.
 - [Component reuse verification](2026-10-10-component-reuse-verification.md): finished-work review, regressions and validation evidence.
+- [AI harness reference](ai-harness-reference.md): full hook, permission, git-hook and CI description moved out of AGENTS.md.
+- [templateCentral adoption log](templatecentral-adoption-log.md): 6.0.4 review and project adoption history moved out of AGENTS.md.
 
 - `2026-08-15-merqo-hub-task-registry.md` — refresh of the 07-17 registry
   against current code/git history: the domain-placeholder item shipped
