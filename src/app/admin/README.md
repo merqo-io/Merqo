@@ -16,7 +16,9 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   email/avatar, and passes them to the shared header (`@/components/dashboard-nav.tsx`,
   a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the eight section links
   (Overview / Vendors / Requests / Products / Health / Team / Feedback / Activity) and an "Admin"
-  badge beside the wordmark. The layout ends with the landing `Footer` (no
+  badge beside the wordmark. It passes `collapseBelow="xl"` so the eight links
+  fold into the burger menu below 1280px, because they need about 1083px
+  inline. The layout ends with the landing `Footer` (no
   sign-in link) and hides both header and footer when printing.
 - `page.tsx` — `AdminOverviewPage` (`revalidate = 0`). Fetches live products,
   vendor grants and open support messages in parallel, pulls each product's
