@@ -15,7 +15,7 @@ vi.mock("./store", () => ({
   findVendorId: mocks.findVendorId,
 }));
 vi.mock("@/lib/pricing/catalog", () => ({ loadPlanCatalog: mocks.catalog }));
-vi.mock("@/lib/products", () => ({ listLiveProducts: mocks.live }));
+vi.mock("@/lib/products", () => ({ listEntitlementTargets: mocks.live }));
 vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: mocks.createServiceClient,
 }));
@@ -205,6 +205,45 @@ describe("syncVendorEntitlements", () => {
       { kits: ["printkit"] },
     );
     expect(outcomes.map((o) => o.kit)).toEqual(["printkit"]);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("derives a paid printkit tier for a push-only target from a qkit subscription", async () => {
+    mocks.live.mockResolvedValue([
+      {
+        slug: "printkit",
+        app_url: "https://printkit.test",
+        provision_secret: "p",
+      },
+    ]);
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ ok: true })),
+    );
+    const outcomes = await syncVendorEntitlements(
+      { id: "v1", email: "v@x.com" },
+      { now: new Date("2026-11-02T00:00:00Z") },
+    );
+    expect(outcomes.map((o) => [o.kit, o.result.ok])).toEqual([
+      ["printkit", true],
+    ]);
+    expect(upsert.mock.calls[0][0].payload).toEqual(
+      expect.objectContaining({
+        kit: "printkit",
+        tier: "paid",
+        valid_until: expect.any(String),
+      }),
+    );
+  });
+
+  it("skips printkit when the requested kits exclude it", async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response(JSON.stringify({ ok: true })));
+    const outcomes = await syncVendorEntitlements(
+      { id: "v1", email: "v@x.com" },
+      { kits: ["qkit"] },
+    );
+    expect(outcomes.map((o) => o.kit)).toEqual(["qkit"]);
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 

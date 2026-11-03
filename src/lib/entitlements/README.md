@@ -4,7 +4,7 @@
 
 Merqo is the source of truth for what each vendor may use in each kit. This
 folder derives that from `merqo.subscriptions` and `merqo.event_passes`, stores
-the admin-side changes, and pushes the result to every live kit. Nothing here
+the admin-side changes, and pushes the result to every live and `push_only` kit. Nothing here
 charges anyone; prices and payment stay manual until billing exists.
 
 ## Contents
@@ -14,7 +14,7 @@ charges anyone; prices and payment stay manual until billing exists.
 - `contract.test.ts`: tier rules per kit, date formats, response shape.
 - `derive.ts`: `deriveEntitlements()`, pure. Takes a vendor's subscriptions and
   event passes, the plan catalog, the live kit slugs and `now`; returns one
-  entitlement per live kit. Kit tier is the highest across all active sources.
+  entitlement per push target (`listEntitlementTargets()`: live and `push_only`). Kit tier is the highest across all active sources.
 - `derive.test.ts`: free default, each plan, starter vs qkit, All Access,
   founder active vs expired, event pass running/upcoming/expired, overlapping
   sources, canceled and lapsed subscriptions, kits that are not live.
@@ -27,7 +27,7 @@ charges anyone; prices and payment stay manual until billing exists.
   service-only `user_id_for_email` function. `store.test.ts` covers it.
 - `push.ts`: `pushKitEntitlement()` posts one payload with the kit's
   `provision_secret`; `syncVendorEntitlements()` derives, pushes to every live
-  kit (or `opts.kits`), records each result in `merqo.entitlement_sync` and
+  and `push_only` kit (printkit; or `opts.kits`), records each result in `merqo.entitlement_sync` and
   mirrors the derived tier into `vendor_links.plan`. `mirrorDerivedPlans()`
   rewrites that mirror without pushing, run by the dashboard sync so legacy
   kit-reported values and lapsed subscriptions are corrected. Neither throws: a 404

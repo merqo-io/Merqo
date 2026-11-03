@@ -63,6 +63,7 @@ export async function listProducts(): Promise<ProductOption[]> {
     supabase
       .from("products")
       .select("slug, name")
+      .neq("status", "push_only")
       .order("created_at")
       .order("slug")
       .range(from, to),

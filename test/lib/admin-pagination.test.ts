@@ -33,6 +33,10 @@ beforeEach(() => {
           email = value;
           return query;
         },
+        neq: (column: string, value: string) => {
+          mocks.predicates(table, "neq:" + column, value);
+          return query;
+        },
         order: (column: string) => {
           mocks.predicates(table, "order", column);
           return query;
@@ -101,6 +105,11 @@ describe("admin paginated reads", () => {
     }));
     expect(await listProducts()).toHaveLength(1001);
     expect(mocks.predicates).toHaveBeenCalledWith("products", "order", "slug");
+    expect(mocks.predicates).toHaveBeenCalledWith(
+      "products",
+      "neq:status",
+      "push_only",
+    );
   });
   it("resolves only team IDs and sorts email without traversing unrelated auth accounts", async () => {
     tables.merqo_team = [{ user_id: "z" }, { user_id: "a" }];

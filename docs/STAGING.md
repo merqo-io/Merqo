@@ -74,7 +74,7 @@ Per project, at **project** level, scope Preview:
 | loopkit  | `MERQO_METRICS_SECRET`, `MERQO_PROVISION_SECRET`                                                                                                   |
 | paykit   | `MERQO_METRICS_SECRET`, `MERQO_PROVISION_SECRET`                                                                                                   |
 | stockkit | `MERQO_METRICS_SECRET`, `MERQO_PROVISION_SECRET`                                                                                                   |
-| printkit | `PRINTKIT_PUBLIC_URL=https://printkit-staging.merqo.io`, Git branch `staging` only (previews fall back to their own URL)                           |
+| printkit | `MERQO_PROVISION_SECRET`, `PRINTKIT_PUBLIC_URL=https://printkit-staging.merqo.io`, Git branch `staging` only (previews fall back to their own URL) |
 
 The `MERQO_*` pair of each kit must match that kit's row in `merqo.products`
 (`staging-registry.sql`). qkit's `PAYKIT_*` and `PRINTKIT_*` pairs must match

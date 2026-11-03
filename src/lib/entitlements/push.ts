@@ -1,6 +1,6 @@
 import { fetchKitJson } from "@/lib/kit-action-request";
 import { loadPlanCatalog } from "@/lib/pricing/catalog";
-import { listLiveProducts, type RegistryRow } from "@/lib/products";
+import { listEntitlementTargets, type RegistryRow } from "@/lib/products";
 import { createServiceClient } from "@/lib/supabase/server";
 import { entitlementResponseSchema, type EntitlementPayload } from "./contract";
 import { deriveEntitlements } from "./derive";
@@ -108,20 +108,20 @@ async function mirrorPlan(
 }
 
 async function deriveForVendor(vendorId: string, now: Date) {
-  const [subscriptions, eventPasses, catalog, live] = await Promise.all([
+  const [subscriptions, eventPasses, catalog, targets] = await Promise.all([
     loadVendorSubscriptions(vendorId),
     loadVendorEventPasses(vendorId),
     loadPlanCatalog(),
-    listLiveProducts(),
+    listEntitlementTargets(),
   ]);
   const derived = deriveEntitlements({
     subscriptions,
     eventPasses,
     catalog,
-    liveKits: live.map((k) => k.slug),
+    liveKits: targets.map((k) => k.slug),
     now,
   });
-  return { derived, live };
+  return { derived, targets };
 }
 
 /** Rewrite vendor_links.plan from merqo's records without contacting any kit,
@@ -145,17 +145,15 @@ export async function mirrorDerivedPlans(email: string): Promise<void> {
 }
 
 /** Derive a vendor's entitlements from merqo's own records and push them to
- *  the live kits (all of them, or just `opts.kits`). Never throws. */
+ *  the live and push-only kits (all of them, or just `opts.kits`). Never throws. */
 export async function syncVendorEntitlements(
   vendor: { id: string; email: string },
   opts: { kits?: string[]; now?: Date; timeoutMs?: number } = {},
 ): Promise<KitPushOutcome[]> {
   try {
     const now = opts.now ?? new Date();
-    const { derived, live } = await deriveForVendor(vendor.id, now);
-    const targets = live.filter(
-      (k) => !opts.kits || opts.kits.includes(k.slug),
-    );
+    const { derived, targets: all } = await deriveForVendor(vendor.id, now);
+    const targets = all.filter((k) => !opts.kits || opts.kits.includes(k.slug));
     const settled = await Promise.allSettled(
       targets.map(async (kit): Promise<KitPushOutcome> => {
         const payload: EntitlementPayload = {
