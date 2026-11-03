@@ -5,6 +5,7 @@ vi.mock("@/lib/bearer-guard", () => ({
 }));
 vi.mock("@/lib/telegram", () => ({
   sendTelegramMessage: vi.fn().mockResolvedValue(undefined),
+  generateLinkToken: () => "test-token",
 }));
 const from = vi.fn();
 vi.mock("@/lib/supabase/server", () => ({
@@ -131,7 +132,7 @@ describe("free-form string caps on kit routes", () => {
     expect(phone.status).toBe(400);
   });
 
-  it("legal-accept rejects oversized doc_version, kit_slug and user_agent", async () => {
+  it("legal-accept rejects oversized doc_version and kit_slug", async () => {
     const base = {
       vendor_email: "v@business.sg",
       doc_type: "terms",
@@ -142,11 +143,56 @@ describe("free-form string caps on kit routes", () => {
     for (const over of [
       { doc_version: "v".repeat(65) },
       { kit_slug: "k".repeat(65) },
-      { user_agent: "u".repeat(513) },
     ]) {
       const res = await legalAccept(post("legal-accept", { ...base, ...over }));
       expect(res.status).toBe(400);
     }
     expect(from).not.toHaveBeenCalled();
+  });
+
+  it("legal-accept truncates an oversized user_agent instead of rejecting", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    from.mockReturnValue({ insert });
+    const res = await legalAccept(
+      post("legal-accept", {
+        vendor_email: "v@business.sg",
+        doc_type: "terms",
+        doc_version: "2026-09-04",
+        doc_sha256: "a".repeat(64),
+        kit_slug: "qkit",
+        user_agent: "u".repeat(600),
+      }),
+    );
+    expect(res.status).toBe(200);
+    expect(insert.mock.calls[0][0].user_agent).toBe("u".repeat(512));
+  });
+});
+
+describe("values at exactly the cap are accepted", () => {
+  beforeEach(() => {
+    process.env.TELEGRAM_BOT_USERNAME = "merqo_test_bot";
+    from.mockReturnValue({ insert: async () => ({ error: null }) });
+  });
+
+  it("customer-connect-token accepts kit_slug 64 and notify_ref 128", async () => {
+    const res = await customerConnect(
+      post("customer-connect-token", {
+        vendor_id: VENDOR_ID,
+        kit_slug: "k".repeat(64),
+        notify_ref: "r".repeat(128),
+      }),
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it("customer-connect-token accepts qkit's real notify_ref format", async () => {
+    const res = await customerConnect(
+      post("customer-connect-token", {
+        vendor_id: VENDOR_ID,
+        kit_slug: "qkit",
+        notify_ref: `qkit:${"0".repeat(8)}-0000-4000-8000-${"0".repeat(12)}`,
+      }),
+    );
+    expect(res.status).toBe(200);
   });
 });

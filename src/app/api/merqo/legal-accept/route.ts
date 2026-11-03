@@ -15,7 +15,11 @@ const bodySchema = z.object({
   doc_sha256: z.string().length(64),
   kit_slug: z.string().min(1).max(KIT_ROUTE_MAX.kitSlug),
   ip: z.string().max(64).optional(),
-  user_agent: z.string().max(KIT_ROUTE_MAX.userAgent).optional(),
+  // Truncated, not rejected: a long UA must not lose a legal consent record.
+  user_agent: z
+    .string()
+    .transform((ua) => ua.slice(0, KIT_ROUTE_MAX.userAgent))
+    .optional(),
 });
 
 /**
@@ -56,7 +60,10 @@ export async function POST(request: Request): Promise<Response> {
     doc_sha256: parsed.data.doc_sha256,
     kit_slug: parsed.data.kit_slug,
     ip: parsed.data.ip ?? clientIp(request.headers),
-    user_agent: parsed.data.user_agent ?? request.headers.get("user-agent"),
+    user_agent:
+      parsed.data.user_agent ??
+      request.headers.get("user-agent")?.slice(0, KIT_ROUTE_MAX.userAgent) ??
+      null,
   });
 
   if (error && error.code !== "23505") {

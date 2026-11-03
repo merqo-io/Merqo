@@ -8,10 +8,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
-
 - CCSP C3: Postgres-backed fixed-window rate limiter (migration `0041_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.
 - Client IP now comes from `x-vercel-forwarded-for`, then `x-real-ip`, then the last `x-forwarded-for` hop, never the spoofable first hop. `legal-accept` caps `ip` at 64 characters; `notify-customer` and `notify-vendor` cap `message` at 4096.
+- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `legal-accept` truncates `user_agent` to 512 instead of rejecting it. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
 
 ### Added
 
@@ -28,8 +27,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `block-no-verify.sh` no longer blocks commits made from a git worktree on a feature branch: Windows drive-letter paths (`C:\...`, `C:/...`) in the hook cwd, `cd` and `git -C` targets are normalised for Git Bash, and quoted paths containing spaces stay one token. Regression test: `bash .claude/hooks/block-no-verify.test.sh`.
 
 ### Security
-
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
 
 - Override transitive `minimatch` to `>=11.0.1 <12` (Dependabot alert 27, moderate DoS via globparts amplification) in `pnpm-workspace.yaml`.
 
@@ -134,8 +131,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
-
 - Nonce-based CSP (`script-src` without `unsafe-inline`) on every per-request route, set in `proxy.ts` from `@merqo/ui/security`; static pages keep the static policy. The `@merqo/ui` pin moves to v0.35.0.
 - `X-Robots-Tag: noindex, nofollow` and a disallow-all `robots.txt` on every non-production deployment.
 - Operator console now requires a verified TOTP second factor (`aal2`) on every `/admin` page and action. Password-only sessions are redirected to the new `/mfa` enrol/verify page.
@@ -160,8 +155,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.7.7] - 2026-10-24
 
 ### Security
-
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
 
 - `zod` 3.25.76 to 4.6.6 (GHSA-mrhx-c7xc-m3w5, memory exhaustion on oversized constrained collections). `z.string().uuid()` and `z.string().email()` became `z.uuid()` and `z.email()`; test fixture UUIDs are now RFC-valid because Zod 4 checks the version and variant. An override pins any transitive `zod` below 4.6.6.
 
@@ -216,8 +209,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   bump.
 
 ### Security
-
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
 
 - Adopt the immutable audited shared UI commit for upload lifecycle, storage URL validation and safe money parsing fixes; constrain its build permission to the locked source URL.
 
@@ -294,8 +285,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
-
 - Adopt the immutable audited shared UI commit for upload lifecycle, storage URL validation and safe money parsing fixes; constrain its build permission to the locked source URL.
 
 - Bumped `vitest` and `@vitest/coverage-v8` to `4.1.11` (from `3.2.6`).
@@ -307,8 +296,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.7.4] - 2026-09-09
 
 ### Security
-
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
 
 - Adopt the immutable audited shared UI commit for upload lifecycle, storage URL validation and safe money parsing fixes; constrain its build permission to the locked source URL.
 
