@@ -118,7 +118,7 @@ Playwright · pnpm 11 · Node ≥24 · deploy target: Vercel
 pnpm dev          # dev server — http://localhost:3000
 pnpm build        # production build
 pnpm test         # run test suite (vitest)
-pnpm test:e2e     # playwright public smoke
+pnpm test:e2e     # playwright public smoke (admin flows wait for confirm dialogs to close)
 pnpm check        # prettier --check + eslint + tsc --noEmit
 pnpm format       # prettier --write
 pnpm check:legal-versions  # compare actual legal versions at each product's locked UI commit
