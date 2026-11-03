@@ -1,5 +1,15 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import { TEAM_STATE } from "./global-setup";
+
+// The confirm dialog stays open until the server action succeeds, and while
+// it is open the page behind it is aria-hidden, so role queries for the
+// trigger report "gone" before the action has run. Waiting for the dialog to
+// close is the only reliable signal that the change was saved.
+async function confirmDialog(page: Page, confirmLabel: string) {
+  const dialog = page.getByRole("alertdialog");
+  await dialog.getByRole("button", { name: confirmLabel }).click();
+  await expect(dialog).toBeHidden();
+}
 
 // Public smoke: the app boots and the login page renders without any
 // Supabase provisioning. Runnable with only `pnpm dev` + `playwright install`.
@@ -114,10 +124,7 @@ test.describe("authed areas", () => {
     await expect(revokeButton).toBeVisible();
 
     await revokeButton.click();
-    await page
-      .getByRole("alertdialog")
-      .getByRole("button", { name: "Revoke" })
-      .click();
+    await confirmDialog(page, "Revoke");
     await expect(
       page
         .locator("main")
@@ -163,10 +170,7 @@ test.describe("authed areas", () => {
       .first();
     await expect(cancelButton).toBeVisible();
     await cancelButton.click();
-    await page
-      .getByRole("alertdialog")
-      .getByRole("button", { name: "Cancel subscription" })
-      .click();
+    await confirmDialog(page, "Cancel subscription");
     await expect(cancelButton).toHaveCount(0);
 
     await page.goto("/admin/activity");
@@ -181,10 +185,7 @@ test.describe("authed areas", () => {
         name: `Revoke ${TEST_KIT_SLUG} from ${vendorEmail}`,
       })
       .click();
-    await page
-      .getByRole("alertdialog")
-      .getByRole("button", { name: "Revoke" })
-      .click();
+    await confirmDialog(page, "Revoke");
     await expect(
       page.getByRole("button", {
         name: `Revoke ${TEST_KIT_SLUG} from ${vendorEmail}`,
@@ -208,10 +209,7 @@ test.describe("authed areas", () => {
       name: `Remove ${ADDABLE_EMAIL} from the team`,
     });
     await removeButton.click();
-    await page
-      .getByRole("alertdialog")
-      .getByRole("button", { name: "Remove" })
-      .click();
+    await confirmDialog(page, "Remove");
     await expect(memberRow).toHaveCount(0);
   });
 });

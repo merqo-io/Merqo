@@ -27,6 +27,7 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   "View health" link to `health/`; waitlisted vendors, open support messages,
   pending upgrade requests), summary `StatCard`s, `OnboardingFunnelView`, and
   a `ProductTile` grid.
+- `confirm-admin-action.dom.test.tsx` — also pins that the page behind an open confirm dialog is hidden from role queries until the action succeeds, which the e2e specs rely on.
 - `page.test.tsx` — mocked-dependency coverage for the overview's flagged-vendor
   count: only active kits are passed to `getTenantHealth`, only `attention` rows
   count, and the row links to `/admin/health`.
