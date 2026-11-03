@@ -34,6 +34,8 @@ export default async function AdminLayout({
           homeHref="/admin"
           homeLabel="merqo admin home"
           badge="Admin"
+          // Eight links plus the account menu need about 1083px; lg (1024px) would still overflow.
+          collapseBelow="xl"
           navLinks={ADMIN_LINKS}
           email={user.email}
           avatarUrl={getAvatarUrl(user)}

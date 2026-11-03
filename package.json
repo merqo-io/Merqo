@@ -18,7 +18,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@merqo/ui": "github:merqo-io/merqo-ui#40c591b345ad38055725e9e22db1b773e4a0bd30",
+    "@merqo/ui": "github:merqo-io/merqo-ui#aa3c216a26542fb99b355acd8bbc8a24074b2707",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "2.110.0",
     "class-variance-authority": "^0.7.1",

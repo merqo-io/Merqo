@@ -20,6 +20,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Admin console header no longer overflows horizontally between 640px and about 1083px: `@merqo/ui` bumped to v0.38.0 (`aa3c216`) for `DashboardNav`'s `collapseBelow`, and the admin layout uses `"xl"`. The vendor dashboard keeps the default.
 - e2e: confirming an admin dialog now waits for the dialog to close before the next step. The page behind an open dialog is aria-hidden, so the cancel-subscription test read the trigger as gone while the action was still in flight, then loaded the activity log before the audit row existed.
 - Vendor admin page: dates and the date-input defaults are shown in Singapore time (an event pass minted for 2 Nov no longer reads 1 Nov to 3 Nov); canceled subscriptions read "Cancelled. Period was A to B." without the renew hint; both cancel spellings display as "Cancelled"; the kit-reported Pro/Free badge is gone from activity cards (the tier lives in Kit entitlements); long emails and sync rows no longer cause horizontal scroll.
 - `block-no-verify.sh` no longer blocks commits made from a git worktree on a feature branch: Windows drive-letter paths (`C:\...`, `C:/...`) in the hook cwd, `cd` and `git -C` targets are normalised for Git Bash, and quoted paths containing spaces stay one token. Regression test: `bash .claude/hooks/block-no-verify.test.sh`.

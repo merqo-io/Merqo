@@ -25,8 +25,8 @@ importers:
   .:
     dependencies:
       '@merqo/ui':
-        specifier: github:merqo-io/merqo-ui#40c591b345ad38055725e9e22db1b773e4a0bd30
-        version: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/40c591b345ad38055725e9e22db1b773e4a0bd30(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)(zod@4.6.6)
+        specifier: github:merqo-io/merqo-ui#aa3c216a26542fb99b355acd8bbc8a24074b2707
+        version: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/aa3c216a26542fb99b355acd8bbc8a24074b2707(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)(zod@4.6.6)
       '@supabase/ssr':
         specifier: ^0.10.3
         version: 0.10.3(@supabase/supabase-js@2.110.0)
@@ -716,9 +716,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/40c591b345ad38055725e9e22db1b773e4a0bd30':
-    resolution: {gitHosted: true, integrity: sha512-0T0t5CwzuNP2+Z0kWNkBhdGEm7Fbor6k7gzq3UohXKRnZDMh+caAykRTJIkxTOQAPXbXoeg27SJEb53ih1iO3w==, tarball: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/40c591b345ad38055725e9e22db1b773e4a0bd30}
-    version: 0.37.0
+  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/aa3c216a26542fb99b355acd8bbc8a24074b2707':
+    resolution: {gitHosted: true, integrity: sha512-htimBvgNfG8JBlh0f5HdQxFfOwYlshYLZq7AO7WaqkLknK86XewRfpEdEO0mWkcEduJVFrhT+Vdfqy69c1+yOg==, tarball: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/aa3c216a26542fb99b355acd8bbc8a24074b2707}
+    version: 0.38.0
     engines: {node: '>=24'}
     peerDependencies:
       '@eslint-community/eslint-plugin-eslint-comments': '>=4.8.1'
@@ -4686,7 +4686,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/40c591b345ad38055725e9e22db1b773e4a0bd30(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)(zod@4.6.6)':
+  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/aa3c216a26542fb99b355acd8bbc8a24074b2707(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.2)(zod@4.6.6)':
     dependencies:
       '@icons-pack/react-simple-icons': 13.13.0(react@19.2.8)
       '@radix-ui/react-dialog': 1.1.23(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)

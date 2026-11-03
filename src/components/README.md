@@ -12,7 +12,8 @@ or scoped to `dashboard/`/`landing/`.
   shared `DashboardNav` (burger, inline links, account dropdown) for both the
   `/dashboard` and `/admin` headers. Callers pass the home href, wordmark
   label, optional badge ("Admin"), link list, and an optional cross-persona
-  link (`extraLink`) or kit switcher (`switchKits`); it wires Merqo's
+  link (`extraLink`), kit switcher (`switchKits`) or breakpoint
+  (`collapseBelow`: `"sm" | "md" | "lg" | "xl"`, default `"sm"`); it wires Merqo's
   `signOutAction`, `submitFeedbackAction`/`submitSupportMessageAction`
   (throw-adapting, since both return `{success, error}`), the support-category
   list and `LinkComponent={Link}`. No `/dashboard/plan` route exists, so
@@ -20,7 +21,8 @@ or scoped to `dashboard/`/`landing/`.
   and `vendor.subtitle`.
 - `dashboard-nav.test.tsx` — RTL tests: wordmark/badge, active-link rule,
   kit switcher, trigger subtitle/initials, menu-item order (no Plan item),
-  the switch link, Feedback/Get-help submit wiring and sign-out.
+  the switch link, the collapse breakpoint (default `sm`, and `xl`),
+  Feedback/Get-help submit wiring and sign-out.
 - `dashboard-tour.tsx` — `DashboardTour({ seen })`: thin adapter wiring
   Merqo's own step content (`tour-steps.ts`), `markTourSeen`, and routing
   into `@merqo/ui`'s shared `DashboardTour`, which owns the tour mechanism
