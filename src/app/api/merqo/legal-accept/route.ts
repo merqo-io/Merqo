@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { KIT_ROUTE_MAX } from "@/lib/kit-route-limits";
 import { guardBearerRoute } from "@/lib/bearer-guard";
 import { clientIp } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -10,11 +11,11 @@ const bodySchema = z.object({
   vendor_email: z.email(),
   auth_uid: z.uuid().nullable().optional(),
   doc_type: z.enum(["terms", "privacy", "pilot"]),
-  doc_version: z.string().min(1),
+  doc_version: z.string().min(1).max(KIT_ROUTE_MAX.docVersion),
   doc_sha256: z.string().length(64),
-  kit_slug: z.string().min(1),
+  kit_slug: z.string().min(1).max(KIT_ROUTE_MAX.kitSlug),
   ip: z.string().max(64).optional(),
-  user_agent: z.string().optional(),
+  user_agent: z.string().max(KIT_ROUTE_MAX.userAgent).optional(),
 });
 
 /**
