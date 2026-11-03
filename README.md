@@ -51,6 +51,8 @@ badge actually looks like — see
 (workspace root, cross-kit spec). The landing footer matches qkit's exactly
 (single-row wordmark/tagline/credit-line/sign-in link, no CTA band above it).
 
+`@merqo/ui` is pinned at v0.37.0 (`40c591b`).
+
 Merqo uses `@merqo/ui`, the shared component package for the kit family (see
 qkit/loopkit/paykit/stockkit for the same dependency). `/about`'s own story
 is now `@merqo/ui`'s shared

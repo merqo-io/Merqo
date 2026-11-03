@@ -21,6 +21,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Bump `@merqo/ui` to v0.37.0. `VendorTelegramSection` now renders the connect QR as an `<img>` data URI rather than injecting SVG markup, and checks the Telegram deep link against an allowlist before showing it. merqo's `https://t.me/<bot>?start=<token>` links pass unchanged.
 - `vercel.json` sets `git.deploymentEnabled` so Vercel builds only `main`. PR branches no longer get a Vercel preview, which keeps the Hobby team under its daily deployment cap; CI's `build` job still builds every PR. For an on-demand preview, run `vercel` from the branch (see `docs/STAGING.md`).
 - `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
 
