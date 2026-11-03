@@ -62,6 +62,21 @@ describe("AdminLayout", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("collapses the nav into the burger menu below xl so eight links do not overflow", async () => {
+    requireMerqoTeamMock.mockResolvedValue({
+      user: { email: "team@merqo.io", user_metadata: {} },
+    });
+    hasActiveVendorAccessMock.mockResolvedValue(false);
+
+    const { default: AdminLayout } = await import("./layout");
+    const { container } = render(
+      await AdminLayout({ children: <div>page content</div> }),
+    );
+
+    expect(container.querySelector(".xl\\:flex")).toBeInTheDocument();
+    expect(container.querySelector(".sm\\:flex")).not.toBeInTheDocument();
+  });
+
   it("threads the signed-in user's email/avatar and an active-vendor canSwitch into the nav, and renders children", async () => {
     requireMerqoTeamMock.mockResolvedValue({
       user: { email: "team@merqo.io", user_metadata: {} },

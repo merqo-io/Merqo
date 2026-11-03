@@ -75,6 +75,28 @@ describe("DashboardNav", () => {
     expect(home).toHaveTextContent("Admin");
   });
 
+  it("switches to the inline links at the collapseBelow breakpoint", () => {
+    const { container } = render(
+      <DashboardNav
+        homeHref="/admin"
+        homeLabel="home"
+        navLinks={LINKS}
+        collapseBelow="xl"
+      />,
+    );
+    expect(container.querySelector(".xl\\:flex")).toBeInTheDocument();
+    expect(container.querySelector(".xl\\:hidden")).toBeInTheDocument();
+    expect(container.querySelector(".sm\\:flex")).not.toBeInTheDocument();
+  });
+
+  it("collapses below sm when collapseBelow is omitted", () => {
+    const { container } = render(
+      <DashboardNav homeHref="/admin" homeLabel="home" navLinks={LINKS} />,
+    );
+    expect(container.querySelector(".sm\\:flex")).toBeInTheDocument();
+    expect(container.querySelector(".xl\\:flex")).not.toBeInTheDocument();
+  });
+
   it("marks only the home link current on the exact home path", () => {
     render(<AccountMenu />);
     expect(screen.getByRole("link", { name: "Overview" })).toHaveAttribute(

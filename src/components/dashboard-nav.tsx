@@ -66,6 +66,7 @@ export function DashboardNav({
   avatarUrl,
   switchTo,
   switchKits,
+  collapseBelow,
 }: {
   homeHref: string;
   /** Accessible name of the wordmark link. */
@@ -78,6 +79,8 @@ export function DashboardNav({
   /** Dual-role accounts get a link to the other area (dashboard or admin). */
   switchTo?: NavLink;
   switchKits?: NavLink[];
+  /** Breakpoint from which links render inline; consoles with many links need a later one than the default. */
+  collapseBelow?: "sm" | "md" | "lg" | "xl";
 }) {
   const path = usePathname();
 
@@ -129,6 +132,7 @@ export function DashboardNav({
       feedbackMetric="nps"
       showNps
       extraLink={switchTo}
+      collapseBelow={collapseBelow}
       onError={onError}
     />
   );
