@@ -22,6 +22,7 @@ action; `requireTeamMember()` is the membership-only check the `/mfa` page uses.
 `products.ts`, `support.ts` and `vendor-feedback.ts` read console data. Registry secrets remain server-side. `admin.ts` owns the
 best-effort audit writer and recent-entry read; an audit failure is not proof
 that the primary mutation failed.
+`products.ts` exposes `listLiveProducts()` (status `live`, grantable kits) and `listEntitlementTargets()` (`live` plus `push_only`, i.e. printkit, for entitlement pushes only).
 
 ## Pricing
 
