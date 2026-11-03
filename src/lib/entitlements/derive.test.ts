@@ -106,6 +106,18 @@ describe("deriveEntitlements", () => {
     expect(out.loopkit.tier).toBe("free");
   });
 
+  it("derives printkit for a qkit/printkit-only target list", () => {
+    const kits = ["qkit", "printkit"];
+    expect(derive([sub("starter")], [], kits).printkit.tier).toBe("free");
+    expect(derive([sub("all_access")], [], kits).printkit.tier).toBe("paid");
+    const founder = derive(
+      [sub("loopkit", { founder: true, founderUntil: FUTURE })],
+      [],
+      kits,
+    );
+    expect(founder.printkit.tier).toBe("paid");
+  });
+
   it("gives a single-kit plan only that kit as paid", () => {
     const out = derive([sub("loopkit")]);
     expect(out.loopkit.tier).toBe("paid");

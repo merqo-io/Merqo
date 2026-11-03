@@ -170,6 +170,7 @@ landing — a later migration corrects an earlier one.
 - `0039_entitlement_sync_error_kind.sql`: adds a nullable, checked `last_error_kind` column to `entitlement_sync` so the admin page can show why a push failed. Existing RLS and grants cover it. Apply after `0038`.
 - `0040_marketing_consents.sql`: adds `marketing_consents` (email, the wording shown, `consented_at`, nullable `withdrawn_at`), one row per address that ticked the general-updates box on `/waitlist`. RLS on with no policies; service role gets select, insert and update. Withdrawal is an operator SQL update (snippet in the migration header). Apply after `0039`.
 - `0041_rate_limit.sql`: adds `rate_limit_hits` (fixed-window counters, no client grants) and the service-role-only `rate_limit_hit(key, limit, window)` function behind `src/lib/rate-limit.ts`. About 1% of calls sweep windows older than a day. Apply after `0040`.
+- `0042_printkit_push_only.sql`: widens `products.status` to allow `push_only` and seeds a printkit row with that status. printkit receives entitlement pushes (`listEntitlementTargets()`) but is not grantable and stays out of `listLiveProducts()`. Set its `app_url` and `provision_secret` per database afterwards (see `docs/DEPLOY.md`). Apply after `0041`.
 
 ## Connectivity
 

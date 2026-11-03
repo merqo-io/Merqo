@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Entitlement pushes now reach printkit: migration `0042_printkit_push_only.sql` adds a `push_only` product status and a printkit row, `listEntitlementTargets()` feeds `syncVendorEntitlements`, and printkit stays out of `listLiveProducts()` surfaces and the admin grant dropdown.
+
 ### Security
 
 - CCSP C3: Postgres-backed fixed-window rate limiter (migration `0041_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.

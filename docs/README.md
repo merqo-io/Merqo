@@ -14,3 +14,5 @@
 Founder Telegram alerts use the Vault setup described in DEPLOY.md. The migration does not send messages until its required configuration exists. Do not add tokens or private contact details to documentation.
 
 `DEPLOY.md` now names the live domains, `qkit.merqo.io` and `www.merqo.io`, instead of the old `*.vercel.app` hosts.
+
+DEPLOY.md step 7 covers printkit: after migration `0042` adds its `push_only` row, set `app_url` and `provision_secret` so entitlement pushes reach it.

@@ -24,3 +24,19 @@ export const listLiveProducts = cache(async (): Promise<RegistryRow[]> => {
   if (error) throw new Error(`products read failed: ${error.message}`);
   return (data ?? []) as RegistryRow[];
 });
+
+// printkit is push-only: it receives entitlement pushes but is not a grantable
+// kit, so it must never appear in listLiveProducts() surfaces.
+export const listEntitlementTargets = cache(
+  async (): Promise<RegistryRow[]> => {
+    const supabase = await createServiceClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select(
+        "slug, name, app_url, metrics_url, metrics_secret, provision_secret",
+      )
+      .in("status", ["live", "push_only"]);
+    if (error) throw new Error(`products read failed: ${error.message}`);
+    return (data ?? []) as RegistryRow[];
+  },
+);

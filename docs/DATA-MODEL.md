@@ -4,7 +4,9 @@ Rehomed from AGENTS.md; the summary there points here.
 
 One shared Supabase project, schema per kit. Merqo owns `merqo.*`:
 `merqo_team` (team membership, managed on `/admin/team`), `products` (kit registry +
-per-product `metrics_secret`, surfaced on `/dashboard`), `vendor_links`
+per-product `metrics_secret`, surfaced on `/dashboard`; status `live`, `coming_soon` or
+`push_only` — printkit (`0042`) only receives entitlement pushes and is excluded from
+`listLiveProducts()` and the admin grant list), `vendor_links`
 (vendor↔kit, email-keyed, waitlist/active — granted/revoked on `/admin/vendors`),
 `vendor_sync_state` (`0023`, per-email kit-sync throttle marker, service-role only).
 RLS default-deny; team-membership via `merqo.is_merqo_team()`. `products` +

@@ -33,7 +33,17 @@ of git — it lives only in Vercel env + the DB row.
            'https://qkit.merqo.io/api/merqo/metrics',
            '<MERQO_METRICS_SECRET>');
    ```
-7. **Add yourself to the team** (SQL editor). Find your uuid in Auth → Users:
+7. **Point printkit at its entitlement push** (after `0042` is applied). printkit is a
+   push-only row: replace the placeholder and use the printkit URL for the database
+   (staging `https://printkit-staging.merqo.io`, production `https://printkit.merqo.io`):
+   ```sql
+   update merqo.products
+   set app_url = 'https://printkit.merqo.io',
+       provision_secret = '<MERQO_PROVISION_SECRET>'
+   where slug = 'printkit';
+   ```
+   Set the same `MERQO_PROVISION_SECRET` on printkit's Vercel Preview and Production.
+8. **Add yourself to the team** (SQL editor). Find your uuid in Auth → Users:
    ```sql
    insert into merqo.merqo_team (user_id) values ('<your-auth-user-uuid>');
    ```

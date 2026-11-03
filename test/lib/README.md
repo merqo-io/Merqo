@@ -42,3 +42,5 @@ Boundary suites cover admin pagination, team authentication, session/server clie
 `team-boundary.test.ts` also covers the `aal2` gate and the membership-only `requireTeamMember()`.
 
 `format.test.ts` expects `timeAgo` to return `-` for an unparseable timestamp.
+
+`admin-pagination.test.ts` also asserts `listProducts()` excludes `push_only` products from the grant list; `products.test.ts` covers `listLiveProducts()` and `listEntitlementTargets()`.

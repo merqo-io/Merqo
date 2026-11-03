@@ -45,6 +45,7 @@ async function loadVendorGrants(email?: string): Promise<VendorGrant[]> {
       if (email !== undefined) query = query.eq("email", email);
       return query.order("email").order("product_slug").range(from, to);
     }),
+    // Name lookup for vendor_links grants; push-only kits never have a grant row.
     readAdminRows("products read", (from, to) =>
       supabase
         .from("products")
@@ -63,6 +64,7 @@ export async function listProducts(): Promise<ProductOption[]> {
     supabase
       .from("products")
       .select("slug, name")
+      .neq("status", "push_only")
       .order("created_at")
       .order("slug")
       .range(from, to),
