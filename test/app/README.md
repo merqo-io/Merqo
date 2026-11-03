@@ -9,3 +9,5 @@ Profile regressions verify independent simultaneous saves, rejected-save feedbac
 `slug-boundary.test.ts` proves malformed kit slugs never reach the vendor context.
 
 `waitlist-action.test.ts` covers the public `/waitlist` Server Action: slug validation against the in-build kits and the email schema.
+
+`waitlist-action.test.ts` also covers the `updatesOptIn` checkbox (ticked, unticked, bad value).

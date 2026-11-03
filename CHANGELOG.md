@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `/waitlist`: separate, unticked "Also send me occasional Merqo updates." checkbox. Migration `0040_marketing_consents.sql` stores the email, the exact wording shown and the consent time only when ticked; an unticked resubmission never erases an earlier opt-in, re-ticking refreshes it, and `withdrawn_at` records an operator-run withdrawal.
 - Migration `0037_retention_purges.sql`: daily `pg_cron` purges for expired `telegram_link_tokens` (1 day after expiry), `legal_acceptances.ip` (nulled after 12 months, row kept), `support_messages` and `feedback` (24 months). Periods are conservative defaults pending owner confirmation and privacy-copy update.
 - `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
 - Migration `0039_entitlement_sync_error_kind.sql`: `entitlement_sync.last_error_kind`, so the vendor page shows why a kit push failed (route missing, response not understood, network) instead of only the HTTP code.

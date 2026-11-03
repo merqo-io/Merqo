@@ -22,3 +22,11 @@ export type AdminAudit = {
   detail: Json | null;
   created_at: string;
 };
+
+/** merqo.marketing_consents: one row per email that ticked the updates box. */
+export type MarketingConsent = {
+  email: string;
+  wording: string;
+  consented_at: string;
+  withdrawn_at: string | null;
+};

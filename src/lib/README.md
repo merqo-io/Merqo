@@ -75,6 +75,8 @@ See [supabase](supabase/README.md) for browser/session/service clients.
 Co-located tests cover boundary errors and pure behavior; live RLS and cross-kit
 integration are verified separately.
 
+`waitlist.ts` writes `marketing_consents` only when the updates box is ticked (re-ticking refreshes it and clears `withdrawn_at`); the wording lives in `waitlist-consent.ts`.
+
 ## Parent
 
 [src](../README.md)
