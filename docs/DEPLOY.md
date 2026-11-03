@@ -68,7 +68,8 @@ of git — it lives only in Vercel env + the DB row.
 Vercel `Preview` deployments run against a separate staging Supabase project,
 and `staging.merqo.io` serves the `staging` branch. Setup and the
 migration gate are in `docs/STAGING.md`. Before merging a PR that adds a
-migration, apply it to staging first, check the PR's preview, merge, then
+migration, apply it to staging first, check the PR on a `vercel` CLI preview
+(PR branches get no automatic Vercel build, see `docs/STAGING.md`), merge, then
 apply it to production.
 
 ## Notes
