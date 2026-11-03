@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { customerNotifySecretOk } from "@/lib/customer-notify-auth";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { clientIp, rateLimit, UNKNOWN_IP } from "@/lib/rate-limit";
 
 /**
  * Per-IP cap for kit-to-Merqo bearer routes. Kits call from shared platform
@@ -28,6 +28,7 @@ export async function guardBearerRoute(
     (await rateLimit({
       bucket: `bearer:${route}`,
       key: ip,
+      unknownIp: ip === UNKNOWN_IP,
       limit: BEARER_LIMIT,
       windowSeconds: BEARER_WINDOW_SECONDS,
       failOpen: true,

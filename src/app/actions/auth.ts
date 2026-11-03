@@ -2,7 +2,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { clientIp, rateLimit, UNKNOWN_IP } from "@/lib/rate-limit";
 import { createServerClient } from "@/lib/supabase/server";
 
 export async function signOutAction(): Promise<void> {
@@ -29,9 +29,11 @@ export async function signInWithPasswordAction(
   const parsed = signInSchema.safeParse(input);
   if (!parsed.success) return { error: "Enter your email and password." };
 
+  const ip = clientIp(await headers());
   const allowed = await rateLimit({
     bucket: "login",
-    key: clientIp(await headers()),
+    key: ip,
+    unknownIp: ip === UNKNOWN_IP,
     limit: 10,
     windowSeconds: 900,
     failOpen: true,

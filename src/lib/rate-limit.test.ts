@@ -5,7 +5,7 @@ vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: async () => ({ rpc }),
 }));
 
-import { clientIp, rateLimit } from "./rate-limit";
+import { clientIp, rateLimit, UNKNOWN_IP } from "./rate-limit";
 
 const OPTS = {
   bucket: "waitlist",
@@ -48,9 +48,32 @@ describe("clientIp", () => {
     expect(clientIp(new Headers())).toBe("unknown");
   });
 
-  it("caps an oversized value at 64 characters", () => {
-    const h = new Headers({ "x-real-ip": "a".repeat(200) });
-    expect(clientIp(h)).toHaveLength(64);
+  it("falls back to the sentinel for a garbage x-real-ip", () => {
+    expect(clientIp(new Headers({ "x-real-ip": "not-an-ip" }))).toBe(
+      UNKNOWN_IP,
+    );
+    expect(clientIp(new Headers({ "x-real-ip": "a".repeat(200) }))).toBe(
+      UNKNOWN_IP,
+    );
+  });
+
+  it("falls back to the sentinel for a garbage x-vercel-forwarded-for", () => {
+    const h = new Headers({
+      "x-vercel-forwarded-for": "garbage",
+      "x-real-ip": "198.51.100.2",
+    });
+    expect(clientIp(h)).toBe(UNKNOWN_IP);
+  });
+
+  it("falls back to the sentinel for a garbage last x-forwarded-for hop", () => {
+    const h = new Headers({ "x-forwarded-for": "203.0.113.9, junk" });
+    expect(clientIp(h)).toBe(UNKNOWN_IP);
+  });
+
+  it("accepts IPv6 addresses", () => {
+    expect(clientIp(new Headers({ "x-real-ip": "2001:db8::1" }))).toBe(
+      "2001:db8::1",
+    );
   });
 });
 
@@ -65,14 +88,28 @@ describe("rateLimit", () => {
     });
   });
 
-  it("meters the unknown bucket at 10x the limit", async () => {
+  it("meters the unknown-IP bucket at 10x the limit when flagged", async () => {
     rpc.mockResolvedValue({ data: true, error: null });
-    await rateLimit({ ...OPTS, key: "unknown", failOpen: true });
+    await rateLimit({
+      ...OPTS,
+      key: UNKNOWN_IP,
+      unknownIp: true,
+      failOpen: true,
+    });
     expect(rpc).toHaveBeenCalledWith("rate_limit_hit", {
       p_key: "waitlist:unknown",
       p_limit: 50,
       p_window_seconds: 3600,
     });
+  });
+
+  it("never widens the limit from the key alone, so a user id cannot trigger it", async () => {
+    rpc.mockResolvedValue({ data: true, error: null });
+    await rateLimit({ ...OPTS, key: "unknown", failOpen: true });
+    expect(rpc).toHaveBeenCalledWith(
+      "rate_limit_hit",
+      expect.objectContaining({ p_limit: 5 }),
+    );
   });
 
   it.each([
@@ -89,8 +126,13 @@ describe("rateLimit", () => {
   ])("%s is metered in the unknown bucket", async (_name, hdrs) => {
     rpc.mockResolvedValue({ data: true, error: null });
     const key = clientIp(new Headers(hdrs));
-    expect(key).toBe("unknown");
-    await rateLimit({ ...OPTS, key, failOpen: true });
+    expect(key).toBe(UNKNOWN_IP);
+    await rateLimit({
+      ...OPTS,
+      key,
+      unknownIp: key === UNKNOWN_IP,
+      failOpen: true,
+    });
     expect(rpc).toHaveBeenCalledWith(
       "rate_limit_hit",
       expect.objectContaining({ p_key: "waitlist:unknown", p_limit: 50 }),

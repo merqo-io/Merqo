@@ -1,5 +1,8 @@
+import { isIP } from "node:net";
 import { createServiceClient } from "@/lib/supabase/server";
 
+/** What clientIp returns when no header yields a valid IP address. */
+export const UNKNOWN_IP = "unknown";
 const MAX_IP_LENGTH = 64;
 const UNKNOWN_IP_LIMIT_FACTOR = 10;
 
@@ -18,7 +21,10 @@ export function clientIp(headers: Headers): string {
     .map((hop) => hop.trim())
     .filter(Boolean);
   const lastHop = hops[hops.length - 1];
-  return (vercel || real || lastHop || "unknown").slice(0, MAX_IP_LENGTH);
+  const chosen = vercel || real || lastHop;
+  // A non-IP value would give an attacker a fresh bucket per garbage string.
+  if (!chosen || isIP(chosen) === 0) return UNKNOWN_IP;
+  return chosen.slice(0, MAX_IP_LENGTH);
 }
 
 type RateLimitOptions = {
@@ -34,6 +40,11 @@ type RateLimitOptions = {
    * at the cost of an outage.
    */
   failOpen: boolean;
+  /**
+   * Set by IP-keyed callers when clientIp returned UNKNOWN_IP. Explicit so a
+   * user-id key can never be mistaken for the shared unknown-IP bucket.
+   */
+  unknownIp?: boolean;
 };
 
 /** Counts one hit and returns whether the caller is still within the limit. */
@@ -41,8 +52,9 @@ export async function rateLimit(opts: RateLimitOptions): Promise<boolean> {
   // An unresolvable IP (no or garbage headers, i.e. not behind Vercel) shares
   // one bucket at 10x the limit: still bounded, so stripping headers is no
   // bypass, yet loose enough that unrelated callers rarely collide.
-  const limit =
-    opts.key === "unknown" ? opts.limit * UNKNOWN_IP_LIMIT_FACTOR : opts.limit;
+  const limit = opts.unknownIp
+    ? opts.limit * UNKNOWN_IP_LIMIT_FACTOR
+    : opts.limit;
   try {
     const supabase = await createServiceClient();
     const { data, error } = await supabase.rpc("rate_limit_hit", {
