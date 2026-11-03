@@ -19,6 +19,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Vendor admin page: dates and the date-input defaults are shown in Singapore time (an event pass minted for 2 Nov no longer reads 1 Nov to 3 Nov); canceled subscriptions read "Cancelled. Period was A to B." without the renew hint; both cancel spellings display as "Cancelled"; the kit-reported Pro/Free badge is gone from activity cards (the tier lives in Kit entitlements); long emails and sync rows no longer cause horizontal scroll.
 - `block-no-verify.sh` no longer blocks commits made from a git worktree on a feature branch: Windows drive-letter paths (`C:\...`, `C:/...`) in the hook cwd, `cd` and `git -C` targets are normalised for Git Bash, and quoted paths containing spaces stay one token. Regression test: `bash .claude/hooks/block-no-verify.test.sh`.
 
+### Security
+
+- Override transitive `minimatch` to `>=11.0.1 <12` (Dependabot alert 27, moderate DoS via globparts amplification) in `pnpm-workspace.yaml`.
+
 ### Changed
 
 - Bump `@merqo/ui` to v0.37.0. `VendorTelegramSection` now renders the connect QR as an `<img>` data URI rather than injecting SVG markup, and checks the Telegram deep link against an allowlist before showing it. merqo's `https://t.me/<bot>?start=<token>` links pass unchanged.

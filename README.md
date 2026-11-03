@@ -129,7 +129,7 @@ pnpm check:legal-versions  # compare actual legal versions at each product's loc
 ## Dependencies
 
 `pnpm-workspace.yaml`'s `overrides` block pins transitive deps (postcss,
-nanoid, undici, fast-uri, js-yaml, brace-expansion, sharp) past known CVE
+nanoid, undici, fast-uri, js-yaml, brace-expansion, minimatch, sharp) past known CVE
 thresholds — `pnpm audit --prod --audit-level=high` (CI's `security.yml`
 `audit` job) hard-gates on these. When a new advisory lands on a transitive
 dep, bump its floor here rather than waiting on the upstream package to
