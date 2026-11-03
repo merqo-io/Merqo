@@ -210,7 +210,10 @@ secrets and administrative writes use server-only service clients, so
   `browserslist` to `4.28.9`, and `vitest` to `4.1.11`, and a `vitest.config.ts`
   `testTimeout` bump from 10s to 30s fixing a real test-isolation leak where a
   timed-out test skipped its cleanup and bled a stale render into the next test)
-- Deploy runbook: `docs/DEPLOY.md`
+- Deploy runbook: `docs/DEPLOY.md`. Git deploys only `main` (`vercel.json`\r
+  `git.deploymentEnabled` turns every other branch off, previews included);\r
+  staging deploys through the `staging-sync` deploy hook and on-demand\r
+  previews come from the `vercel` CLI.
 - Staging setup, the env model, the rollout checklist for every kit and the
   migration gate: `docs/STAGING.md`. `.gitattributes`
   keeps `*.sh` on LF line endings so the staging script runs in a Linux
