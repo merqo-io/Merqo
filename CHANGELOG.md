@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+
+- CCSP C3: Postgres-backed fixed-window rate limiter (migration `0041_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.
+- Client IP now comes from `x-vercel-forwarded-for`, then `x-real-ip`, then the last `x-forwarded-for` hop, never the spoofable first hop. `legal-accept` caps `ip` at 64 characters; `notify-customer` and `notify-vendor` cap `message` at 4096.
+
 ### Added
 
 - `/waitlist`: separate, unticked "Also send me occasional Merqo updates." checkbox. Migration `0040_marketing_consents.sql` stores the email, the exact wording shown and the consent time only when ticked; an unticked resubmission never erases an earlier opt-in, re-ticking refreshes it, and `withdrawn_at` records an operator-run withdrawal.

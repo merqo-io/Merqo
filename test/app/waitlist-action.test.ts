@@ -4,6 +4,11 @@ const { addToWaitlistMock } = vi.hoisted(() => ({
   addToWaitlistMock: vi.fn(),
 }));
 vi.mock("@/lib/waitlist", () => ({ addToWaitlist: addToWaitlistMock }));
+vi.mock("next/headers", () => ({ headers: async () => new Headers() }));
+vi.mock("@/lib/rate-limit", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/rate-limit")>()),
+  rateLimit: async () => true,
+}));
 
 import { joinKitWaitlist } from "@/app/actions/waitlist";
 import { WAITLIST_IDLE } from "@/lib/waitlist-state";

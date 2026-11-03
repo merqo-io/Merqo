@@ -5,3 +5,5 @@ GET provides the latest terms, privacy and pilot acceptance versions for a calli
 latestLegalVersions reads the lowercased email's acceptance rows in accepted_at order and selects the newest acceptance per document type. Missing documents return null. A failed database read returns 500 instead of claiming that the customer has never accepted the documents. Calling kits own their short-TTL cache.
 
 route.test.ts covers authentication, malformed emails, newest-acceptance ordering and database failures. The legal acceptance table and shared document version constants remain the sources of truth.
+
+Checks the bearer secret only. It is deliberately not rate limited: kits call it on every gated render and treat any non-OK reply as not accepted.

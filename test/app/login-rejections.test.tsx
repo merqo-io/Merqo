@@ -11,6 +11,9 @@ const mocks = vi.hoisted(() => ({
   oauth: vi.fn(),
 }));
 vi.mock("@/lib/supabase/client", () => ({ createClient: mocks.client }));
+vi.mock("@/app/actions/auth", () => ({
+  signInWithPasswordAction: mocks.password,
+}));
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
 }));
@@ -52,7 +55,10 @@ it.each(["password", "signup", "reset"] as const)(
     );
     expect(screen.getByRole("button", { name: label })).toBeEnabled();
     mocks[method].mockClear();
-    mocks[method].mockResolvedValue({ data: { session: null }, error: null });
+    mocks[method].mockResolvedValue({
+      data: { session: null },
+      error: null,
+    });
     await user.click(screen.getByRole("button", { name: label }));
     await waitFor(() => expect(mocks[method]).toHaveBeenCalledTimes(1));
   },

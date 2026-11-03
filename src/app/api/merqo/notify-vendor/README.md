@@ -37,3 +37,5 @@ as every other Telegram integration point in this ecosystem. Reads
 ## Parent
 
 [merqo](../README.md)
+
+Guarded by guardBearerRoute. message is capped at 4096 characters, Telegram's own limit.

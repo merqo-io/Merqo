@@ -38,3 +38,5 @@ friction for no real evidentiary gain over the existing record).
 ## Parent
 
 [merqo](../README.md)
+
+Guarded by guardBearerRoute. The optional ip is capped at 64 characters; when absent the trusted client IP from clientIp is stored.

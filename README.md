@@ -262,3 +262,5 @@ The AI harness follows templateCentral 6.0.4: hook commands are anchored on the 
 ## Lint
 
 `eslint.config.mjs` consumes the shared `@merqo/ui/eslint` preset (comment and directive hygiene, size and complexity limits, no colour literals or em dashes in `src`). `eslint.config.test.ts` asserts the key rules stay at `error`. Colour literals are allowed only in `src/lib/brand-icon.tsx` and `src/app/global-error.tsx`.
+
+Public and kit-facing entry points are rate limited by a Postgres-backed counter (src/lib/rate-limit.ts); see src/lib/README.md for the limits.

@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "./route";
 
+vi.mock("@/lib/rate-limit", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/rate-limit")>()),
+  rateLimit: async () => true,
+}));
+
 vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: vi.fn(),
 }));

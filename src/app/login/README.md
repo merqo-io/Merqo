@@ -28,3 +28,5 @@ See the repo root [README.md](../../../README.md) for the full `src/app/`
 layout.
 
 `layout.tsx` forces per-request rendering so the nonce CSP from `proxy.ts` reaches this page's scripts.
+
+Password sign-in runs through the signInWithPasswordAction server action so attempts are counted per IP (10 per 15 minutes, fail open).

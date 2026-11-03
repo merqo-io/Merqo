@@ -1,5 +1,7 @@
 "use server";
+import { headers } from "next/headers";
 import { z } from "zod";
+import { clientIp, rateLimit, UNKNOWN_IP } from "@/lib/rate-limit";
 import type { WaitlistState } from "@/lib/waitlist-state";
 import { addToWaitlist } from "@/lib/waitlist";
 import { WAITLISTABLE_SLUGS } from "@/lib/kits";
@@ -23,6 +25,22 @@ export async function joinKitWaitlist(
   });
   if (!parsed.success) {
     return { status: "error", message: "Enter a valid email address." };
+  }
+  // Fails open: an unreachable counter must not block a public signup.
+  const ip = clientIp(await headers());
+  const allowed = await rateLimit({
+    bucket: "waitlist",
+    key: ip,
+    unknownIp: ip === UNKNOWN_IP,
+    limit: 5,
+    windowSeconds: 3600,
+    failOpen: true,
+  });
+  if (!allowed) {
+    return {
+      status: "error",
+      message: "Too many attempts. Try again later.",
+    };
   }
   try {
     await addToWaitlist(

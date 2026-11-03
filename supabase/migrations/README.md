@@ -169,6 +169,7 @@ landing — a later migration corrects an earlier one.
 - `0038_entitlements.sql`: adds `event_passes` (a vendor's prepaid event window, its own table so metering fields can follow), `subscription_requests` (vendor-raised upgrade/downgrade/cancel asks, one pending per vendor), `entitlement_sync` (last push of each vendor's entitlement to each kit; team-read only) and the service-role-only `user_id_for_email` helper. Writes are service-role only; vendors read their own passes and requests. Apply after `0036`.
 - `0039_entitlement_sync_error_kind.sql`: adds a nullable, checked `last_error_kind` column to `entitlement_sync` so the admin page can show why a push failed. Existing RLS and grants cover it. Apply after `0038`.
 - `0040_marketing_consents.sql`: adds `marketing_consents` (email, the wording shown, `consented_at`, nullable `withdrawn_at`), one row per address that ticked the general-updates box on `/waitlist`. RLS on with no policies; service role gets select, insert and update. Withdrawal is an operator SQL update (snippet in the migration header). Apply after `0039`.
+- `0041_rate_limit.sql`: adds `rate_limit_hits` (fixed-window counters, no client grants) and the service-role-only `rate_limit_hit(key, limit, window)` function behind `src/lib/rate-limit.ts`. About 1% of calls sweep windows older than a day. Apply after `0040`.
 
 ## Connectivity
 

@@ -6,6 +6,11 @@ vi.mock("@/lib/customer-notify-auth", () => ({
     customerNotifySecretOk(...args),
 }));
 
+vi.mock("@/lib/rate-limit", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/rate-limit")>()),
+  rateLimit: async () => true,
+}));
+
 const sendTelegramMessage = vi.fn().mockResolvedValue(undefined);
 vi.mock("@/lib/telegram", () => ({
   sendTelegramMessage: (...args: unknown[]) => sendTelegramMessage(...args),

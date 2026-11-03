@@ -1,5 +1,6 @@
 "use server";
 import { createServerClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 import {
   supportMessageSchema,
   type SupportMessageInput,
@@ -30,6 +31,19 @@ export async function submitSupportMessageAction(
   } = await supabase.auth.getUser();
   if (authError || !user)
     return { success: false, error: "Please sign in first" };
+
+  // Per user, not per IP: the caller is authenticated. Fails open so a
+  // counter outage never blocks someone asking for help.
+  const allowed = await rateLimit({
+    bucket: "support",
+    key: user.id,
+    limit: 10,
+    windowSeconds: 3600,
+    failOpen: true,
+  });
+  if (!allowed) {
+    return { success: false, error: "Too many messages. Try again later." };
+  }
 
   const { error } = await supabase.from("support_messages").insert({
     user_id: user.id,

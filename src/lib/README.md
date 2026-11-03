@@ -82,3 +82,8 @@ integration are verified separately.
 [src](../README.md)
 
 `security-headers.ts` also allows the Vercel toolbar origin (`vercel.live`) outside production. Images also allow `https://*.googleusercontent.com` for Google sign-in avatars.
+
+ate-limit.ts holds clientIp (x-vercel-forwarded-for, x-real-ip, then the last x-forwarded-for hop) and
+ateLimit, a Postgres fixed-window counter that fails open or closed per caller. An unresolvable IP is metered in one shared bucket at 10x the limit. earer-guard.ts fronts the kit-to-Merqo routes and elegram-limits.ts holds Telegram's 4096-character message cap.
+
+`rate-limit.ts` is the Postgres-backed fixed-window limiter (`rate_limit_hit`, migration `0041`). `clientIp` resolves the caller from `x-vercel-forwarded-for`, then `x-real-ip`, then the last non-empty `x-forwarded-for` hop (never the spoofable first), only a value that parses as an IP address (`net.isIP`) is accepted; anything else, or nothing, becomes `unknown` and shares one bucket at 10x the route's limit. `bearer-guard.ts` fronts the `/api/merqo` routes with a 300/min per-IP cap (`legal-status` is exempt) and logs rejected bearers without the secret. `telegram-limits.ts` holds Telegram's 4096-character message cap. Counter failures fail open.

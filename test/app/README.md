@@ -11,3 +11,5 @@ Profile regressions verify independent simultaneous saves, rejected-save feedbac
 `waitlist-action.test.ts` covers the public `/waitlist` Server Action: slug validation against the in-build kits and the email schema.
 
 `waitlist-action.test.ts` also covers the `updatesOptIn` checkbox (ticked, unticked, bad value).
+
+`login-rejections.test.tsx` and `waitlist-action.test.ts` mock the rate limiter and the sign-in action; the limiter itself is tested in `src/lib`.
