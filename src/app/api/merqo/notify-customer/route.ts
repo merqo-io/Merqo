@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { KIT_ROUTE_MAX } from "@/lib/kit-route-limits";
 import { guardBearerRoute } from "@/lib/bearer-guard";
 import { createServiceClient } from "@/lib/supabase/server";
 import { sendTelegramMessage } from "@/lib/telegram";
@@ -16,8 +17,8 @@ const bodySchema = z
   .object({
     vendor_id: z.uuid(),
     message: z.string().min(1).max(TELEGRAM_MESSAGE_MAX),
-    notify_ref: z.string().min(1).optional(),
-    phone: z.string().min(1).optional(),
+    notify_ref: z.string().min(1).max(KIT_ROUTE_MAX.notifyRef).optional(),
+    phone: z.string().min(1).max(KIT_ROUTE_MAX.phone).optional(),
   })
   .refine(
     (data) => (data.notify_ref !== undefined) !== (data.phone !== undefined),

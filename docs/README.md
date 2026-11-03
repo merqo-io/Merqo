@@ -12,3 +12,5 @@
 - superpowers/plans/ and superpowers/specs/ retain dated implementation and design evidence. They describe the decisions at that time; current source, migrations and root documentation establish present behavior.
 
 Founder Telegram alerts use the Vault setup described in DEPLOY.md. The migration does not send messages until its required configuration exists. Do not add tokens or private contact details to documentation.
+
+`DEPLOY.md` now names the live domains, `qkit.merqo.io` and `www.merqo.io`, instead of the old `*.vercel.app` hosts.

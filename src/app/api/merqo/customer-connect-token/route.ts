@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { KIT_ROUTE_MAX } from "@/lib/kit-route-limits";
 import { guardBearerRoute } from "@/lib/bearer-guard";
 import { createServiceClient } from "@/lib/supabase/server";
 import { generateLinkToken } from "@/lib/telegram";
@@ -13,8 +14,8 @@ const LINK_TOKEN_TTL_MS = 30 * 60 * 1000;
 // notify-customer's notify_ref lookup mode.
 const bodySchema = z.object({
   vendor_id: z.uuid(),
-  kit_slug: z.string().min(1),
-  notify_ref: z.string().min(1),
+  kit_slug: z.string().min(1).max(KIT_ROUTE_MAX.kitSlug),
+  notify_ref: z.string().min(1).max(KIT_ROUTE_MAX.notifyRef),
 });
 
 /**

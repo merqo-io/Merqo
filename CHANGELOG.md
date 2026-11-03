@@ -10,6 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - CCSP C3: Postgres-backed fixed-window rate limiter (migration `0041_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.
 - Client IP now comes from `x-vercel-forwarded-for`, then `x-real-ip`, then the last `x-forwarded-for` hop, never the spoofable first hop. `legal-accept` caps `ip` at 64 characters; `notify-customer` and `notify-vendor` cap `message` at 4096.
+- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `legal-accept` truncates `user_agent` to 512 instead of rejecting it. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
 
 ### Added
 

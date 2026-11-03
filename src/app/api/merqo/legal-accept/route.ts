@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { KIT_ROUTE_MAX } from "@/lib/kit-route-limits";
 import { guardBearerRoute } from "@/lib/bearer-guard";
 import { clientIp } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -10,11 +11,15 @@ const bodySchema = z.object({
   vendor_email: z.email(),
   auth_uid: z.uuid().nullable().optional(),
   doc_type: z.enum(["terms", "privacy", "pilot"]),
-  doc_version: z.string().min(1),
+  doc_version: z.string().min(1).max(KIT_ROUTE_MAX.docVersion),
   doc_sha256: z.string().length(64),
-  kit_slug: z.string().min(1),
+  kit_slug: z.string().min(1).max(KIT_ROUTE_MAX.kitSlug),
   ip: z.string().max(64).optional(),
-  user_agent: z.string().optional(),
+  // Truncated, not rejected: a long UA must not lose a legal consent record.
+  user_agent: z
+    .string()
+    .transform((ua) => ua.slice(0, KIT_ROUTE_MAX.userAgent))
+    .optional(),
 });
 
 /**
@@ -55,7 +60,10 @@ export async function POST(request: Request): Promise<Response> {
     doc_sha256: parsed.data.doc_sha256,
     kit_slug: parsed.data.kit_slug,
     ip: parsed.data.ip ?? clientIp(request.headers),
-    user_agent: parsed.data.user_agent ?? request.headers.get("user-agent"),
+    user_agent:
+      parsed.data.user_agent ??
+      request.headers.get("user-agent")?.slice(0, KIT_ROUTE_MAX.userAgent) ??
+      null,
   });
 
   if (error && error.code !== "23505") {
