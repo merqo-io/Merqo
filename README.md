@@ -212,6 +212,9 @@ secrets and administrative writes use server-only service clients, so
   `browserslist` to `4.28.9`, and `vitest` to `4.1.11`, and a `vitest.config.ts`
   `testTimeout` bump from 10s to 30s fixing a real test-isolation leak where a
   timed-out test skipped its cleanup and bled a stale render into the next test)
+- Agent reference docs split out of `AGENTS.md`: `docs/FILE-LAYOUT.md`,
+  `docs/DATA-MODEL.md`, `docs/meta/ai-harness-reference.md` and
+  `docs/meta/templatecentral-adoption-log.md`.
 - Deploy runbook: `docs/DEPLOY.md`. Git deploys only `main` (`vercel.json`
   `git.deploymentEnabled` turns every other branch off, previews included);
   staging deploys through the `staging-sync` deploy hook and on-demand
