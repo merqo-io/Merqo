@@ -36,3 +36,5 @@ page), never by a browser directly. The token it mints is resolved by
 [merqo](../README.md)
 
 Guarded by guardBearerRoute (per-IP rate limit, then the bearer secret).
+
+Free-form strings are capped: `kit_slug` at 64 and `notify_ref` at 128 characters (`KIT_ROUTE_MAX` in `src/lib/kit-route-limits.ts`); longer values get a 400.

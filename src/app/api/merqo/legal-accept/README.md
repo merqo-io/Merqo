@@ -40,3 +40,5 @@ friction for no real evidentiary gain over the existing record).
 [merqo](../README.md)
 
 Guarded by guardBearerRoute. The optional ip is capped at 64 characters; when absent the trusted client IP from clientIp is stored.
+
+Free-form strings are capped (`KIT_ROUTE_MAX` in `src/lib/kit-route-limits.ts`): `doc_version` and `kit_slug` at 64 characters, rejected with a 400 when longer. `user_agent` is truncated to 512 rather than rejected, so a long value never loses a consent record.

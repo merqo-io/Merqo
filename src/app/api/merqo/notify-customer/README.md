@@ -46,3 +46,5 @@ point in this ecosystem. Reads `merqo.customers` rows written by
 [merqo](../README.md)
 
 Guarded by guardBearerRoute. message is capped at 4096 characters, Telegram's own limit.
+
+Free-form strings are capped: `notify_ref` at 128 and `phone` at 32 characters (`KIT_ROUTE_MAX` in `src/lib/kit-route-limits.ts`); longer values get a 400.

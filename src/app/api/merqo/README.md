@@ -53,3 +53,5 @@ call `@/lib/telegram`'s `sendTelegramMessage`.
 [api](../README.md)
 
 Every bearer route except legal-status goes through guardBearerRoute (src/lib/bearer-guard.ts): a per-IP cap of 300 per minute, then the secret check, with rejected 401s logged without the secret. legal-status is unmetered because kits call it on every gated render.
+
+`input-bounds.test.ts` covers the length caps across the kit routes: over-cap 400s, exactly-at-cap acceptance, qkit's `qkit:<uuid>` `notify_ref` shape and `legal-accept`'s `user_agent` truncation.
