@@ -18,6 +18,8 @@ import { SupportMessageRow } from "./support-message-row";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Overview" };
+
 export default async function AdminOverviewPage() {
   await requireMerqoTeam();
   const [products, grants, openSupport] = await Promise.all([
@@ -64,11 +66,14 @@ export default async function AdminOverviewPage() {
     <main className="mx-auto max-w-7xl px-5 py-8">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          Internal
+          Admin
         </p>
-        <h1 className="font-display text-2xl font-bold tracking-tight">
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           Overview
         </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          How every kit and vendor is doing right now.
+        </p>
       </div>
 
       <StatusBanner
@@ -168,11 +173,9 @@ export default async function AdminOverviewPage() {
         Products
       </h2>
       {products.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center">
-          <p className="text-sm font-medium">No products registered yet</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Kits appear here once they&apos;re added to the registry.
-          </p>
+        <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
+          No products yet. Kits show up here once they are added to the
+          registry.
         </div>
       ) : (
         <section className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">

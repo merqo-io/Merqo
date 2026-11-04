@@ -5,6 +5,8 @@ import { RemoveMember } from "./remove-member";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Team" };
+
 export default async function TeamPage() {
   const { user } = await requireMerqoTeam();
   const team = await listTeamMembers();
@@ -12,8 +14,13 @@ export default async function TeamPage() {
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-5 py-8">
       <div>
-        <h1 className="font-display text-2xl font-bold tracking-tight">Team</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          Admin
+        </p>
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
+          Team
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Merqo team members can see the overview, vendors, and this page.
         </p>
       </div>

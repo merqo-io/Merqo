@@ -68,7 +68,9 @@ describe("AdminFeedbackPage", () => {
     expect(screen.getByText("Great tool")).toBeInTheDocument();
     expect(screen.getByText("Love it")).toBeInTheDocument();
     expect(
-      screen.queryByText("No vendor feedback yet."),
+      screen.queryByText(
+        "No vendor feedback yet. Scores for each kit show up here.",
+      ),
     ).not.toBeInTheDocument();
   });
 
@@ -80,8 +82,14 @@ describe("AdminFeedbackPage", () => {
     const { default: AdminFeedbackPage } = await import("./page");
     render(await AdminFeedbackPage());
 
-    expect(screen.getByText("No feedback yet.")).toBeInTheDocument();
-    expect(screen.getByText("No vendor feedback yet.")).toBeInTheDocument();
+    expect(
+      screen.getByText("No feedback yet. Scores and comments show up here."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "No vendor feedback yet. Scores for each kit show up here.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("throws when the hub feedback query errors", async () => {

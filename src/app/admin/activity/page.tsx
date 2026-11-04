@@ -5,6 +5,8 @@ import { ActivityLog } from "./activity-log";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Activity" };
+
 export default async function AdminActivityPage() {
   await requireMerqoTeam();
   const rows = await listAdminAuditEntries(100);
@@ -22,12 +24,12 @@ export default async function AdminActivityPage() {
     <main className="mx-auto max-w-5xl px-5 py-8">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          Internal
+          Admin
         </p>
-        <h1 className="font-display text-2xl font-bold tracking-tight">
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           Activity
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           Recent admin actions across the console.
         </p>
       </div>

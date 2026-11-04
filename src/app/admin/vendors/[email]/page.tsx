@@ -26,6 +26,8 @@ import { SubscriptionSection } from "./subscription-section";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Vendor" };
+
 async function loadBilling(vendorId: string, requestId: string | undefined) {
   const [subscriptions, eventPasses, syncRows, founderCount, catalog, request] =
     await Promise.all([
@@ -124,7 +126,7 @@ export default async function VendorDetailPage({
           label="All vendors"
           LinkComponent={Link}
         />
-        <h1 className="mt-4 break-all font-display text-2xl font-bold tracking-tight">
+        <h1 className="mt-4 break-all font-display text-3xl font-semibold leading-none sm:text-4xl">
           {grant.email}
         </h1>
       </div>
@@ -132,9 +134,9 @@ export default async function VendorDetailPage({
       <section>
         <h2 className="font-display text-lg font-bold">Kits</h2>
         {grant.kits.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">
-            No kits yet, grant one below.
-          </p>
+          <div className="mt-3 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
+            No kits yet. Grant one below.
+          </div>
         ) : (
           <ul className="mt-3 space-y-2">
             {grant.kits.map((k) => (

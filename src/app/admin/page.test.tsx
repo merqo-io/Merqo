@@ -92,4 +92,23 @@ describe("AdminOverviewPage needs-attention health count", () => {
       screen.queryByRole("link", { name: "View health" }),
     ).not.toBeInTheDocument();
   });
+
+  it("renders the unified header and an empty products state", async () => {
+    listLiveProductsMock.mockResolvedValue([]);
+    getTenantHealthMock.mockResolvedValue([]);
+
+    render(await AdminOverviewPage());
+
+    expect(
+      screen.getByRole("heading", { name: "Overview" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("How every kit and vendor is doing right now."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "No products yet. Kits show up here once they are added to the registry.",
+      ),
+    ).toBeInTheDocument();
+  });
 });

@@ -40,7 +40,11 @@ describe("RequestsPage", () => {
     expect(
       screen.getByRole("heading", { name: "Requests" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("No pending requests.")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "No pending requests. Plan changes vendors ask for show up here.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("lists a request with a resolve link to the vendor page and a decline control", async () => {
