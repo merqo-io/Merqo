@@ -80,3 +80,7 @@ layout.
 The layout reads preferences with the authenticated user ID and uses the session client for the initial tour stamp. The write is best-effort cosmetic state, not a guaranteed durable record: database errors are logged without breaking the page. Tests assert authenticated ownership and first-visit behavior.
 
 `page.tsx` loads the products registry through `loadLiveProducts`, which returns an empty list when the read fails.
+
+## Loading skeleton
+
+`loading.tsx` is a `role="status"` region with `aria-busy`, an `sr-only` label and a reduced-motion fallback.

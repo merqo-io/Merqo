@@ -269,3 +269,7 @@ The AI harness follows templateCentral 7.2.2: hook commands are anchored on the 
 Public and kit-facing entry points are rate limited by a Postgres-backed counter (src/lib/rate-limit.ts); see src/lib/README.md for the limits.
 
 Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limits.ts`); `legal-accept` truncates an oversized `user_agent` to 512 instead of rejecting it.
+
+## Touch targets and loading states
+
+`src/app/globals.css` raises buttons (except link-style) and inputs to a 44px minimum height, and icon buttons to 44px wide, under `@media (pointer: coarse)` only; desktop sizes are unchanged. Route `loading.tsx` skeletons are `role="status"` regions with an `sr-only` label and no pulse under reduced motion.
