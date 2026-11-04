@@ -275,3 +275,5 @@ Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limit
 ## Touch targets and loading states
 
 `src/app/globals.css` raises buttons (except link-style) and inputs to a 44px minimum height, and icon buttons to 44px wide, under `@media (pointer: coarse)` only; desktop sizes are unchanged. Route `loading.tsx` skeletons are `role="status"` regions with an `sr-only` label and no pulse under reduced motion.
+
+Admin and Telegram user-facing copy uses plain sentences, "Could not" wording and no em dashes.
