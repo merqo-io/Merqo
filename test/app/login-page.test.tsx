@@ -44,7 +44,6 @@ describe("LoginPage — Google sign-in", () => {
       "Could not sign in with Google. Try again.",
     );
     expect(screen.getByRole("alert")).not.toHaveTextContent("boom");
-    expect(await screen.findByRole("alert")).toHaveTextContent("boom");
   });
 });
 
