@@ -16,7 +16,10 @@ export default async function LegalAcceptPage({
 
   return (
     <div className="mx-auto max-w-md px-5 py-16">
-      <h1 className="mb-4 text-xl font-semibold">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        Before you continue
+      </p>
+      <h1 className="mb-4 font-display text-3xl font-bold tracking-tight">
         Our terms have been updated
       </h1>
       <p className="mb-6 text-sm text-muted-foreground">

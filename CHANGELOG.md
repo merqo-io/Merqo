@@ -9,9 +9,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - The top paid tier is labelled "Pro" (Free / Starter / Pro) instead of "Qkit" on the dashboard kit card, the admin subscription controls and requests, and the public `/api/plans` plan name. Stored `qkit` tier and plan slug values are unchanged.
+- Buttons and inputs reach a 44px minimum touch target on coarse pointers (desktop sizes unchanged); loading skeletons now expose `role="status"`, `aria-busy` and a screen-reader label, and stop pulsing under reduced motion.
 
 ### Added
 
+- Terms gate (`/legal/accept`) now has a Sign out button so a user who declines has a way out, a hint under the disabled Continue button, and a heading that matches the rest of the app.
 - Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.
 - Public, unauthenticated `GET /api/plans` returning the active plan catalog (`plans[]` cheapest first with `annual_cents`, plus the `event_pass` terms), revalidated every 5 minutes with public CDN caching, so kit plan pages fetch prices instead of storing them. Reads through the anon client via `loadPublicPlanCatalog()`.
 - Entitlement pushes now reach printkit: migration `0042_printkit_push_only.sql` adds a `push_only` product status and a printkit row, `listEntitlementTargets()` feeds `syncVendorEntitlements`, and printkit stays out of `listLiveProducts()` surfaces and the admin grant dropdown.
