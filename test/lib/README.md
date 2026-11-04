@@ -27,6 +27,7 @@ names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use
 - `support-action.test.ts` — the vendor support-message submission Server Action.
 - `support.test.ts` — the open-support-messages read in `src/lib/support.ts`.
 - `vendor-grants.test.ts` — the client-safe `GrantStatus` helpers in `src/lib/vendor-grants.ts`.
+- `event-pass-usage-client.test.ts` — the qkit event-pass usage fetch (bearer, window params, vendor mismatch, degrade to unavailable).
 - `vendor-metrics-client.test.ts` — the per-vendor stats fetch + schema validation.
 - `vendor-sync.test.ts` — vendor kit-grant provisioning/sync.
 - `vendor.test.ts` — the vendor dashboard session/grant gate in `src/lib/vendor.ts`, plus `kitCardAction` (activate, waitlist or login CTA).

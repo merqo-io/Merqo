@@ -3,7 +3,8 @@ import type { SyncRow } from "@/lib/entitlements/store";
 /** Subscriptions store "canceled" and event passes "cancelled"; the admin
  *  pages show one spelling for both. */
 export function statusLabel(status: string): string {
-  return status === "canceled" || status === "cancelled" ? "Cancelled" : status;
+  if (status === "canceled" || status === "cancelled") return "Cancelled";
+  return status === "settled" ? "Settled" : status;
 }
 
 /** What went wrong with a kit's last push, from the kind merqo recorded.

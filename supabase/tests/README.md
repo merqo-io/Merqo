@@ -9,7 +9,7 @@ Run the rollback-only pgTAP suites with `supabase test db` against local Supabas
 - `private-helper-acl.test.sql`: private customer synchronization, owner-trigger continuity, and founder helper denial.
 - `pricing-catalog.test.sql`: `0036` seeded plan values, plan and subscription CHECKs, the 20-founder cap, one active subscription per vendor and plan, and RLS/grants on plans, subscriptions and billing credits.
 - `retention-purges.test.sql`: `0037` purge functions delete or null only rows past retention and are not executable by anon or authenticated.
-- `entitlements.test.sql`: `0038` event pass, request and push-log CHECKs (including `0039`'s `last_error_kind`), one pending request per vendor, `user_id_for_email` access, and RLS/grants (vendors read their own passes and requests, only the team reads the push log).
+- `entitlements.test.sql`: `0038` event pass, request and push-log CHECKs (including `0039`'s `last_error_kind`), one pending request per vendor, `user_id_for_email` access, and RLS/grants (vendors read their own passes and requests, only the team reads the push log), plus `0043`'s settled-status and settle-field CHECK.
 - `db-hygiene.test.sql`: `0035` foreign key indexes, RLS on every table, and `admin_audit` access (no anon access, team-only reads, no client writes). It also covers `0040` `marketing_consents` (RLS on, no policies, no anon or authenticated writes, service role insert and update).
 - `rate-limit.test.sql`: the `0041` limiter allows up to the limit, counts rejected hits, keeps keys independent, rejects non-positive limits, and is executable by `service_role` only.
 

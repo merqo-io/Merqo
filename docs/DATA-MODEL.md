@@ -13,6 +13,15 @@ RLS default-deny; team-membership via `merqo.is_merqo_team()`. `products` +
 `vendor_links` are read/written via the **service-role client** (server-only) so
 the `metrics_secret` never reaches a browser.
 
+**Event pass settle (0043):** `event_passes` gained nullable `settled_cups`,
+`settled_cents`, `settled_at` and `settled_by` (FK to `auth.users`, indexed) and a
+`settled` status. A CHECK keeps the four settle fields all set when status is
+`settled` and all null otherwise. Merqo charges nobody: after a pass ends the team
+collects the top-up offline, then "Mark settled" re-reads the pass window's cups
+from qkit (`GET /api/merqo/event-pass-usage`, bearer `metrics_secret`) and stores
+cups and the top-up (`eventPassChargeCents` minus `prepaid_cents`, floored at 0).
+RLS and grants are unchanged.
+
 **Customer Telegram identity (0019, 2026-08-16):** `customers` (0018) was widened
 — surrogate `id` PK, `phone` now nullable, plus `telegram_chat_id`/
 `consent_given_at`/`pending_notify_ref` and a `customers_identity_check`

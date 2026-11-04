@@ -11,9 +11,13 @@ import {
   cancelSubscription,
   findVendorId,
   grantSubscription,
+  loadVendorEventPasses,
   loadVendorSubscriptions,
   mintEventPass,
+  settleEventPass,
 } from "@/lib/entitlements/store";
+import { eventPassChargeCents } from "@/lib/pricing/calc";
+import { getEventPassUsage } from "@/lib/event-pass-usage-client";
 import { syncVendorEntitlements } from "@/lib/entitlements/push";
 import { closeRequest, getPendingRequest } from "@/lib/subscription-requests";
 
@@ -52,6 +56,7 @@ const mintSchema = z.object({
 });
 
 const cancelPassSchema = z.object({ email: emailSchema, passId: uuidSchema });
+const settlePassSchema = z.object({ email: emailSchema, passId: uuidSchema });
 const repushSchema = z.object({ email: emailSchema });
 
 function utcDay(day: string): Date {
@@ -267,6 +272,71 @@ export async function cancelEventPassAction(
     return { success: true };
   } catch (err) {
     console.error("cancelEventPassAction failed", err);
+    return { success: false, error: GENERIC_ERROR };
+  }
+}
+
+/** Record the offline top-up for an ended pass. Cups are re-read from the kit
+ *  here, never taken from the client, so the stored figures can't be forged. */
+export async function settleEventPassAction(
+  input: z.input<typeof settlePassSchema>,
+): Promise<ActionResult> {
+  const { user } = await requireMerqoTeam();
+  const parsed = settlePassSchema.safeParse(input);
+  if (!parsed.success) return { success: false, error: "Pick an event pass." };
+  const data = parsed.data;
+  try {
+    const terms = (await loadPlanCatalog()).find(
+      (p) => p.kind === "event_pass" && p.active,
+    )?.eventPass;
+    if (!terms) {
+      return { success: false, error: "Event passes are not on sale." };
+    }
+    const vendorId = await findVendorId(data.email);
+    if (!vendorId) {
+      return { success: false, error: "That vendor has no Merqo account yet." };
+    }
+    const pass = (await loadVendorEventPasses(vendorId)).find(
+      (p) => p.id === data.passId,
+    );
+    if (!pass) return { success: false, error: "Pick an event pass." };
+    if (pass.status !== "active") {
+      return { success: false, error: "That event pass is already closed." };
+    }
+    if (Date.parse(pass.endsAt) > Date.now()) {
+      return { success: false, error: "That event pass hasn't ended yet." };
+    }
+    const usage = await getEventPassUsage({
+      vendorId,
+      startsAt: pass.startsAt,
+      endsAt: pass.endsAt,
+    });
+    if (!usage.ok) {
+      return { success: false, error: "Usage is unavailable. Try again." };
+    }
+    const cents = Math.max(
+      0,
+      eventPassChargeCents(usage.cups, terms) - pass.prepaidCents,
+    );
+    const settled = await settleEventPass({
+      vendorId,
+      passId: pass.id,
+      cups: usage.cups,
+      cents,
+      settledBy: user.id,
+    });
+    if (!settled) {
+      return { success: false, error: "That event pass is already closed." };
+    }
+    await recordAudit(user.id, "settle_event_pass", pass.id, {
+      email: data.email,
+      cups: usage.cups,
+      settled_cents: cents,
+    });
+    revalidatePath(`/admin/vendors/${encodeURIComponent(data.email)}`);
+    return { success: true };
+  } catch (err) {
+    console.error("settleEventPassAction failed", err);
     return { success: false, error: GENERIC_ERROR };
   }
 }

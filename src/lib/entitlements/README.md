@@ -24,7 +24,9 @@ charges anyone; prices and payment stay manual until billing exists.
   push state and the founder count (`FOUNDER_CAP` 20). The founder cap is
   enforced by a database trigger; `grantSubscription` turns its `23514` into
   `FounderCapError`. `findVendorId` maps an email to the auth id through the
-  service-only `user_id_for_email` function. `store.test.ts` covers it.
+  service-only `user_id_for_email` function. `settleEventPass` records the
+  offline settle (cups, top-up cents, who and when) and only matches a still
+  active pass. `store.test.ts` covers it.
 - `push.ts`: `pushKitEntitlement()` posts one payload with the kit's
   `provision_secret`; `syncVendorEntitlements()` derives, pushes to every live
   and `push_only` kit (printkit; or `opts.kits`), records each result in `merqo.entitlement_sync` and

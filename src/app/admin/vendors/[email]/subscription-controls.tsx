@@ -22,6 +22,7 @@ import {
   grantSubscriptionAction,
   mintEventPassAction,
   repushEntitlementsAction,
+  settleEventPassAction,
 } from "./subscription-actions";
 
 export interface SellablePlan {
@@ -317,6 +318,48 @@ export function CancelEventPassButton({
       successMessage={`Cancelled the event pass for ${email}`}
       confirmLabel="Cancel pass"
       pendingLabel="Cancelling…"
+    />
+  );
+}
+
+export function SettleEventPassButton({
+  email,
+  passId,
+  disabled,
+  topUpCents,
+}: {
+  email: string;
+  passId: string;
+  disabled: boolean;
+  topUpCents: number | null;
+}) {
+  return (
+    <ConfirmAdminAction
+      trigger={
+        <Button
+          type="button"
+          variant="outline"
+          size="xs"
+          disabled={disabled}
+          aria-label={`Mark the event pass for ${email} settled`}
+        >
+          Mark settled
+        </Button>
+      }
+      title={<>Mark this event pass settled?</>}
+      description={
+        <>
+          Record the usage now and close the pass.
+          {topUpCents !== null && (
+            <> Top-up due {formatSgd(topUpCents)}.</>
+          )}{" "}
+          Merqo does not charge; collect it yourself.
+        </>
+      }
+      action={() => settleEventPassAction({ email, passId })}
+      successMessage={`Settled the event pass for ${email}`}
+      confirmLabel="Mark settled"
+      pendingLabel="Settling…"
     />
   );
 }

@@ -6,6 +6,7 @@ select has_table('merqo', 'subscription_requests', 'subscription_requests exists
 select has_table('merqo', 'entitlement_sync', 'entitlement_sync exists');
 select has_index('merqo', 'event_passes', 'event_passes_vendor_id_idx', 'event_passes (vendor_id) is indexed');
 select has_index('merqo', 'event_passes', 'event_passes_created_by_idx', 'event_passes (created_by) is indexed');
+select has_index('merqo', 'event_passes', 'event_passes_settled_by_idx', 'event_passes (settled_by) is indexed');
 select has_index('merqo', 'subscription_requests', 'subscription_requests_vendor_id_idx', 'subscription_requests (vendor_id) is indexed');
 select has_index('merqo', 'subscription_requests', 'subscription_requests_plan_slug_idx', 'subscription_requests (plan_slug) is indexed');
 select has_index('merqo', 'subscription_requests', 'subscription_requests_resolved_by_idx', 'subscription_requests (resolved_by) is indexed');
@@ -32,6 +33,17 @@ select throws_ok($$ insert into merqo.event_passes (vendor_id, starts_at, ends_a
 select throws_ok($$ insert into merqo.event_passes (vendor_id, starts_at, ends_at, prepaid_cents, source)
   values ('37000000-0000-0000-0000-000000000001', '2026-12-01', '2026-12-03', 1400, 'stripe') $$,
   '23514', null, 'an unknown pass source is rejected');
+
+select throws_ok($$ insert into merqo.event_passes (vendor_id, starts_at, ends_at, prepaid_cents, status)
+  values ('37000000-0000-0000-0000-000000000001', '2026-12-01', '2026-12-03', 1400, 'settled') $$,
+  '23514', null, 'a settled pass without its figures is rejected');
+select throws_ok($$ insert into merqo.event_passes (vendor_id, starts_at, ends_at, prepaid_cents, settled_cups, settled_cents, settled_at)
+  values ('37000000-0000-0000-0000-000000000001', '2026-12-01', '2026-12-03', 1400, 10, 0, now()) $$,
+  '23514', null, 'settle figures on an unsettled pass are rejected');
+select lives_ok($$ insert into merqo.event_passes (vendor_id, starts_at, ends_at, prepaid_cents, status, settled_cups, settled_cents, settled_at)
+  values ('37000000-0000-0000-0000-000000000001', '2026-12-01', '2026-12-03', 1400, 'settled', 120, 400, now()) $$,
+  'a settled pass with its figures is accepted');
+delete from merqo.event_passes where status = 'settled';
 
 -- subscription_requests CHECKs and the one-pending-per-vendor rule.
 insert into merqo.subscription_requests (vendor_id, plan_slug, kind)

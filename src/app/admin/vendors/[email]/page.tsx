@@ -21,6 +21,7 @@ import {
 import { sgDay } from "@/lib/sg-date";
 import { getPendingRequest } from "@/lib/subscription-requests";
 import { VendorActivityCard } from "./vendor-activity-card";
+import { getEventPassUsage } from "@/lib/event-pass-usage-client";
 import { SubscriptionSection } from "./subscription-section";
 
 export const revalidate = 0;
@@ -38,9 +39,31 @@ async function loadBilling(vendorId: string, requestId: string | undefined) {
         : null,
     ]);
   const pass = catalog.find((p) => p.kind === "event_pass" && p.active);
+  const nowMs = Date.now();
+  // Usage is only meaningful once a pass has started; settled and cancelled
+  // passes show recorded figures instead of a live read.
+  const live = eventPasses.filter(
+    (p) => p.status === "active" && Date.parse(p.startsAt) <= nowMs,
+  );
+  const passUsage = Object.fromEntries(
+    await Promise.all(
+      live.map(
+        async (p) =>
+          [
+            p.id,
+            await getEventPassUsage({
+              vendorId,
+              startsAt: p.startsAt,
+              endsAt: p.endsAt,
+            }),
+          ] as const,
+      ),
+    ),
+  );
   return {
     subscriptions,
     eventPasses,
+    passUsage,
     syncRows,
     founderCount,
     plans: catalog.filter(

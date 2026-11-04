@@ -6,6 +6,8 @@ import {
   subscriptionPeriodLine,
   syncFailureLabel,
 } from "./subscription-labels";
+import { eventPassChargeCents, type EventPassTerms } from "@/lib/pricing/calc";
+import type { EventPassUsageResult } from "@/lib/event-pass-usage-client";
 import { FOUNDER_CAP } from "@/lib/entitlements/store";
 import type {
   EventPassRow,
@@ -18,6 +20,7 @@ import {
   GrantSubscriptionForm,
   MintEventPassForm,
   RepushButton,
+  SettleEventPassButton,
   type RequestPrefill,
   type SellablePlan,
 } from "./subscription-controls";
@@ -37,6 +40,83 @@ const SYNC_BADGES = {
   skipped: { variant: "muted", label: "Not configured" },
 } as const;
 
+type PassTerms = EventPassTerms & { durationDays: number };
+
+/** Usage and settle figures under one pass row. The charge is recomputed from
+ *  the live terms only while the pass is unsettled; a settled pass shows the
+ *  figures recorded at settle time. */
+function PassUsageLine({
+  pass,
+  email,
+  usage,
+  terms,
+  nowMs,
+}: {
+  pass: EventPassRow;
+  email: string;
+  usage: EventPassUsageResult | undefined;
+  terms: PassTerms | null;
+  nowMs: number;
+}) {
+  if (
+    pass.status === "settled" &&
+    pass.settledCups !== null &&
+    pass.settledCents !== null
+  ) {
+    return (
+      <p className="basis-full text-xs text-muted-foreground">
+        Settled {pass.settledAt ? day(pass.settledAt) : ""}: {pass.settledCups}{" "}
+        cups, top-up {formatSgd(pass.settledCents)} (
+        {formatSgd(pass.prepaidCents)} prepaid)
+      </p>
+    );
+  }
+  if (pass.status !== "active" || !usage || Date.parse(pass.startsAt) > nowMs) {
+    return null;
+  }
+  if (!usage.ok) {
+    const ended = Date.parse(pass.endsAt) <= nowMs;
+    return (
+      <div className="flex basis-full flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-muted-foreground">
+          Usage unavailable.{ended && " Settle is disabled."}
+        </p>
+        {ended && (
+          <SettleEventPassButton
+            email={email}
+            passId={pass.id}
+            disabled
+            topUpCents={null}
+          />
+        )}
+      </div>
+    );
+  }
+  if (Date.parse(pass.endsAt) > nowMs || !terms) {
+    return (
+      <p className="basis-full text-xs text-muted-foreground">
+        {usage.cups} cups so far
+      </p>
+    );
+  }
+  const total = eventPassChargeCents(usage.cups, terms);
+  const topUp = Math.max(0, total - pass.prepaidCents);
+  return (
+    <div className="flex basis-full flex-wrap items-center justify-between gap-2">
+      <p className="text-xs text-muted-foreground">
+        {usage.cups} cups, total {formatSgd(total)},{" "}
+        {formatSgd(pass.prepaidCents)} prepaid, top-up due {formatSgd(topUp)}
+      </p>
+      <SettleEventPassButton
+        email={email}
+        passId={pass.id}
+        disabled={false}
+        topUpCents={topUp}
+      />
+    </div>
+  );
+}
+
 export function SubscriptionSection({
   email,
   subscriptions,
@@ -44,6 +124,7 @@ export function SubscriptionSection({
   syncRows,
   plans,
   eventTerms,
+  passUsage,
   founderCount,
   today,
   request,
@@ -54,7 +135,8 @@ export function SubscriptionSection({
   eventPasses: EventPassRow[];
   syncRows: SyncRow[];
   plans: SellablePlan[];
-  eventTerms: { minCents: number; durationDays: number } | null;
+  eventTerms: PassTerms | null;
+  passUsage: Record<string, EventPassUsageResult>;
   founderCount: number;
   today: string;
   request: (RequestPrefill & { kind: string }) | null;
@@ -174,6 +256,13 @@ export function SubscriptionSection({
                 {p.status === "active" && (
                   <CancelEventPassButton email={email} passId={p.id} />
                 )}
+                <PassUsageLine
+                  pass={p}
+                  email={email}
+                  usage={passUsage[p.id]}
+                  terms={eventTerms}
+                  nowMs={nowMs}
+                />
               </li>
             ))}
           </ul>
