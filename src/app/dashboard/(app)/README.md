@@ -48,7 +48,7 @@ section; one or more kits gets the savings + per-kit overview.
   of the per-card savings estimates, with an `InfoTooltip` (`@merqo/ui`)
   explaining the estimate's basis.
 - `vendor-kit-card.tsx` — `VendorKitCard({ tile, savings, metrics, now })`:
-  one active kit's card — plan badge (the tier Merqo derived, not one the kit reported), per-kit savings line (same
+  one active kit's card — plan badge (the tier Merqo derived, not one the kit reported; labelled via `tierLabel`, so `qkit` shows as Pro), per-kit savings line (same
   `InfoTooltip` from `@merqo/ui`), `VendorMetricList`, and the
   `UpgradeButton`/`DowngradeButton` pair.
 - `upgrade-button.tsx` / `downgrade-button.tsx` — `UpgradeButton`/

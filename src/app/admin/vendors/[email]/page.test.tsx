@@ -330,7 +330,7 @@ describe("VendorDetailPage", () => {
     );
 
     expect(screen.getByRole("combobox", { name: "Plan" })).toHaveTextContent(
-      "Qkit (S$16.00 a month)",
+      "Pro (S$16.00 a month)",
     );
     expect(screen.queryByText(/Paykit/)).not.toBeInTheDocument();
   });
