@@ -7,7 +7,7 @@
 - audit-checkpoint-2026-10-09.md records the product review and validation limits.
 - security/ holds the personal-data inventory and its proposed drop list (nothing is dropped until the owner approves).
 - FILE-LAYOUT.md maps the source tree (app router, API routes including the public `/api/plans` catalog, libraries, components, migrations).
-- DATA-MODEL.md documents the `merqo.*` schema, Telegram identity and vendor-connect tables, and the kit to merqo HTTP direction.
+- DATA-MODEL.md documents the `merqo.*` schema, Telegram identity and vendor-connect tables, and the kit to merqo HTTP direction, plus the Event Pass settle columns (`0043`).
 - meta/ holds standing operational and product notes.
 - superpowers/plans/ and superpowers/specs/ retain dated implementation and design evidence. They describe the decisions at that time; current source, migrations and root documentation establish present behavior.
 
