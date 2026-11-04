@@ -8,7 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Admin nav slimmed to Overview, Vendors, Requests and Products (collapsing below `lg`); Team, Feedback and Activity moved to a "More admin pages" row that wraps on narrow screens and marks the current page. `/admin/health` now redirects to `/admin/products`, which carries the vendor health table. Vendor nav label "Dashboard" is now "Kits", empty metrics read "No data yet", and the nav error toast reads "Could not complete that. Try again."
+- Admin nav slimmed to Overview, Vendors, Requests and Products (collapsing below `lg`); Team, Feedback and Activity moved to a "More admin pages" row that wraps on narrow screens and marks the current page. `/admin/health` now redirects to `/admin/products`, which carries the vendor health table. Vendor nav label "Dashboard" is now "Kits", empty metrics read "No data yet"
 
 ### Added
 

@@ -17,10 +17,10 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the four daily links
   (Overview / Vendors / Requests / Products) and an "Admin"
   badge beside the wordmark. Team / Feedback / Activity sit in a quiet "More
-  admin pages" row under the header, because the shared account menu takes only
-  one extra link. It passes `collapseBelow="lg"` so the links fold into the
-  burger menu below 1024px (eight links needed about 1083px; four need about
-  780px, which overflows md). The layout ends with the landing `Footer` (no
+  admin pages" row under the header (`@/components/admin-secondary-nav.tsx`, which
+  marks the current page with `aria-current` and wraps on narrow screens),
+  because the shared account menu takes only one extra link. It passes `collapseBelow="lg"` so the links fold into the
+  burger menu below 1024px, since four links still crowd the bar at md width. The layout ends with the landing `Footer` (no
   sign-in link) and hides both header and footer when printing.
 - `page.tsx` — `AdminOverviewPage` (`revalidate = 0`). Fetches live products,
   vendor grants and open support messages in parallel, pulls each product's
