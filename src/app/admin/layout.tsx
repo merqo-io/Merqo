@@ -2,6 +2,7 @@ import { requireMerqoTeam } from "@/lib/team";
 import { hasActiveVendorAccess } from "@/lib/vendor";
 import { getAvatarUrl } from "@/lib/account";
 import { DashboardNav } from "@/components/dashboard-nav";
+import { AdminSecondaryNav } from "@/components/admin-secondary-nav";
 import { Footer } from "@/components/landing/footer";
 
 const ADMIN_LINKS = [
@@ -9,7 +10,11 @@ const ADMIN_LINKS = [
   { href: "/admin/vendors", label: "Vendors" },
   { href: "/admin/requests", label: "Requests" },
   { href: "/admin/products", label: "Products" },
-  { href: "/admin/health", label: "Health" },
+];
+
+// The shared account menu takes one extra link and a "Switch kits" group, so
+// the occasional places sit in a quiet row under the nav instead.
+const SECONDARY_LINKS = [
   { href: "/admin/team", label: "Team" },
   { href: "/admin/feedback", label: "Feedback" },
   { href: "/admin/activity", label: "Activity" },
@@ -34,8 +39,8 @@ export default async function AdminLayout({
           homeHref="/admin"
           homeLabel="merqo admin home"
           badge="Admin"
-          // Eight links plus the account menu need about 1083px; lg (1024px) would still overflow.
-          collapseBelow="xl"
+          // Four links still crowd the bar at md width, so collapse until lg.
+          collapseBelow="lg"
           navLinks={ADMIN_LINKS}
           email={user.email}
           avatarUrl={getAvatarUrl(user)}
@@ -45,6 +50,7 @@ export default async function AdminLayout({
               : undefined
           }
         />
+        <AdminSecondaryNav links={SECONDARY_LINKS} />
       </div>
       <div className="w-full flex-1">{children}</div>
       <div className="contents print:hidden">

@@ -159,7 +159,7 @@ src/hooks/use-async-action.ts — shared pending/error state for server-action b
 src/lib/kits.ts             — kit family config (landing roadmap source of truth)
 src/lib/metrics-client.ts   — fetch of a kit's HTTP metrics endpoint
 src/lib/vendor-activity-client.ts — fetch of a single vendor's per-kit triage status/metrics/incidents
-src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-up for /admin/health
+src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-up for /admin/products
                                (admin/vendors/[email]'s Activity cards)
 src/lib/entitlements/     — derive what a vendor may use per kit from subscriptions + event passes, push it to the kits
 src/lib/schemas.ts          — Zod schemas for the profile page's forms
@@ -204,6 +204,7 @@ secrets and administrative writes use server-only service clients, so
 - Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - printkit receives entitlement pushes as a `push_only` product (migration `0042`); it is not grantable and stays out of the dashboard, metrics and the grant list.
 - Event passes can be settled on the vendor page once they end (migration `0043`): cups come live from qkit and the team records the offline top-up; Merqo charges nobody.
+- Admin nav is Overview, Vendors, Requests and Products; Team, Feedback and Activity sit in a "More admin pages" row that marks the current page, and `/admin/health` redirects to `/admin/products`.
 - Browser tabs read `<page> | merqo`; the dashboard (`Kits`) and profile (`Profile`) pages set their own titles.
 - The terms gate at `/legal/accept` has a Sign out button, so a user who declines the updated terms can leave.
 - Changelog: `CHANGELOG.md` (the top paid tier is labelled Pro, stored `qkit` unchanged; includes the new admin-audit trail, plus a fix

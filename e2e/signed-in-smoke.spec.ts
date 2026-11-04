@@ -23,7 +23,6 @@ test.describe("signed-in render smoke", () => {
       `/admin/vendors/${encodeURIComponent(addable)}`,
       "/admin/requests",
       "/admin/products",
-      "/admin/health",
       "/admin/team",
       "/admin/feedback",
       "/admin/activity",
