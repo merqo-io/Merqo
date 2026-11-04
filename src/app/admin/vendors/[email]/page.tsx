@@ -26,7 +26,14 @@ import { SubscriptionSection } from "./subscription-section";
 
 export const revalidate = 0;
 
-export const metadata = { title: "Vendor" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ email: string }>;
+}) {
+  const { email } = await params;
+  return { title: decodeURIComponent(email) };
+}
 
 async function loadBilling(vendorId: string, requestId: string | undefined) {
   const [subscriptions, eventPasses, syncRows, founderCount, catalog, request] =
@@ -126,9 +133,15 @@ export default async function VendorDetailPage({
           label="All vendors"
           LinkComponent={Link}
         />
-        <h1 className="mt-4 break-all font-display text-3xl font-semibold leading-none sm:text-4xl">
+        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          Admin
+        </p>
+        <h1 className="break-all font-display text-3xl font-semibold leading-none sm:text-4xl">
           {grant.email}
         </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Kits, subscriptions and activity for this vendor.
+        </p>
       </div>
 
       <section>
@@ -168,10 +181,10 @@ export default async function VendorDetailPage({
           nowMs={now}
         />
       ) : (
-        <p className="rounded-xl border border-dashed bg-card p-4 text-sm text-muted-foreground">
+        <div className="rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
           This vendor has no Merqo account yet, so subscriptions and event
           passes unlock after they sign in once.
-        </p>
+        </div>
       )}
 
       {activeSlugs.size > 0 && (

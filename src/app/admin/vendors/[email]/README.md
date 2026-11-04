@@ -26,6 +26,10 @@ own admin console separately.
   where `email_hash` is the first 12 hex chars of sha256 of the lowercased
   email, so the audit trail shows who opened which tenant without a second
   copy of the email.
+- The page sets its browser title to the vendor email via `generateMetadata`,
+  shows the shared admin header (Admin eyebrow, email heading, one-line
+  description) and uses the dashed-card empty state for no kits and for a
+  vendor without a Merqo account.
 - `page.test.tsx` — also covers the subscription, event pass and push state
   sections, the prefilled request, and a vendor with no Merqo account.
   Mocked-dependency coverage: renders a card only for

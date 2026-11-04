@@ -174,8 +174,7 @@ export default async function AdminOverviewPage() {
       </h2>
       {products.length === 0 ? (
         <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No products yet. Kits show up here once they are added to the
-          registry.
+          No products yet. Kits show up here once they are added.
         </div>
       ) : (
         <section className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">

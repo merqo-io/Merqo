@@ -32,7 +32,7 @@ vi.mock("@/lib/tenant-health", () => ({
 }));
 vi.mock("./support-message-row", () => ({ SupportMessageRow: () => null }));
 
-import AdminOverviewPage from "./page";
+import AdminOverviewPage, { metadata } from "./page";
 
 const PRODUCT = { slug: "qkit", name: "qkit", app_url: "https://q.test" };
 
@@ -107,8 +107,9 @@ describe("AdminOverviewPage needs-attention health count", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "No products yet. Kits show up here once they are added to the registry.",
+        "No products yet. Kits show up here once they are added.",
       ),
     ).toBeInTheDocument();
+    expect(metadata.title).toBe("Overview");
   });
 });

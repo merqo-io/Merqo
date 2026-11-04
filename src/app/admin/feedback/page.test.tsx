@@ -79,9 +79,13 @@ describe("AdminFeedbackPage", () => {
       from: () => tableMock([]),
     });
 
-    const { default: AdminFeedbackPage } = await import("./page");
+    const { default: AdminFeedbackPage, metadata } = await import("./page");
     render(await AdminFeedbackPage());
 
+    expect(metadata.title).toBe("Feedback");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Feedback" }),
+    ).toBeInTheDocument();
     expect(
       screen.getByText("No feedback yet. Scores and comments show up here."),
     ).toBeInTheDocument();
