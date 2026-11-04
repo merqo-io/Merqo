@@ -19,7 +19,7 @@ billing will build on. Nothing here charges anyone.
 - `catalog.ts`: `loadPlanCatalog()` reads `merqo.plans` through the service
   client and returns typed `Plan` objects; `parsePlanRows` validates rows.
 - `public-catalog.ts`: `loadPublicPlanCatalog()` reads active plans through the anon client and shapes the `/api/plans` response; `public-catalog.test.ts` covers it.
-- `format.ts`: `formatSgd` (cents to `S$16.00`) and `planLabel` (slug to display name) for admin screens; `format.test.ts` covers them.
+- `format.ts`: `formatSgd` (cents to `S$16.00`) and `planLabel` (slug to display name, tier slugs labelled through `tierLabel`: `qkit` shows as Pro) for admin screens; `format.test.ts` covers them.
 - `catalog.test.ts`: row mapping, event pass terms, query order and errors.
 
 [Parent](../README.md)

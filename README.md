@@ -204,7 +204,7 @@ secrets and administrative writes use server-only service clients, so
 - Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - printkit receives entitlement pushes as a `push_only` product (migration `0042`); it is not grantable and stays out of the dashboard, metrics and the grant list.
 - Event passes can be settled on the vendor page once they end (migration `0043`): cups come live from qkit and the team records the offline top-up; Merqo charges nobody.
-- Changelog: `CHANGELOG.md` (includes the new admin-audit trail, plus a fix
+- Changelog: `CHANGELOG.md` (the top paid tier is labelled Pro, stored `qkit` unchanged; includes the new admin-audit trail, plus a fix
   restoring card/background contrast in both modes after the Harbour
   Control rebrand had accidentally collapsed them to the same color and a
   follow-up dark-mode brightness bump, a fix routing every signed-in
