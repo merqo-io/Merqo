@@ -12,7 +12,7 @@ import {
 import type { ActionResult } from "@/lib/action-result";
 
 /**
- * Update the vendor's stall name in the shared merqo.vendor_profile table
+ * Update the vendor's business name in the shared merqo.vendor_profile table
  * via the field-specific patch_vendor_profile
  * RPC — every kit reads/writes this one copy.
  */
