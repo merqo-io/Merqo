@@ -14,6 +14,12 @@ import { GoogleMark } from "@merqo/ui";
 
 type Mode = "signin" | "signup";
 
+// Written for users by signInWithPasswordAction itself, so safe to show as is.
+const OWN_MESSAGES: ReadonlySet<string> = new Set([
+  "Enter your email and password.",
+  "Too many sign-in attempts. Try again in a few minutes.",
+]);
+
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("signin");
@@ -102,7 +108,11 @@ export default function LoginPage() {
 
       const result = await signInWithPasswordAction({ email, password });
       if (result.error) {
-        setError(authErrorCopy(result.error, "Could not sign in. Try again."));
+        setError(
+          OWN_MESSAGES.has(result.error)
+            ? result.error
+            : authErrorCopy(result.error, "Could not sign in. Try again."),
+        );
         return;
       }
       router.push("/post-login");

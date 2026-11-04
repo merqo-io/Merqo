@@ -1,30 +1,35 @@
 const KNOWN: ReadonlyArray<readonly [RegExp, string]> = [
   [/invalid login credentials/i, "Email or password is incorrect."],
   [/email not confirmed/i, "Confirm your email first, then sign in."],
-  [
-    /already (registered|been registered)/i,
-    "That email already has an account. Sign in instead.",
-  ],
+  // Neutral on purpose: naming an existing account would let anyone probe
+  // which emails are registered.
+  [/already (registered|been registered)/i, "Check your email to continue."],
   [
     /same.*(as|from).*old|different from the old/i,
     "Choose a password you have not used before.",
   ],
+  [/password should be at least/i, "Choose a stronger password."],
   [
-    /weak|at least \d+ characters|password should/i,
-    "Choose a stronger password.",
-  ],
-  [
-    /rate limit|too many|over_.*_rate_limit/i,
+    /rate limit|too many requests/i,
     "Too many attempts. Wait a minute and try again.",
   ],
-  // Messages already written for users by our own server actions.
-  [/^enter your email/i, "Enter your email and password."],
 ];
+
+const MAX_LOGGED = 200;
+
+function redact(raw: string): string {
+  // Token-wise rather than a regex: an email pattern here backtracks badly.
+  return raw
+    .split(/\s+/)
+    .map((word) => (word.includes("@") ? "[email]" : word))
+    .join(" ")
+    .slice(0, MAX_LOGGED);
+}
 
 /**
  * Turns a Supabase auth error message into plain user-facing copy.
- * The raw message is logged to the console so it is not lost, and never
- * returned unless it matches a known case; everything else gets `fallback`.
+ * Unmapped messages are logged truncated with emails redacted, and never
+ * returned; everything else gets `fallback`.
  */
 export function authErrorCopy(
   raw: string | null | undefined,
@@ -34,7 +39,7 @@ export function authErrorCopy(
     for (const [pattern, copy] of KNOWN) {
       if (pattern.test(raw)) return copy;
     }
-    console.error("auth error:", raw);
+    console.error("auth error (unmapped):", redact(raw));
   }
   return fallback;
 }

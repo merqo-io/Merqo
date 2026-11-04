@@ -22,12 +22,30 @@ describe("authErrorCopy", () => {
     );
   });
 
-  it("falls back and logs the raw message for unknown errors", () => {
+  it("uses neutral copy for already-registered emails", () => {
+    expect(authErrorCopy("User already registered", "x")).toBe(
+      "Check your email to continue.",
+    );
+  });
+
+  it("does not map loose look-alike messages", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(authErrorCopy("weak signal", "fb")).toBe("fb");
+    expect(authErrorCopy("too many rows returned", "fb")).toBe("fb");
+  });
+
+  it("falls back and logs a redacted, truncated message for unknown errors", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(
-      authErrorCopy("AuthApiError: db blew up", "Could not save. Try again."),
+      authErrorCopy(
+        "failed for jo@example.com " + "x".repeat(500),
+        "Could not save. Try again.",
+      ),
     ).toBe("Could not save. Try again.");
-    expect(spy).toHaveBeenCalledWith("auth error:", "AuthApiError: db blew up");
+    const logged = spy.mock.calls.flat().join(" ");
+    expect(logged).not.toContain("jo@example.com");
+    expect(logged).toContain("[email]");
+    expect(logged.length).toBeLessThan(260);
   });
 
   it("falls back when there is no message", () => {

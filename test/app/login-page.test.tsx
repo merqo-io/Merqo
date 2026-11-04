@@ -53,7 +53,9 @@ it("recovers after a rejected OAuth request", async () => {
   await userEvent
     .setup()
     .click(screen.getByRole("button", { name: /continue with google/i }));
-  expect(await screen.findByRole("alert")).toHaveTextContent("Try again");
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Could not sign in. Try again.",
+  );
   expect(
     screen.getByRole("button", { name: /continue with google/i }),
   ).toBeEnabled();
