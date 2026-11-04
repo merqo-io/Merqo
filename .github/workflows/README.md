@@ -21,7 +21,7 @@ this private repo's free tier).
   (PR-only, `skip-readme-check` bypass); `comment-hygiene` (PR-only,
   hard-gates change-narration comments in added lines,
   `skip-comment-check` bypass); `db` ("db (migrations + pgTAP RLS)").
-- `security.yml` — gitleaks secret scan + `pnpm audit`, triggered on push
+- `security.yml` — gitleaks secret scan + the fail-closed `.claude/deps-gate.sh` dependency audit, triggered on push
   to `main`, every PR, and a weekly cron.
   The gitleaks job installs the pinned release binary and checks its SHA-256, because gitleaks-action needs a paid license on organization-owned repos. It scans the PR commits, or the pushed range on `main`.
 - `staging-sync.yml`: on push to `main` (or a manual run), fast-forwards the

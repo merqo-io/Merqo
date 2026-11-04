@@ -128,3 +128,7 @@ layout and how this console fits the rest of Merqo.
 ProductTile and ProductHealthCard use ProductHealthBadge for consistent health labels. Their business and operational diagnostics remain distinct. RemoveMember and RevokeButton delegate their dialog state to ConfirmAdminAction; each adapter retains its own action arguments. Pending operations block dismissal, returned errors and rejected requests keep the confirmation available for retry, and successful operations close it.
 
 Every page and action is gated by `requireMerqoTeam()`, which also requires a verified second factor (`aal2`); a password-only session is redirected to `/mfa`.
+
+## Loading skeleton
+
+`loading.tsx` renders a `role="status"` region with `aria-busy` and an `sr-only` label; its pulsing blocks use `motion-reduce:animate-none`.

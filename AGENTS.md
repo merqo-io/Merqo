@@ -1,4 +1,4 @@
-<!-- templateCentral: nextjs@6.0.4 (Supabase variant — shared project, schema per kit) -->
+<!-- templateCentral: nextjs@7.2.2 (Supabase variant — shared project, schema per kit) -->
 
 # AGENTS.md — Merqo
 
@@ -37,7 +37,7 @@ their side); a vendor connects once from merqo's own `/profile` page. See
 
 Next.js 16 · App Router · Turbopack · TypeScript strict · Tailwind v4 · shadcn/ui
 (new-york) · Zod · Supabase (`@supabase/ssr`) · Vitest · Playwright · pnpm 11 ·
-Node ≥24 · deploy target: Vercel
+Node ≥24.22.1 · deploy target: Vercel
 
 ## Commands
 
@@ -97,11 +97,11 @@ Hook scripts live in `.claude/hooks/` (not inlined in `settings.json`); the mani
 
 - PreToolUse(Read|Edit|Write) hard-blocks secret-file reads and writes (env files except blank templates, secret directories, certificate/credential files). Governance and CI/CD writes require human approval; their reads are allowed. The Bash guard blocks hook bypasses, protected-branch force pushes and destructive guard edits.
 - UserPromptSubmit blocks credential-shaped input; injection-phrase matches only add advisory context.
-- PostToolUse typecheck and comment-hygiene hooks are feedback-only. `Stop` runs `pnpm test --run`; `SubagentStop` type-gates uncommitted TS changes. `SessionStart` re-injects the first 30 lines of this file, so keep them stable.
+- PostToolUse typecheck and comment-hygiene hooks are feedback-only. `Stop` runs `pnpm test --run`; `SubagentStop` type-gates uncommitted TS changes. `SessionStart` prints the always-on invariants only (this file is loaded through the `CLAUDE.md` import).
 - `permissions.deny` covers secret reads/edits and irreversible ops (`rm -rf`, force push, `git reset --hard`, `git clean -fd/-fx`, `git filter-branch`, ref-delete). `permissions.ask` gates edits to AGENTS.md / CLAUDE.md / settings.json / harness.json.
 - `regen-harness.sh` is human-run only; an agent must not re-bless its own baseline.
 - Git hooks (husky): pre-commit format/lint/typecheck + lockfile-sync + gitleaks; commit-msg enforces Conventional Commits; pre-push runs the harness integrity check + quality gate.
-- CI (`ci.yml`, 8 jobs): `test`, `build`, `e2e`, `e2e-admin`, `changelog`, `readme-freshness`, `comment-hygiene`, `db`. `security.yml` runs gitleaks + `pnpm audit` (no CodeQL). Actions are pinned to commit SHAs.
+- CI (`ci.yml`, 8 jobs): `test`, `build`, `e2e`, `e2e-admin`, `changelog`, `readme-freshness`, `comment-hygiene`, `db`. `security.yml` runs gitleaks + the fail-closed deps gate `.claude/deps-gate.sh` (`pnpm audit` high/critical; expiring suppressions only in `.claude/dep-audit-allow.txt`; no CodeQL). Actions are pinned to commit SHAs.
 
 > Note: unlike the qkit reference, `settings.json` here omits the broad
 > `permissions.allow` list (each session grants tools interactively). Add an
