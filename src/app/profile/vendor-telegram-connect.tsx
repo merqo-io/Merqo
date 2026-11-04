@@ -30,13 +30,10 @@ export function VendorTelegramConnect({ connected }: Props) {
           if (!res.success) throw new Error(res.error);
           router.refresh();
         }}
-        onError={(err) =>
-          toast.error(
-            err instanceof Error
-              ? err.message
-              : "Could not disconnect Telegram. Try again.",
-          )
-        }
+        onError={(err) => {
+          console.error("telegram disconnect failed:", err);
+          toast.error("Could not disconnect Telegram. Try again.");
+        }}
       />
     );
   }
@@ -49,13 +46,10 @@ export function VendorTelegramConnect({ connected }: Props) {
         if (!res.success) throw new Error(res.error);
         return { deepLink: res.deepLink, qrSvgMarkup: res.qrSvgMarkup };
       }}
-      onError={(err) =>
-        toast.error(
-          err instanceof Error
-            ? err.message
-            : "Could not create a Telegram link. Try again.",
-        )
-      }
+      onError={(err) => {
+        console.error("telegram link failed:", err);
+        toast.error("Could not create a Telegram link. Try again.");
+      }}
     />
   );
 }
