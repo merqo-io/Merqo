@@ -254,6 +254,9 @@ describe("POST /api/telegram/webhook", () => {
     const [chatId, text] = sendTelegramMessage.mock.calls[0];
     expect(chatId).toBe(888);
     expect(text).toMatch(/unsubscrib/i);
+    expect(text).toContain(
+      "The shop you bought from still has your order details. Contact them directly about your order.",
+    );
   });
 
   it("requests retry without confirming /stop when the consent-clear RPC errors", async () => {

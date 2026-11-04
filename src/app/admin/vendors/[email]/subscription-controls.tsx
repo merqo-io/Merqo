@@ -375,9 +375,15 @@ export function RepushButton({ email }: { email: string }) {
       if (!res.success) {
         toast.error(res.error);
       } else if (res.failed === 0) {
-        toast.success(`Pushed to ${res.pushed} kits`);
+        toast.success(
+          `Updated ${res.pushed} ${res.pushed === 1 ? "kit" : "kits"}`,
+        );
       } else {
-        toast.error(`${res.failed} kits did not accept the push`);
+        toast.error(
+          res.failed === 1
+            ? "1 kit could not be updated. Try again."
+            : `${res.failed} kits could not be updated. Try again.`,
+        );
       }
     });
   }

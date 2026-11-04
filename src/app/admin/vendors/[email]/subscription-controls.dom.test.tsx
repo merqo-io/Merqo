@@ -241,7 +241,7 @@ it("reports a clean re-push, a partial one and an error", async () => {
   });
   await user.click(button);
   await waitFor(() =>
-    expect(toast.success).toHaveBeenCalledWith("Pushed to 3 kits"),
+    expect(toast.success).toHaveBeenCalledWith("Updated 3 kits"),
   );
 
   actions.repushEntitlementsAction.mockResolvedValueOnce({
@@ -251,7 +251,31 @@ it("reports a clean re-push, a partial one and an error", async () => {
   });
   await user.click(button);
   await waitFor(() =>
-    expect(toast.error).toHaveBeenCalledWith("2 kits did not accept the push"),
+    expect(toast.error).toHaveBeenCalledWith(
+      "2 kits could not be updated. Try again.",
+    ),
+  );
+
+  actions.repushEntitlementsAction.mockResolvedValueOnce({
+    success: true,
+    pushed: 1,
+    failed: 1,
+  });
+  await user.click(button);
+  await waitFor(() =>
+    expect(toast.error).toHaveBeenCalledWith(
+      "1 kit could not be updated. Try again.",
+    ),
+  );
+
+  actions.repushEntitlementsAction.mockResolvedValueOnce({
+    success: true,
+    pushed: 1,
+    failed: 0,
+  });
+  await user.click(button);
+  await waitFor(() =>
+    expect(toast.success).toHaveBeenCalledWith("Updated 1 kit"),
   );
 
   actions.repushEntitlementsAction.mockResolvedValueOnce({

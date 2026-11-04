@@ -15,7 +15,7 @@ export function ProductHealthCard({
   const status = classifyHealth(result, now);
   const lastSeen = result.ok
     ? result.data.generated_at.slice(0, 16).replace("T", " ")
-    : "—";
+    : "No data yet";
 
   return (
     // secondary treatment — a listing tile, not the vendor's own active kit
@@ -31,13 +31,16 @@ export function ProductHealthCard({
             ["Last seen", lastSeen],
             [
               "Active vendors",
-              result.ok ? String(result.data.active_vendors) : "—",
+              result.ok ? String(result.data.active_vendors) : "No data yet",
             ],
             [
               "Revenue (30d)",
-              result.ok ? money(result.data.revenue_cents_30d) : "—",
+              result.ok ? money(result.data.revenue_cents_30d) : "No data yet",
             ],
-            ["Orders (7d)", result.ok ? String(result.data.orders_7d) : "—"],
+            [
+              "Orders (7d)",
+              result.ok ? String(result.data.orders_7d) : "No data yet",
+            ],
           ] as [string, string][]
         ).map(([k, v]) => (
           <div

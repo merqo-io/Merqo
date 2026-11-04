@@ -24,7 +24,7 @@ export async function grantKitAction(
   try {
     await grantKit(parsed.data.email, parsed.data.slug);
   } catch {
-    return { success: false, error: "Couldn't grant access. Try again." };
+    return { success: false, error: "Could not grant access. Try again." };
   }
   await recordAudit(user.id, "grant_kit_access", null, parsed.data);
   revalidatePath("/admin/vendors");
@@ -45,7 +45,7 @@ export async function revokeKitAction(
   try {
     await revokeKit(parsed.data.email, parsed.data.slug);
   } catch {
-    return { success: false, error: "Couldn't revoke access. Try again." };
+    return { success: false, error: "Could not revoke access. Try again." };
   }
   await recordAudit(user.id, "revoke_kit_access", null, parsed.data);
   revalidatePath("/admin/vendors");

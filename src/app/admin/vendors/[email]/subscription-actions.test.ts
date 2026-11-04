@@ -501,7 +501,7 @@ describe("settleEventPassAction", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     expect(await settleEventPassAction(input)).toEqual({
       success: false,
-      error: "Couldn't save that. Try again.",
+      error: "Could not save that. Try again.",
     });
   });
 });

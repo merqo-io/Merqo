@@ -93,3 +93,5 @@ The page header's way back to the vendor list is `@merqo/ui`'s `BackButton`, giv
 ## Boundary and coverage
 
 The page validates its grant lookup through team-gated helpers. Tests verify that only active grants trigger kit activity calls, while missing grants use the not-found path; failed activity reads do not invent successful metrics.
+
+The re-push toast reports "Updated N kits" and "N kits could not be updated. Try again.", with singular forms for one kit.

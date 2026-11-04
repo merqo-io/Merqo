@@ -5,3 +5,5 @@ Team-gated kit access management. Grant and revoke actions validate input and au
 The list page header shows the founder slots left out of 20 (`countFounders` in `@/lib/entitlements/store`). Subscriptions, event passes and kit entitlements are managed per vendor in `[email]/`.
 
 The `loading.tsx` skeleton is a `role="status"` region with `aria-busy`, an `sr-only` label and a reduced-motion fallback.
+
+Grant and revoke errors read "Could not grant access. Try again." and "Could not revoke access. Try again."

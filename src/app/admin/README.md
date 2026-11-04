@@ -130,3 +130,5 @@ Every page and action is gated by `requireMerqoTeam()`, which also requires a ve
 ## Loading skeleton
 
 `loading.tsx` renders a `role="status"` region with `aria-busy` and an `sr-only` label; its pulsing blocks use `motion-reduce:animate-none`.
+
+Admin action errors use plain copy ("Could not ... Try again.") with no em dashes.
