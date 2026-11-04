@@ -17,7 +17,10 @@ behavioral description of each hook and the events they're wired to.
   guard-layer files, and recursive-forced `rm` on source directories.
   Windows drive-letter paths (`C:\…`, `C:/…`) and quoted paths with spaces
   are normalised before the branch is judged, so worktree commits on feature
-  branches pass.
+  branches pass. A strict `&&` chain (`cd <repo> && git commit`) is judged only
+  by the directories git actually runs in, so it passes from a `main` checkout
+  when the `cd` lands on a feature branch; anything looser keeps the starting
+  directory as a candidate.
 - `block-no-verify.test.sh` — regression tests for the hook (run `bash .claude/hooks/block-no-verify.test.sh`).
 - `user-prompt-guard.cjs` — reports injection phrases as advisory context and blocks embedded credentials (OWASP LLM02).
 - `post-edit-typecheck.sh` — PostToolUse(Edit|Write): runs
@@ -33,7 +36,8 @@ behavioral description of each hook and the events they're wired to.
 - `subagent-stop.sh` — SubagentStop: type-gates a subagent's uncommitted TS
   changes before it hands back control.
 - `session-context.sh` — SessionStart (startup|resume|clear|compact):
-  re-injects the first 30 lines of `AGENTS.md` plus always-on invariants.
+  re-injects the always-on invariants (`AGENTS.md` is already loaded through
+  the `CLAUDE.md` import).
 - `verify.sh` — manual verification gate (`pnpm build && pnpm check &&
 pnpm test`), not wired to a Claude Code hook event; run by hand after
   substantial changes. Distinct from `.claude/verify-harness.sh`, the

@@ -7,6 +7,9 @@ map of what lives where.
 
 ## Contents
 
+- `deps-gate.sh` + `dep-audit-allow.txt`: the fail-closed dependency-audit gate
+  run by `security.yml`, and its expiring advisory allowlist.
+
 - `settings.json` — hook wiring (PreToolUse/PostToolUse/Stop/SubagentStop/
   SessionStart) and `permissions.allow/ask/deny`.
 - `hooks/` — the scripts `settings.json` wires up: `protect-files.sh`,
