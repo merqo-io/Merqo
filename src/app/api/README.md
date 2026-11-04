@@ -12,6 +12,8 @@ merqo's own pages.
   to run the customer Telegram-connect flow. The first kit → merqo HTTP
   direction in this codebase — every other cross-kit call (metrics pull,
   vendor-provision) flows merqo → kit; see its own README.
+- `plans/` — public, unauthenticated `GET /api/plans` plan catalog for kit
+  plan pages; see its own README.
 - `telegram/` — Merqo's shared Telegram bot webhook (`webhook/route.ts`),
   serving customers and vendors after the per-kit bots were retired; see its
   own README.
