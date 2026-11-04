@@ -11,11 +11,15 @@ page it exists to satisfy, an infinite loop.
 ## Contents
 
 - `page.tsx` — reads the `next` search param and renders the client
-  `accept-form.tsx`.
+  `accept-form.tsx` under a "Before you continue" eyebrow and the page heading.
 - `accept-form.tsx` — client component wrapping `@merqo/ui`'s
   `TermsAcceptanceCheckbox` (just the agree checkbox — no typed name)
   inside a `<form>` whose `action` is `acceptLegalTerms`; a hidden `next`
   field carries the redirect target through the server action.
+  A hint tied to the disabled Continue button via `aria-describedby`
+  explains the checkbox is needed. A separate second `<form>` (forms can't
+  nest) calls `signOutAction` from a "Sign out" button, so a user who
+  declines has a way out.
 - `actions.ts` — `acceptLegalTerms` server action. Re-checks the signed-in
   user, reads the vendor's real `ip`/`user_agent` via `headers()`, then
   inserts both `terms` and `privacy` rows into `merqo.legal_acceptances`
@@ -26,6 +30,9 @@ page it exists to satisfy, an infinite loop.
   `safe-redirect.ts`'s `safeRedirectPath` (rejects absolute URLs, `//`,
   `/\`, and embedded control characters) so a crafted `next` value can't
   produce an open redirect.
+- `accept-form.test.tsx` — covers: the hidden `next` field, Continue disabled
+  until agreed, the `aria-describedby` hint, and Sign out calling
+  `signOutAction`.
 - `actions.test.ts` — covers: both rows genuinely carry `ip`/`user_agent`
   in the insert call; a `23505` on one doc doesn't block the other;
   unsafe `next` values fall back to `/dashboard`.
