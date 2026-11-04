@@ -204,6 +204,7 @@ secrets and administrative writes use server-only service clients, so
 - Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - printkit receives entitlement pushes as a `push_only` product (migration `0042`); it is not grantable and stays out of the dashboard, metrics and the grant list.
 - Event passes can be settled on the vendor page once they end (migration `0043`): cups come live from qkit and the team records the offline top-up; Merqo charges nobody.
+- The terms gate at `/legal/accept` has a Sign out button, so a user who declines the updated terms can leave.
 - Changelog: `CHANGELOG.md` (includes the new admin-audit trail, plus a fix
   restoring card/background contrast in both modes after the Harbour
   Control rebrand had accidentally collapsed them to the same color and a
@@ -271,3 +272,7 @@ Public and kit-facing entry points are rate limited by a Postgres-backed counter
 Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limits.ts`); `legal-accept` truncates an oversized `user_agent` to 512 instead of rejecting it.
 
 Error copy across the console is action-specific ("Could not <action>. Try again.") and raw errors are logged server-side rather than shown; see CHANGELOG.md.
+
+## Touch targets and loading states
+
+`src/app/globals.css` raises buttons (except link-style) and inputs to a 44px minimum height, and icon buttons to 44px wide, under `@media (pointer: coarse)` only; desktop sizes are unchanged. Route `loading.tsx` skeletons are `role="status"` regions with an `sr-only` label and no pulse under reduced motion.

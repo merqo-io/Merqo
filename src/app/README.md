@@ -57,3 +57,7 @@ directly under `app/` besides the special Next.js files.
 ## Parent
 
 [src](../README.md)
+
+## Touch targets
+
+`globals.css` holds the `@media (pointer: coarse)` rule that gives buttons and inputs a 44px minimum height (icon buttons 44px wide). Desktop sizing is unchanged.

@@ -200,3 +200,15 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* Touch targets: 44px minimum on coarse pointers only; desktop sizes are
+   untouched. Link-style buttons sit inside sentences and are left alone. */
+@media (pointer: coarse) {
+  :is(button, a)[data-variant][data-size]:not([data-variant="link"]),
+  [data-slot="input"] {
+    min-height: 2.75rem;
+  }
+  :is(button, a)[data-variant][data-size^="icon"] {
+    min-width: 2.75rem;
+  }
+}
