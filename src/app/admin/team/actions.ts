@@ -22,7 +22,7 @@ export async function removeTeamMemberAction(
   }
   // Guard against locking yourself out of the operator surface.
   if (parsed.data === user.id) {
-    return { success: false, error: "You cannot remove yourself." };
+    return { success: false, error: "You can't remove yourself." };
   }
   try {
     await removeTeamMember(parsed.data);
