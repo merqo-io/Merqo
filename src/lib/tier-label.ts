@@ -1,6 +1,7 @@
 // Stored tier values stay as-is (`qkit` is the legacy slug for the top paid
 // tier); only the label shown to users follows the Free / Starter / Pro
-// convention. Switch to merqo-ui's tierLabel once v0.41.0 is tagged.
+// convention. Keep this local map because merqo-ui's helper is client-only
+// and planLabel runs on the server.
 const TIER_LABELS: Record<string, string> = {
   free: "Free",
   starter: "Starter",
