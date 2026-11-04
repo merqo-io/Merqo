@@ -36,7 +36,7 @@ export function SocialLinksSection({
       toast.success("Links saved");
       router.refresh();
     }).catch(() => {
-      toast.error("Couldn't save your changes. Please try again.");
+      toast.error("Could not save your links. Try again.");
     });
   }
   return (
