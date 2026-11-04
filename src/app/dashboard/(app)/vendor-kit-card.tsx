@@ -3,17 +3,12 @@ import type { KitTile } from "@/lib/vendor";
 import type { KitSavings } from "@/lib/savings";
 import type { VendorMetricsResult } from "@/lib/vendor-metrics-client";
 import { money, timeAgo } from "@/lib/format";
+import { tierLabel } from "@/lib/tier-label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UpgradeButton } from "./upgrade-button";
 import { DowngradeButton } from "./downgrade-button";
 import { VendorMetricList } from "./vendor-metric-list";
-
-const PLAN_LABELS: Record<string, string> = {
-  starter: "Starter",
-  qkit: "Qkit",
-  paid: "Paid",
-};
 
 export function VendorKitCard({
   tile,
@@ -34,9 +29,7 @@ export function VendorKitCard({
         <h3 className="font-display text-lg font-bold">{tile.name}</h3>
         <div className="flex items-center gap-1.5">
           {paid ? (
-            <Badge variant="gold">
-              {PLAN_LABELS[tile.plan ?? ""] ?? "Paid"}
-            </Badge>
+            <Badge variant="gold">{tierLabel(tile.plan ?? "") ?? "Paid"}</Badge>
           ) : (
             <Badge variant="muted">Free</Badge>
           )}

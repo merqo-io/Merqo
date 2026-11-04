@@ -27,8 +27,8 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: "Merqo | Hub For Small-Business Kits",
-    template: "%s · Merqo",
+    default: "merqo | Hub for small-business kits",
+    template: "%s | merqo",
   },
   description:
     "Merqo builds a family of no-fuss tools for Singapore's small sellers, starting with qkit, queues and orders with no app and no hardware.",
