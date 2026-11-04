@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Browser titles use `%s | merqo` with a sentence-case default, and the dashboard and profile pages set their own titles. Both page headers now follow the shared pattern (eyebrow, display title, one-line description), and the dashboard intro drops em dashes and "control room".
+
 ### Added
 
 - Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.
