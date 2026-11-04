@@ -16,8 +16,9 @@ is the reference the other Merqo kits copy. Adopted:
 - **7.0.0 `session-context.sh`:** no longer prints `head -30 AGENTS.md`
   (`CLAUDE.md` already imports `@AGENTS.md`); the always-on invariants stay.
 - **7.2.2 security:** `engines.node >=24.22.1` in `package.json` so no runtime
-  trusts the compromised eMudhra intermediate CAs. CI uses `node-version: 24`
-  (latest 24.x), which satisfies the floor.
+  trusts the compromised eMudhra intermediate CAs. Every `setup-node` step in
+  `ci.yml` and `security.yml` is pinned to `node-version: 24.22.1`, because a
+  bare `24` does not enforce the floor; bump the pin deliberately.
 - **6.1.0/6.1.1 deps gate:** the `deps` case of upstream `ci-gates.sh` ported
   as a standalone `.claude/deps-gate.sh` (pnpm branch only; no `ci-gates.sh`
   here). Fail-closed on high/critical advisories, a missing tool, no network or

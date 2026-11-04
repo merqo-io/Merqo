@@ -30,7 +30,7 @@ if [ -f package.json ]; then
   rc=0
   node -e '
     let pkg;
-    try { pkg = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8").replace(/^﻿/, "")); } catch (e) { process.exit(2); }
+    try { pkg = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8").replace(/^\uFEFF/, "")); } catch (e) { process.exit(2); }
     const walk = (v) => v !== null && typeof v === "object" &&
       Object.entries(v).some(([k, x]) => k === "ignoreGhsas" || k === "ignoreCves" || walk(x));
     const pnpm = pkg && typeof pkg === "object" ? pkg.pnpm : undefined;
