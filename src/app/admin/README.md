@@ -14,11 +14,13 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   cheaply, resolves `canSwitch` (whether the signed-in team member also has an
   active vendor kit, via `hasActiveVendorAccess`) and the account's
   email/avatar, and passes them to the shared header (`@/components/dashboard-nav.tsx`,
-  a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the eight section links
-  (Overview / Vendors / Requests / Products / Health / Team / Feedback / Activity) and an "Admin"
-  badge beside the wordmark. It passes `collapseBelow="xl"` so the eight links
-  fold into the burger menu below 1280px, because they need about 1083px
-  inline. The layout ends with the landing `Footer` (no
+  a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the four daily links
+  (Overview / Vendors / Requests / Products) and an "Admin"
+  badge beside the wordmark. Team / Feedback / Activity sit in a quiet "More
+  admin pages" row under the header (`@/components/admin-secondary-nav.tsx`, which
+  marks the current page with `aria-current` and wraps on narrow screens),
+  because the shared account menu takes only one extra link. It passes `collapseBelow="lg"` so the links fold into the
+  burger menu below 1024px, since four links still crowd the bar at md width. The layout ends with the landing `Footer` (no
   sign-in link) and hides both header and footer when printing.
 - `page.tsx` — `AdminOverviewPage` (`revalidate = 0`). Fetches live products,
   vendor grants and open support messages in parallel, pulls each product's
@@ -26,13 +28,13 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   (`summarizeOverview`), per-product health (`classifyHealth`), and the
   onboarding funnel (`onboardingFunnel`). Renders `StatusBanner`, a
   "Needs attention" section (vendors flagged by `getTenantHealth`, with a
-  "View health" link to `health/`; waitlisted vendors, open support messages,
+  "View health" link to `health/`, which redirects to `products/`; waitlisted vendors, open support messages,
   pending upgrade requests), summary `StatCard`s, `OnboardingFunnelView`, and
   a `ProductTile` grid.
 - `confirm-admin-action.dom.test.tsx` — also pins that the page behind an open confirm dialog is hidden from role queries until the action succeeds, which the e2e specs rely on.
 - `page.test.tsx` — mocked-dependency coverage for the overview's flagged-vendor
   count: only active kits are passed to `getTenantHealth`, only `attention` rows
-  count, and the row links to `/admin/health`.
+  count, and the row links to `/admin/health` (which redirects to products).
 - `loading.tsx` — skeleton for `page.tsx` (stat-card and product-tile shapes).
 - `actions.ts` — `"use server"` module; `resolveSupportMessageAction(id)` marks
   a hub-level `support_messages` row resolved (team-gated, writes via the
@@ -68,9 +70,9 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
 - `feedback/` — sub-route: per-kit NPS/CSAT breakdown plus a combined,
   kit-tagged vendor-comments list, backed by `merqo.vendor_feedback`.
 - `products/` — sub-route: product/kit registry health list
-  (`product-health-card.tsx`).
-- `health/` — sub-route: per-tenant incident table across kits, built from
-  `getTenantHealth()` (`@/lib/tenant-health`). Read-only, no actions.
+  (`product-health-card.tsx`) plus the per-tenant incident table across kits
+  (`tenant-health-section.tsx`, built from `getTenantHealth()`).
+- `health/` — redirects to `products/`.
 - `team/` — sub-route: add/remove Merqo-team members (`add-team-form.tsx`,
   `remove-member.tsx`, server `actions.ts`). Both actions call
   `recordAudit()` after a successful write (`add_team_member`,

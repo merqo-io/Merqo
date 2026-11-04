@@ -57,5 +57,5 @@ it("shows down status and latency without invented business figures", () => {
   expect(screen.getByText("Down")).toBeInTheDocument();
   expect(screen.getByText("5000 ms")).toBeInTheDocument();
   expect(screen.queryByText("$10")).not.toBeInTheDocument();
-  expect(screen.getAllByText("—")).toHaveLength(4);
+  expect(screen.getAllByText("No data yet")).toHaveLength(4);
 });

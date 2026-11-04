@@ -6,7 +6,7 @@ For a solo or small operator running the Merqo kit family (merqo, qkit, loopkit,
 
 Sources, roughly in order of how often they fire:
 
-- `/admin/health` and the admin activity log in merqo (stuck or failing kits, incident lists).
+- `/admin/products` and the admin activity log in merqo (stuck or failing kits, incident lists).
 - Vercel deployment and runtime logs; Supabase logs and auth events.
 - Sentry alerts (paykit only, if `SENTRY_DSN` is set).
 - GitHub secret scanning, gitleaks and `pnpm audit` (`security.yml` in every kit). CodeQL alerts as well in qkit, paykit, printkit and stockkit; merqo and loopkit do not run CodeQL.
@@ -53,7 +53,7 @@ Also, where relevant:
 - Find the root cause (code path, policy gap, leaked secret, compromised account) and fix it in a PR with a test.
 - Run the schema drift check to confirm no stray grants, policies or functions remain.
 - Restore data from Supabase backups only if data was altered or deleted; confirm the restore point first.
-- Redeploy from a known-good commit. Confirm `/admin/health` is green and each kit's smoke path works.
+- Redeploy from a known-good commit. Confirm `/admin/products` is green and each kit's smoke path works.
 - Keep old secrets revoked, not just replaced.
 
 ## 5. Notify (Singapore PDPA)

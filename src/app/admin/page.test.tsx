@@ -59,7 +59,7 @@ describe("AdminOverviewPage needs-attention health count", () => {
     fetchProductMetricsMock.mockResolvedValue({ ok: false, reason: "down" });
   });
 
-  it("counts vendors needing attention and links to /admin/health", async () => {
+  it("counts vendors needing attention and links to /admin/products", async () => {
     getTenantHealthMock.mockResolvedValue([
       healthRow("a@x.sg", "attention"),
       healthRow("b@x.sg", "attention"),
@@ -77,7 +77,7 @@ describe("AdminOverviewPage needs-attention health count", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "View health" })).toHaveAttribute(
       "href",
-      "/admin/health",
+      "/admin/products",
     );
     // 1 waitlisted vendor + 2 flagged vendors
     expect(screen.getByText("Needs attention · 3")).toBeInTheDocument();

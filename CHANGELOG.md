@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Error copy is specific and calm: the error boundaries, 404, team add/remove and waitlist now say what could not be done ("Could not join the waitlist. Try again.") and log the raw error server-side.
-
+- Admin nav slimmed to Overview, Vendors, Requests and Products (collapsing below `lg`); Team, Feedback and Activity moved to a "More admin pages" row that wraps on narrow screens and marks the current page. `/admin/health` now redirects to `/admin/products`, which carries the vendor health table. Vendor nav label "Dashboard" is now "Kits", empty metrics read "No data yet"
 - Browser titles use `%s | merqo` with a sentence-case default, and the dashboard and profile pages set their own titles. Both page headers now follow the shared pattern (eyebrow, display title, one-line description), and the dashboard intro drops em dashes and "control room".
 
 ### Fixed
