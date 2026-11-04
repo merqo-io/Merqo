@@ -269,3 +269,5 @@ The AI harness follows templateCentral 7.2.2: hook commands are anchored on the 
 Public and kit-facing entry points are rate limited by a Postgres-backed counter (src/lib/rate-limit.ts); see src/lib/README.md for the limits.
 
 Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limits.ts`); `legal-accept` truncates an oversized `user_agent` to 512 instead of rejecting it.
+
+Error copy across the console is action-specific ("Could not <action>. Try again.") and raw errors are logged server-side rather than shown; see CHANGELOG.md.

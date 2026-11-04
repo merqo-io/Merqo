@@ -50,7 +50,7 @@ export async function joinKitWaitlist(
     );
     return {
       status: "success",
-      message: "You're on the list, we'll email you when it opens.",
+      message: "You're on the list. We'll email you when it opens.",
     };
   } catch (err) {
     console.error("addToWaitlist failed", err);
