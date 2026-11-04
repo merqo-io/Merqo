@@ -38,8 +38,8 @@ export default async function ProfilePage() {
           Profile
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your stall name, icon, display name and password. Each section saves
-          on its own.
+          Your business name, icon, display name and password. Each section
+          saves on its own.
         </p>
       </header>
 
