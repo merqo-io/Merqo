@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 const { requireMerqoTeamMock, hasActiveVendorAccessMock, getAvatarUrlMock } =
@@ -43,12 +43,22 @@ describe("AdminLayout", () => {
       ["Vendors", "/admin/vendors"],
       ["Requests", "/admin/requests"],
       ["Products", "/admin/products"],
+    ]) {
+      expect(screen.getByRole("link", { name: label })).toHaveAttribute(
+        "href",
+        href,
+      );
+    }
+    expect(screen.queryByRole("link", { name: "Health" })).toBeNull();
+    const more = within(
+      screen.getByRole("navigation", { name: "More admin pages" }),
+    );
+    for (const [label, href] of [
       ["Team", "/admin/team"],
-      ["Health", "/admin/health"],
       ["Feedback", "/admin/feedback"],
       ["Activity", "/admin/activity"],
     ]) {
-      expect(screen.getByRole("link", { name: label })).toHaveAttribute(
+      expect(more.getByRole("link", { name: label })).toHaveAttribute(
         "href",
         href,
       );
@@ -62,7 +72,7 @@ describe("AdminLayout", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("collapses the nav into the burger menu below xl so eight links do not overflow", async () => {
+  it("collapses the nav into the burger menu below lg so four links do not overflow", async () => {
     requireMerqoTeamMock.mockResolvedValue({
       user: { email: "team@merqo.io", user_metadata: {} },
     });
@@ -73,7 +83,7 @@ describe("AdminLayout", () => {
       await AdminLayout({ children: <div>page content</div> }),
     );
 
-    expect(container.querySelector(".xl\\:flex")).toBeInTheDocument();
+    expect(container.querySelector(".lg\\:flex")).toBeInTheDocument();
     expect(container.querySelector(".sm\\:flex")).not.toBeInTheDocument();
   });
 

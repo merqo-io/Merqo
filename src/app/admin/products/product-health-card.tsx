@@ -18,7 +18,7 @@ export function ProductHealthCard({
     : "No data yet";
 
   return (
-    // secondary treatment — a listing tile, not the vendor's own active kit
+    // secondary treatment, a listing tile, not the vendor's own active kit
     <div className="rounded-xl border bg-secondary/30 p-5">
       <div className="flex items-center justify-between gap-3">
         <h3 className="font-display text-lg font-bold">{name}</h3>

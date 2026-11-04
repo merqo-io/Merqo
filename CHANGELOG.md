@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Admin and Telegram copy drops em dashes and "Couldn't"/"Please": empty product tiles read "No data yet", and the entitlement re-push toast says "Updated N kits" or "N kits could not be updated".
+- Admin nav slimmed to Overview, Vendors, Requests and Products (collapsing below `lg`); Team, Feedback and Activity moved to a "More admin pages" row that wraps on narrow screens and marks the current page. `/admin/health` now redirects to `/admin/products`, which carries the vendor health table. Vendor nav label "Dashboard" is now "Kits", empty metrics read "No data yet"
 - Browser titles use `%s | merqo` with a sentence-case default, and the dashboard and profile pages set their own titles. Both page headers now follow the shared pattern (eyebrow, display title, one-line description), and the dashboard intro drops em dashes and "control room".
 
 ### Fixed

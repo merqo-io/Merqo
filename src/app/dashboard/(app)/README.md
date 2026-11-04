@@ -14,7 +14,7 @@ section; one or more kits gets the savings + per-kit overview.
 - `layout.tsx` — `DashboardLayout`. Resolves the signed-in vendor/team
   context via `requireVendorSession()` (signed-in only — team members reach
   here via the account-menu switch link and get a "Go to admin" item back),
-  renders the sticky header (`@/components/dashboard-nav.tsx`, wrapping `@merqo/ui`'s
+  renders the sticky header (`@/components/dashboard-nav.tsx`, one "Kits" nav link, wrapping `@merqo/ui`'s
   `DashboardNav`, with a kit switcher from `getSwitchKits`), ends with the
   landing `Footer` (no sign-in link), and mounts `DashboardTour` with the vendor's
   `dashboard_prefs.tour_seen_at` threaded through as `seen`. Also, if

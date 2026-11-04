@@ -43,7 +43,7 @@ export default async function DashboardLayout({
         <DashboardNav
           homeHref="/dashboard"
           homeLabel="merqo dashboard home"
-          navLinks={[{ href: "/dashboard", label: "Dashboard" }]}
+          navLinks={[{ href: "/dashboard", label: "Kits" }]}
           email={user.email}
           avatarUrl={getAvatarUrl(user)}
           switchTo={
