@@ -19,7 +19,9 @@ export function StallNameSection({ stallName }: { stallName: string }) {
   function saveStall() {
     const parsed = profileNameSchema.safeParse({ name });
     if (!parsed.success) {
-      setNameError(parsed.error.issues[0]?.message ?? "Invalid stall name");
+      setNameError(
+        parsed.error.issues[0]?.message ?? "Enter a valid business name.",
+      );
       return;
     }
     setNameError(null);
@@ -29,22 +31,22 @@ export function StallNameSection({ stallName }: { stallName: string }) {
         toast.error(res.error);
         return;
       }
-      toast.success("Stall name saved");
+      toast.success("Business name saved");
       router.refresh();
     }).catch(() => {
-      toast.error("Couldn't save your changes. Please try again.");
+      toast.error("Could not save your business name. Try again.");
     });
   }
   return (
     <Section
       icon={<Store className="size-5" />}
       eyebrow="Shown to customers"
-      title="Stall name"
+      title="Business name"
       description="The name shown across every kit you use."
     >
       <div className="space-y-2">
         <Label htmlFor="stall-name" className={FORM_LABEL_CLASS}>
-          Stall name
+          Business name
         </Label>
         <Input
           id="stall-name"
@@ -68,7 +70,7 @@ export function StallNameSection({ stallName }: { stallName: string }) {
           disabled={savingName || name === stallName}
           className="h-10 rounded-xl font-semibold"
         >
-          {savingName ? "Saving…" : "Save stall name"}
+          {savingName ? "Saving…" : "Save business name"}
         </Button>
       </div>
     </Section>

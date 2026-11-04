@@ -46,7 +46,7 @@ describe("VendorTelegramConnect", () => {
     ).toHaveAttribute("href", "https://t.me/MerqoNotifyBot?start=abc123");
   });
 
-  it("disconnected: a mint failure toasts the error, renders no link", async () => {
+  it("disconnected: a mint failure toasts a plain error, renders no link", async () => {
     mintVendorTelegramConnectToken.mockResolvedValue({
       success: false,
       error: "Telegram isn't set up yet",
@@ -56,7 +56,9 @@ describe("VendorTelegramConnect", () => {
     fireEvent.click(screen.getByRole("button", { name: /connect telegram/i }));
 
     await waitFor(() => {
-      expect(toastError).toHaveBeenCalledWith("Telegram isn't set up yet");
+      expect(toastError).toHaveBeenCalledWith(
+        "Could not create a Telegram link. Try again.",
+      );
     });
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
@@ -73,7 +75,7 @@ describe("VendorTelegramConnect", () => {
     });
   });
 
-  it("connected: a disconnect failure toasts the error without refreshing", async () => {
+  it("connected: a disconnect failure toasts a plain error without refreshing", async () => {
     disconnectVendorTelegram.mockResolvedValue({
       success: false,
       error: "Could not disconnect Telegram",
@@ -83,7 +85,9 @@ describe("VendorTelegramConnect", () => {
     fireEvent.click(screen.getByRole("button", { name: /disconnect/i }));
 
     await waitFor(() => {
-      expect(toastError).toHaveBeenCalledWith("Could not disconnect Telegram");
+      expect(toastError).toHaveBeenCalledWith(
+        "Could not disconnect Telegram. Try again.",
+      );
     });
     expect(refresh).not.toHaveBeenCalled();
   });
