@@ -36,7 +36,11 @@ function onError(error: unknown) {
 }
 
 /** The home link matches exactly; every other link matches by prefix. */
-function isActive(path: string, href: string, homeHref: string): boolean {
+export function isActive(
+  path: string,
+  href: string,
+  homeHref: string,
+): boolean {
   return href === homeHref ? path === homeHref : path.startsWith(href);
 }
 

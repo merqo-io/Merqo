@@ -29,7 +29,7 @@ session user's own connection through the service client.
 section's failure contract and refreshes after disconnect. The page reads the
 current connection with its own-row session/RLS client.
 
-The page header's way back to `/dashboard` is `@merqo/ui`'s `BackButton`, given `next/link`.
+The page sets its tab title to "Profile". The page header's way back to `/dashboard` is `@merqo/ui`'s `BackButton`, given `next/link`.
 
 ## Verification
 

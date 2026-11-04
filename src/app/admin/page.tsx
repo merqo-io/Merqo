@@ -89,7 +89,7 @@ export default async function AdminOverviewPage() {
                 incidents or stuck work
               </p>
               <Link
-                href="/admin/health"
+                href="/admin/products"
                 className="font-medium text-primary hover:underline"
               >
                 View health

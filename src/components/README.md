@@ -19,6 +19,7 @@ or scoped to `dashboard/`/`landing/`.
   list and `LinkComponent={Link}`. No `/dashboard/plan` route exists, so
   `showPlanItem` is off. `email` fills both `vendor.name` (initials fallback)
   and `vendor.subtitle`.
+- `admin-secondary-nav.tsx` — client "More admin pages" row; reuses `dashboard-nav`'s `isActive` for `aria-current`.
 - `dashboard-nav.test.tsx` — RTL tests: wordmark/badge, active-link rule,
   kit switcher, trigger subtitle/initials, menu-item order (no Plan item),
   the switch link, the collapse breakpoint (default `sm`, and `xl`),

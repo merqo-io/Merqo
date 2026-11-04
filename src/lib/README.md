@@ -37,7 +37,7 @@ HTTP calls. Metrics and vendor metrics have separate response schemas and
 clients; `vendor-activity-client.ts` validates with `vendorActivityPayloadSchema`
 from `@merqo/ui/contracts` (optional `incidents`/`recent`). `tenant-health.ts`
 `getTenantHealth()` pools those activity reads (6 at a time, 3000 ms timeout)
-into per-vendor incident rows for `/admin/health`, never throwing on a dead kit. `subscription-requests.ts` files and closes vendor upgrade/cancel requests for the admin queue;
+into per-vendor incident rows for `/admin/products`, never throwing on a dead kit. `subscription-requests.ts` files and closes vendor upgrade/cancel requests for the admin queue;
 `event-pass-usage-client.ts` reads the cups a vendor sold on qkit inside an Event Pass window (`getEventPassUsage`, never throws, `ok: false` when unavailable) for the admin settle view;
 `entitlements/` derives what each vendor may use per kit and pushes it to the kits (see its README);
 `vendor-sync.ts` refreshes grants against the live registry with an email-scoped
@@ -93,3 +93,4 @@ ateLimit, a Postgres fixed-window counter that fails open or closed per caller. 
 `kit-route-limits.ts` holds `KIT_ROUTE_MAX`, the length caps the kit bearer routes apply to free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512), since the backing columns are unbounded text.
 
 `auth-error-copy.ts` holds `authErrorCopy(raw, fallback)`, which maps known Supabase auth error messages to plain copy and otherwise logs the raw message and returns the fallback.
+`tier-label.ts` holds `tierLabel`, the stored tier value to user-facing label map (`free` Free, `starter` Starter, `qkit` Pro); the stored `qkit` value is unchanged, only its label.

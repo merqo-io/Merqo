@@ -16,6 +16,9 @@ vi.mock("@/app/admin/support-message-row", () => ({
   SupportMessageRow: () => <span>Support request</span>,
 }));
 import Overview from "@/app/admin/page";
+vi.mock("@/app/admin/products/tenant-health-section", () => ({
+  TenantHealthSection: () => null,
+}));
 import Products from "@/app/admin/products/page";
 import { StatusBanner } from "@/app/admin/status-banner";
 const product = { slug: "qkit", name: "Queue Kit" };

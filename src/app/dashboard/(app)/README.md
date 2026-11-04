@@ -14,7 +14,7 @@ section; one or more kits gets the savings + per-kit overview.
 - `layout.tsx` — `DashboardLayout`. Resolves the signed-in vendor/team
   context via `requireVendorSession()` (signed-in only — team members reach
   here via the account-menu switch link and get a "Go to admin" item back),
-  renders the sticky header (`@/components/dashboard-nav.tsx`, wrapping `@merqo/ui`'s
+  renders the sticky header (`@/components/dashboard-nav.tsx`, one "Kits" nav link, wrapping `@merqo/ui`'s
   `DashboardNav`, with a kit switcher from `getSwitchKits`), ends with the
   landing `Footer` (no sign-in link), and mounts `DashboardTour` with the vendor's
   `dashboard_prefs.tour_seen_at` threaded through as `seen`. Also, if
@@ -27,7 +27,7 @@ section; one or more kits gets the savings + per-kit overview.
   admin switch link for a team member, the tour's replay button, and that
   `stampTourSeen` fires when `tour_seen_at` is null/missing and never fires
   once it's already set.
-- `page.tsx` — `DashboardPage` (`revalidate = 0`). Re-syncs the vendor's kit
+- `page.tsx` — `DashboardPage` (`revalidate = 0`, tab title "Kits"; header is eyebrow, display h1 and a one-line summary). Re-syncs the vendor's kit
   grants (`syncVendorKits`, throttled) so a kit added elsewhere shows up
   without a fresh login, computes savings (`computeVendorSavings`) and per-kit
   live metrics (`fetchVendorMetrics`), and renders — urgency-first, directly
@@ -48,7 +48,7 @@ section; one or more kits gets the savings + per-kit overview.
   of the per-card savings estimates, with an `InfoTooltip` (`@merqo/ui`)
   explaining the estimate's basis.
 - `vendor-kit-card.tsx` — `VendorKitCard({ tile, savings, metrics, now })`:
-  one active kit's card — plan badge (the tier Merqo derived, not one the kit reported), per-kit savings line (same
+  one active kit's card — plan badge (the tier Merqo derived, not one the kit reported; labelled via `tierLabel`, so `qkit` shows as Pro), per-kit savings line (same
   `InfoTooltip` from `@merqo/ui`), `VendorMetricList`, and the
   `UpgradeButton`/`DowngradeButton` pair.
 - `upgrade-button.tsx` / `downgrade-button.tsx` — `UpgradeButton`/

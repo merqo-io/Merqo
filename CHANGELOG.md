@@ -6,9 +6,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Admin nav slimmed to Overview, Vendors, Requests and Products (collapsing below `lg`); Team, Feedback and Activity moved to a "More admin pages" row that wraps on narrow screens and marks the current page. `/admin/health` now redirects to `/admin/products`, which carries the vendor health table. Vendor nav label "Dashboard" is now "Kits", empty metrics read "No data yet"
+- Browser titles use `%s | merqo` with a sentence-case default, and the dashboard and profile pages set their own titles. Both page headers now follow the shared pattern (eyebrow, display title, one-line description), and the dashboard intro drops em dashes and "control room".
+
 ### Fixed
 
 - Login and profile no longer show raw Supabase error text: known cases map to plain copy via `authErrorCopy`, everything else gets an action-specific "Could not X. Try again." line, and the stall name is now labelled "Business name".
+- The top paid tier is labelled "Pro" (Free / Starter / Pro) instead of "Qkit" on the dashboard kit card, the admin subscription controls and requests, and the public `/api/plans` plan name. Stored `qkit` tier and plan slug values are unchanged.
 - Buttons and inputs reach a 44px minimum touch target on coarse pointers (desktop sizes unchanged); loading skeletons now expose `role="status"`, `aria-busy` and a screen-reader label, and stop pulsing under reduced motion.
 
 ### Added

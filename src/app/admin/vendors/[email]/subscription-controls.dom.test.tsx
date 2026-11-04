@@ -72,9 +72,9 @@ it("submits the catalog price, today's dates and the first plan by default", asy
 
 it("offers to replace the current plan and sends the choice", async () => {
   const user = userEvent.setup();
-  render(grantForm({ current: ["Qkit"] }));
+  render(grantForm({ current: ["Pro"] }));
   const toggle = screen.getByRole("switch", {
-    name: "Replace current plan (Qkit)",
+    name: "Replace current plan (Pro)",
   });
   expect(toggle).toBeChecked();
   await user.click(toggle);
@@ -196,12 +196,12 @@ it("confirms before cancelling a subscription and passes the request id", async 
     <CancelSubscriptionButton
       email="v@x.com"
       subscriptionId="sub-1"
-      label="Qkit"
+      label="Pro"
       requestId="req-1"
     />,
   );
   await user.click(
-    screen.getByRole("button", { name: "Cancel Qkit for v@x.com" }),
+    screen.getByRole("button", { name: "Cancel Pro for v@x.com" }),
   );
   expect(actions.cancelSubscriptionAction).not.toHaveBeenCalled();
   await user.click(screen.getByRole("button", { name: "Cancel subscription" }));
