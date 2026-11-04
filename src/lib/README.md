@@ -91,3 +91,5 @@ ateLimit, a Postgres fixed-window counter that fails open or closed per caller. 
 `rate-limit.ts` is the Postgres-backed fixed-window limiter (`rate_limit_hit`, migration `0041`). `clientIp` resolves the caller from `x-vercel-forwarded-for`, then `x-real-ip`, then the last non-empty `x-forwarded-for` hop (never the spoofable first), only a value that parses as an IP address (`net.isIP`) is accepted; anything else, or nothing, becomes `unknown` and shares one bucket at 10x the route's limit. `bearer-guard.ts` fronts the `/api/merqo` routes with a 300/min per-IP cap (`legal-status` is exempt) and logs rejected bearers without the secret. `telegram-limits.ts` holds Telegram's 4096-character message cap. Counter failures fail open.
 
 `kit-route-limits.ts` holds `KIT_ROUTE_MAX`, the length caps the kit bearer routes apply to free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512), since the backing columns are unbounded text.
+
+`tier-label.ts` holds `tierLabel`, the stored tier value to user-facing label map (`free` Free, `starter` Starter, `qkit` Pro); the stored `qkit` value is unchanged, only its label.

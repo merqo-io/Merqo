@@ -20,6 +20,8 @@ import { KitCardCta } from "@/components/dashboard/kit-card-cta";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Kits" };
+
 /** Best-effort: a registry read failure degrades to "nothing is provisionable" instead of crashing the page. */
 async function loadLiveProducts() {
   try {
@@ -84,13 +86,16 @@ export default async function DashboardPage() {
   return (
     <>
       <div data-tour="dashboard-welcome">
-        <h1 className="font-display text-2xl font-bold tracking-tight">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          Your business
+        </p>
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           {hasNoKits ? "Pick a kit to get started" : "Your kits"}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           {hasNoKits
-            ? "Merqo is your control room for every kit you run — add one below and it shows up here."
-            : `${active.length} of ${KITS.length} kits connected — everything you run through Merqo, in one place.`}
+            ? "Add a kit below and it shows up here."
+            : `${active.length} of ${KITS.length} kits connected.`}
         </p>
         {hasNoKits && provisionableSlugs.size > 0 && (
           <div className="mt-4">

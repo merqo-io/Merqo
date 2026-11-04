@@ -9,6 +9,8 @@ import { VendorTelegramConnect } from "./vendor-telegram-connect";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Profile" };
+
 // Deliberately NOT under /dashboard: AccountMenu (and therefore the Profile
 // link) is shared by both the vendor dashboard and the admin console. Gated by
 // "signed in" only, not requireMerqoTeam()'s stricter check.
@@ -26,18 +28,18 @@ export default async function ProfilePage() {
     .maybeSingle();
 
   return (
-    <div className="mx-auto max-w-lg space-y-8 px-5 py-8 md:max-w-4xl">
+    <div className="mx-auto max-w-lg space-y-8 px-5 py-7 md:max-w-4xl">
       <header>
         <BackButton href="/dashboard" label="Dashboard" LinkComponent={Link} />
         <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           Your account
         </p>
-        <h1 className="font-display text-4xl font-semibold leading-none">
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           Profile
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your stall name, profile icon, how we address you, and your sign-in
-          password. Each section saves on its own.
+          Your business name, icon, display name and password. Each section
+          saves on its own.
         </p>
       </header>
 

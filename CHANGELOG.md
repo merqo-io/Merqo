@@ -10,8 +10,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Error copy is specific and calm: the error boundaries, 404, team add/remove and waitlist now say what could not be done ("Could not join the waitlist. Try again.") and log the raw error server-side.
 
+- Browser titles use `%s | merqo` with a sentence-case default, and the dashboard and profile pages set their own titles. Both page headers now follow the shared pattern (eyebrow, display title, one-line description), and the dashboard intro drops em dashes and "control room".
+
 ### Fixed
 
+- The top paid tier is labelled "Pro" (Free / Starter / Pro) instead of "Qkit" on the dashboard kit card, the admin subscription controls and requests, and the public `/api/plans` plan name. Stored `qkit` tier and plan slug values are unchanged.
 - Buttons and inputs reach a 44px minimum touch target on coarse pointers (desktop sizes unchanged); loading skeletons now expose `role="status"`, `aria-busy` and a screen-reader label, and stop pulsing under reduced motion.
 
 ### Added
