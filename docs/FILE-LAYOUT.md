@@ -12,6 +12,7 @@ src/app/admin/              — Merqo-team console: overview (page.tsx) + vendor
 src/app/profile/            — shared account page (signed-in gate only — reachable from
                                both the vendor dashboard and the admin console)
 src/app/login/              — email/password sign-in
+src/app/api/plans/ — public cached GET /api/plans plan catalog for kit plan pages
 src/app/api/telegram/webhook/ — merqo's own Telegram bot's webhook (customer + vendor connect,
                                branches on telegram_link_tokens.kind)
 src/app/api/merqo/          — bearer-secret endpoints qkit/loopkit call INTO merqo

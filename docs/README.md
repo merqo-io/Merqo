@@ -6,7 +6,7 @@
 - SCHEMA-DRIFT.md is the schema drift runbook: run the fingerprint SQL on staging and production and compare it with the CI-built expected fingerprint.
 - audit-checkpoint-2026-10-09.md records the product review and validation limits.
 - security/ holds the personal-data inventory and its proposed drop list (nothing is dropped until the owner approves).
-- FILE-LAYOUT.md maps the source tree (app router, libraries, components, migrations).
+- FILE-LAYOUT.md maps the source tree (app router, API routes including the public `/api/plans` catalog, libraries, components, migrations).
 - DATA-MODEL.md documents the `merqo.*` schema, Telegram identity and vendor-connect tables, and the kit to merqo HTTP direction.
 - meta/ holds standing operational and product notes.
 - superpowers/plans/ and superpowers/specs/ retain dated implementation and design evidence. They describe the decisions at that time; current source, migrations and root documentation establish present behavior.

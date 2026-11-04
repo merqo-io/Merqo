@@ -149,6 +149,7 @@ src/app/profile/            — shared account page (signed-in gate only — rea
                                both the vendor dashboard and the admin console)
 src/app/login/              — email/password sign-in
 src/app/api/telegram/webhook/ — merqo's own Telegram bot's webhook (customer connect)
+src/app/api/plans/          — public cached GET /api/plans plan catalog for kit plan pages
 src/app/api/merqo/          — bearer-secret endpoints qkit/loopkit call INTO merqo
 src/proxy.ts                — Supabase session refresh + route guard (Next 16)
 src/components/landing/     — landing sections (nav, hero, kit-stacker, …)
