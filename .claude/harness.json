@@ -1,13 +1,13 @@
 {
-  "templatecentral_version": "6.0.4",
+  "templatecentral_version": "7.2.2",
   "stack": "nextjs",
   "adapted": "Next 16 + Supabase (auth/db) — shared project, schema per kit; not better-auth/Drizzle",
   "seeded_at": "2026-07-06",
-  "reviewed_at": "2026-10-12",
-  "review_note": "2026-10-12: templateCentral 5.15 to 6.0.4. Ported the harness qkit adopted in its 6.0.1 and 6.0.4 reviews by 3-way merge, keeping this repo's local lines: project-anchored hook commands with timeouts, clean-tree Stop skip, additionalContext typecheck feedback, the Skill matcher, the per-segment block-no-verify parser with cwd-aware branch detection, protect-files path resolution, a verifier that fails on an unreadable manifest, a wider commit-msg gate, fail-closed PR doc gates in CI. Removed post-tool-failure.sh. Not adopted: exec-form hooks, the gitleaks syntax changes, ci-gates.sh, hooks/local, Azure DevOps and OpenCode items. Reasoning is in the AGENTS.md entry of the same date. Hashes below were recomputed from the LF-normalised blobs. Adopted 5.7→5.8 delta + lefthook: comment hygiene (no-inline-comments:warn + AGENTS.md doctrine), packageManager pnpm@11.10.0. 5.8→5.11 delta adopted: added the missing .claude/hooks/* Claude-Code-hook script layer (previously inline `node -e` one-liners embedded in settings.json — block-no-verify.sh, protect-files.sh, user-prompt-guard.cjs, post-edit-typecheck.sh, post-tool-failure.sh, session-context.sh, skill-usage-log.sh, stop-checks.sh, subagent-stop.sh), rewired settings.json's hooks section to reference these scripts, added SubagentStop (net-new) and PostToolUseFailure, and fixed lefthook.yml's format-lint command missing an `exclude` list (was letting prettier/eslint reformat staged files — including these new hook scripts — and drift them off their harness.json baseline on first commit); version marker bumped 5.8.0 → 5.11.0. 5.11→5.14 sweep (2026-08-05): fixed the .env.example Read-block bug (permissions.deny's `Read(**/.env.*)` wildcard shadowed the explicit non-.example/.default variants already listed beside it), added harness.json to permissions.ask for hook-layer redundancy, SHA-pinned every floating GitHub Actions tag in ci.yml/security.yml, brought eslint.config.mjs's comment-hygiene rules to parity with the sibling kits (sonarjs/no-commented-code + no-inline-comments:error) and layered on the 5.13 mechanical comment-hygiene surfaces (PostToolUse hook, husky pre-commit warn step, CI hard-gate job) adapted to husky (this repo is not on lefthook). NOT adopted (same divergence as qkit, and still standing after this change): full tc harness-kit (bespoke CI here), pino route-logging enforcement, verify-harness/.harness-base re-sync (none seeded), better-auth/Drizzle add-skills. settings.json omits broad permissions.allow (auto-mode self-grant guard). This migration closes the Claude-Code-hook-script gap only, not a full harness-kit re-sync. 5.14→5.15 sweep (2026-08-15, cherry-pick style per this repo's standing bespoke-harness divergence): adopted eslint.config.mjs's sonarjs.configs.recommended rollout (~206/268 rules, up from the single hand-picked no-commented-code rule — real findings in app code fixed, not suppressed) and the next/eslint-config-next ^16.2.12 version floor (July security release CVEs). Closed a genuine pre-existing gap (not a documented divergence): next.config.ts had no headers() at all, unlike every sibling kit — added one modeled on qkit's, adapted to this app's actual origins (Supabase only — no Google OAuth here, so no googleusercontent img-src), and built with 5.15's dev-mode CSP/X-Frame-Options fix applied from the start (frame-ancestors/X-Frame-Options gated to non-development, learning from the bug the sibling kits still carry unfixed rather than copying it). NOT adopted this round: harness-kit.md's hook-command string→args[] array form (real, low-risk, but changing settings.json requires re-blessing its origin_hash in this file, and regen-harness.sh is explicitly human-run-only — an agent must not re-bless its own baseline change; flagged for a human to pick up). Same standing divergences as 5.11→5.14 (full tc harness-kit, pino route-logging, better-auth/Drizzle) still apply.",
+  "reviewed_at": "2026-11-04",
+  "review_note": "2026-11-04: templateCentral 6.0.4 to 7.2.2 by 3-way merge onto this repo's files. Adopted: the 6.0.5 strict && chain fix in block-no-verify.sh (with upstream's test cases), session-context.sh no longer printing head -30 AGENTS.md (7.0.0), engines.node >=24.22.1 (7.2.2 eMudhra CA fix), and the 6.1.0/6.1.1 fail-closed deps gate as a standalone .claude/deps-gate.sh with the expiring .claude/dep-audit-allow.txt and its protect-files.sh ask rule, wired into security.yml. Skipped items and reasons are in docs/meta/templatecentral-adoption-log.md. 2026-10-12: templateCentral 5.15 to 6.0.4. Ported the harness qkit adopted in its 6.0.1 and 6.0.4 reviews by 3-way merge, keeping this repo's local lines: project-anchored hook commands with timeouts, clean-tree Stop skip, additionalContext typecheck feedback, the Skill matcher, the per-segment block-no-verify parser with cwd-aware branch detection, protect-files path resolution, a verifier that fails on an unreadable manifest, a wider commit-msg gate, fail-closed PR doc gates in CI. Removed post-tool-failure.sh. Not adopted: exec-form hooks, the gitleaks syntax changes, ci-gates.sh, hooks/local, Azure DevOps and OpenCode items. Reasoning is in the AGENTS.md entry of the same date. Hashes below were recomputed from the LF-normalised blobs. Adopted 5.7→5.8 delta + lefthook: comment hygiene (no-inline-comments:warn + AGENTS.md doctrine), packageManager pnpm@11.10.0. 5.8→5.11 delta adopted: added the missing .claude/hooks/* Claude-Code-hook script layer (previously inline `node -e` one-liners embedded in settings.json — block-no-verify.sh, protect-files.sh, user-prompt-guard.cjs, post-edit-typecheck.sh, post-tool-failure.sh, session-context.sh, skill-usage-log.sh, stop-checks.sh, subagent-stop.sh), rewired settings.json's hooks section to reference these scripts, added SubagentStop (net-new) and PostToolUseFailure, and fixed lefthook.yml's format-lint command missing an `exclude` list (was letting prettier/eslint reformat staged files — including these new hook scripts — and drift them off their harness.json baseline on first commit); version marker bumped 5.8.0 → 5.11.0. 5.11→5.14 sweep (2026-08-05): fixed the .env.example Read-block bug (permissions.deny's `Read(**/.env.*)` wildcard shadowed the explicit non-.example/.default variants already listed beside it), added harness.json to permissions.ask for hook-layer redundancy, SHA-pinned every floating GitHub Actions tag in ci.yml/security.yml, brought eslint.config.mjs's comment-hygiene rules to parity with the sibling kits (sonarjs/no-commented-code + no-inline-comments:error) and layered on the 5.13 mechanical comment-hygiene surfaces (PostToolUse hook, husky pre-commit warn step, CI hard-gate job) adapted to husky (this repo is not on lefthook). NOT adopted (same divergence as qkit, and still standing after this change): full tc harness-kit (bespoke CI here), pino route-logging enforcement, verify-harness/.harness-base re-sync (none seeded), better-auth/Drizzle add-skills. settings.json omits broad permissions.allow (auto-mode self-grant guard). This migration closes the Claude-Code-hook-script gap only, not a full harness-kit re-sync. 5.14→5.15 sweep (2026-08-15, cherry-pick style per this repo's standing bespoke-harness divergence): adopted eslint.config.mjs's sonarjs.configs.recommended rollout (~206/268 rules, up from the single hand-picked no-commented-code rule — real findings in app code fixed, not suppressed) and the next/eslint-config-next ^16.2.12 version floor (July security release CVEs). Closed a genuine pre-existing gap (not a documented divergence): next.config.ts had no headers() at all, unlike every sibling kit — added one modeled on qkit's, adapted to this app's actual origins (Supabase only — no Google OAuth here, so no googleusercontent img-src), and built with 5.15's dev-mode CSP/X-Frame-Options fix applied from the start (frame-ancestors/X-Frame-Options gated to non-development, learning from the bug the sibling kits still carry unfixed rather than copying it). NOT adopted this round: harness-kit.md's hook-command string→args[] array form (real, low-risk, but changing settings.json requires re-blessing its origin_hash in this file, and regen-harness.sh is explicitly human-run-only — an agent must not re-bless its own baseline change; flagged for a human to pick up). Same standing divergences as 5.11→5.14 (full tc harness-kit, pino route-logging, better-auth/Drizzle) still apply.",
   "seeded_files": {
     "AGENTS.md": {
-      "origin_hash": "6b38b02ad7fddc52fa3748a435ef05d8140ea865047e84f86b314ff34f1f04d3",
+      "origin_hash": "98fdbac570e8b7964f8d1338b4c84abf14d2a99945a2fbfdbc383268b8df66b5",
       "path": "AGENTS.md"
     },
     "CLAUDE.md": {
@@ -23,11 +23,11 @@
       "path": ".claude/hooks/verify.sh"
     },
     ".claude/hooks/block-no-verify.sh": {
-      "origin_hash": "00ccbbd921a8233f086be173d37f32046c1adcb95a39104d655d64af466c9301",
+      "origin_hash": "f946e5872fc18d0fce24634d4e441bf6307eaac63cd865c3f3f6aff4f1098328",
       "path": ".claude/hooks/block-no-verify.sh"
     },
     ".claude/hooks/protect-files.sh": {
-      "origin_hash": "3b828581fc1123e27d325401212f295cfbfc6cde34c7f06e36a2dc3f7955e382",
+      "origin_hash": "a682c2c259a098ec41ff69894def6d3d2246bf8db69b3f233c598f3987c4c75b",
       "path": ".claude/hooks/protect-files.sh"
     },
     ".claude/hooks/user-prompt-guard.cjs": {
@@ -51,7 +51,7 @@
       "path": ".claude/hooks/post-edit-typecheck.sh"
     },
     ".claude/hooks/session-context.sh": {
-      "origin_hash": "8fdd4c92520a9e79ce7bb2089b0054f15190cebc3f2e0aafeafaf8adca21ae91",
+      "origin_hash": "038362dfce87e6128e5d4e333ae492b794c7af77c24a3df62774172c7f1cd087",
       "path": ".claude/hooks/session-context.sh"
     },
     ".claude/hooks/skill-usage-log.sh": {
@@ -110,12 +110,20 @@
       "origin_hash": "33b1c81e067a2a18a1635c753f921c7143cc658a246c5b8b2e54828137cb4918",
       "path": ".claude/verify-harness.sh"
     },
+    ".claude/deps-gate.sh": {
+      "origin_hash": "ddfd9aa43a84429f576a38c7bda5eb754c95eea186baeb27f28c8b71479bf195",
+      "path": ".claude/deps-gate.sh"
+    },
+    ".claude/dep-audit-allow.txt": {
+      "origin_hash": "1b1aa7ce946db18b417352ed016f5329c70d90b382fc735af395de58143de0b2",
+      "path": ".claude/dep-audit-allow.txt"
+    },
     ".claude/regen-harness.sh": {
       "origin_hash": "a8c844610843c39550ac920d1d29323244bdecbcdeaa4519c97d8867de1b37a0",
       "path": ".claude/regen-harness.sh"
     },
     ".github/workflows/ci.yml": {
-      "origin_hash": "4beba02b010efddcb64e8f77ee8420f848930d7870aa780f25b8c2752274b87f",
+      "origin_hash": "e1db1c8f7a4506fee321e53017c47b85ac0e5bdae144d98c554a5f7b1157c2f5",
       "path": ".github/workflows/ci.yml"
     }
   }
