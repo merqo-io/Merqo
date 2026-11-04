@@ -32,15 +32,15 @@ function isSupportCategory(
 }
 
 function onError(error: unknown) {
-  toast.error(
-    error instanceof Error
-      ? error.message
-      : "Could not complete that. Try again.",
-  );
+  toast.error(error instanceof Error ? error.message : "Something went wrong");
 }
 
 /** The home link matches exactly; every other link matches by prefix. */
-function isActive(path: string, href: string, homeHref: string): boolean {
+export function isActive(
+  path: string,
+  href: string,
+  homeHref: string,
+): boolean {
   return href === homeHref ? path === homeHref : path.startsWith(href);
 }
 

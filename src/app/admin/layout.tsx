@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { requireMerqoTeam } from "@/lib/team";
 import { hasActiveVendorAccess } from "@/lib/vendor";
 import { getAvatarUrl } from "@/lib/account";
 import { DashboardNav } from "@/components/dashboard-nav";
+import { AdminSecondaryNav } from "@/components/admin-secondary-nav";
 import { Footer } from "@/components/landing/footer";
 
 const ADMIN_LINKS = [
@@ -39,7 +39,7 @@ export default async function AdminLayout({
           homeHref="/admin"
           homeLabel="merqo admin home"
           badge="Admin"
-          // Eight links needed about 1083px; four drop roughly 300px, still over md (768px), so lg.
+          // Four links still crowd the bar at md width, so collapse until lg.
           collapseBelow="lg"
           navLinks={ADMIN_LINKS}
           email={user.email}
@@ -50,20 +50,7 @@ export default async function AdminLayout({
               : undefined
           }
         />
-        <nav
-          aria-label="More admin pages"
-          className="border-b bg-secondary/30 print:hidden"
-        >
-          <ul className="mx-auto flex max-w-7xl items-center gap-5 px-5 py-2 text-sm text-muted-foreground">
-            {SECONDARY_LINKS.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className="hover:text-foreground">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <AdminSecondaryNav links={SECONDARY_LINKS} />
       </div>
       <div className="w-full flex-1">{children}</div>
       <div className="contents print:hidden">
