@@ -84,3 +84,18 @@ it("recovers when browser client construction throws", async () => {
     screen.getByRole("button", { name: "Continue with Google" }),
   ).toBeEnabled();
 });
+
+it("shows the check-your-email screen when the email is already registered", async () => {
+  const user = userEvent.setup();
+  render(<LoginPage />);
+  await user.click(screen.getByRole("button", { name: "Create an account" }));
+  await user.type(screen.getByLabelText("Email"), "vendor@example.com");
+  await user.type(screen.getByLabelText("Password"), "safe-password");
+  mocks.signup.mockResolvedValueOnce({
+    data: { session: null },
+    error: { message: "User already registered", code: "user_already_exists" },
+  });
+  await user.click(screen.getByRole("button", { name: "Create account" }));
+  expect(await screen.findByText("Check your email")).toBeInTheDocument();
+  expect(screen.queryByRole("alert")).toBeNull();
+});

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { authErrorCopy } from "@/lib/auth-error-copy";
+import { ALREADY_REGISTERED, authErrorCopy } from "@/lib/auth-error-copy";
 import { signInWithPasswordAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -87,10 +87,17 @@ export default function LoginPage() {
           },
         });
         if (error) {
+          // Same screen as a fresh signup so the page never reveals whether
+          // the email already has an account.
+          if (ALREADY_REGISTERED.test(error.message)) {
+            setSent({ email, kind: "signup" });
+            return;
+          }
           setError(
             authErrorCopy(
               error.message,
               "Could not create your account. Try again.",
+              error.code,
             ),
           );
           return;

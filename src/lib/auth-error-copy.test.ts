@@ -28,24 +28,39 @@ describe("authErrorCopy", () => {
     );
   });
 
+  it("maps same-password and rate-limit phrases", () => {
+    expect(
+      authErrorCopy(
+        "New password should be different from the old password.",
+        "x",
+      ),
+    ).toBe("Choose a password you have not used before.");
+    expect(authErrorCopy("Too many requests", "x")).toBe(
+      "Too many attempts. Wait a minute and try again.",
+    );
+  });
+
   it("does not map loose look-alike messages", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     expect(authErrorCopy("weak signal", "fb")).toBe("fb");
     expect(authErrorCopy("too many rows returned", "fb")).toBe("fb");
+    expect(authErrorCopy("the same as the old config", "fb")).toBe("fb");
+    expect(authErrorCopy("corporate limit reached", "fb")).toBe("fb");
   });
 
-  it("falls back and logs a redacted, truncated message for unknown errors", () => {
+  it("falls back and logs only a tag and code, never the message", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(
       authErrorCopy(
-        "failed for jo@example.com " + "x".repeat(500),
+        "failed for jo@example.com",
         "Could not save. Try again.",
+        "unexpected_failure",
       ),
     ).toBe("Could not save. Try again.");
-    const logged = spy.mock.calls.flat().join(" ");
+    const logged = JSON.stringify(spy.mock.calls);
     expect(logged).not.toContain("jo@example.com");
-    expect(logged).toContain("[email]");
-    expect(logged.length).toBeLessThan(260);
+    expect(logged).not.toContain("failed for");
+    expect(logged).toContain("unexpected_failure");
   });
 
   it("falls back when there is no message", () => {

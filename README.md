@@ -273,7 +273,7 @@ Public and kit-facing entry points are rate limited by a Postgres-backed counter
 
 Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limits.ts`); `legal-accept` truncates an oversized `user_agent` to 512 instead of rejecting it.
 
-Sign-in and profile error copy is plain and action-specific; `src/lib/auth-error-copy.ts` maps known Supabase auth messages to friendly text and logs the raw message.
+Sign-in and profile error copy is plain and action-specific; `src/lib/auth-error-copy.ts` maps known Supabase auth messages to friendly text and logs only an error code.
 
 ## Touch targets and loading states
 
