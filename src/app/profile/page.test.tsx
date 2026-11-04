@@ -55,7 +55,7 @@ describe("ProfilePage", () => {
 
     render(await ProfilePage());
 
-    expect(screen.getByLabelText("Stall name")).toHaveValue("Kopi & Co");
+    expect(screen.getByLabelText("Business name")).toHaveValue("Kopi & Co");
     expect(screen.getByLabelText("Display name")).toHaveValue("Aisha");
     expect(screen.getByLabelText("Email")).toHaveValue("vendor@business.sg");
   });

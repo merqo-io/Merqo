@@ -23,7 +23,7 @@ export async function updateStallName(
   if (!parsed.success)
     return {
       success: false,
-      error: parsed.error.issues[0]?.message ?? "Invalid stall name",
+      error: parsed.error.issues[0]?.message ?? "Enter a valid business name.",
     };
 
   const supabase = await createServerClient();
@@ -42,7 +42,10 @@ export async function updateStallName(
       "updateStallName failed",
       err instanceof Error ? err.message : err,
     );
-    return { success: false, error: "Could not save stall name" };
+    return {
+      success: false,
+      error: "Could not save your business name. Try again.",
+    };
   }
 
   // Refresh the dashboard/admin layouts so the header/account menu pick up

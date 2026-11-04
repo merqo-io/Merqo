@@ -11,6 +11,7 @@ import {
   removeReplacedAvatar,
 } from "@/lib/image-upload-adapter";
 import { createClient } from "@/lib/supabase/client";
+import { authErrorCopy } from "@/lib/auth-error-copy";
 export function AvatarSection({
   avatarUrl,
   vendorId,
@@ -34,7 +35,12 @@ export function AvatarSection({
         // The upload landed but the save did not, so the new object is
         // referenced nowhere.
         if (url && url !== previousAvatar) void removeReplacedAvatar(url);
-        toast.error(error.message);
+        toast.error(
+          authErrorCopy(
+            error.message,
+            "Could not save your profile icon. Try again.",
+          ),
+        );
         return;
       }
       if (previousAvatar && previousAvatar !== url)
@@ -44,7 +50,7 @@ export function AvatarSection({
     }).catch(() => {
       setAvatar(previousAvatar);
       // A rejected response may have committed, so keep both storage objects.
-      toast.error("Couldn't save your profile icon. Please try again.");
+      toast.error("Could not save your profile icon. Try again.");
     });
   }
   return (

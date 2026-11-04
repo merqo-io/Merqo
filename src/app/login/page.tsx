@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { authErrorCopy } from "@/lib/auth-error-copy";
 import { signInWithPasswordAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,11 +47,16 @@ export default function LoginPage() {
       });
       // On success the browser navigates to Google; only an early error lands here.
       if (error) {
-        setError(error.message);
+        setError(
+          authErrorCopy(
+            error.message,
+            "Could not sign in with Google. Try again.",
+          ),
+        );
         setBusy(false);
       }
     } catch {
-      setError("Unable to sign in. Please try again.");
+      setError("Could not sign in. Try again.");
       setBusy(false);
     }
   }
@@ -75,7 +81,12 @@ export default function LoginPage() {
           },
         });
         if (error) {
-          setError(error.message);
+          setError(
+            authErrorCopy(
+              error.message,
+              "Could not create your account. Try again.",
+            ),
+          );
           return;
         }
         // Email confirmation on → no session yet. Show a "check your email" state
@@ -91,13 +102,13 @@ export default function LoginPage() {
 
       const result = await signInWithPasswordAction({ email, password });
       if (result.error) {
-        setError(result.error);
+        setError(authErrorCopy(result.error, "Could not sign in. Try again."));
         return;
       }
       router.push("/post-login");
       router.refresh();
     } catch {
-      setError("Unable to sign in. Please try again.");
+      setError("Could not sign in. Try again.");
     } finally {
       setBusy(false);
     }
@@ -119,12 +130,17 @@ export default function LoginPage() {
         redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
       });
       if (error) {
-        setError(error.message);
+        setError(
+          authErrorCopy(
+            error.message,
+            "Could not send a reset link. Try again.",
+          ),
+        );
         return;
       }
       setSent({ email, kind: "reset" });
     } catch {
-      setError("Unable to send a reset link. Please try again.");
+      setError("Could not send a reset link. Try again.");
     } finally {
       setBusy(false);
     }

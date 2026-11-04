@@ -32,7 +32,9 @@ export function VendorTelegramConnect({ connected }: Props) {
         }}
         onError={(err) =>
           toast.error(
-            err instanceof Error ? err.message : "Something went wrong",
+            err instanceof Error
+              ? err.message
+              : "Could not disconnect Telegram. Try again.",
           )
         }
       />
@@ -48,7 +50,11 @@ export function VendorTelegramConnect({ connected }: Props) {
         return { deepLink: res.deepLink, qrSvgMarkup: res.qrSvgMarkup };
       }}
       onError={(err) =>
-        toast.error(err instanceof Error ? err.message : "Something went wrong")
+        toast.error(
+          err instanceof Error
+            ? err.message
+            : "Could not create a Telegram link. Try again.",
+        )
       }
     />
   );

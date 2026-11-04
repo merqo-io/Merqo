@@ -45,10 +45,12 @@ describe("ProfileForm — stall name", () => {
     const user = userEvent.setup();
     render(<ProfileForm {...baseProps} />);
 
-    const input = screen.getByLabelText("Stall name");
+    const input = screen.getByLabelText("Business name");
     await user.clear(input);
     await user.type(input, "New Name");
-    await user.click(screen.getByRole("button", { name: /save stall name/i }));
+    await user.click(
+      screen.getByRole("button", { name: /save business name/i }),
+    );
 
     expect(updateStallName).toHaveBeenCalledWith({ name: "New Name" });
   });
@@ -56,7 +58,7 @@ describe("ProfileForm — stall name", () => {
   it("disables the save button when the name hasn't changed", () => {
     render(<ProfileForm {...baseProps} />);
     expect(
-      screen.getByRole("button", { name: /save stall name/i }),
+      screen.getByRole("button", { name: /save business name/i }),
     ).toBeDisabled();
   });
 });
@@ -144,7 +146,7 @@ describe("ProfileForm — social links", () => {
   });
 });
 
-it("keeps display-name saves independent while a stall-name save is pending", async () => {
+it("keeps display-name saves independent while a business-name save is pending", async () => {
   let finish!: (result: { success: true }) => void;
   updateStallName.mockImplementation(
     () =>
@@ -154,9 +156,9 @@ it("keeps display-name saves independent while a stall-name save is pending", as
   );
   const user = userEvent.setup();
   render(<ProfileForm {...baseProps} />);
-  await user.clear(screen.getByLabelText("Stall name"));
-  await user.type(screen.getByLabelText("Stall name"), "Changed stall");
-  await user.click(screen.getByRole("button", { name: "Save stall name" }));
+  await user.clear(screen.getByLabelText("Business name"));
+  await user.type(screen.getByLabelText("Business name"), "Changed stall");
+  await user.click(screen.getByRole("button", { name: "Save business name" }));
   expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
   await user.type(screen.getByLabelText("Display name"), "Alice");
   await user.click(screen.getByRole("button", { name: "Save display name" }));
@@ -167,15 +169,17 @@ it("keeps display-name saves independent while a stall-name save is pending", as
 
 it.each([
   {
-    label: "stall name",
-    button: "Save stall name",
-    fields: [["Stall name", "Changed stall"]],
+    label: "business name",
+    button: "Save business name",
+    message: "Could not save your business name. Try again.",
+    fields: [["Business name", "Changed stall"]],
     operation: updateStallName,
     result: { success: true },
   },
   {
     label: "social links",
     button: "Save links",
+    message: "Could not save your links. Try again.",
     fields: [],
     operation: updateSocialLinks,
     result: { success: true },
@@ -183,6 +187,7 @@ it.each([
   {
     label: "display name",
     button: "Save display name",
+    message: "Could not save your name. Try again.",
     fields: [["Display name", "Alice"]],
     operation: updateUser,
     result: { error: null },
@@ -190,6 +195,7 @@ it.each([
   {
     label: "password",
     button: "Update password",
+    message: "Could not update your password. Try again.",
     fields: [
       ["New password", "longpassword"],
       ["Confirm new password", "longpassword"],
@@ -199,7 +205,7 @@ it.each([
   },
 ])(
   "recovers a rejected $label save and preserves values for retry",
-  async ({ button, fields, operation, result }) => {
+  async ({ button, fields, operation, result, message }) => {
     vi.mocked(toast.error).mockClear();
     operation
       .mockRejectedValueOnce(new Error("Transport failed"))
@@ -211,9 +217,7 @@ it.each([
       await user.type(screen.getByLabelText(label), value);
     }
     await user.click(screen.getByRole("button", { name: button }));
-    expect(toast.error).toHaveBeenCalledWith(
-      "Couldn't save your changes. Please try again.",
-    );
+    expect(toast.error).toHaveBeenCalledWith(message);
     expect(screen.getByRole("button", { name: button })).toBeEnabled();
     for (const [label, value] of fields)
       expect(screen.getByLabelText(label)).toHaveValue(value);

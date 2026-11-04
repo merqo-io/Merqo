@@ -11,6 +11,7 @@ import { FORM_ERROR_CLASS, FORM_LABEL_CLASS } from "@/lib/utils";
 import { KeyRound } from "lucide-react";
 import { passwordChangeSchema } from "@/lib/schemas";
 import { createClient } from "@/lib/supabase/client";
+import { authErrorCopy } from "@/lib/auth-error-copy";
 export function PasswordSection({ email }: { email: string }) {
   const supabase = createClient();
   const [password, setPassword] = useState("");
@@ -29,14 +30,19 @@ export function PasswordSection({ email }: { email: string }) {
         password: parsed.data.password,
       });
       if (error) {
-        toast.error(error.message);
+        toast.error(
+          authErrorCopy(
+            error.message,
+            "Could not update your password. Try again.",
+          ),
+        );
         return;
       }
       toast.success("Password updated");
       setPassword("");
       setConfirm("");
     }).catch(() => {
-      toast.error("Couldn't save your changes. Please try again.");
+      toast.error("Could not update your password. Try again.");
     });
   }
   return (

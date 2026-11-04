@@ -50,9 +50,7 @@ it.each(["password", "signup", "reset"] as const)(
     };
     const label = labels[method];
     await user.click(screen.getByRole("button", { name: label }));
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Please try again",
-    );
+    expect(await screen.findByRole("alert")).toHaveTextContent("Try again");
     expect(screen.getByRole("button", { name: label })).toBeEnabled();
     mocks[method].mockClear();
     mocks[method].mockResolvedValue({
@@ -72,9 +70,7 @@ it("recovers when browser client construction throws", async () => {
   await userEvent
     .setup()
     .click(screen.getByRole("button", { name: "Continue with Google" }));
-  expect(await screen.findByRole("alert")).toHaveTextContent(
-    "Please try again",
-  );
+  expect(await screen.findByRole("alert")).toHaveTextContent("Try again");
   expect(
     screen.getByRole("button", { name: "Continue with Google" }),
   ).toBeEnabled();
