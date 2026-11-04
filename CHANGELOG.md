@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Buttons and inputs reach a 44px minimum touch target on coarse pointers (desktop sizes unchanged); loading skeletons now expose `role="status"`, `aria-busy` and a screen-reader label, and stop pulsing under reduced motion.
+
 ### Added
 
 - Terms gate (`/legal/accept`) now has a Sign out button so a user who declines has a way out, a hint under the disabled Continue button, and a heading that matches the rest of the app.
