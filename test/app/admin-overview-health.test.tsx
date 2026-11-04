@@ -90,10 +90,10 @@ it("explains total outage instead of displaying misleading zero totals", async (
 it("handles an empty product registry", async () => {
   mocks.products.mockResolvedValue([]);
   expect(renderToStaticMarkup(await Overview())).toContain(
-    "No products registered yet",
+    "No products yet. Kits show up here once they are added.",
   );
   expect(renderToStaticMarkup(await Products())).toContain(
-    "No live products registered yet",
+    "No live products yet. Kits show up here once they go live.",
   );
   expect(mocks.metrics).not.toHaveBeenCalled();
 });

@@ -32,7 +32,7 @@ vi.mock("@/lib/tenant-health", () => ({
 }));
 vi.mock("./support-message-row", () => ({ SupportMessageRow: () => null }));
 
-import AdminOverviewPage from "./page";
+import AdminOverviewPage, { metadata } from "./page";
 
 const PRODUCT = { slug: "qkit", name: "qkit", app_url: "https://q.test" };
 
@@ -91,5 +91,25 @@ describe("AdminOverviewPage needs-attention health count", () => {
     expect(
       screen.queryByRole("link", { name: "View health" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("renders the unified header and an empty products state", async () => {
+    listLiveProductsMock.mockResolvedValue([]);
+    getTenantHealthMock.mockResolvedValue([]);
+
+    render(await AdminOverviewPage());
+
+    expect(
+      screen.getByRole("heading", { name: "Overview" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("How every kit and vendor is doing right now."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "No products yet. Kits show up here once they are added.",
+      ),
+    ).toBeInTheDocument();
+    expect(metadata.title).toBe("Overview");
   });
 });

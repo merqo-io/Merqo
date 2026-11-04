@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import AdminActivityPage from "./page";
+import AdminActivityPage, { metadata } from "./page";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -69,6 +69,10 @@ describe("AdminActivityPage", () => {
     render(await AdminActivityPage());
 
     expect(screen.getByText("No admin activity yet.")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Activity" }),
+    ).toBeInTheDocument();
+    expect(metadata.title).toBe("Activity");
   });
 
   it("gates on team membership before reading audit rows", async () => {

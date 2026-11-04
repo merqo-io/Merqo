@@ -6,6 +6,8 @@ import { TenantHealthSection } from "./tenant-health-section";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Products" };
+
 export default async function AdminProductsPage() {
   await requireMerqoTeam();
   const products = await listLiveProducts();
@@ -18,16 +20,19 @@ export default async function AdminProductsPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-5 py-8">
-      <h1 className="font-display text-2xl font-bold tracking-tight">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        Admin
+      </p>
+      <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
         Products
       </h1>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-2 text-sm text-muted-foreground">
         Per-kit performance and health, then which vendors need attention.
       </p>
 
       {products.length === 0 ? (
         <div className="mt-6 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No live products registered yet.
+          No live products yet. Kits show up here once they go live.
         </div>
       ) : (
         <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">

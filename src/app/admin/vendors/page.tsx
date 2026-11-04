@@ -6,6 +6,8 @@ import { VendorList } from "./vendor-list";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Vendors" };
+
 export default async function VendorsPage() {
   await requireMerqoTeam();
   const [grants, products, founders] = await Promise.all([
@@ -17,10 +19,13 @@ export default async function VendorsPage() {
   return (
     <main className="mx-auto max-w-7xl space-y-10 px-5 py-8">
       <div>
-        <h1 className="font-display text-2xl font-bold tracking-tight">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          Admin
+        </p>
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           Vendors
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           Grant kit access and see who owns what. Founder slots left:{" "}
           {Math.max(0, FOUNDER_CAP - founders)} of {FOUNDER_CAP}.
         </p>

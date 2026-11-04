@@ -14,7 +14,7 @@ vi.mock("@/lib/subscription-requests", () => ({
 }));
 vi.mock("./actions", () => ({ declineRequestAction: vi.fn() }));
 
-import RequestsPage from "./page";
+import RequestsPage, { metadata } from "./page";
 
 const request = {
   id: "11111111-1111-4111-8111-111111111111",
@@ -40,7 +40,12 @@ describe("RequestsPage", () => {
     expect(
       screen.getByRole("heading", { name: "Requests" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("No pending requests.")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "No pending requests. Plan changes vendors ask for show up here.",
+      ),
+    ).toBeInTheDocument();
+    expect(metadata.title).toBe("Requests");
   });
 
   it("lists a request with a resolve link to the vendor page and a decline control", async () => {
