@@ -52,6 +52,8 @@ describe("VendorList", () => {
 
   it("shows the empty-list message when there are no grants at all", () => {
     render(<VendorList grants={[]} products={products} />);
-    expect(screen.getByText("No vendor links yet.")).toBeInTheDocument();
+    expect(
+      screen.getByText("No vendors yet. Approved requests show up here."),
+    ).toBeInTheDocument();
   });
 });
