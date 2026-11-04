@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Browser titles use `%s | merqo` with a sentence-case default, and the dashboard and profile pages set their own titles. Both page headers now follow the shared pattern (eyebrow, display title, one-line description), and the dashboard intro drops em dashes and "control room".
+
 ### Fixed
 
 - Buttons and inputs reach a 44px minimum touch target on coarse pointers (desktop sizes unchanged); loading skeletons now expose `role="status"`, `aria-busy` and a screen-reader label, and stop pulsing under reduced motion.

@@ -27,7 +27,7 @@ section; one or more kits gets the savings + per-kit overview.
   admin switch link for a team member, the tour's replay button, and that
   `stampTourSeen` fires when `tour_seen_at` is null/missing and never fires
   once it's already set.
-- `page.tsx` — `DashboardPage` (`revalidate = 0`). Re-syncs the vendor's kit
+- `page.tsx` — `DashboardPage` (`revalidate = 0`, tab title "Kits"; header is eyebrow, display h1 and a one-line summary). Re-syncs the vendor's kit
   grants (`syncVendorKits`, throttled) so a kit added elsewhere shows up
   without a fresh login, computes savings (`computeVendorSavings`) and per-kit
   live metrics (`fetchVendorMetrics`), and renders — urgency-first, directly
