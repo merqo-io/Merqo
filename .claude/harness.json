@@ -111,7 +111,7 @@
       "path": ".claude/verify-harness.sh"
     },
     ".claude/deps-gate.sh": {
-      "origin_hash": "3e176e09326c0530234aedd708bab0eb440663642ea7b06c9a5ff80520d810f9",
+      "origin_hash": "ddfd9aa43a84429f576a38c7bda5eb754c95eea186baeb27f28c8b71479bf195",
       "path": ".claude/deps-gate.sh"
     },
     ".claude/dep-audit-allow.txt": {
@@ -123,7 +123,7 @@
       "path": ".claude/regen-harness.sh"
     },
     ".github/workflows/ci.yml": {
-      "origin_hash": "4beba02b010efddcb64e8f77ee8420f848930d7870aa780f25b8c2752274b87f",
+      "origin_hash": "e1db1c8f7a4506fee321e53017c47b85ac0e5bdae144d98c554a5f7b1157c2f5",
       "path": ".github/workflows/ci.yml"
     }
   }
