@@ -11,6 +11,9 @@ const mocks = vi.hoisted(() => ({
   loadVendorSubscriptions: vi.fn(),
   mintEventPass: vi.fn(),
   cancelEventPass: vi.fn(),
+  loadVendorEventPasses: vi.fn(),
+  settleEventPass: vi.fn(),
+  getEventPassUsage: vi.fn(),
   syncVendorEntitlements: vi.fn(),
   closeRequest: vi.fn(),
   getPendingRequest: vi.fn(),
@@ -31,8 +34,13 @@ vi.mock("@/lib/entitlements/store", () => {
     loadVendorSubscriptions: mocks.loadVendorSubscriptions,
     mintEventPass: mocks.mintEventPass,
     cancelEventPass: mocks.cancelEventPass,
+    loadVendorEventPasses: mocks.loadVendorEventPasses,
+    settleEventPass: mocks.settleEventPass,
   };
 });
+vi.mock("@/lib/event-pass-usage-client", () => ({
+  getEventPassUsage: mocks.getEventPassUsage,
+}));
 vi.mock("@/lib/entitlements/push", () => ({
   syncVendorEntitlements: mocks.syncVendorEntitlements,
 }));
@@ -48,6 +56,7 @@ import {
   grantSubscriptionAction,
   mintEventPassAction,
   repushEntitlementsAction,
+  settleEventPassAction,
 } from "./subscription-actions";
 
 const UUID = "11111111-1111-4111-8111-111111111111";
@@ -380,6 +389,120 @@ describe("cancelEventPassAction", () => {
       await cancelEventPassAction({ email: "v@x.com", passId: UUID }),
     ).toMatchObject({ success: false });
     expect(log).toHaveBeenCalled();
+  });
+});
+
+describe("settleEventPassAction", () => {
+  const input = { email: "v@x.com", passId: UUID };
+  const endedPass = (over: Record<string, unknown> = {}) => ({
+    id: UUID,
+    startsAt: "2020-01-01T00:00:00.000Z",
+    endsAt: "2020-01-03T00:00:00.000Z",
+    prepaidCents: 1400,
+    status: "active",
+    ...over,
+  });
+
+  beforeEach(() => {
+    mocks.loadPlanCatalog.mockResolvedValue([
+      plan("event_pass", "event_pass", true, {
+        perCupCents: 15,
+        minCents: 1400,
+        capCents: 2800,
+        durationDays: 2,
+      }),
+    ]);
+    mocks.loadVendorEventPasses.mockResolvedValue([endedPass()]);
+    mocks.getEventPassUsage.mockResolvedValue({ ok: true, cups: 150 });
+    mocks.settleEventPass.mockResolvedValue(true);
+  });
+
+  it("re-reads cups server-side, stores the top-up and audits", async () => {
+    expect(await settleEventPassAction(input)).toEqual({ success: true });
+    expect(mocks.getEventPassUsage).toHaveBeenCalledWith({
+      vendorId: "vendor-1",
+      startsAt: "2020-01-01T00:00:00.000Z",
+      endsAt: "2020-01-03T00:00:00.000Z",
+    });
+    expect(mocks.settleEventPass).toHaveBeenCalledWith({
+      vendorId: "vendor-1",
+      passId: UUID,
+      cups: 150,
+      cents: 850,
+      settledBy: "admin-1",
+    });
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "settle_event_pass",
+      UUID,
+      expect.objectContaining({ cups: 150, settled_cents: 850 }),
+    );
+    expect(mocks.revalidatePath).toHaveBeenCalled();
+  });
+
+  it("never lets the top-up go negative for a small prepaid shortfall", async () => {
+    mocks.getEventPassUsage.mockResolvedValue({ ok: true, cups: 10 });
+    await settleEventPassAction(input);
+    expect(mocks.settleEventPass).toHaveBeenCalledWith(
+      expect.objectContaining({ cups: 10, cents: 0 }),
+    );
+  });
+
+  it("refuses when usage is unavailable", async () => {
+    mocks.getEventPassUsage.mockResolvedValue({ ok: false });
+    expect(await settleEventPassAction(input)).toMatchObject({
+      success: false,
+      error: expect.stringContaining("unavailable"),
+    });
+    expect(mocks.settleEventPass).not.toHaveBeenCalled();
+  });
+
+  it("refuses a pass that has not ended", async () => {
+    mocks.loadVendorEventPasses.mockResolvedValue([
+      endedPass({ endsAt: "2999-01-01T00:00:00.000Z" }),
+    ]);
+    expect(await settleEventPassAction(input)).toMatchObject({
+      success: false,
+      error: expect.stringContaining("hasn't ended"),
+    });
+    expect(mocks.getEventPassUsage).not.toHaveBeenCalled();
+  });
+
+  it.each(["settled", "cancelled"])("refuses a %s pass", async (status) => {
+    mocks.loadVendorEventPasses.mockResolvedValue([endedPass({ status })]);
+    expect(await settleEventPassAction(input)).toMatchObject({
+      success: false,
+      error: "That event pass is already closed.",
+    });
+    expect(mocks.settleEventPass).not.toHaveBeenCalled();
+  });
+
+  it("reports a concurrent settle that lost the race", async () => {
+    mocks.settleEventPass.mockResolvedValue(false);
+    expect(await settleEventPassAction(input)).toMatchObject({
+      success: false,
+    });
+    expect(mocks.recordAudit).not.toHaveBeenCalled();
+  });
+
+  it("rejects another vendor's or an unknown pass and bad input", async () => {
+    mocks.loadVendorEventPasses.mockResolvedValue([]);
+    expect(await settleEventPassAction(input)).toMatchObject({
+      success: false,
+    });
+    expect(
+      await settleEventPassAction({ email: "nope", passId: "x" }),
+    ).toMatchObject({ success: false });
+    expect(mocks.settleEventPass).not.toHaveBeenCalled();
+  });
+
+  it("returns a generic error on failure", async () => {
+    mocks.settleEventPass.mockRejectedValue(new Error("db"));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(await settleEventPassAction(input)).toEqual({
+      success: false,
+      error: "Couldn't save that. Try again.",
+    });
   });
 });
 

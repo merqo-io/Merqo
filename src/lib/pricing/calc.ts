@@ -73,3 +73,15 @@ export function eventPassSettleCents(
 ): number {
   return eventPassChargeCents(cups, terms) - terms.minCents;
 }
+
+/**
+ * Amount still owed after the event: the total minus whatever this pass
+ * actually prepaid (which can differ from the plan minimum), never negative.
+ */
+export function eventPassTopUpCents(
+  cups: number,
+  terms: EventPassTerms,
+  prepaidCents: number,
+): number {
+  return Math.max(0, eventPassChargeCents(cups, terms) - prepaidCents);
+}

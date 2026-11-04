@@ -12,7 +12,8 @@ billing will build on. Nothing here charges anyone.
   (kit added mid-term, months left over 12), `aaUpgradeCreditCents` (unused
   annual months over 12, spent on All-Access months first), `eventPassChargeCents`
   and `eventPassSettleCents` (per-cup rate clamped to min..cap; settle is the
-  total minus the prepaid minimum). Fractions of a cent round half up.
+  total minus the prepaid minimum), `eventPassTopUpCents` (total minus what the
+  pass actually prepaid, floored at 0). Fractions of a cent round half up.
 - `calc.test.ts`: the approved examples (6000 co-term, 6667 credit, annual
   values, Event Pass minimum, per-cup and cap cases) plus input validation.
 - `catalog.ts`: `loadPlanCatalog()` reads `merqo.plans` through the service

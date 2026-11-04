@@ -171,6 +171,7 @@ landing — a later migration corrects an earlier one.
 - `0040_marketing_consents.sql`: adds `marketing_consents` (email, the wording shown, `consented_at`, nullable `withdrawn_at`), one row per address that ticked the general-updates box on `/waitlist`. RLS on with no policies; service role gets select, insert and update. Withdrawal is an operator SQL update (snippet in the migration header). Apply after `0039`.
 - `0041_rate_limit.sql`: adds `rate_limit_hits` (fixed-window counters, no client grants) and the service-role-only `rate_limit_hit(key, limit, window)` function behind `src/lib/rate-limit.ts`. About 1% of calls sweep windows older than a day. Apply after `0040`.
 - `0042_printkit_push_only.sql`: widens `products.status` to allow `push_only` and seeds a printkit row with that status. printkit receives entitlement pushes (`listEntitlementTargets()`) but is not grantable and stays out of `listLiveProducts()`. Set its `app_url` and `provision_secret` per database afterwards (see `docs/DEPLOY.md`). Apply after `0041`.
+- `0043_event_pass_settle.sql`: adds `settled_cups`, `settled_cents`, `settled_at` and `settled_by` to `event_passes`, a `settled` status, and a CHECK tying those fields to that status. Records the offline top-up collected after a pass ends; RLS and grants unchanged. Apply after `0042`.
 
 ## Connectivity
 

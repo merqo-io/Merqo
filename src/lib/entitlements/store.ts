@@ -27,6 +27,9 @@ export interface SubscriptionRow extends SubscriptionInput {
 export interface EventPassRow extends EventPassInput {
   id: string;
   prepaidCents: number;
+  settledCups: number | null;
+  settledCents: number | null;
+  settledAt: string | null;
 }
 
 export type SyncErrorKind =
@@ -106,7 +109,9 @@ export async function loadVendorEventPasses(
   const supabase = await createServiceClient();
   const { data, error } = await supabase
     .from("event_passes")
-    .select("id, starts_at, ends_at, prepaid_cents, status")
+    .select(
+      "id, starts_at, ends_at, prepaid_cents, status, settled_cups, settled_cents, settled_at",
+    )
     .eq("vendor_id", vendorId)
     .order("starts_at", { ascending: false });
   if (error) throw new Error(`event passes read: ${error.message}`);
@@ -117,6 +122,9 @@ export async function loadVendorEventPasses(
       ends_at: string;
       prepaid_cents: number;
       status: string;
+      settled_cups: number | null;
+      settled_cents: number | null;
+      settled_at: string | null;
     }[]
   ).map((r) => ({
     id: r.id,
@@ -124,6 +132,9 @@ export async function loadVendorEventPasses(
     endsAt: r.ends_at,
     prepaidCents: r.prepaid_cents,
     status: r.status,
+    settledCups: r.settled_cups,
+    settledCents: r.settled_cents,
+    settledAt: r.settled_at,
   }));
 }
 
@@ -275,6 +286,36 @@ export async function mintEventPass(input: {
     .single();
   if (error) throw new Error(`mint event pass: ${error.message}`);
   return data.id as string;
+}
+
+/** Record the offline settle on one of the vendor's active passes; false if
+ *  it was not theirs or is no longer active (cancelled, or settled by a
+ *  concurrent click). */
+export async function settleEventPass(input: {
+  vendorId: string;
+  passId: string;
+  cups: number;
+  cents: number;
+  settledBy: string;
+}): Promise<boolean> {
+  const supabase = await createServiceClient();
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("event_passes")
+    .update({
+      status: "settled",
+      settled_cups: input.cups,
+      settled_cents: input.cents,
+      settled_at: now,
+      settled_by: input.settledBy,
+      updated_at: now,
+    })
+    .eq("id", input.passId)
+    .eq("vendor_id", input.vendorId)
+    .eq("status", "active")
+    .select("id");
+  if (error) throw new Error(`settle event pass: ${error.message}`);
+  return (data ?? []).length > 0;
 }
 
 /** Cancel one of the vendor's active passes; false if it was not theirs. */

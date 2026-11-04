@@ -130,7 +130,11 @@ vi.mock("@/lib/pricing/catalog", () => ({
 vi.mock("@/lib/subscription-requests", () => ({
   getPendingRequest: getPendingRequestMock,
 }));
+vi.mock("@/lib/event-pass-usage-client", () => ({
+  getEventPassUsage: vi.fn().mockResolvedValue({ ok: false }),
+}));
 vi.mock("./subscription-actions", () => ({
+  settleEventPassAction: vi.fn(),
   grantSubscriptionAction: vi.fn(),
   cancelSubscriptionAction: vi.fn(),
   mintEventPassAction: vi.fn(),

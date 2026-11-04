@@ -5,6 +5,7 @@ import {
   coTermProrationCents,
   eventPassChargeCents,
   eventPassSettleCents,
+  eventPassTopUpCents,
 } from "./calc";
 
 const EVENT = { perCupCents: 15, minCents: 1400, capCents: 2800 };
@@ -56,6 +57,20 @@ describe("aaUpgradeCreditCents", () => {
 
   it("credits nothing when nothing is unused", () => {
     expect(aaUpgradeCreditCents(16000, 0)).toBe(0);
+  });
+});
+
+describe("eventPassTopUpCents", () => {
+  it("matches the settle amount when prepaid equals the plan minimum", () => {
+    expect(eventPassTopUpCents(120, EVENT, 1400)).toBe(400);
+    expect(eventPassTopUpCents(93, EVENT, 1400)).toBe(0);
+    expect(eventPassTopUpCents(5000, EVENT, 1400)).toBe(1400);
+  });
+
+  it("uses the pass's own prepaid amount when it differs from the minimum", () => {
+    expect(eventPassTopUpCents(120, EVENT, 1000)).toBe(800);
+    expect(eventPassTopUpCents(120, EVENT, 2000)).toBe(0);
+    expect(eventPassTopUpCents(5000, EVENT, 0)).toBe(2800);
   });
 });
 

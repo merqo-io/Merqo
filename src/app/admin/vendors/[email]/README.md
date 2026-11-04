@@ -53,6 +53,15 @@ own admin console separately.
   pushes the vendor's entitlements to the kits and revalidates; a grant or cancel
   that carries a `requestId` also resolves that request. A full founder cap shows
   "All 20 founder slots are taken." `subscription-actions.test.ts` covers them.
+- Event pass settle: for an active pass that has ended, `subscription-section.tsx`
+  shows the cups read live from qkit (`getEventPassUsage`, loaded in `page.tsx`),
+  total charge, prepaid and top-up due, with a `SettleEventPassButton`. Usage
+  unavailable shows that and disables the button; a pass still running shows
+  cups so far; a settled pass shows its recorded figures.
+  `settleEventPassAction` re-reads cups server-side, stores the figures, marks
+  the pass settled and audits `settle_event_pass`. Merqo charges nobody. The
+  top-up comes from `eventPassTopUpCents`, shared by the section and the action.
+  `subscription-section.dom.test.tsx` covers the view.
 - `vendor-activity-card.tsx` — `VendorActivityCard({ slug, result, now })`.
   Renders nothing when `!result.ok` or the kit reports `active: false`;
   otherwise a `StatusBadge` (skipped entirely when `status` is `null` —
