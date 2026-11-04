@@ -159,7 +159,7 @@ src/hooks/use-async-action.ts — shared pending/error state for server-action b
 src/lib/kits.ts             — kit family config (landing roadmap source of truth)
 src/lib/metrics-client.ts   — fetch of a kit's HTTP metrics endpoint
 src/lib/vendor-activity-client.ts — fetch of a single vendor's per-kit triage status/metrics/incidents
-src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-up for /admin/health
+src/lib/tenant-health.ts    — getTenantHealth: pooled cross-kit incident roll-up for /admin/products
                                (admin/vendors/[email]'s Activity cards)
 src/lib/entitlements/     — derive what a vendor may use per kit from subscriptions + event passes, push it to the kits
 src/lib/schemas.ts          — Zod schemas for the profile page's forms

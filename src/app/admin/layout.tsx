@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireMerqoTeam } from "@/lib/team";
 import { hasActiveVendorAccess } from "@/lib/vendor";
 import { getAvatarUrl } from "@/lib/account";
@@ -9,7 +10,11 @@ const ADMIN_LINKS = [
   { href: "/admin/vendors", label: "Vendors" },
   { href: "/admin/requests", label: "Requests" },
   { href: "/admin/products", label: "Products" },
-  { href: "/admin/health", label: "Health" },
+];
+
+// The shared account menu takes one extra link and a "Switch kits" group, so
+// the occasional places sit in a quiet row under the nav instead.
+const SECONDARY_LINKS = [
   { href: "/admin/team", label: "Team" },
   { href: "/admin/feedback", label: "Feedback" },
   { href: "/admin/activity", label: "Activity" },
@@ -34,8 +39,8 @@ export default async function AdminLayout({
           homeHref="/admin"
           homeLabel="merqo admin home"
           badge="Admin"
-          // Eight links plus the account menu need about 1083px; lg (1024px) would still overflow.
-          collapseBelow="xl"
+          // Eight links needed about 1083px; four drop roughly 300px, still over md (768px), so lg.
+          collapseBelow="lg"
           navLinks={ADMIN_LINKS}
           email={user.email}
           avatarUrl={getAvatarUrl(user)}
@@ -45,6 +50,20 @@ export default async function AdminLayout({
               : undefined
           }
         />
+        <nav
+          aria-label="More admin pages"
+          className="border-b bg-secondary/30 print:hidden"
+        >
+          <ul className="mx-auto flex max-w-7xl items-center gap-5 px-5 py-2 text-sm text-muted-foreground">
+            {SECONDARY_LINKS.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="hover:text-foreground">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
       <div className="w-full flex-1">{children}</div>
       <div className="contents print:hidden">

@@ -17,7 +17,7 @@ render without any Supabase provisioning. Runnable with only `pnpm dev` +
   (checked on `/admin/activity`), granting then cancelling a subscription round-trips through the audit trail,
   and adding/removing a team member works. Confirm dialogs go through `confirmDialog`, which waits for the dialog to close (the page behind it is aria-hidden, so the trigger vanishing proves nothing).
 - `csp.spec.ts` — a dynamic page serves a nonce CSP with nonced scripts and no violations; a static page keeps the static CSP.
-- `signed-in-smoke.spec.ts` — `renderSmoke` over every dashboard and admin page (including `/admin/health`) as the MFA-cleared team member; a password-only session is sent to `/mfa`.
+- `signed-in-smoke.spec.ts` — `renderSmoke` over every dashboard and admin page as the MFA-cleared team member; a password-only session is sent to `/mfa`.
 - `global-setup.ts` + `totp.ts` — sign in once, enrol an authenticator through `/mfa`, save the `aal2` session for authed tests.
 
 ## Parent

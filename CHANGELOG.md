@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Admin nav slimmed to Overview, Vendors, Requests and Products (collapsing below `lg`); Team, Feedback and Activity moved to a "More admin pages" row. `/admin/health` now redirects to `/admin/products`, which carries the vendor health table. Vendor nav label "Dashboard" is now "Kits", empty metrics read "No data yet", and the nav error toast reads "Could not complete that. Try again."
+
 ### Added
 
 - Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.

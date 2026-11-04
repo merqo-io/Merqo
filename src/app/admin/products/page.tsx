@@ -2,6 +2,7 @@ import { requireMerqoTeam } from "@/lib/team";
 import { listLiveProducts } from "@/lib/products";
 import { fetchProductMetrics } from "@/lib/metrics-client";
 import { ProductHealthCard } from "./product-health-card";
+import { TenantHealthSection } from "./tenant-health-section";
 
 export const revalidate = 0;
 
@@ -21,7 +22,7 @@ export default async function AdminProductsPage() {
         Products
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Per-kit performance and health.
+        Per-kit performance and health, then which vendors need attention.
       </p>
 
       {products.length === 0 ? (
@@ -40,6 +41,8 @@ export default async function AdminProductsPage() {
           ))}
         </section>
       )}
+
+      <TenantHealthSection products={products} />
     </main>
   );
 }
