@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- The top paid tier is labelled "Pro" (Free / Starter / Pro) instead of "Qkit" on the dashboard kit card, the admin subscription controls and requests, and the public `/api/plans` plan name. Stored `qkit` tier and plan slug values are unchanged.
+
 ### Added
 
 - Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.

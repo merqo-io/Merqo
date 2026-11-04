@@ -10,7 +10,7 @@ describe("pricing format", () => {
 
   it("labels known plans and falls back to the slug", () => {
     expect(planLabel("all_access")).toBe("All Access");
-    expect(planLabel("qkit")).toBe("Qkit");
+    expect(planLabel("qkit")).toBe("Pro");
     expect(planLabel("mystery")).toBe("mystery");
   });
 });
