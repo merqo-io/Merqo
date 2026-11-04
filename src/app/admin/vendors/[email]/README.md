@@ -59,7 +59,8 @@ own admin console separately.
   unavailable shows that and disables the button; a pass still running shows
   cups so far; a settled pass shows its recorded figures.
   `settleEventPassAction` re-reads cups server-side, stores the figures, marks
-  the pass settled and audits `settle_event_pass`. Merqo charges nobody.
+  the pass settled and audits `settle_event_pass`. Merqo charges nobody. The
+  top-up comes from `eventPassTopUpCents`, shared by the section and the action.
   `subscription-section.dom.test.tsx` covers the view.
 - `vendor-activity-card.tsx` — `VendorActivityCard({ slug, result, now })`.
   Renders nothing when `!result.ok` or the kit reports `active: false`;
