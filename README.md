@@ -275,6 +275,8 @@ Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limit
 
 Error copy across the console is action-specific ("Could not <action>. Try again.") and raw errors are logged server-side rather than shown; see CHANGELOG.md.
 
+Sign-in and profile error copy is plain and action-specific; `src/lib/auth-error-copy.ts` maps known Supabase auth messages to friendly text and logs only an error code.
+
 ## Touch targets and loading states
 
 `src/app/globals.css` raises buttons (except link-style) and inputs to a 44px minimum height, and icon buttons to 44px wide, under `@media (pointer: coarse)` only; desktop sizes are unchanged. Route `loading.tsx` skeletons are `role="status"` regions with an `sr-only` label and no pulse under reduced motion.

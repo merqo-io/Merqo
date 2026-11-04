@@ -68,7 +68,7 @@ describe("updateStallName", () => {
     const result = await updateStallName({ name: "New Name" });
     expect(result).toEqual({
       success: false,
-      error: "Could not save stall name",
+      error: "Could not save your business name. Try again.",
     });
   });
 });

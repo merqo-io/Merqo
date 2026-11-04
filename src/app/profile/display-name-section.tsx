@@ -11,6 +11,7 @@ import { FORM_ERROR_CLASS, FORM_LABEL_CLASS } from "@/lib/utils";
 import { IdCard } from "lucide-react";
 import { displayNameSchema } from "@/lib/schemas";
 import { createClient } from "@/lib/supabase/client";
+import { authErrorCopy } from "@/lib/auth-error-copy";
 export function DisplayNameSection({ displayName }: { displayName: string }) {
   const router = useRouter();
   const supabase = createClient();
@@ -29,13 +30,15 @@ export function DisplayNameSection({ displayName }: { displayName: string }) {
         data: { display_name: parsed.data.displayName },
       });
       if (error) {
-        toast.error(error.message);
+        toast.error(
+          authErrorCopy(error.message, "Could not save your name. Try again."),
+        );
         return;
       }
       toast.success("Display name saved");
       router.refresh();
     }).catch(() => {
-      toast.error("Couldn't save your changes. Please try again.");
+      toast.error("Could not save your name. Try again.");
     });
   }
   return (

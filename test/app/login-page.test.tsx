@@ -32,7 +32,7 @@ describe("LoginPage — Google sign-in", () => {
     });
   });
 
-  it("shows the error message when the provider call fails early", async () => {
+  it("shows plain copy instead of the raw error when the provider call fails early", async () => {
     signInWithOAuth.mockResolvedValue({ error: { message: "boom" } });
     const user = userEvent.setup();
     render(<LoginPage />);
@@ -40,8 +40,10 @@ describe("LoginPage — Google sign-in", () => {
     await user.click(
       screen.getByRole("button", { name: /continue with google/i }),
     );
-
-    expect(await screen.findByRole("alert")).toHaveTextContent("boom");
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Could not sign in with Google. Try again.",
+    );
+    expect(screen.getByRole("alert")).not.toHaveTextContent("boom");
   });
 });
 
@@ -52,7 +54,7 @@ it("recovers after a rejected OAuth request", async () => {
     .setup()
     .click(screen.getByRole("button", { name: /continue with google/i }));
   expect(await screen.findByRole("alert")).toHaveTextContent(
-    "Please try again",
+    "Could not sign in. Try again.",
   );
   expect(
     screen.getByRole("button", { name: /continue with google/i }),

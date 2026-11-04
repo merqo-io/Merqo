@@ -48,10 +48,15 @@ it.each(["password", "signup", "reset"] as const)(
       signup: "Create account",
       reset: "Forgot password?",
     };
+    const expected = {
+      password: "Could not sign in. Try again.",
+      signup: "Could not sign in. Try again.",
+      reset: "Could not send a reset link. Try again.",
+    };
     const label = labels[method];
     await user.click(screen.getByRole("button", { name: label }));
     expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Please try again",
+      expected[method],
     );
     expect(screen.getByRole("button", { name: label })).toBeEnabled();
     mocks[method].mockClear();
@@ -73,9 +78,24 @@ it("recovers when browser client construction throws", async () => {
     .setup()
     .click(screen.getByRole("button", { name: "Continue with Google" }));
   expect(await screen.findByRole("alert")).toHaveTextContent(
-    "Please try again",
+    "Could not sign in. Try again.",
   );
   expect(
     screen.getByRole("button", { name: "Continue with Google" }),
   ).toBeEnabled();
+});
+
+it("shows the check-your-email screen when the email is already registered", async () => {
+  const user = userEvent.setup();
+  render(<LoginPage />);
+  await user.click(screen.getByRole("button", { name: "Create an account" }));
+  await user.type(screen.getByLabelText("Email"), "vendor@example.com");
+  await user.type(screen.getByLabelText("Password"), "safe-password");
+  mocks.signup.mockResolvedValueOnce({
+    data: { session: null },
+    error: { message: "User already registered", code: "user_already_exists" },
+  });
+  await user.click(screen.getByRole("button", { name: "Create account" }));
+  expect(await screen.findByText("Check your email")).toBeInTheDocument();
+  expect(screen.queryByRole("alert")).toBeNull();
 });
