@@ -16,7 +16,7 @@ import {
   mintEventPass,
   settleEventPass,
 } from "@/lib/entitlements/store";
-import { eventPassChargeCents } from "@/lib/pricing/calc";
+import { eventPassTopUpCents } from "@/lib/pricing/calc";
 import { getEventPassUsage } from "@/lib/event-pass-usage-client";
 import { syncVendorEntitlements } from "@/lib/entitlements/push";
 import { closeRequest, getPendingRequest } from "@/lib/subscription-requests";
@@ -314,10 +314,7 @@ export async function settleEventPassAction(
     if (!usage.ok) {
       return { success: false, error: "Usage is unavailable. Try again." };
     }
-    const cents = Math.max(
-      0,
-      eventPassChargeCents(usage.cups, terms) - pass.prepaidCents,
-    );
+    const cents = eventPassTopUpCents(usage.cups, terms, pass.prepaidCents);
     const settled = await settleEventPass({
       vendorId,
       passId: pass.id,

@@ -353,6 +353,7 @@ export function SettleEventPassButton({
           {topUpCents !== null && (
             <> Top-up due {formatSgd(topUpCents)}.</>
           )}{" "}
+          Cups are re-read when you confirm, so the final figure may differ.
           Merqo does not charge; collect it yourself.
         </>
       }

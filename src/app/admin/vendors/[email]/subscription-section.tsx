@@ -6,7 +6,11 @@ import {
   subscriptionPeriodLine,
   syncFailureLabel,
 } from "./subscription-labels";
-import { eventPassChargeCents, type EventPassTerms } from "@/lib/pricing/calc";
+import {
+  eventPassChargeCents,
+  eventPassTopUpCents,
+  type EventPassTerms,
+} from "@/lib/pricing/calc";
 import type { EventPassUsageResult } from "@/lib/event-pass-usage-client";
 import { FOUNDER_CAP } from "@/lib/entitlements/store";
 import type {
@@ -100,7 +104,7 @@ function PassUsageLine({
     );
   }
   const total = eventPassChargeCents(usage.cups, terms);
-  const topUp = Math.max(0, total - pass.prepaidCents);
+  const topUp = eventPassTopUpCents(usage.cups, terms, pass.prepaidCents);
   return (
     <div className="flex basis-full flex-wrap items-center justify-between gap-2">
       <p className="text-xs text-muted-foreground">
