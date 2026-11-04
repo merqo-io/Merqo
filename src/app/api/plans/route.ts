@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { loadPublicPlanCatalog } from "@/lib/pricing/public-catalog";
 
 // Prices change rarely; five minutes keeps the CDN and the database calm
-// while a price edit still reaches kit pages quickly.
+// while a price edit still reaches kit pages quickly. Next needs `revalidate`
+// as a literal, so keep it equal to the s-maxage in CACHE_CONTROL below.
 export const revalidate = 300;
 
 const CACHE_CONTROL = "public, s-maxage=300, stale-while-revalidate=3600";
