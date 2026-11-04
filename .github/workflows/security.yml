@@ -58,7 +58,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Hard gate on PRODUCTION deps (what actually ships): fails on high/critical.
-      - run: pnpm audit --prod --audit-level=high
-      # Full audit incl. devDeps — informational only, never fails the build.
-      - run: pnpm audit --audit-level=high || true
+      # Hard gate on PRODUCTION deps (what actually ships): fails closed on high/critical advisories,
+      # tool or network failure and unparseable output. Only .claude/dep-audit-allow.txt (expiring
+      # entries) suppresses an advisory.
+      - run: bash .claude/deps-gate.sh

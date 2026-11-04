@@ -22,8 +22,8 @@ Stop → `stop-checks.sh` exits 0 when `stop_hook_active`; else
 runs `pnpm test --run`, exit 2 feeds failures back. SubagentStop →
 `subagent-stop.sh` type-gates a subagent's uncommitted TS changes before it
 hands back control. SessionStart (startup|resume|clear|compact) →
-`session-context.sh` re-injects the first 30 lines of this file plus
-always-on invariants.
+`session-context.sh` re-injects the always-on invariants (this file is already
+loaded through the `CLAUDE.md` import).
 `permissions`: `deny` covers secret reads/edits (`.env.local` and other
 `.env.<env>` variants, `./secrets/**` — `.env.example`/`.env.default`
 whitelisted) and irreversible ops (`rm -rf`, `git push --force`/`-f`,
@@ -47,9 +47,16 @@ coverage via `diff-cover` ≥80%, lockfile-in-sync via `--frozen-lockfile`),
 check), `comment-hygiene` (hard-gates change-narration comments introduced by
 a PR's added lines — `skip-comment-check` label bypasses), and `db` (pgTAP
 RLS suite). Actions are pinned to commit SHAs, not floating version tags.
-`security.yml` runs gitleaks + `pnpm audit` — **no CodeQL** (code scanning
-requires GitHub Advanced Security, unavailable on this private repo's free
-tier; this line previously and incorrectly claimed CodeQL was configured).
+`security.yml` runs gitleaks + the dependency gate `.claude/deps-gate.sh` —
+**no CodeQL** (code scanning requires GitHub Advanced Security, unavailable on
+this private repo's free tier; this line previously and incorrectly claimed
+CodeQL was configured). The gate runs `pnpm audit --prod` on `pnpm-lock.yaml`
+and fails closed on high/critical advisories, a missing tool, no network or an
+unparseable report. pnpm-native suppressions (`auditConfig`, `ignoreGhsas`,
+`ignoreCves`, `audit.ignore`) are rejected in `package.json`,
+`pnpm-workspace.yaml` and `.npmrc`; the only suppression path is
+`.claude/dep-audit-allow.txt` (`<id> <YYYY-MM-DD> <reason>`, entries expire and
+may not be more than 180 days out; `protect-files.sh` asks before edits to it).
 `.github/dependabot.yml` (security-only).
 Project skills (directory form, `<name>/SKILL.md`): `.claude/skills/` |
 Manifest: `.claude/harness.json` (`templatecentral_version: 5.14.0`) — all 26
