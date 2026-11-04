@@ -22,7 +22,7 @@ export type SocialLinksInput = z.infer<typeof socialLinksSchema>;
 // ── Profile page ──────────────────────────────────────────────────────────────
 
 export const profileNameSchema = z.object({
-  name: z.string().min(1, "Stall name is required").max(100),
+  name: z.string().min(1, "Business name is required").max(100),
 });
 export type ProfileNameInput = z.infer<typeof profileNameSchema>;
 

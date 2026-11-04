@@ -92,4 +92,5 @@ ateLimit, a Postgres fixed-window counter that fails open or closed per caller. 
 
 `kit-route-limits.ts` holds `KIT_ROUTE_MAX`, the length caps the kit bearer routes apply to free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512), since the backing columns are unbounded text.
 
+`auth-error-copy.ts` holds `authErrorCopy(raw, fallback)`, which maps known Supabase auth error messages to plain copy and otherwise logs only a tag and error code and returns the fallback.
 `tier-label.ts` holds `tierLabel`, the stored tier value to user-facing label map (`free` Free, `starter` Starter, `qkit` Pro); the stored `qkit` value is unchanged, only its label.

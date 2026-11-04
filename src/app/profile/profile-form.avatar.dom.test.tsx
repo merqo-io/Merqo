@@ -123,7 +123,7 @@ it("rolls back the displayed avatar on rejection without deleting uncertain uplo
   await user.click(screen.getByRole("button", { name: "finish upload" }));
   await waitFor(() =>
     expect(toast.error).toHaveBeenCalledWith(
-      "Couldn't save your profile icon. Please try again.",
+      "Could not save your profile icon. Try again.",
     ),
   );
   expect(screen.getByTestId("current-avatar")).toHaveTextContent(OLD_AVATAR);

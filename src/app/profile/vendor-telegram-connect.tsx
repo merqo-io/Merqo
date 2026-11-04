@@ -18,6 +18,11 @@ interface Props {
  * throw-on-failure prop contract — same shape as `ProfileForm`'s own
  * `res.success` → toast/throw pattern elsewhere on this page.
  */
+// Name only: server error messages can carry user data, so they never reach the console.
+function errorTag(err: unknown): string {
+  return err instanceof Error ? err.name : "unknown";
+}
+
 export function VendorTelegramConnect({ connected }: Props) {
   const router = useRouter();
 
@@ -30,11 +35,10 @@ export function VendorTelegramConnect({ connected }: Props) {
           if (!res.success) throw new Error(res.error);
           router.refresh();
         }}
-        onError={(err) =>
-          toast.error(
-            err instanceof Error ? err.message : "Something went wrong",
-          )
-        }
+        onError={(err) => {
+          console.error("telegram disconnect failed", errorTag(err));
+          toast.error("Could not disconnect Telegram. Try again.");
+        }}
       />
     );
   }
@@ -47,9 +51,10 @@ export function VendorTelegramConnect({ connected }: Props) {
         if (!res.success) throw new Error(res.error);
         return { deepLink: res.deepLink, qrSvgMarkup: res.qrSvgMarkup };
       }}
-      onError={(err) =>
-        toast.error(err instanceof Error ? err.message : "Something went wrong")
-      }
+      onError={(err) => {
+        console.error("telegram link failed", errorTag(err));
+        toast.error("Could not create a Telegram link. Try again.");
+      }}
     />
   );
 }
