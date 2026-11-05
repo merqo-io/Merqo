@@ -52,6 +52,8 @@ directly under `app/` besides the special Next.js files.
 
 `page.tsx` now imports `BackToTop` from `@merqo/ui` (v0.31.0) rather than a merqo-local copy.
 
+`error.tsx`, `global-error.tsx` and `not-found.tsx` use plain, calm copy with no contractions; the error boundary is the one place a generic "Something went wrong on our side" line is used.
+
 ## Parent
 
 [src](../README.md)

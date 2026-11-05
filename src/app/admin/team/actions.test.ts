@@ -64,6 +64,32 @@ describe("addTeamMemberAction", () => {
     expect(res.status).toBe("error");
     expect(recordAuditMock).not.toHaveBeenCalled();
   });
+
+  it("returns a specific error and logs the failure without the email", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const failure = new Error("db down");
+    addTeamMemberByEmailMock.mockRejectedValue(failure);
+    const fd = new FormData();
+    fd.set("email", "new@merqo.io");
+
+    const res = await addTeamMemberAction(ADD_TEAM_IDLE, fd);
+
+    expect(res).toEqual({
+      status: "error",
+      message: "Could not add that team member. Try again.",
+    });
+    expect(consoleError).toHaveBeenCalledWith(
+      "addTeamMemberByEmail failed",
+      failure,
+    );
+    expect(JSON.stringify(consoleError.mock.calls)).not.toContain(
+      "new@merqo.io",
+    );
+    expect(recordAuditMock).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
 });
 
 describe("removeTeamMemberAction", () => {
@@ -101,5 +127,28 @@ describe("removeTeamMemberAction", () => {
     });
     expect(removeTeamMemberMock).not.toHaveBeenCalled();
     expect(recordAuditMock).not.toHaveBeenCalled();
+  });
+
+  it("returns a specific error and logs the failure when removal throws", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const failure = new Error("db down");
+    removeTeamMemberMock.mockRejectedValue(failure);
+    const fd = new FormData();
+    fd.set("user_id", "member-1");
+
+    const res = await removeTeamMemberAction(fd);
+
+    expect(res).toEqual({
+      success: false,
+      error: "Could not remove that team member. Try again.",
+    });
+    expect(consoleError).toHaveBeenCalledWith(
+      "removeTeamMember failed",
+      failure,
+    );
+    expect(recordAuditMock).not.toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 });
