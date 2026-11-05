@@ -18,7 +18,9 @@ export function AddTeamForm() {
       toast.success(state.message ?? "Added to the team.");
       formRef.current?.reset();
     } else if (state.status === "error") {
-      toast.error(state.message ?? "Something went wrong.");
+      toast.error(
+        state.message ?? "Could not add that team member. Try again.",
+      );
     }
   }, [state]);
 

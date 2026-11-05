@@ -26,8 +26,12 @@ export async function removeTeamMemberAction(
   }
   try {
     await removeTeamMember(parsed.data);
-  } catch {
-    return { success: false, error: "Couldn't remove the member. Try again." };
+  } catch (err) {
+    console.error("removeTeamMember failed", err);
+    return {
+      success: false,
+      error: "Could not remove that team member. Try again.",
+    };
   }
   await recordAudit(user.id, "remove_team_member", parsed.data, null);
   revalidatePath("/admin/team");
@@ -57,7 +61,11 @@ export async function addTeamMemberAction(
     });
     revalidatePath("/admin/team");
     return { status: "success", message: `Added ${parsed.data} to the team.` };
-  } catch {
-    return { status: "error", message: "Something went wrong. Try again." };
+  } catch (err) {
+    console.error("addTeamMemberByEmail failed", err);
+    return {
+      status: "error",
+      message: "Could not add that team member. Try again.",
+    };
   }
 }
