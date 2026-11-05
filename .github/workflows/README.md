@@ -25,11 +25,9 @@ this private repo's free tier).
   to `main`, every PR, and a weekly cron.
   The gitleaks job installs the pinned release binary and checks its SHA-256, because gitleaks-action needs a paid license on organization-owned repos. It scans the PR commits, or the pushed range on `main`.
 - `staging-sync.yml`: on push to `main` (or a manual run), fast-forwards the
-  `staging` branch to `main` so the staging deployment always runs main's code.
+  `staging` branch to `main` after a `staging` -> `main` promotion (merge commit).
   Fast-forward only: if `staging` has diverged the job fails instead of
-  overwriting it. It then POSTs the project's Vercel deploy hook (repo secret
-  `VERCEL_STAGING_DEPLOY_HOOK`), because Vercel does not git-deploy a commit it
-  already built for production; without the secret it only warns. The push uses
+  overwriting it. Vercel deploys `staging` from the git push itself. The push uses
   a token from the `merqo-staging-sync` GitHub App (org secrets
   `STAGING_SYNC_APP_ID` and `STAGING_SYNC_APP_PRIVATE_KEY`) because a ruleset
   limits pushes to `staging` to that app; the job itself only has

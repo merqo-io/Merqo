@@ -24,17 +24,24 @@ the steps, for rebuilding staging or adding a kit.
 
 - One staging Supabase project, `merqo-staging` (Singapore), with the same
   schema-per-kit layout and one shared `auth.users`, like production.
-- `staging` always equals `main`. Each repo's `staging sync` workflow
-  (`.github/workflows/staging-sync.yml`) fast-forwards it on every push to `main`,
-  then calls the project's Vercel deploy hook. The hook is needed because Vercel
-  does not start a git deployment for a commit it has already built, and `main`'s
-  production deploy always builds it first. Never commit to `staging` directly:
-  the next sync then fails instead of overwriting it.
-- Vercel builds only `main` on push (`git.deploymentEnabled` in `vercel.json`),
-  so PRs get no automatic preview. A preview built on demand with the `vercel`
-  CLI (no `--prod`) gets the `Preview` env vars, so it uses the staging
-  database and calls the other apps' staging hosts.
-  The `staging` branch still deploys: the sync workflow calls its deploy hook.
+- **Release flow, same for every kit** (qkit, loopkit, paykit, stockkit, printkit,
+  merqo): branch `feat/*` or `fix/*` from `staging`, open a PR into `staging`
+  (squash is fine) and let CI run. On merge, Vercel's git integration deploys
+  `staging` to `<kit>-staging.merqo.io` (`staging.merqo.io` for merqo) with the
+  `Preview` env vars, so it uses the staging database. Test there, not on
+  `*.vercel.app` previews: the sign-in cookie only works on `merqo.io` hosts.
+  Promote with a PR `staging` -> `main` merged with a **merge commit** (never
+  squash or rebase). Never commit directly to `main` or `staging`.
+- Each repo's `staging sync` workflow (`.github/workflows/staging-sync.yml`)
+  fast-forwards `staging` to `main` after a promotion and fails instead of
+  overwriting a diverged `staging`. The ruleset on `staging` must allow PR merges
+  as well as the `merqo-staging-sync` app's push.
+- Vercel builds only `main` and `staging` on push (`git.deploymentEnabled` in
+  `vercel.json`), so other branches get no automatic preview. The domain must be
+  assigned to the `staging` branch in each Vercel project. A preview built on
+  demand with the `vercel` CLI (no `--prod`) also gets the `Preview` env vars.
+- The `VERCEL_STAGING_DEPLOY_HOOK` secret and the Vercel `staging` deploy hook
+  are unused and can be deleted.
 - **Deployment Protection is off** (`ssoProtection: null`) on every project that
   has a staging host. The `all_except_custom_domains` setting only exempts
   production custom domains: a domain assigned to the `staging` branch still
@@ -164,7 +171,7 @@ one transaction per file, and refuses a bootstrap if the schema already exists.
 
 6. `Remove-Item Env:STAGING_DB_URL`
 
-### 3. Staging domain, branch and deploy hook (per app)
+### 3. Staging domain and branch (per app)
 
 1. Vercel, the app's project, Settings, Domains: add `<kit>-staging.merqo.io`
    (`staging.merqo.io` for merqo), **Connect to an environment: Preview**, Git
@@ -172,12 +179,10 @@ one transaction per file, and refuses a bootstrap if the schema already exists.
 2. Porkbun DNS for `merqo.io`: add a CNAME for that subdomain, pointing at the
    target Vercel shows.
 3. Settings, Deployment Protection: set **Vercel Authentication** to off.
-4. Settings, Git, **Deploy Hooks**: create a hook named `staging` for branch
-   `staging`. Copy its URL into the GitHub repo's Actions secrets as
-   `VERCEL_STAGING_DEPLOY_HOOK`. Without it the sync still moves the branch but
-   prints a warning and staging keeps running the old commit.
+4. Confirm `vercel.json` sets `git.deploymentEnabled.staging` to true, so Vercel
+   deploys the `staging` branch on push without a deploy hook.
 5. GitHub, the repo, Actions, **staging sync**, Run workflow. This creates the
-   `staging` branch (or moves it) and deploys it. A brand-new workflow can take a
+   `staging` branch (or moves it); Vercel then deploys it. A brand-new workflow can take a
    couple of minutes to appear in the Actions list after its PR merges.
 
 ### 4. Env vars
@@ -241,7 +246,7 @@ sync workflow). Then, per kit:
    setup step 2.5) also loads, but leaves out stockkit's own three avatar
    write policies; merqo `0015`'s owner policies allow the same writes, so
    behavior matches, while the policy list differs from production.
-3. Domain, CNAME, Deployment Protection off, deploy hook and GitHub secret
+3. Domain, CNAME, Deployment Protection off and the `staging` deploy setting
    (setup step 3).
 4. Env vars: the kit's row in the per-project table, plus
    `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` for branch `staging`. Link the shared

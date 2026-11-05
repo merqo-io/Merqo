@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Release flow for merqo and every kit is now `feat/*` or `fix/*` into `staging`, then `staging` into `main` by merge commit. Vercel deploys `staging` on push (`vercel.json` enables it), CI runs on pushes to `staging`, and the `staging sync` workflow no longer calls a Vercel deploy hook, so the `VERCEL_STAGING_DEPLOY_HOOK` secret can be deleted. `docs/STAGING.md` and `docs/DEPLOY.md` describe the new flow.
 - Admin and Telegram copy drops em dashes and "Couldn't"/"Please": empty product tiles read "No data yet", and the entitlement re-push toast says "Updated N kits" or "N kits could not be updated".
 - Error copy is specific and calm: the error boundaries, 404, team add/remove and waitlist now say what could not be done ("Could not join the waitlist. Try again.") and log the raw error server-side.
 - Admin pages share one header (Admin eyebrow, display title matching the nav label, one-line description) and set per-route browser titles. Admin empty states use one dashed-card pattern with plain copy that says what appears there.
