@@ -8,6 +8,8 @@ import {
 
 export const revalidate = 0;
 
+export const metadata = { title: "Feedback" };
+
 function when(iso: string): string {
   return iso.slice(0, 16).replace("T", " ");
 }
@@ -42,11 +44,14 @@ export default async function AdminFeedbackPage() {
     <main className="mx-auto max-w-3xl px-5 py-8">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          Internal
+          Admin
         </p>
-        <h1 className="font-display text-2xl font-bold tracking-tight">
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           Feedback
         </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          What vendors score and say about each kit.
+        </p>
       </div>
 
       <NpsCard
@@ -80,7 +85,7 @@ export default async function AdminFeedbackPage() {
 
       {all.length === 0 && (
         <div className="mt-6 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No feedback yet.
+          No feedback yet. Scores and comments show up here.
         </div>
       )}
 
@@ -95,7 +100,7 @@ export default async function AdminFeedbackPage() {
 
       {byKit.size === 0 ? (
         <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No vendor feedback yet.
+          No vendor feedback yet. Scores for each kit show up here.
         </div>
       ) : (
         [...byKit.entries()].map(([kitSlug, kitRows]) => (

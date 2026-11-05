@@ -76,11 +76,11 @@ export function VendorList({
       </div>
 
       {filtered.length === 0 ? (
-        <p className="mt-4 text-sm text-muted-foreground">
+        <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
           {grants.length === 0
-            ? "No vendor links yet."
+            ? "No vendors yet. Approved requests show up here."
             : "No vendors match these filters."}
-        </p>
+        </div>
       ) : (
         <ul className="mt-3 space-y-2">
           {filtered.map((v) => (

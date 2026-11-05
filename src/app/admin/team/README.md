@@ -5,3 +5,5 @@ Team-gated membership management. Server actions validate input, enforce team au
 Add and remove failures name the action ("Could not add that team member. Try again.") and log the raw error server-side instead of surfacing it.
 
 The `loading.tsx` skeleton is a `role="status"` region with `aria-busy`, an `sr-only` label and a reduced-motion fallback.
+
+Page header follows the shared admin pattern (Admin eyebrow, display title equal to the nav label, one-line description) and sets its browser title via `metadata`.

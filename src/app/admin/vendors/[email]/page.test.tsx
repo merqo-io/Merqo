@@ -142,7 +142,7 @@ vi.mock("./subscription-actions", () => ({
   repushEntitlementsAction: vi.fn(),
 }));
 
-import VendorDetailPage from "./page";
+import VendorDetailPage, { generateMetadata } from "./page";
 
 const GRANT = {
   email: "vendor@business.sg",
@@ -375,5 +375,29 @@ describe("VendorDetailPage", () => {
     );
     expect(screen.getByText(/no Merqo account yet/)).toBeInTheDocument();
     expect(screen.queryByText("Subscriptions")).not.toBeInTheDocument();
+  });
+
+  it("renders the Admin eyebrow, email heading and description", async () => {
+    render(
+      await VendorDetailPage({
+        params: Promise.resolve({ email: "vendor@business.sg" }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+    expect(screen.getByText("Admin")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "vendor@business.sg" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Kits, subscriptions and activity for this vendor."),
+    ).toBeInTheDocument();
+  });
+
+  it("titles the page with the decoded vendor email", async () => {
+    await expect(
+      generateMetadata({
+        params: Promise.resolve({ email: "vendor%40business.sg" }),
+      }),
+    ).resolves.toEqual({ title: "vendor@business.sg" });
   });
 });

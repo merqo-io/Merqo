@@ -10,6 +10,8 @@ import { DeclineButton } from "./decline-button";
 
 export const revalidate = 0;
 
+export const metadata = { title: "Requests" };
+
 const KIND_LABELS = {
   upgrade: "Upgrade",
   downgrade: "Downgrade",
@@ -24,10 +26,13 @@ export default async function RequestsPage() {
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-5 py-8">
       <div>
-        <h1 className="font-display text-2xl font-bold tracking-tight">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          Admin
+        </p>
+        <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           Requests
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           Plan changes vendors asked for from their dashboard. Resolve one by
           making the change on the vendor page.
         </p>
@@ -35,7 +40,7 @@ export default async function RequestsPage() {
 
       {requests.length === 0 ? (
         <div className="rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No pending requests.
+          No pending requests. Plan changes vendors ask for show up here.
         </div>
       ) : (
         <ul className="space-y-2">
