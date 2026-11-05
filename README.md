@@ -279,4 +279,6 @@ Sign-in and profile error copy is plain and action-specific; `src/lib/auth-error
 
 `src/app/globals.css` raises buttons (except link-style) and inputs to a 44px minimum height, and icon buttons to 44px wide, under `@media (pointer: coarse)` only; desktop sizes are unchanged. Route `loading.tsx` skeletons are `role="status"` regions with an `sr-only` label and no pulse under reduced motion.
 
+Admin pages use a shared header pattern and per-route titles (see `src/app/admin/README.md`).
+
 Admin and Telegram user-facing copy uses plain sentences, "Could not" wording and no em dashes.

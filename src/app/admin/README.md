@@ -133,4 +133,6 @@ Every page and action is gated by `requireMerqoTeam()`, which also requires a ve
 
 `loading.tsx` renders a `role="status"` region with `aria-busy` and an `sr-only` label; its pulsing blocks use `motion-reduce:animate-none`.
 
+Admin pages share one header pattern (Admin eyebrow, display title, one-line description) and set per-route browser titles via `metadata`.
+
 Admin action errors use plain copy ("Could not ... Try again.") with no em dashes.
