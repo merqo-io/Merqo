@@ -41,7 +41,7 @@ it("recovers from a rejected operation without losing the confirmation", async (
   await user.click(screen.getByRole("button", { name: "Open confirmation" }));
   await user.click(screen.getByRole("button", { name: "Confirm" }));
   expect(toast.error).toHaveBeenCalledWith(
-    "Couldn't complete this action. Please try again.",
+    "Could not complete that action. Try again.",
   );
   expect(screen.getByRole("button", { name: "Confirm" })).toBeEnabled();
   await user.click(screen.getByRole("button", { name: "Confirm" }));

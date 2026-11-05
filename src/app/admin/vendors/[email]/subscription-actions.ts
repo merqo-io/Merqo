@@ -22,7 +22,7 @@ import { syncVendorEntitlements } from "@/lib/entitlements/push";
 import { closeRequest, getPendingRequest } from "@/lib/subscription-requests";
 
 const DAY_MS = 86_400_000;
-const GENERIC_ERROR = "Couldn't save that. Try again.";
+const GENERIC_ERROR = "Could not save that. Try again.";
 
 const emailSchema = z.string().trim().toLowerCase().email();
 const dateSchema = z

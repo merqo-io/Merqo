@@ -53,7 +53,7 @@ export function ConfirmAdminAction({
         setOpen(false);
       });
     } catch {
-      toast.error("Couldn't complete this action. Please try again.");
+      toast.error("Could not complete that action. Try again.");
     } finally {
       inFlight.current = false;
     }

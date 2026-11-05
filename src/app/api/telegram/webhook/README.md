@@ -7,3 +7,5 @@ POST receives updates for Merqo's shared customer and vendor bot. Verify the con
 /privacy sends the published notice links. /stop clears customer consent and pending notification references through the service-only RPC. A failed consent write returns 503 so Telegram retries the idempotent withdrawal; successful withdrawal returns 200. Missing, incorrect or unconfigured webhook authentication returns 401.
 
 route.test.ts covers authorization, token races, both link kinds, malformed updates, privacy replies and consent-write failure retries. The connection tables remain server-owned; notification endpoints resolve only consenting customers.
+
+The /stop reply uses short plain sentences without em dashes.

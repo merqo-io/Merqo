@@ -74,7 +74,7 @@ describe("grantKitAction", () => {
 
     expect(res).toEqual({
       success: false,
-      error: "Couldn't grant access. Try again.",
+      error: "Could not grant access. Try again.",
     });
     expect(recordAuditMock).not.toHaveBeenCalled();
   });
@@ -109,7 +109,7 @@ describe("revokeKitAction", () => {
 
     expect(res).toEqual({
       success: false,
-      error: "Couldn't revoke access. Try again.",
+      error: "Could not revoke access. Try again.",
     });
     expect(recordAuditMock).not.toHaveBeenCalled();
   });

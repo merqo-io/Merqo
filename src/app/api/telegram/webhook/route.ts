@@ -77,7 +77,7 @@ async function handleStop(chatId: number): Promise<void> {
   await sendTelegramMessage(
     chatId,
     "You're unsubscribed. This bot will no longer send you order or reward updates. " +
-      "The shop you bought from still has your order details — contact them directly for anything about your order.",
+      "The shop you bought from still has your order details. Contact them directly about your order.",
   );
 }
 

@@ -7,3 +7,5 @@ Team-gated operational view of live kits. The server page fetches each kit throu
 `/admin/health` redirects here.
 
 Page header follows the shared admin pattern (Admin eyebrow, display title equal to the nav label, one-line description) and sets its browser title via `metadata`.
+
+Tiles show "No data yet" in place of a figure when a kit does not report one.
