@@ -8,13 +8,24 @@ import { fetchProductMetrics } from "@/lib/metrics-client";
 import { summarizeOverview } from "@/lib/overview";
 import { classifyHealth, countHealth } from "@/lib/health";
 import { onboardingFunnel } from "@/lib/funnel";
-import { money, computeTrend } from "@/lib/format";
+import { money, computeTrend, type Trend } from "@/lib/format";
 import { getTenantHealth } from "@/lib/tenant-health";
-import { StatCard } from "@/components/dashboard/stat-card";
+import { cn } from "@/lib/utils";
+import { StatCard } from "@merqo/ui";
+import { TrendIndicator } from "@/components/dashboard/trend-indicator";
 import { OnboardingFunnelView } from "./onboarding-funnel";
 import { ProductTile } from "./product-tile";
 import { StatusBanner } from "./status-banner";
 import { SupportMessageRow } from "./support-message-row";
+
+// Headline totals keep the display face the old local card used.
+const STAT_VALUE_CLASS = "font-display tracking-tight";
+
+function trendTrailing(trend: Trend) {
+  return trend.pct === null ? undefined : (
+    <TrendIndicator trend={trend} className="text-xs font-medium" />
+  );
+}
 
 export const revalidate = 0;
 
@@ -143,24 +154,29 @@ export default async function AdminOverviewPage() {
           <StatCard
             label="Revenue (all)"
             value={money(totals.revenue_cents_all)}
-            accent
-            icon={DollarSign}
+            valueClassName={cn(STAT_VALUE_CLASS, "text-primary")}
+            icon={<DollarSign />}
           />
           <StatCard
             label="GMV (30d)"
             value={money(totals.gmv_cents_30d)}
-            icon={TrendingUp}
+            valueClassName={STAT_VALUE_CLASS}
+            icon={<TrendingUp />}
           />
           <StatCard
             label="Active vendors"
             value={String(totals.active_vendors)}
-            icon={Users}
+            valueClassName={STAT_VALUE_CLASS}
+            icon={<Users />}
           />
           <StatCard
             label="Orders (7d)"
             value={String(totals.orders_7d)}
-            icon={ShoppingCart}
-            trend={computeTrend(totals.orders_7d, totals.orders_prev_7d)}
+            valueClassName={STAT_VALUE_CLASS}
+            icon={<ShoppingCart />}
+            valueTrailing={trendTrailing(
+              computeTrend(totals.orders_7d, totals.orders_prev_7d),
+            )}
           />
         </section>
       )}

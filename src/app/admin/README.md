@@ -29,7 +29,7 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   onboarding funnel (`onboardingFunnel`). Renders `StatusBanner`, a
   "Needs attention" section (vendors flagged by `getTenantHealth`, with a
   "View health" link to `health/`, which redirects to `products/`; waitlisted vendors, open support messages,
-  pending upgrade requests), summary `StatCard`s, `OnboardingFunnelView`, and
+  pending upgrade requests), summary `@merqo/ui` `StatCard`s, `OnboardingFunnelView`, and
   a `ProductTile` grid.
 - `confirm-admin-action.dom.test.tsx` — also pins that the page behind an open confirm dialog is hidden from role queries until the action succeeds, which the e2e specs rely on.
 - `page.test.tsx` — mocked-dependency coverage for the overview's flagged-vendor
@@ -115,8 +115,7 @@ mutating action across those sub-routes (plus this folder's own `actions.ts`)
 calls `recordAudit()`, and `activity/page.tsx` is where those rows surface.
 The shared nav highlights whichever sub-route is active. `page.tsx` is the overview dashboard, built
 from this folder's own components (`StatusBanner`, `OnboardingFunnelView`,
-`ProductTile`, `SupportMessageRow`) plus shared `StatCard`
-(`@/components/dashboard/stat-card`). `actions.ts` is called by
+`ProductTile`, `SupportMessageRow`) plus `@merqo/ui`'s `StatCard`. `actions.ts` is called by
 `resolve-support-message-button.tsx`, which client components trigger via
 `useTransition` then `router.refresh()`.
 
@@ -125,7 +124,7 @@ layout and how this console fits the rest of Merqo.
 
 ## Shared presentation and confirmations
 
-ProductTile and ProductHealthCard use ProductHealthBadge for consistent health labels. Their business and operational diagnostics remain distinct. RemoveMember and RevokeButton delegate their dialog state to ConfirmAdminAction; each adapter retains its own action arguments. Pending operations block dismissal, returned errors and rejected requests keep the confirmation available for retry, and successful operations close it.
+ProductTile and ProductHealthCard use ProductHealthBadge for consistent health labels. Their business and operational diagnostics remain distinct. RemoveMember and RevokeButton delegate their dialog state to ConfirmAdminAction, a thin adapter that maps the server actions' `{ success, error }` result onto `@merqo/ui`'s `ConfirmDialog` (failures show inline in the dialog); each adapter retains its own action arguments. Pending operations block dismissal, returned errors and rejected requests keep the confirmation available for retry, and successful operations close it.
 
 Every page and action is gated by `requireMerqoTeam()`, which also requires a verified second factor (`aal2`); a password-only session is redirected to `/mfa`.
 
