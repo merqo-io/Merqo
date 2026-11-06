@@ -1,19 +1,8 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { toast } from "sonner";
-import { useAsyncAction } from "@/hooks/use-async-action";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@merqo/ui";
 
 type Result = { success: true } | { success: false; error: string };
 interface Props {
@@ -26,6 +15,11 @@ interface Props {
   pendingLabel: string;
 }
 
+/**
+ * Adapts the admin server actions' `{ success, error }` result to
+ * `ConfirmDialog`, which signals failure by throwing and leaves the success
+ * toast to the caller. Kept so the six call sites don't each repeat that glue.
+ */
 export function ConfirmAdminAction({
   trigger,
   title,
@@ -35,53 +29,20 @@ export function ConfirmAdminAction({
   confirmLabel,
   pendingLabel,
 }: Props) {
-  const [open, setOpen] = useState(false);
-  const inFlight = useRef(false);
-  const { pending, run } = useAsyncAction();
-  async function confirm(event: React.MouseEvent) {
-    event.preventDefault();
-    if (inFlight.current) return;
-    inFlight.current = true;
-    try {
-      await run(async () => {
-        const result = await action();
-        if (!result.success) {
-          toast.error(result.error);
-          return;
-        }
-        toast.success(successMessage);
-        setOpen(false);
-      });
-    } catch {
-      toast.error("Could not complete that action. Try again.");
-    } finally {
-      inFlight.current = false;
-    }
+  async function onConfirm() {
+    const result = await action();
+    if (!result.success) throw new Error(result.error);
+    toast.success(successMessage);
   }
   return (
-    <AlertDialog
-      open={open}
-      onOpenChange={(next) => {
-        if (!inFlight.current) setOpen(next);
-      }}
-    >
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={confirm}
-            disabled={pending}
-            className="bg-destructive text-white hover:bg-destructive/90"
-          >
-            {pending ? pendingLabel : confirmLabel}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmDialog
+      trigger={trigger}
+      title={title}
+      description={description}
+      confirmLabel={confirmLabel}
+      pendingLabel={pendingLabel}
+      variant="destructive"
+      onConfirm={onConfirm}
+    />
   );
 }

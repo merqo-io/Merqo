@@ -55,7 +55,8 @@ section; one or more kits gets the savings + per-kit overview.
   `DowngradeButton({ slug })`: file an upgrade or cancel request for
   one kit via `requestUpgrade`/`requestDowngrade`; the request lands in the
   Merqo admin Requests queue, and the team resolves it. Inline (no toast)
-  success/error feedback. These controls intentionally retain their own inline feedback rather than the destructive admin confirmation contract.
+  success/error feedback; `DowngradeButton` confirms through `@merqo/ui`'s
+  `ConfirmDialog`, which shows a failed request inside the dialog. These controls intentionally retain their own inline feedback rather than the destructive admin confirmation contract.
 - `vendor-metric-list.tsx` — `VendorMetricList({ result, now })`: renders a
   kit's headline metric (in the "Harbour Control" theme's amber `text-gold-text` "value
   moment" accent, as of 2026-08-19) plus up to three supporting figures,

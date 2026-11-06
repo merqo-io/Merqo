@@ -26,16 +26,6 @@ discovery cards, and stat tiles — as distinct from `src/components/landing/`
   faked) per-kit preview components (`qkit-preview.tsx`, `loopkit-preview.tsx`)
   each wrapped in `mockup-window.tsx`'s browser-chrome frame, shown on the
   discovery cards above.
-- `stat-card.tsx` — `StatCard({ label, value, accent?, icon?, trend? })`:
-  wraps `@merqo/ui`'s shared `StatTile`/`DeltaPill` content in merqo's own
-  bordered/hover-lift card shell. The icon slot and 3-state trend
-  (up/down/flat) don't fit `DeltaPill`'s 2-state up/down contract, so they
-  compose via `StatTile`'s generic `deltaSlot`/`valueTrailing` props
-  instead of being flattened into the shared component. Used by
-  `src/app/admin/page.tsx`'s summary tiles.
-- `stat-card.dom.test.tsx` — RTL tests: label/value render, icon presence,
-  up/down/flat trend coloring, no trend output when `pct` is null, accent
-  coloring on the value.
 
 ## Parent
 
@@ -43,6 +33,6 @@ See the repo root [README.md](../../../README.md) for the full `src/` layout.
 
 ## Boundary and coverage
 
-Activation and waitlist buttons prevent overlapping submissions and recover their pending state when an action rejects. StatCard keeps status text readable through semantic theme tokens; DOM tests cover its value, trend and accessibility behavior.
+Activation and waitlist buttons prevent overlapping submissions and recover their pending state when an action rejects.
 
-The local TrendIndicator is used by StatCard and the admin ProductTile. It preserves signed percentages, explicit flat state, and null suppression; the shared DeltaPill has a different two-state presentation contract.
+The local TrendIndicator is used by the admin overview's `@merqo/ui` `StatCard` (via `valueTrailing`) and the admin ProductTile. It preserves signed percentages, explicit flat state, and null suppression; the shared DeltaPill has a different two-state presentation contract.
