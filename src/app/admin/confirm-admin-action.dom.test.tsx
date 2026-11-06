@@ -23,7 +23,9 @@ it("keeps returned errors open for retry and closes after success", async () => 
   render(<ConfirmAdminAction {...props} action={action} />);
   await user.click(screen.getByRole("button", { name: "Open confirmation" }));
   await user.click(screen.getByRole("button", { name: "Confirm" }));
-  expect(toast.error).toHaveBeenCalledWith("Permission changed");
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Permission changed",
+  );
   expect(screen.getByRole("alertdialog")).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "Confirm" }));
   expect(toast.success).toHaveBeenCalledWith("Removed");
@@ -40,8 +42,8 @@ it("recovers from a rejected operation without losing the confirmation", async (
   render(<ConfirmAdminAction {...props} action={action} />);
   await user.click(screen.getByRole("button", { name: "Open confirmation" }));
   await user.click(screen.getByRole("button", { name: "Confirm" }));
-  expect(toast.error).toHaveBeenCalledWith(
-    "Could not complete that action. Try again.",
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Transport failed",
   );
   expect(screen.getByRole("button", { name: "Confirm" })).toBeEnabled();
   await user.click(screen.getByRole("button", { name: "Confirm" }));
