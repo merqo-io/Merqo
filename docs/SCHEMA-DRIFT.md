@@ -55,10 +55,9 @@ replaces a function or policy.
 
 ## Known drift
 
-- stockkit `product_components`, `stock_movements.linked_movement_id`,
-  `prevent_nested_components()` and `record_linked_movement(...)` exist on
-  production only (parked 2026-10-23, backlog SK-01). Delete their lines
-  from `scripts/schema-drift-known.txt` once SK-01 lands.
+`scripts/schema-drift-known.txt` is currently empty: every difference the
+check reports is real drift. Add an entry there only with a comment saying
+why the drift is accepted.
 
 The expected side runs migrations as `postgres` on a clean stack. An object
 that is the same everywhere but owned or granted differently on a project
