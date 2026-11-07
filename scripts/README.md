@@ -26,7 +26,8 @@ Founder-run maintenance scripts, invoked manually.
 - `drift-compare.mjs <expected.csv> <actual.csv> [--known <file>]` lists
   objects missing, extra or changed between two fingerprints and exits 1 on
   any. `schema-drift-known.txt` is the accepted-drift list it takes with
-  `--known`. Runbook: `docs/SCHEMA-DRIFT.md`.
+  `--known`; it is currently empty, and an entry needs a comment saying why
+  the drift is accepted. Runbook: `docs/SCHEMA-DRIFT.md`.
 
 ## Parent
 
