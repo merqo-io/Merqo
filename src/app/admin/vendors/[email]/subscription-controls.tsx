@@ -4,17 +4,17 @@ import { toast } from "sonner";
 import { useAsyncAction } from "@/hooks/use-async-action";
 import { annualCents } from "@/lib/pricing/calc";
 import { formatSgd, planLabel } from "@/lib/pricing/format";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
+  Button,
+  Input,
+  Label,
+  Switch,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@merqo/ui/primitives";
 import { ConfirmAdminAction } from "../../confirm-admin-action";
 import {
   cancelEventPassAction,

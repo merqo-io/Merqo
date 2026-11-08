@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { activateKitsAction } from "@/app/actions/activate-kits";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { KITS } from "@/lib/kits";
 import type { ProvisionResult } from "@/lib/vendor-sync";
 

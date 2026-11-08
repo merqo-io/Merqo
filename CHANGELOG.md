@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The local button, input, label, select, switch and tooltip primitives are deleted in favour of `@merqo/ui/primitives` (and `cn` is imported from there). Visible differences: buttons, inputs and select triggers grow to 44px on touch screens, and tooltips use the neutral popover surface with a border and a width cap instead of the solid foreground bubble. `ui/badge.tsx` stays local because the shared badge has no `gold` variant.
 - `@merqo/ui` moves from v0.42.1 to v0.44.0. The new legal text bumps `LEGAL_VERSIONS` to 2026-11-08, so vendors are asked to re-accept the terms. `StatCard` is deprecated upstream but still works.
 - The accepted-drift list `scripts/schema-drift-known.txt` is now empty: stockkit migration 0028 dropped `product_components`, `stock_movements.linked_movement_id` and their functions on prod and staging, so the drift check no longer hides them.
 - `@merqo/ui` moves from v0.38.0 to v0.42.1. The admin overview uses the shared `StatCard` (replacing `components/dashboard/stat-card.tsx`; the card shell is now the shared elevated card), and `ConfirmDialog` replaces the local `ui/alert-dialog.tsx`: `ConfirmAdminAction` becomes a thin adapter over it and the vendor downgrade button uses it directly. Action failures now show inline in the dialog instead of a toast, and a failed downgrade request no longer closes the dialog.

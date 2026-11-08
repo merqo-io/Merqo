@@ -4,7 +4,7 @@ import {
   GRAPH_VIEWBOX,
   nodeBySlug,
 } from "@/lib/ecosystem";
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 
 const NODE_W = 98;
 const NODE_H = 48;

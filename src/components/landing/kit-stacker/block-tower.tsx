@@ -1,5 +1,5 @@
 import { KIT_NODES, KIT_EDGES, nodeBySlug } from "@/lib/ecosystem";
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 
 // Bottom → top: qkit renders first if stacked, the rest follow in the same
 // order as the landing graph (KIT_NODES) so both views stay in sync.

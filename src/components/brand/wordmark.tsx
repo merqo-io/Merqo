@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 
 /** The Merqo wordmark. The `q` carries the brand's origin (qkit / queue), so it
  *  gets the gold accent — the one recurring brand signal. */

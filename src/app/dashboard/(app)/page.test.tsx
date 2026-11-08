@@ -3,7 +3,7 @@ import { KITS } from "@/lib/kits";
 import DashboardPage from "./page";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@merqo/ui/primitives";
 
 const {
   requireVendorSessionMock,

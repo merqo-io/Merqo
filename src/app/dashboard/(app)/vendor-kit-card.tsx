@@ -5,7 +5,7 @@ import type { VendorMetricsResult } from "@/lib/vendor-metrics-client";
 import { money, timeAgo } from "@/lib/format";
 import { tierLabel } from "@/lib/tier-label";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { UpgradeButton } from "./upgrade-button";
 import { DowngradeButton } from "./downgrade-button";
 import { VendorMetricList } from "./vendor-metric-list";
