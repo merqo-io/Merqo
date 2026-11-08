@@ -25,3 +25,5 @@ resolves a request by making the change on the vendor page, or declines it.
 [admin](../README.md)
 
 Page header follows the shared admin pattern (Admin eyebrow, display title equal to the nav label, one-line description) and sets its browser title via `metadata`.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

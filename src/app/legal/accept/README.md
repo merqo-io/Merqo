@@ -52,3 +52,5 @@ Acceptance writes use the versions exported by the shared UI package. The server
 The `next` form field is length-checked by Zod before `safeRedirectPath` runs.
 
 The stored IP comes from clientIp in src/lib/rate-limit.ts (last forwarded hop, never the spoofable first one).
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

@@ -17,3 +17,5 @@ Profile regressions verify independent simultaneous saves, rejected-save feedbac
 `login-page.test.tsx` and `login-rejections.test.tsx` assert the friendly auth error copy from `src/lib/auth-error-copy.ts` rather than raw provider messages, while `profile-form.test.tsx` checks the "Business name" field and rejected-save retry, and `profile-actions.test.ts` checks the friendly profile save error when the RPC throws.
 
 `vendor-list.test.tsx` and `admin-overview-health.test.tsx` assert the admin empty-state copy ("No vendors yet", "No products yet", "No live products yet").
+
+Tests that mocked the deleted local primitive paths import from `@merqo/ui/primitives` instead.

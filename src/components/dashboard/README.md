@@ -36,3 +36,5 @@ See the repo root [README.md](../../../README.md) for the full `src/` layout.
 Activation and waitlist buttons prevent overlapping submissions and recover their pending state when an action rejects.
 
 The local TrendIndicator is used by the admin overview's `@merqo/ui` `StatCard` (via `valueTrailing`) and the admin ProductTile. It preserves signed percentages, explicit flat state, and null suppression; the shared DeltaPill has a different two-state presentation contract.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

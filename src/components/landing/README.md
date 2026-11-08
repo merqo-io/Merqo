@@ -52,3 +52,5 @@ back-to-top), plus a sticky mobile CTA bar rendered directly in `page.tsx`.
 ## Parent
 
 [components](../README.md)
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

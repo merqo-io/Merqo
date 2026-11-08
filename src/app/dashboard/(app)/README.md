@@ -85,3 +85,5 @@ The layout reads preferences with the authenticated user ID and uses the session
 ## Loading skeleton
 
 `loading.tsx` is a `role="status"` region with `aria-busy`, an `sr-only` label and a reduced-motion fallback.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
