@@ -51,7 +51,7 @@ badge actually looks like — see
 (workspace root, cross-kit spec). The landing footer matches qkit's exactly
 (single-row wordmark/tagline/credit-line/sign-in link, no CTA band above it).
 
-`@merqo/ui` is pinned at v0.42.1 (`53ec5ba`). The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing.
+`@merqo/ui` is pinned at v0.44.0 (`250a4ed`). The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing.
 
 Merqo uses `@merqo/ui`, the shared component package for the kit family (see
 qkit/loopkit/paykit/stockkit for the same dependency). `/about`'s own story
@@ -171,6 +171,7 @@ scripts/staging-migrate.sh: applies migrations to the staging project with psql
 scripts/check-legal-version-skew.mjs — asserts merqo + all 5 kit repos pin
                                matching terms/privacy/pilot versions from exact locked UI commits
 scripts/schema-fingerprint.sql, scripts/drift-compare.mjs — schema drift check (docs/SCHEMA-DRIFT.md)
+scripts/schema-drift-known.txt — accepted-drift list for that check (currently empty)
 ```
 
 ## Data model
@@ -201,6 +202,7 @@ secrets and administrative writes use server-only service clients, so
 ## Docs
 
 - Public waitlist: an unticked general-updates checkbox is recorded in `merqo.marketing_consents` (migration `0040`) with the wording shown and the time, only when ticked.
+- The public waitlist page shows a founding merchant offer (first 15 merchants, launch pricing locked for 12 months, nothing to pay today) and states that Merqo is a sole trader, not yet registered with ACRA.
 - Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - printkit receives entitlement pushes as a `push_only` product (migration `0042`); it is not grantable and stays out of the dashboard, metrics and the grant list.
 - Event passes can be settled on the vendor page once they end (migration `0043`): cups come live from qkit and the team records the offline top-up; Merqo charges nobody.

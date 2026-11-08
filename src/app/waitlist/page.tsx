@@ -40,6 +40,27 @@ export default async function WaitlistPage({
           These kits are built but not yet tried with vendors. Pick the one you
           want and leave your email.
         </p>
+        <section
+          aria-labelledby="founding-offer"
+          className="mt-8 rounded-lg border bg-muted/50 p-4"
+        >
+          <h2
+            id="founding-offer"
+            className="font-display text-lg font-semibold"
+          >
+            Founding merchant offer
+          </h2>
+          <p className="mt-2 text-sm">
+            The first 15 merchants get launch pricing locked for 12 months.
+            Nothing to pay today: we&apos;ll confirm your price before your kit
+            goes live.
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Merqo is run by Clarence Lee as a sole trader, not yet registered
+            with ACRA or incorporated. When Merqo becomes a company, your
+            founding price carries over.
+          </p>
+        </section>
         <div className="mt-8">
           <WaitlistForm kits={kits} initialSlug={initialSlug} />
         </div>

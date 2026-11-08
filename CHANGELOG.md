@@ -8,6 +8,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- `@merqo/ui` moves from v0.42.1 to v0.44.0. The new legal text bumps `LEGAL_VERSIONS` to 2026-11-08, so vendors are asked to re-accept the terms. `StatCard` is deprecated upstream but still works.
+- The accepted-drift list `scripts/schema-drift-known.txt` is now empty: stockkit migration 0028 dropped `product_components`, `stock_movements.linked_movement_id` and their functions on prod and staging, so the drift check no longer hides them.
 - `@merqo/ui` moves from v0.38.0 to v0.42.1. The admin overview uses the shared `StatCard` (replacing `components/dashboard/stat-card.tsx`; the card shell is now the shared elevated card), and `ConfirmDialog` replaces the local `ui/alert-dialog.tsx`: `ConfirmAdminAction` becomes a thin adapter over it and the vendor downgrade button uses it directly. Action failures now show inline in the dialog instead of a toast, and a failed downgrade request no longer closes the dialog.
 - Release flow for merqo and every kit is now `feat/*` or `fix/*` into `staging`, then `staging` into `main` by merge commit. Vercel deploys `staging` on push (`vercel.json` enables it), CI runs on pushes to `staging`, and the `staging sync` workflow no longer calls a Vercel deploy hook, so the `VERCEL_STAGING_DEPLOY_HOOK` secret can be deleted. `docs/STAGING.md` and `docs/DEPLOY.md` describe the new flow.
 - Admin and Telegram copy drops em dashes and "Couldn't"/"Please": empty product tiles read "No data yet", and the entitlement re-push toast says "Updated N kits" or "N kits could not be updated".
@@ -24,6 +26,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `/waitlist` shows a founding merchant offer (first 15 merchants, launch pricing locked for 12 months, nothing to pay today) with a note that Merqo is a sole trader not yet registered with ACRA.
 - Terms gate (`/legal/accept`) now has a Sign out button so a user who declines has a way out, a hint under the disabled Continue button, and a heading that matches the rest of the app.
 - Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.
 - Public, unauthenticated `GET /api/plans` returning the active plan catalog (`plans[]` cheapest first with `annual_cents`, plus the `event_pass` terms), revalidated every 5 minutes with public CDN caching, so kit plan pages fetch prices instead of storing them. Reads through the anon client via `loadPublicPlanCatalog()`.
