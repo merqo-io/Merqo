@@ -56,4 +56,15 @@ describe("WaitlistPage", () => {
     expect(box.checked).toBe(false);
     expect(box.name).toBe("updatesOptIn");
   });
+
+  it("shows the founding merchant offer without payment details", async () => {
+    await selected("stockkit");
+    const block = screen
+      .getByRole("heading", { name: "Founding merchant offer" })
+      .closest("section")!;
+    expect(block).toHaveTextContent("first 15");
+    expect(block).toHaveTextContent("12 months");
+    expect(block).toHaveTextContent("Nothing to pay today");
+    expect(block).not.toHaveTextContent("PayNow");
+  });
 });

@@ -25,6 +25,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `/waitlist` shows a founding merchant offer (first 15 merchants, launch pricing locked for 12 months, nothing to pay today) with a note that Merqo is a sole trader not yet registered with ACRA.
 - Terms gate (`/legal/accept`) now has a Sign out button so a user who declines has a way out, a hint under the disabled Continue button, and a heading that matches the rest of the app.
 - Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.
 - Public, unauthenticated `GET /api/plans` returning the active plan catalog (`plans[]` cheapest first with `annual_cents`, plus the `event_pass` terms), revalidated every 5 minutes with public CDN caching, so kit plan pages fetch prices instead of storing them. Reads through the anon client via `loadPublicPlanCatalog()`.

@@ -6,8 +6,8 @@ Public waitlist page for the kits still in build.
 
 ## Contents
 
-- `page.tsx` — `WaitlistPage`: reads `?kit=` (Zod-validated against the in-build kit slugs, leaving the select empty when missing or invalid) and renders `WaitlistForm` inside the landing `Nav`/`Footer`.
-- `page.test.tsx` — covers the preselect and the empty fallback.
+- `page.tsx` — `WaitlistPage`: reads `?kit=` (Zod-validated against the in-build kit slugs, leaving the select empty when missing or invalid) and renders the founding merchant offer block (no payment taken, sole-trader disclosure) above `WaitlistForm` inside the landing `Nav`/`Footer`.
+- `page.test.tsx` — covers the preselect, the empty fallback and the offer block copy.
 
 ## Connectivity
 
