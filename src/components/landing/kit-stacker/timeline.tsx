@@ -1,5 +1,5 @@
 import { KITS, type KitStatus } from "@/lib/kits";
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 
 const ORDER = KITS.map((k) => ({ slug: k.slug, status: k.status }));
 

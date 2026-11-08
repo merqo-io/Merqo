@@ -5,3 +5,5 @@ Recovery form for the session established by the auth callback. passwordChangeSc
 The form uses the shared components/brand/Wordmark for Merqo branding.
 
 `layout.tsx` forces per-request rendering so the nonce CSP from `proxy.ts` reaches this page's scripts.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

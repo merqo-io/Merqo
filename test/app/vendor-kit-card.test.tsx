@@ -2,7 +2,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { VendorKitCard } from "@/app/dashboard/(app)/vendor-kit-card";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@merqo/ui/primitives";
 
 const NOW = Date.parse("2026-07-26T12:00:00Z");
 

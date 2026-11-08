@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/app/actions/auth";
 import { Wordmark } from "@/components/brand/wordmark";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 
 export const revalidate = 0;
 

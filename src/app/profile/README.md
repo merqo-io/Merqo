@@ -46,3 +46,5 @@ The Telegram actions import the service client directly; an `eslint-disable` des
 The vendor Telegram connect QR renders as an `<img>` with a `data:image/svg+xml` URI, and `@merqo/ui` (v0.37.0) allowlists the deep link.
 
 Profile sections show action-specific "Could not ... Try again." errors, and the stall-name field is labelled "Business name" in the UI.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

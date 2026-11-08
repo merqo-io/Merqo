@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { ArrowRight } from "lucide-react";
 import { PRICING_LINE } from "@/lib/kits";
 

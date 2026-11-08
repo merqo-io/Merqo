@@ -3,8 +3,7 @@ import { useActionState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { addTeamMemberAction } from "./actions";
 import { ADD_TEAM_IDLE } from "./state";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, Input } from "@merqo/ui/primitives";
 
 export function AddTeamForm() {
   const [state, action, pending] = useActionState(

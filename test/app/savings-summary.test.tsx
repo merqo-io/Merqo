@@ -2,7 +2,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { SavingsSummary } from "@/app/dashboard/(app)/savings-summary";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@merqo/ui/primitives";
 import type { VendorSavings } from "@/lib/savings";
 
 function totals(overrides: Partial<VendorSavings>): VendorSavings {

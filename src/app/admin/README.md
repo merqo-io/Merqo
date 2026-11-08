@@ -135,3 +135,5 @@ Every page and action is gated by `requireMerqoTeam()`, which also requires a ve
 Admin pages share one header pattern (Admin eyebrow, display title, one-line description) and set per-route browser titles via `metadata`.
 
 Admin action errors use plain copy ("Could not ... Try again.") with no em dashes.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

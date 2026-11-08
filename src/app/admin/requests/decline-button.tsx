@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { ConfirmAdminAction } from "../confirm-admin-action";
 import { declineRequestAction } from "./actions";
 

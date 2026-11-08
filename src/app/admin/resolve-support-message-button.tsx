@@ -1,7 +1,7 @@
 "use client";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { resolveSupportMessageAction } from "./actions";
 
 /** Mark a hub-level support message resolved once it's been handled. */

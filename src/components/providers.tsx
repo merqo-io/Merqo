@@ -1,7 +1,7 @@
 "use client";
 
 import { Toaster } from "sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@merqo/ui/primitives";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

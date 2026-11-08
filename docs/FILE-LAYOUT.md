@@ -21,7 +21,7 @@ src/app/api/merqo/          — bearer-secret endpoints qkit/loopkit call INTO m
 src/proxy.ts                — Supabase session refresh + route guard (Next 16)
 src/components/landing/      — landing sections (nav, hero, kit-stacker, …)
 src/components/dashboard/    — dashboard widgets (stat cards, kit discovery/preview cards)
-src/components/ui/           — shadcn primitives (CLI-managed, do not hand-edit)
+src/components/ui/           — local badge only; other primitives come from @merqo/ui/primitives
 src/hooks/use-async-action.ts — shared pending/error state for server-action buttons
 src/lib/supabase/           — browser / server (schema=merqo) / service clients + mw helper
 src/lib/kits.ts             — the kit family config (landing roadmap source of truth)

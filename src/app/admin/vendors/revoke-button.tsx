@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { ConfirmAdminAction } from "../confirm-admin-action";
 import { revokeKitAction } from "./actions";
 export function RevokeButton({ email, slug }: { email: string; slug: string }) {

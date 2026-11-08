@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Section } from "@merqo/ui";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { useAsyncAction } from "@/hooks/use-async-action";
 import { FORM_ERROR_CLASS } from "@/lib/utils";
 import { Share2 } from "lucide-react";

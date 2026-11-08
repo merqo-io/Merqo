@@ -9,3 +9,5 @@ The `loading.tsx` skeleton is a `role="status"` region with `aria-busy`, an `sr-
 Page header follows the shared admin pattern (Admin eyebrow, display title equal to the nav label, one-line description) and sets its browser title via `metadata`.
 
 Grant and revoke errors read "Could not grant access. Try again." and "Could not revoke access. Try again."
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

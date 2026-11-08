@@ -83,3 +83,5 @@ See the repo root [README.md](../../README.md) for the full `src/` layout.
 ## Boundary and coverage
 
 Account and tour components adapt shared UI contracts to Merqo actions. Authentication and authorization remain in server actions; adapter tests cover redirect control flow, rejected actions and error recovery rather than treating a rendered button as an authorized operation.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
