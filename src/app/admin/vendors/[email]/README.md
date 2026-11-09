@@ -101,3 +101,5 @@ The page validates its grant lookup through team-gated helpers. Tests verify tha
 The re-push toast reports "Updated N kits" and "N kits could not be updated. Try again.", with singular forms for one kit.
 
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
+
+Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.

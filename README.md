@@ -22,7 +22,7 @@ Merqo pulls per-kit metrics over an HTTP API (bearer secret) — it never
 queries another kit's schema directly. Brand theme is "Harbour Control"
 (harbour-navy primary, buoy-amber accent) as of 2026-08-19, replacing
 "Control Room" (pine-green + marigold-gold) — see `globals.css`'s own
-header comment. `src/lib/brand-icon.tsx`'s ImageResponse-generated
+header comment. `src/lib/brand-mark.ts`'s ImageResponse-generated
 favicon/apple-touch-icon carries the same rebrand. Dark mode moved from a
 pure OS-media-query to a `.dark`-class-based approach (`@custom-variant
 dark`), driven by `next-themes`' `ThemeProvider` wrapping the root layout,
@@ -271,7 +271,9 @@ The AI harness follows templateCentral 7.2.2: hook commands are anchored on the 
 
 `eslint.config.mjs` consumes the shared `@merqo/ui/eslint` preset (comment and directive hygiene, size and complexity limits, no colour literals or em dashes in `src`). `eslint.config.test.ts` asserts the key rules stay at `error`. Colour literals are allowed only in `src/lib/brand-icon.tsx` and `src/app/global-error.tsx`.
 
-Public and kit-facing entry points are rate limited by a Postgres-backed counter (src/lib/rate-limit.ts); see src/lib/README.md for the limits.
+Public and kit-facing entry points are rate limited by a Postgres-backed counter (src/lib/rate-limit.ts, a thin wrapper over `@merqo/ui/kit-api`); see src/lib/README.md for the limits.
+
+Shared pieces come from `@merqo/ui`, and `merqoNoLocalCopies()` in `eslint.config.mjs` fails lint when a local copy of one returns. Kept on purpose through its `allow` list: the Supabase client, server and middleware wrappers and `rate-limit.ts` (they bind merqo's env, schema and counter store), the `dashboard-nav` and `dashboard-tour` wrappers, the `use-async-action` adapter and `components/ui/badge` (gold and soft destructive variants).
 
 Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limits.ts`); `legal-accept` truncates an oversized `user_agent` to 512 instead of rejecting it.
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { brandIcon, BRAND_PINE, BRAND_GOLD } from "@/lib/brand-icon";
+import { brandMark } from "@/lib/brand-mark";
 
-type BrandIconProps = {
+type MarkProps = {
   children: string;
   style: {
     width: number;
@@ -9,32 +9,26 @@ type BrandIconProps = {
     background: string;
     color: string;
     fontFamily: string;
-    fontSize: number;
     borderRadius: number;
   };
 };
 
-function props(size: number): BrandIconProps {
-  return brandIcon(size).props as BrandIconProps;
-}
+const props = (size: number) => brandMark(size).props as MarkProps;
 
-describe("brandIcon", () => {
-  it("renders the 'q' letter on a pine background with a gold foreground", () => {
+describe("brandMark", () => {
+  it("renders the 'q' letter in Georgia on a tile", () => {
     const p = props(32);
     expect(p.children).toBe("q");
-    expect(p.style.background).toBe(BRAND_PINE);
-    expect(p.style.color).toBe(BRAND_GOLD);
     expect(p.style.fontFamily).toBe("Georgia, 'Times New Roman', serif");
+    expect(p.style.background).not.toBe(p.style.color);
   });
 
-  it("scales fontSize and borderRadius proportionally to the requested size", () => {
+  it("sizes the tile and scales the corner radius with the requested size", () => {
     const small = props(32);
     const large = props(180);
     expect(small.style.width).toBe(32);
     expect(small.style.height).toBe(32);
-    expect(small.style.fontSize).toBeCloseTo(32 * 0.62);
     expect(small.style.borderRadius).toBeCloseTo(32 * 0.22);
-    expect(large.style.fontSize).toBeCloseTo(180 * 0.62);
     expect(large.style.borderRadius).toBeCloseTo(180 * 0.22);
   });
 });

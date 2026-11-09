@@ -3,7 +3,7 @@ import type { KitTile } from "@/lib/vendor";
 import type { KitSavings } from "@/lib/savings";
 import type { VendorMetricsResult } from "@/lib/vendor-metrics-client";
 import { money, timeAgo } from "@/lib/format";
-import { tierLabel } from "@/lib/tier-label";
+import { tierLabel } from "@merqo/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@merqo/ui/primitives";
 import { UpgradeButton } from "./upgrade-button";
@@ -29,7 +29,9 @@ export function VendorKitCard({
         <h3 className="font-display text-lg font-bold">{tile.name}</h3>
         <div className="flex items-center gap-1.5">
           {paid ? (
-            <Badge variant="gold">{tierLabel(tile.plan ?? "") ?? "Paid"}</Badge>
+            <Badge variant="gold">
+              {tile.plan ? tierLabel(tile.plan) : "Paid"}
+            </Badge>
           ) : (
             <Badge variant="muted">Free</Badge>
           )}

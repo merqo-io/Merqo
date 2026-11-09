@@ -23,3 +23,5 @@ billing will build on. Nothing here charges anyone.
 - `catalog.test.ts`: row mapping, event pass terms, query order and errors.
 
 [Parent](../README.md)
+
+`planLabel` maps the stored `qkit` tier to the label Pro itself, since the shared `tierLabel` would capitalise other slugs such as `all_access` wrongly.

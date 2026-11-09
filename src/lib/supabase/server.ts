@@ -1,63 +1,30 @@
 import {
-  createServerClient as createSSRClient,
-  type CookieMethodsServer,
-} from "@supabase/ssr";
-import { cookies } from "next/headers";
+  createSupabaseServerClient,
+  createSupabaseServiceClient,
+} from "@merqo/ui/supabase/server";
 
-type CookieStore = Awaited<ReturnType<typeof cookies>>;
+// Shared project (arch-v2 §2): merqo's tables live in the `merqo` schema,
+// qkit's in `public`. Default every .from() to merqo. auth.* is unaffected.
+const SCHEMA = "merqo";
 
-// Shared @supabase/ssr cookie adapter. The setAll catch covers the read-only
-// Server Component context (session refresh is handled by middleware instead).
-function cookieMethods(cookieStore: CookieStore): CookieMethodsServer {
-  return {
-    getAll() {
-      return cookieStore.getAll();
-    },
-    setAll(cookiesToSet) {
-      try {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          cookieStore.set(name, value, options);
-        });
-      } catch {
-        // Read-only context (Server Component) — session refresh handled by middleware
-      }
-    },
-  };
+export function createServerClient() {
+  return createSupabaseServerClient({
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    schema: SCHEMA,
+    cookieDomain: process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN,
+  });
 }
 
-export async function createServerClient() {
-  const cookieStore = await cookies();
-
-  return createSSRClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    {
-      // Shared project (arch-v2 §2): merqo's tables live in the `merqo` schema,
-      // qkit's in `public`. Default every .from() to merqo. auth.* is unaffected.
-      db: { schema: "merqo" },
-      cookies: cookieMethods(cookieStore),
-      cookieOptions: process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN
-        ? { domain: process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN }
-        : undefined,
-    },
-  );
-}
-
-// Uses the secret key — bypasses RLS. Only use in Server Actions/Route Handlers.
-// CRITICAL: do NOT attach the request cookies here. An empty cookie adapter
-// means the secret key drives auth → true RLS bypass. Passing the user's auth
-// cookies would hydrate their session and re-apply RLS to every query.
-export async function createServiceClient() {
-  return createSSRClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SECRET_KEY!,
-    {
-      db: { schema: "merqo" },
-      cookies: { getAll: () => [], setAll: () => {} },
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    },
+// Uses the secret key and bypasses RLS: only for Server Actions and Route
+// Handlers. The shared helper attaches no request cookies, so the secret key
+// stays the identity for every query.
+export function createServiceClient() {
+  return Promise.resolve(
+    createSupabaseServiceClient({
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      secretKey: process.env.SUPABASE_SECRET_KEY,
+      schema: SCHEMA,
+    }),
   );
 }

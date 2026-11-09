@@ -11,3 +11,5 @@ Page header follows the shared admin pattern (Admin eyebrow, display title equal
 Grant and revoke errors read "Could not grant access. Try again." and "Could not revoke access. Try again."
 
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
+
+Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.

@@ -1,13 +1,9 @@
-import { createBrowserClient } from "@supabase/ssr";
+import { createSupabaseBrowserClient } from "@merqo/ui/supabase";
 
 export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    {
-      cookieOptions: process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN
-        ? { domain: process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN }
-        : undefined,
-    },
-  );
+  return createSupabaseBrowserClient({
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    cookieDomain: process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN,
+  });
 }
