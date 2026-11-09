@@ -5,7 +5,7 @@ import {
   supportMessageSchema,
   type SupportMessageInput,
 } from "@/lib/feedback-support-schemas";
-import type { ActionResult } from "@/lib/action-result";
+import type { ActionResult } from "@merqo/ui/kit-api";
 
 /**
  * File a hub-level help request for the Merqo team to action in /admin — no

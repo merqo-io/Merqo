@@ -49,3 +49,5 @@ page's `signInWithOAuth`/`signInWithPassword` calls).
 [lib](../README.md)
 
 `middleware.ts` clears the host-only copy of any auth cookie the browser sends twice (host-only plus `.merqo.io`) on every request, with no one-time marker, so a re-created duplicate cannot send the vendor back to /login.
+
+The browser, server and middleware helpers are thin wrappers over `@merqo/ui/supabase`; they bind merqo's env values, the `merqo` schema, the shared cookie domain and the `/admin` and `/dashboard` protected prefixes.

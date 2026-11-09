@@ -4,7 +4,7 @@ import { requireMerqoTeam } from "@/lib/team";
 import { recordAudit } from "@/lib/admin";
 // eslint-disable-next-line no-restricted-imports -- no client role can write these tables; each action is gated by requireMerqoTeam
 import { createServiceClient } from "@/lib/supabase/server";
-import type { ActionResult } from "@/lib/action-result";
+import type { ActionResult } from "@merqo/ui/kit-api";
 
 /** Mark a hub-level support message resolved. Team-gated; writes via the
  *  service client since resolving isn't the submitter's own action. */

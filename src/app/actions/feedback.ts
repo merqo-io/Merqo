@@ -5,7 +5,7 @@ import {
   feedbackSchema,
   type FeedbackInput,
 } from "@/lib/feedback-support-schemas";
-import type { ActionResult } from "@/lib/action-result";
+import type { ActionResult } from "@merqo/ui/kit-api";
 
 /**
  * Submit hub-level Merqo feedback (NPS + optional comment). Inserted via the

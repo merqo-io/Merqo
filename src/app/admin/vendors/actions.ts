@@ -3,7 +3,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireMerqoTeam } from "@/lib/team";
 import { grantKit, revokeKit, recordAudit } from "@/lib/admin";
-import type { ActionResult } from "@/lib/action-result";
+import type { ActionResult } from "@merqo/ui/kit-api";
 
 const grantSchema = z.object({
   email: z.string().trim().toLowerCase().email(),

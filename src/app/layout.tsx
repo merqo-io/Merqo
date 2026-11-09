@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import { THEME_PROVIDER_PROPS } from "@/lib/theme-props";
+import { themeProps } from "@merqo/ui/next";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -46,7 +46,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider {...THEME_PROVIDER_PROPS}>
+        <ThemeProvider {...themeProps}>
           <Providers>{children}</Providers>
         </ThemeProvider>
       </body>

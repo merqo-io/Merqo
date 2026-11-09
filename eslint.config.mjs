@@ -2,7 +2,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import sonarjs from "eslint-plugin-sonarjs";
-import { merqoEslintPreset } from "@merqo/ui/eslint";
+import { merqoEslintPreset, merqoNoLocalCopies } from "@merqo/ui/eslint";
 
 // One shared plugin reference: mixing sonarjs.configs.recommended with a
 // separate `plugins: { sonarjs }` block in another config object throws
@@ -41,6 +41,27 @@ const eslintConfig = defineConfig([
     sonarjsPlugin,
     tsPlugin: nextTs.find((c) => c.plugins?.["@typescript-eslint"]).plugins[
       "@typescript-eslint"
+    ],
+  }),
+  // supabase-*, rate-limit: thin wrappers that bind merqo's env, schema, cookie
+  // domain and RPC counter store to the shared helpers, so importers keep one
+  // call without repeating that config.
+  // dashboard-nav, dashboard-tour: wrappers that pass merqo's nav, feedback,
+  // support and tour content into the shared components.
+  // use-async-action: adapter that keeps the per-call closure shape of seven
+  // call sites over the shared hook, which binds its action at creation.
+  // components/ui/badge: kept on purpose for the gold and soft destructive
+  // variants the shared badge lacks.
+  ...merqoNoLocalCopies({
+    allow: [
+      "supabase-client",
+      "supabase-server",
+      "supabase-middleware",
+      "rate-limit",
+      "dashboard-nav",
+      "dashboard-tour",
+      "use-async-action",
+      "components/ui/badge",
     ],
   }),
   {

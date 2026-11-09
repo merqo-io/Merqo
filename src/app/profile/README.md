@@ -48,3 +48,5 @@ The vendor Telegram connect QR renders as an `<img>` with a `data:image/svg+xml`
 Profile sections show action-specific "Could not ... Try again." errors, and the stall-name field is labelled "Business name" in the UI.
 
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
+
+Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.

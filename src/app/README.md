@@ -63,3 +63,5 @@ directly under `app/` besides the special Next.js files.
 `globals.css` holds the `@media (pointer: coarse)` rule that gives buttons and inputs a 44px minimum height (icon buttons 44px wide). Desktop sizing is unchanged.
 
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
+
+`icon.tsx` and `apple-icon.tsx` draw `lib/brand-mark.ts`, and the root layout takes `themeProps` from `@merqo/ui/next`.
