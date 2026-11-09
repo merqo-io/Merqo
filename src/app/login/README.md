@@ -32,3 +32,5 @@ layout.
 Password sign-in runs through the signInWithPasswordAction server action so attempts are counted per IP (10 per 15 minutes, fail open).
 
 The page shows plain "Could not ... Try again." errors through `authErrorCopy` instead of raw Supabase messages.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

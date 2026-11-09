@@ -7,7 +7,7 @@ import {
   WAITLISTABLE_SLUGS,
   type KitStatus,
 } from "@/lib/kits";
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 import { Badge } from "@/components/ui/badge";
 
 const GROUPS: { status: KitStatus; label: string }[] = [

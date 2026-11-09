@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AboutMerqo } from "@merqo/ui";
 import { Nav } from "@/components/landing/nav";
 import { Footer } from "@/components/landing/footer";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { createServerClient } from "@/lib/supabase/server";
 
 export const metadata = {

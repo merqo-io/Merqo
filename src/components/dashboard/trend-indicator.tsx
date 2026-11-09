@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 import type { Trend } from "@/lib/format";
 export function TrendIndicator({
   trend,

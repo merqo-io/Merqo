@@ -4,15 +4,15 @@ import { toast } from "sonner";
 import { grantKitAction } from "./actions";
 import { useAsyncAction } from "@/hooks/use-async-action";
 import type { ProductOption } from "@/lib/admin";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
+  Button,
+  Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@merqo/ui/primitives";
 
 export function GrantForm({
   products,

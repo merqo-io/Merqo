@@ -19,3 +19,5 @@ password alone.
 ## Connectivity
 
 Needs TOTP enrolment and verification enabled in Supabase Auth.
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

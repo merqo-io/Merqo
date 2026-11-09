@@ -1,3 +1,3 @@
 # UI primitives
 
-CLI-managed shadcn/Radix primitives used by Merqo: badge, button, input, label, select, switch and tooltip. Product-level reusable UI comes from @merqo/ui. Generated card, dropdown-menu and sheet modules were removed after confirming they had no production or test callers; install a primitive only when a concrete consumer needs it.
+Only `badge.tsx` lives here: the shared badge in `@merqo/ui/primitives` has no `gold` variant and uses a different destructive treatment, so merqo keeps its own. Every other shadcn primitive (button, input, label, select, switch, tooltip, and cn) is imported from `@merqo/ui/primitives`; do not add a local copy.

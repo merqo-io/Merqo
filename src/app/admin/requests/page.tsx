@@ -5,7 +5,7 @@ import {
   vendorEmailsById,
 } from "@/lib/subscription-requests";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { DeclineButton } from "./decline-button";
 
 export const revalidate = 0;

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 
 /**
  * Root error boundary — replaces the raw Next error overlay in production if an

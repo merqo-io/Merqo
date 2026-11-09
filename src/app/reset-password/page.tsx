@@ -4,9 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { passwordChangeSchema } from "@/lib/schemas";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button, Input, Label } from "@merqo/ui/primitives";
 import { Wordmark } from "@/components/brand/wordmark";
 
 // Reached from the password-reset email → /auth/callback establishes a recovery

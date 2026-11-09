@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Play } from "lucide-react";
 import { KIT_NODES, DEFAULT_STACKED } from "@/lib/ecosystem";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 import { GraphCanvas, type Journey } from "./graph-canvas";
 import { BlockTower } from "./block-tower";
 import { ModuleList } from "./module-list";

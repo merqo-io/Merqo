@@ -10,7 +10,7 @@ import { classifyHealth, countHealth } from "@/lib/health";
 import { onboardingFunnel } from "@/lib/funnel";
 import { money, computeTrend, type Trend } from "@/lib/format";
 import { getTenantHealth } from "@/lib/tenant-health";
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 import { StatCard } from "@merqo/ui";
 import { TrendIndicator } from "@/components/dashboard/trend-indicator";
 import { OnboardingFunnelView } from "./onboarding-funnel";

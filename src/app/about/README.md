@@ -30,3 +30,5 @@ Linked from `Nav` (`src/components/landing/nav.tsx`) and `Footer`
 ## Parent
 
 [app](../README.md)
+
+Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.

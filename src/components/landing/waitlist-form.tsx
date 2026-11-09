@@ -4,7 +4,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { joinKitWaitlist } from "@/app/actions/waitlist";
 import { WAITLIST_IDLE } from "@/lib/waitlist-state";
 import { UPDATES_OPT_IN_WORDING } from "@/lib/waitlist-consent";
-import { Button } from "@/components/ui/button";
+import { Button } from "@merqo/ui/primitives";
 
 const INPUT =
   "h-9 w-full rounded-md border bg-background px-3 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";

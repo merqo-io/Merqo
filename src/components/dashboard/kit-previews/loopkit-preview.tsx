@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@merqo/ui/primitives";
 import { MockupWindow } from "./mockup-window";
 
 const STAMPS_FILLED = 3;
