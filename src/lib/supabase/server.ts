@@ -19,12 +19,10 @@ export function createServerClient() {
 // Uses the secret key and bypasses RLS: only for Server Actions and Route
 // Handlers. The shared helper attaches no request cookies, so the secret key
 // stays the identity for every query.
-export function createServiceClient() {
-  return Promise.resolve(
-    createSupabaseServiceClient({
-      url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      secretKey: process.env.SUPABASE_SECRET_KEY,
-      schema: SCHEMA,
-    }),
-  );
+export async function createServiceClient() {
+  return createSupabaseServiceClient({
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    secretKey: process.env.SUPABASE_SECRET_KEY,
+    schema: SCHEMA,
+  });
 }

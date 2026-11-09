@@ -20,7 +20,8 @@ describe("brandMark", () => {
     const p = props(32);
     expect(p.children).toBe("q");
     expect(p.style.fontFamily).toBe("Georgia, 'Times New Roman', serif");
-    expect(p.style.background).not.toBe(p.style.color);
+    expect(p.style.background).toBe("#20416f");
+    expect(p.style.color).toBe("#e6a13c");
   });
 
   it("sizes the tile and scales the corner radius with the requested size", () => {
