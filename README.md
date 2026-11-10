@@ -51,7 +51,7 @@ badge actually looks like — see
 (workspace root, cross-kit spec). The landing footer matches qkit's exactly
 (single-row wordmark/tagline/credit-line/sign-in link, no CTA band above it).
 
-`@merqo/ui` is pinned at v0.44.1 (`c2c1896`). Button, input, label, select, switch and tooltip come from `@merqo/ui/primitives`; only the badge stays local, for its `gold` variant. The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing.
+`@merqo/ui` is pinned at v0.44.2 (`d363250`). Button, input, label, select, switch and tooltip come from `@merqo/ui/primitives`; only the badge stays local, for its `gold` variant. The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing.
 
 Merqo uses `@merqo/ui`, the shared component package for the kit family (see
 qkit/loopkit/paykit/stockkit for the same dependency). `/about`'s own story
