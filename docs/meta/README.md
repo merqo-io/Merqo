@@ -10,6 +10,7 @@ individual feature specs, with nothing tying them together.
 
 - [Component reuse specification](2026-10-10-component-reuse-spec.md): confirmed cleanup scope, acceptance and intentional exclusions.
 - [Component reuse verification](2026-10-10-component-reuse-verification.md): finished-work review, regressions and validation evidence.
+- [Fresh-eyes close-out sweep](2026-10-24-fresh-eyes-sweep.md): knip run, loading-state review, coverage and bundle findings, with fixed, deferred and owner-decision lists.
 - [AI harness reference](ai-harness-reference.md): full hook, permission, git-hook and CI description moved out of AGENTS.md.
 - [templateCentral adoption log](templatecentral-adoption-log.md): 6.0.4 and 7.2.2 reviews and project adoption history moved out of AGENTS.md.
 

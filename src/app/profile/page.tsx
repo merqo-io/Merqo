@@ -20,12 +20,14 @@ export default async function ProfilePage() {
   const user = error ? null : data.user;
   if (!user) redirect("/login");
 
-  const profile = await getOrCreateVendorProfile(supabase, user.id, null);
-  const { data: vendorTelegram } = await supabase
-    .from("vendor_telegram")
-    .select("vendor_id")
-    .eq("vendor_id", user.id)
-    .maybeSingle();
+  const [profile, { data: vendorTelegram }] = await Promise.all([
+    getOrCreateVendorProfile(supabase, user.id, null),
+    supabase
+      .from("vendor_telegram")
+      .select("vendor_id")
+      .eq("vendor_id", user.id)
+      .maybeSingle(),
+  ]);
 
   return (
     <div className="mx-auto max-w-lg space-y-8 px-5 py-7 md:max-w-4xl">
