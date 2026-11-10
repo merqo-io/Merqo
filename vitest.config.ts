@@ -9,6 +9,9 @@ export default defineConfig({
     globals: true,
     testTimeout: 30000,
     setupFiles: ["./test/setup.ts"],
+    // @merqo/ui imports extensionless `next/server` and `@supabase/ssr`; inlining
+    // lets Vite resolve them and lets vi.mock reach the shared modules.
+    server: { deps: { inline: [/@merqo\/ui/] } },
     include: [
       "test/**/*.{test,spec}.{ts,tsx}",
       "src/**/*.test.{ts,tsx}",

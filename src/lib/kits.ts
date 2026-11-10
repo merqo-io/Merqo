@@ -39,19 +39,18 @@ export type Kit = {
 };
 
 /** Set NEXT_PUBLIC_QKIT_URL per environment to override (e.g. a preview deploy). */
-export const QKIT_URL =
-  process.env.NEXT_PUBLIC_QKIT_URL ?? "https://qkit.merqo.io";
+const QKIT_URL = process.env.NEXT_PUBLIC_QKIT_URL ?? "https://qkit.merqo.io";
 
 /** Set NEXT_PUBLIC_LOOPKIT_URL per environment to override. */
-export const LOOPKIT_URL =
+const LOOPKIT_URL =
   process.env.NEXT_PUBLIC_LOOPKIT_URL ?? "https://loopkit.merqo.io";
 
 /** Set NEXT_PUBLIC_PAYKIT_URL per environment to override. */
-export const PAYKIT_URL =
+const PAYKIT_URL =
   process.env.NEXT_PUBLIC_PAYKIT_URL ?? "https://paykit.merqo.io";
 
 /** Set NEXT_PUBLIC_STOCKKIT_URL per environment to override. */
-export const STOCKKIT_URL =
+const STOCKKIT_URL =
   process.env.NEXT_PUBLIC_STOCKKIT_URL ?? "https://stockkit.merqo.io";
 
 // Each kit is a standalone product on its own merqo.io subdomain.

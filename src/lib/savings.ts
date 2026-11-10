@@ -1,11 +1,11 @@
 import type { VendorLink } from "@/lib/vendor";
 
-export type SavingsAssumption = {
+type SavingsAssumption = {
   hoursPerWeek: number;
   costCentsPerMonth: number;
 };
 
-export type KitSavingsAssumptions = {
+type KitSavingsAssumptions = {
   free: SavingsAssumption;
   pro: SavingsAssumption;
 };
@@ -20,7 +20,7 @@ export type KitSavingsAssumptions = {
  * docs/superpowers/specs/2026-07-26-merqo-dashboard-savings-estimate-design.md
  * for the full per-kit rationale and citations.
  */
-export const SAVINGS_ASSUMPTIONS: Record<string, KitSavingsAssumptions> = {
+const SAVINGS_ASSUMPTIONS: Record<string, KitSavingsAssumptions> = {
   qkit: {
     free: { hoursPerWeek: 3, costCentsPerMonth: 23000 },
     pro: { hoursPerWeek: 6, costCentsPerMonth: 47000 },

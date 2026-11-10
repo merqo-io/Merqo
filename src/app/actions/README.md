@@ -9,3 +9,5 @@ Kit slugs passed to the upgrade and downgrade actions are parsed with `kitSlugSc
 The waitlist (5/hour per IP), password sign-in in `auth.ts` (10 per 15 minutes per IP), support and feedback (10/hour per user) actions are rate limited through `src/lib/rate-limit.ts` and fail open if the counter is down.
 
 `waitlist.ts` failures return "Could not join the waitlist. Try again." and log the raw error with `console.error`; the success message is "You're on the list. We'll email you when it opens."
+
+Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.

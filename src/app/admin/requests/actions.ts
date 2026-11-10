@@ -3,7 +3,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireMerqoTeam } from "@/lib/team";
 import { recordAudit } from "@/lib/admin";
-import type { ActionResult } from "@/lib/action-result";
+import type { ActionResult } from "@merqo/ui/kit-api";
 import { closeRequest } from "@/lib/subscription-requests";
 
 const declineSchema = z.object({ requestId: z.string().uuid() });

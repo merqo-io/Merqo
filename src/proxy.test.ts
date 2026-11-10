@@ -120,6 +120,17 @@ describe("proxy Supabase origins", () => {
   });
 });
 
+describe("proxy avatar images", () => {
+  it("allows Google sign-in avatars in img-src", async () => {
+    signedIn();
+    const response = await proxy(new NextRequest("https://merqo.io/"));
+
+    expect(csp(response)).toMatch(
+      /img-src[^;]*https:\/\/\*\.googleusercontent\.com/,
+    );
+  });
+});
+
 describe("proxy Vercel toolbar", () => {
   afterEach(() => vi.unstubAllEnvs());
 

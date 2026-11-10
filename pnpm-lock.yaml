@@ -25,8 +25,8 @@ importers:
   .:
     dependencies:
       '@merqo/ui':
-        specifier: github:merqo-io/merqo-ui#250a4edd5399809b3c182cd381ba310d12dec5a7
-        version: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/250a4edd5399809b3c182cd381ba310d12dec5a7(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@supabase/ssr@0.10.3(@supabase/supabase-js@2.110.0))(@supabase/supabase-js@2.110.0)(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next-themes@0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(radix-ui@1.6.7(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sonner@1.7.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(tailwindcss@4.3.2)(zod@4.6.6)
+        specifier: github:merqo-io/merqo-ui#c2c18963872f7d4b65a7ca6a656a126d1bc6bf62
+        version: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/c2c18963872f7d4b65a7ca6a656a126d1bc6bf62(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@supabase/ssr@0.10.3(@supabase/supabase-js@2.110.0))(@supabase/supabase-js@2.110.0)(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next-themes@0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(radix-ui@1.6.7(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sonner@1.7.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(tailwindcss@4.3.2)(zod@4.6.6)
       '@supabase/ssr':
         specifier: ^0.10.3
         version: 0.10.3(@supabase/supabase-js@2.110.0)
@@ -36,9 +36,6 @@ importers:
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
       lucide-react:
         specifier: ^0.468.0
         version: 0.468.0(react@19.2.8)
@@ -60,9 +57,6 @@ importers:
       sonner:
         specifier: ^1.7.4
         version: 1.7.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      tailwind-merge:
-        specifier: ^2.6.1
-        version: 2.6.1
       zod:
         specifier: 4.6.6
         version: 4.6.6
@@ -716,9 +710,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/250a4edd5399809b3c182cd381ba310d12dec5a7':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/250a4edd5399809b3c182cd381ba310d12dec5a7}
-    version: 0.44.0
+  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/c2c18963872f7d4b65a7ca6a656a126d1bc6bf62':
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/merqo-io/merqo-ui/tar.gz/c2c18963872f7d4b65a7ca6a656a126d1bc6bf62}
+    version: 0.44.1
     engines: {node: '>=24'}
     peerDependencies:
       '@eslint-community/eslint-plugin-eslint-comments': '>=4.8.1'
@@ -4695,7 +4689,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/250a4edd5399809b3c182cd381ba310d12dec5a7(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@supabase/ssr@0.10.3(@supabase/supabase-js@2.110.0))(@supabase/supabase-js@2.110.0)(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next-themes@0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(radix-ui@1.6.7(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sonner@1.7.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(tailwindcss@4.3.2)(zod@4.6.6)':
+  '@merqo/ui@https://codeload.github.com/merqo-io/merqo-ui/tar.gz/c2c18963872f7d4b65a7ca6a656a126d1bc6bf62(@eslint-community/eslint-plugin-eslint-comments@4.8.1(eslint@9.39.4(jiti@2.7.0)))(@playwright/test@1.61.1)(@supabase/ssr@0.10.3(@supabase/supabase-js@2.110.0))(@supabase/supabase-js@2.110.0)(@types/react@19.2.17)(eslint-plugin-sonarjs@4.2.2(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(next-themes@0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.61.1)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(radix-ui@1.6.7(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sonner@1.7.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(tailwindcss@4.3.2)(zod@4.6.6)':
     dependencies:
       '@icons-pack/react-simple-icons': 13.13.0(react@19.2.8)
       class-variance-authority: 0.7.1

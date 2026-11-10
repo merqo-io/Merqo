@@ -2,7 +2,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import sonarjs from "eslint-plugin-sonarjs";
-import { merqoEslintPreset } from "@merqo/ui/eslint";
+import { merqoEslintPreset, merqoNoLocalCopies } from "@merqo/ui/eslint";
 
 // One shared plugin reference: mixing sonarjs.configs.recommended with a
 // separate `plugins: { sonarjs }` block in another config object throws
@@ -43,6 +43,27 @@ const eslintConfig = defineConfig([
       "@typescript-eslint"
     ],
   }),
+  // supabase-*, rate-limit: thin wrappers that bind merqo's env, schema, cookie
+  // domain and RPC counter store to the shared helpers, so importers keep one
+  // call without repeating that config.
+  // dashboard-nav, dashboard-tour: wrappers that pass merqo's nav, feedback,
+  // support and tour content into the shared components.
+  // use-async-action: adapter that keeps the per-call closure shape of seven
+  // call sites over the shared hook, which binds its action at creation.
+  // components/ui/badge: kept on purpose for the gold and soft destructive
+  // variants the shared badge lacks.
+  ...merqoNoLocalCopies({
+    allow: [
+      "supabase-client",
+      "supabase-server",
+      "supabase-middleware",
+      "rate-limit",
+      "dashboard-nav",
+      "dashboard-tour",
+      "use-async-action",
+      "components/ui/badge",
+    ],
+  }),
   {
     // The service client bypasses RLS: keep it in lib helpers and bearer-gated
     // route handlers. A Server Action that needs it states why on the import.
@@ -69,6 +90,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "coverage/**",
     "next-env.d.ts",
     // Enforcement-layer scripts, not app code — integrity is hash-checked via
     // .claude/harness.json, not style-checked here (mirrors .husky/pre-commit's

@@ -72,7 +72,7 @@ own admin console separately.
   e.g. loopkit, which has no per-vendor health concept yet), the kit's `metrics` rows via `@merqo/ui`'s `StatTile`, and a
   relative "last activity" timestamp, with `IncidentList` between them.
 - `incident-list.tsx` — `IncidentList({ incidents, recent, now })` and
-  `INCIDENT_LABELS` (human label per `IncidentKind` from
+  a module-private `INCIDENT_LABELS` (human label per `IncidentKind` from
   `@merqo/ui/contracts`). Renders "Incidents (last 72 h)": each kind with a
   count badge and relative last time, then `recent` entries as reference id
   plus code. "No incidents in the last 72 hours" when both are empty or
@@ -101,3 +101,5 @@ The page validates its grant lookup through team-gated helpers. Tests verify tha
 The re-push toast reports "Updated N kits" and "N kits could not be updated. Try again.", with singular forms for one kit.
 
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
+
+Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.

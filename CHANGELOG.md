@@ -6,8 +6,26 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-11-10
+
+### Added
+
+- `/waitlist` shows a founding merchant offer (first 15 merchants, launch pricing locked for 12 months, nothing to pay today) with a note that Merqo is a sole trader not yet registered with ACRA.
+- Terms gate (`/legal/accept`) now has a Sign out button so a user who declines has a way out, a hint under the disabled Continue button, and a heading that matches the rest of the app.
+- Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.
+- Public, unauthenticated `GET /api/plans` returning the active plan catalog (`plans[]` cheapest first with `annual_cents`, plus the `event_pass` terms), revalidated every 5 minutes with public CDN caching, so kit plan pages fetch prices instead of storing them. Reads through the anon client via `loadPublicPlanCatalog()`.
+- Entitlement pushes now reach printkit: migration `0042_printkit_push_only.sql` adds a `push_only` product status and a printkit row, `listEntitlementTargets()` feeds `syncVendorEntitlements`, and printkit stays out of `listLiveProducts()` surfaces and the admin grant dropdown.
+- `/waitlist`: separate, unticked "Also send me occasional Merqo updates." checkbox. Migration `0040_marketing_consents.sql` stores the email, the exact wording shown and the consent time only when ticked; an unticked resubmission never erases an earlier opt-in, re-ticking refreshes it, and `withdrawn_at` records an operator-run withdrawal.
+- Migration `0037_retention_purges.sql`: daily `pg_cron` purges for expired `telegram_link_tokens` (1 day after expiry), `legal_acceptances.ip` (nulled after 12 months, row kept), `support_messages` and `feedback` (24 months). Periods are conservative defaults pending owner confirmation and privacy-copy update.
+- `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
+- Migration `0039_entitlement_sync_error_kind.sql`: `entitlement_sync.last_error_kind`, so the vendor page shows why a kit push failed (route missing, response not understood, network) instead of only the HTTP code.
+- Loading skeletons for `/mfa` and `/profile`, matching the existing admin and dashboard pattern.
+- `knip.json` (ignores `.claude/**` only) and `docs/meta/2026-10-24-fresh-eyes-sweep.md`, the close-out sweep record: knip run, loading-state review, coverage, bundle size, fixed, deferred and needs-owner lists.
+
 ### Changed
 
+- `@merqo/ui` moves from v0.44.0 to v0.44.1. The `verifyKitAuth` per-slug bucket now counts failures only, so a valid key is never blocked.
+- Local copies of `@merqo/ui` pieces are replaced by the shared exports and deleted (`lib/theme-props`, `lib/tier-label`, `lib/security-headers`, `lib/brand-icon`, `lib/action-result`), and `merqoNoLocalCopies()` is enabled in `eslint.config.mjs` so they cannot return. The Supabase client, server and middleware helpers, `lib/rate-limit` and the proxy now sit on the shared `@merqo/ui/supabase`, `@merqo/ui/kit-api` and `@merqo/ui/next` entries; each stays a thin wrapper that binds merqo's config. Kept through `allow`: those wrappers, `dashboard-nav`, `dashboard-tour`, the `use-async-action` adapter and `components/ui/badge`. The dashboard kit card now shows the shared `tierLabel` text, so an unmapped plan shows its capitalised name instead of a fixed fallback. `createServiceClient` now rejects, rather than throws synchronously, when `SUPABASE_SECRET_KEY` is missing.
 - The local button, input, label, select, switch and tooltip primitives are deleted in favour of `@merqo/ui/primitives` (and `cn` is imported from there). Visible differences: buttons, inputs and select triggers grow to 44px on touch screens, and tooltips use the neutral popover surface with a border and a width cap instead of the solid foreground bubble. `ui/badge.tsx` stays local because the shared badge has no `gold` variant.
 - `@merqo/ui` moves from v0.42.1 to v0.44.0. The new legal text bumps `LEGAL_VERSIONS` to 2026-11-08, so vendors are asked to re-accept the terms. `StatCard` is deprecated upstream but still works.
 - The accepted-drift list `scripts/schema-drift-known.txt` is now empty: stockkit migration 0028 dropped `product_components`, `stock_movements.linked_movement_id` and their functions on prod and staging, so the drift check no longer hides them.
@@ -18,36 +36,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Admin pages share one header (Admin eyebrow, display title matching the nav label, one-line description) and set per-route browser titles. Admin empty states use one dashed-card pattern with plain copy that says what appears there.
 - Admin nav slimmed to Overview, Vendors, Requests and Products (collapsing below `lg`); Team, Feedback and Activity moved to a "More admin pages" row that wraps on narrow screens and marks the current page. `/admin/health` now redirects to `/admin/products`, which carries the vendor health table. Vendor nav label "Dashboard" is now "Kits", empty metrics read "No data yet"
 - Browser titles use `%s | merqo` with a sentence-case default, and the dashboard and profile pages set their own titles. Both page headers now follow the shared pattern (eyebrow, display title, one-line description), and the dashboard intro drops em dashes and "control room".
+- Bump `@merqo/ui` to v0.37.0. `VendorTelegramSection` now renders the connect QR as an `<img>` data URI rather than injecting SVG markup, and checks the Telegram deep link against an allowlist before showing it. merqo's `https://t.me/<bot>?start=<token>` links pass unchanged.
+- `vercel.json` sets `git.deploymentEnabled` so Vercel builds only `main`. PR branches no longer get a Vercel preview, which keeps the Hobby team under its daily deployment cap; CI's `build` job still builds every PR. For an on-demand preview, run `vercel` from the branch (see `docs/STAGING.md`).
+- `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
+
+### Removed
+
+- Dead exports found by `knip@6.44.2`: the unused `cn` helper in `lib/utils` (and with it the direct `clsx` and `tailwind-merge` dependencies, still supplied by `@merqo/ui`), the `lib/admin` re-exports of `groupVendorGrants`, `findVendorGrant` and `filterVendorGrants`, and the `use-async-action` re-export of `navigatingAway`. Eight other values and six types used only inside their own file are no longer exported, and five unused types are deleted.
 
 ### Fixed
 
+- ESLint skips the generated `coverage/` folder, so `pnpm check` no longer fails after a local coverage run.
 - Login and profile no longer show raw Supabase error text: known cases map to plain copy via `authErrorCopy`, everything else gets an action-specific "Could not X. Try again." line, and the stall name is now labelled "Business name".
 - The top paid tier is labelled "Pro" (Free / Starter / Pro) instead of "Qkit" on the dashboard kit card, the admin subscription controls and requests, and the public `/api/plans` plan name. Stored `qkit` tier and plan slug values are unchanged.
 - Buttons and inputs reach a 44px minimum touch target on coarse pointers (desktop sizes unchanged); loading skeletons now expose `role="status"`, `aria-busy` and a screen-reader label, and stop pulsing under reduced motion.
-
-### Added
-
-- `/waitlist` shows a founding merchant offer (first 15 merchants, launch pricing locked for 12 months, nothing to pay today) with a note that Merqo is a sole trader not yet registered with ACRA.
-- Terms gate (`/legal/accept`) now has a Sign out button so a user who declines has a way out, a hint under the disabled Continue button, and a heading that matches the rest of the app.
-- Event Pass settle view on the vendor page: once a pass has ended it shows cups sold on qkit (read live from `/api/merqo/event-pass-usage`), total, prepaid and top-up due, and "Mark settled" records the offline-collected figures (migration `0043_event_pass_settle.sql`, new `settled` status). Merqo charges nobody; unavailable usage disables settle.
-- Public, unauthenticated `GET /api/plans` returning the active plan catalog (`plans[]` cheapest first with `annual_cents`, plus the `event_pass` terms), revalidated every 5 minutes with public CDN caching, so kit plan pages fetch prices instead of storing them. Reads through the anon client via `loadPublicPlanCatalog()`.
-- Entitlement pushes now reach printkit: migration `0042_printkit_push_only.sql` adds a `push_only` product status and a printkit row, `listEntitlementTargets()` feeds `syncVendorEntitlements`, and printkit stays out of `listLiveProducts()` surfaces and the admin grant dropdown.
-
-### Security
-
-- CCSP C3: Postgres-backed fixed-window rate limiter (migration `0041_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.
-- Client IP now comes from `x-vercel-forwarded-for`, then `x-real-ip`, then the last `x-forwarded-for` hop, never the spoofable first hop. `legal-accept` caps `ip` at 64 characters; `notify-customer` and `notify-vendor` cap `message` at 4096.
-- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `legal-accept` truncates `user_agent` to 512 instead of rejecting it. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
-
-### Added
-
-- `/waitlist`: separate, unticked "Also send me occasional Merqo updates." checkbox. Migration `0040_marketing_consents.sql` stores the email, the exact wording shown and the consent time only when ticked; an unticked resubmission never erases an earlier opt-in, re-ticking refreshes it, and `withdrawn_at` records an operator-run withdrawal.
-- Migration `0037_retention_purges.sql`: daily `pg_cron` purges for expired `telegram_link_tokens` (1 day after expiry), `legal_acceptances.ip` (nulled after 12 months, row kept), `support_messages` and `feedback` (24 months). Periods are conservative defaults pending owner confirmation and privacy-copy update.
-- `docs/security/`: incident response runbook (PDPA breach notification steps, secret rotation, contacts, log template), subprocessor list and Do Not Call statement.
-- Migration `0039_entitlement_sync_error_kind.sql`: `entitlement_sync.last_error_kind`, so the vendor page shows why a kit push failed (route missing, response not understood, network) instead of only the HTTP code.
-
-### Fixed
-
 - Admin console header no longer overflows horizontally between 640px and about 1083px: `@merqo/ui` bumped to v0.38.0 (`aa3c216`) for `DashboardNav`'s `collapseBelow`, and the admin layout uses `"xl"`. The vendor dashboard keeps the default.
 - e2e: confirming an admin dialog now waits for the dialog to close before the next step. The page behind an open dialog is aria-hidden, so the cancel-subscription test read the trigger as gone while the action was still in flight, then loaded the activity log before the audit row existed.
 - Vendor admin page: dates and the date-input defaults are shown in Singapore time (an event pass minted for 2 Nov no longer reads 1 Nov to 3 Nov); canceled subscriptions read "Cancelled. Period was A to B." without the renew hint; both cancel spellings display as "Cancelled"; the kit-reported Pro/Free badge is gone from activity cards (the tier lives in Kit entitlements); long emails and sync rows no longer cause horizontal scroll.
@@ -55,13 +57,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
+- CCSP C3: Postgres-backed fixed-window rate limiter (migration `0041_rate_limit.sql`, `src/lib/rate-limit.ts`). Per-IP limits: waitlist 5/hour, password sign-in 10/15 min (now a server action), every `/api/merqo/*` bearer route except `legal-status` 300/min (rejected 401s are logged without the secret). Support and feedback submissions 10/hour per user. All fail open when the counter is unreachable.
+- Client IP now comes from `x-vercel-forwarded-for`, then `x-real-ip`, then the last `x-forwarded-for` hop, never the spoofable first hop. `legal-accept` caps `ip` at 64 characters; `notify-customer` and `notify-vendor` cap `message` at 4096.
+- Kit bearer routes cap free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64) via `src/lib/kit-route-limits.ts`; oversized values get the existing 400. `legal-accept` truncates `user_agent` to 512 instead of rejecting it. `docs/DEPLOY.md` now points at the live `qkit.merqo.io` / `www.merqo.io` domains.
 - Override transitive `minimatch` to `>=11.0.1 <12` (Dependabot alert 27, moderate DoS via globparts amplification) in `pnpm-workspace.yaml`.
-
-### Changed
-
-- Bump `@merqo/ui` to v0.37.0. `VendorTelegramSection` now renders the connect QR as an `<img>` data URI rather than injecting SVG markup, and checks the Telegram deep link against an allowlist before showing it. merqo's `https://t.me/<bot>?start=<token>` links pass unchanged.
-- `vercel.json` sets `git.deploymentEnabled` so Vercel builds only `main`. PR branches no longer get a Vercel preview, which keeps the Hobby team under its daily deployment cap; CI's `build` job still builds every PR. For an on-demand preview, run `vercel` from the branch (see `docs/STAGING.md`).
-- `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync` GitHub App token instead of `GITHUB_TOKEN`, because a ruleset limits pushes to `staging` to that app.
 
 ## [0.13.0] - 2026-11-02
 

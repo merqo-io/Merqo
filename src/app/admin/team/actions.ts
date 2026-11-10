@@ -7,7 +7,7 @@ import {
   removeTeamMember,
   recordAudit,
 } from "@/lib/admin";
-import type { ActionResult } from "@/lib/action-result";
+import type { ActionResult } from "@merqo/ui/kit-api";
 import type { AddTeamState } from "./state";
 
 const emailSchema = z.string().trim().toLowerCase().email();

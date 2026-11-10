@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useAsyncAction as useSharedAsyncAction,
-  navigatingAway,
-} from "@merqo/ui";
+import { useAsyncAction as useSharedAsyncAction } from "@merqo/ui";
 
 /**
  * A `pending` flag for an async handler that ALWAYS resets — even if the handler
@@ -23,5 +20,3 @@ export function useAsyncAction(): {
 } {
   return useSharedAsyncAction((fn: () => Promise<void>) => fn());
 }
-
-export { navigatingAway };
