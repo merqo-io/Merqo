@@ -51,14 +51,15 @@ export default async function WaitlistPage({
             Founding merchant offer
           </h2>
           <p className="mt-2 text-sm">
-            The first 15 merchants get launch pricing locked for 12 months.
-            Nothing to pay today: we&apos;ll confirm your price before your kit
-            goes live.
+            Merqo is free during the pilot. If we introduce paid plans, the
+            first 15 merchants keep their launch price for 12 months. Nothing to
+            pay today: we&apos;ll confirm any price with you before you&apos;re
+            charged.
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            Merqo is run by Clarence Lee as a sole trader, not yet registered
-            with ACRA or incorporated. When Merqo becomes a company, your
-            founding price carries over.
+            Merqo is a personal software project by Clarence Lee, not registered
+            with ACRA or incorporated. If that changes, your founding offer
+            carries over.
           </p>
         </section>
         <div className="mt-8">
