@@ -202,7 +202,7 @@ secrets and administrative writes use server-only service clients, so
 
 ## Docs
 
-- Public waitlist: an unticked general-updates checkbox is recorded in `merqo.marketing_consents` (migration `0040`) with the wording shown and the time, only when ticked.
+- Public waitlist: an unticked general-updates checkbox is recorded in `merqo.marketing_consents` (migration `0040`) with the wording shown and the time, only when ticked. The founding offer copy is conditional: Merqo is free during the pilot, and launch pricing and any incorporation are stated only as "if".
 - The public waitlist page shows a founding merchant offer (first 15 merchants, launch pricing locked for 12 months, nothing to pay today) and states that Merqo is a sole trader, not yet registered with ACRA.
 - Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - printkit receives entitlement pushes as a `push_only` product (migration `0042`); it is not grantable and stays out of the dashboard, metrics and the grant list.
@@ -266,7 +266,7 @@ The AI harness follows templateCentral 7.2.2: hook commands are anchored on the 
 
 ## Security headers and MFA
 
-`src/proxy.ts` sets the CSP (nonce on per-request routes) and `X-Robots-Tag` on non-production deployments. The operator console requires TOTP MFA; see `src/app/mfa/README.md` and `docs/security/`.
+`src/proxy.ts` sets the CSP (nonce on per-request routes) and `X-Robots-Tag` on non-production deployments. The operator console requires TOTP MFA; see `src/app/mfa/README.md` and `docs/security/`. The MFA form and the wordmark are thin wrappers over `@merqo/ui`.
 
 ## Lint
 
