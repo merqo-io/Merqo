@@ -72,7 +72,7 @@ own admin console separately.
   e.g. loopkit, which has no per-vendor health concept yet), the kit's `metrics` rows via `@merqo/ui`'s `StatTile`, and a
   relative "last activity" timestamp, with `IncidentList` between them.
 - `incident-list.tsx` — `IncidentList({ incidents, recent, now })` and
-  `INCIDENT_LABELS` (human label per `IncidentKind` from
+  a module-private `INCIDENT_LABELS` (human label per `IncidentKind` from
   `@merqo/ui/contracts`). Renders "Incidents (last 72 h)": each kind with a
   count badge and relative last time, then `recent` entries as reference id
   plus code. "No incidents in the last 72 hours" when both are empty or

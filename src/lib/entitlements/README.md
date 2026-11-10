@@ -10,7 +10,7 @@ charges anyone; prices and payment stay manual until billing exists.
 ## Contents
 
 - `contract.ts`: `entitlementPayloadSchema` (zod), the `EntitlementPayload`
-  type and `entitlementResponseSchema`. The wire contract below; kits copy it.
+  type and `entitlementResponseSchema`. The wire contract below; kits copy it. The tier enum lives inside the schema; there is no separate `EntitlementTier` type, and `store.ts` keeps `SyncErrorKind` module-private.
 - `contract.test.ts`: tier rules per kit, date formats, response shape.
 - `derive.ts`: `deriveEntitlements()`, pure. Takes a vendor's subscriptions and
   event passes, the plan catalog, the live kit slugs and `now`; returns one

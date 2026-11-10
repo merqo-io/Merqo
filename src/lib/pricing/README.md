@@ -18,7 +18,7 @@ billing will build on. Nothing here charges anyone.
   values, Event Pass minimum, per-cup and cap cases) plus input validation.
 - `catalog.ts`: `loadPlanCatalog()` reads `merqo.plans` through the service
   client and returns typed `Plan` objects; `parsePlanRows` validates rows.
-- `public-catalog.ts`: `loadPublicPlanCatalog()` reads active plans through the anon client and shapes the `/api/plans` response; `public-catalog.test.ts` covers it.
+- `public-catalog.ts`: `loadPublicPlanCatalog()` reads active plans through the anon client and shapes the `/api/plans` response (the `PublicPlan` and `PublicEventPass` shapes are module-private; only `PublicPlanCatalog` is exported); `public-catalog.test.ts` covers it.
 - `format.ts`: `formatSgd` (cents to `S$16.00`) and `planLabel` (slug to display name, tier slugs labelled through `tierLabel`: `qkit` shows as Pro) for admin screens; `format.test.ts` covers them.
 - `catalog.test.ts`: row mapping, event pass terms, query order and errors.
 
