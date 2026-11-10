@@ -32,8 +32,7 @@ export interface EventPassRow extends EventPassInput {
   settledAt: string | null;
 }
 
-export type SyncErrorKind =
-  "unconfigured" | "network" | "http" | "parse" | "schema";
+type SyncErrorKind = "unconfigured" | "network" | "http" | "parse" | "schema";
 
 export interface SyncRow {
   kitSlug: string;

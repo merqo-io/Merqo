@@ -31,6 +31,8 @@ current connection with its own-row session/RLS client.
 
 The page sets its tab title to "Profile". The page header's way back to `/dashboard` is `@merqo/ui`'s `BackButton`, given `next/link`.
 
+`loading.tsx` is the route skeleton shown while the session, profile and Telegram lookups resolve; `loading.test.tsx` covers it.
+
 ## Verification
 
 Action tests cover validation, verified identity and field-specific patches.

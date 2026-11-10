@@ -24,7 +24,6 @@ export const entitlementPayloadSchema = z
   );
 
 export type EntitlementPayload = z.infer<typeof entitlementPayloadSchema>;
-export type EntitlementTier = EntitlementPayload["tier"];
 
 /** What a kit answers with on success. */
 export const entitlementResponseSchema = z.object({ ok: z.literal(true) });

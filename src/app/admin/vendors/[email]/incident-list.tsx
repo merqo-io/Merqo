@@ -2,7 +2,7 @@ import type { IncidentKind, VendorActivityPayload } from "@merqo/ui/contracts";
 import { Badge } from "@/components/ui/badge";
 import { timeAgo } from "@/lib/format";
 
-export const INCIDENT_LABELS: Record<IncidentKind, string> = {
+const INCIDENT_LABELS: Record<IncidentKind, string> = {
   payment_callback_failed: "Payment callback failed",
   payment_claim_stuck: "Payment claim stuck",
   print_failed: "Print failed",

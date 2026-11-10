@@ -14,7 +14,9 @@ password alone.
   to the form.
 - `mfa-form.tsx` — client form: enrol an authenticator (QR plus manual key) or
   verify a 6-digit code with `challengeAndVerify`, then enter `/admin`.
+- `loading.tsx` — route skeleton shown while the team and MFA lookups resolve.
 - `mfa-form.dom.test.tsx` — verify, wrong code, enrol-then-verify, bad input.
+- `loading.test.tsx` — loading announcement and card layout.
 
 ## Connectivity
 

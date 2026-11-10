@@ -3,7 +3,7 @@ import { annualCents } from "./calc";
 import { parsePlanRows } from "./catalog";
 import { planLabel } from "./format";
 
-export interface PublicPlan {
+interface PublicPlan {
   slug: string;
   kind: string;
   name: string;
@@ -12,7 +12,7 @@ export interface PublicPlan {
   kits: string[];
 }
 
-export interface PublicEventPass {
+interface PublicEventPass {
   per_cup_cents: number;
   min_cents: number;
   cap_cents: number;

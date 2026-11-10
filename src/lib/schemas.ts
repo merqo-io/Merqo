@@ -32,7 +32,6 @@ export type ProfileNameInput = z.infer<typeof profileNameSchema>;
 export const displayNameSchema = z.object({
   displayName: z.string().trim().max(60, "Display name is too long"),
 });
-export type DisplayNameInput = z.infer<typeof displayNameSchema>;
 
 // New password + confirm. Min length mirrors the login schema (8); confirm
 // must match.
@@ -45,7 +44,6 @@ export const passwordChangeSchema = z
     message: "Passwords do not match",
     path: ["confirm"],
   });
-export type PasswordChangeInput = z.infer<typeof passwordChangeSchema>;
 
 // ── Route/action boundaries ───────────────────────────────────────────────────
 

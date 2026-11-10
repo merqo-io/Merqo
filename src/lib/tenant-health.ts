@@ -5,7 +5,7 @@ import {
   type VendorActivityResult,
 } from "@/lib/vendor-activity-client";
 
-export type TenantHealthKit = {
+type TenantHealthKit = {
   slug: string;
   status: VendorActivityStatus | null;
   incidentCount: number;

@@ -124,6 +124,7 @@ pnpm test:e2e     # playwright public smoke (admin flows wait for confirm dialog
 pnpm check        # prettier --check + eslint + tsc --noEmit
 pnpm format       # prettier --write
 pnpm check:legal-versions  # compare actual legal versions at each product's locked UI commit
+pnpm dlx knip@6.44.2 --no-progress  # unused files, exports and dependencies (config: knip.json); last run in docs/meta/2026-10-24-fresh-eyes-sweep.md
 ```
 
 ## Dependencies

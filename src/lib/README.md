@@ -54,7 +54,7 @@ console and dashboard figures (`countHealth` counts each kit once, so a lagging 
 report them as nested conversion stages. `kits.ts` is the family configuration (each kit's readiness, `piloting` or `in-build`, and URL
 defaults to `https://<kit>.merqo.io`, overridable with `NEXT_PUBLIC_<KIT>_URL`);
 `ecosystem.ts` derives its diagram status from that configuration.
-`format.ts` and `utils.ts` provide display formatting (`timeAgo` returns `-` for an unparseable timestamp) and class composition.
+`format.ts` and `utils.ts` provide display formatting (`timeAgo` returns `-` for an unparseable timestamp) and the shared form label and error class strings.
 `sg-date.ts` provides `sgDay`, the Asia/Singapore YYYY-MM-DD formatter the vendor admin page uses for every date it shows. Its test pins the 16:00Z to 24:00Z window, where the Singapore date is a day ahead of UTC.
 `brand-mark.ts` binds merqo's colours to the shared `brandIcon` for the icon routes; `account.ts` safely reads metadata.
 

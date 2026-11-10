@@ -1,10 +1,6 @@
 import { readAdminRows, adminEmailsById } from "./admin-read";
 import { createServiceClient } from "@/lib/supabase/server";
-import {
-  groupVendorGrants,
-  findVendorGrant,
-  filterVendorGrants,
-} from "@/lib/vendor-grants";
+import { groupVendorGrants, findVendorGrant } from "@/lib/vendor-grants";
 import type {
   GrantStatus,
   VendorGrant,
@@ -21,7 +17,6 @@ import type { Json, AdminAudit } from "@/lib/types";
 // import directly to avoid pulling this file's supabase/server dependency
 // into a client bundle.
 export type { GrantStatus, VendorGrant, ProductOption };
-export { groupVendorGrants, findVendorGrant, filterVendorGrants };
 
 /** One vendor's grants by email, or null. Gate callers with requireMerqoTeam(). */
 export async function getVendorGrant(
