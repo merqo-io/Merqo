@@ -266,7 +266,7 @@ The AI harness follows templateCentral 7.2.2: hook commands are anchored on the 
 
 ## Security headers and MFA
 
-`src/proxy.ts` sets the CSP (nonce on per-request routes) and `X-Robots-Tag` on non-production deployments. The operator console requires TOTP MFA; see `src/app/mfa/README.md` and `docs/security/`.
+`src/proxy.ts` sets the CSP (nonce on per-request routes) and `X-Robots-Tag` on non-production deployments. The operator console requires TOTP MFA; see `src/app/mfa/README.md` and `docs/security/`. The MFA form and the wordmark are thin wrappers over `@merqo/ui`.
 
 ## Lint
 
