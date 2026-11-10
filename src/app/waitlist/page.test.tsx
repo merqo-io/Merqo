@@ -65,6 +65,9 @@ describe("WaitlistPage", () => {
     expect(block).toHaveTextContent("first 15");
     expect(block).toHaveTextContent("12 months");
     expect(block).toHaveTextContent("Nothing to pay today");
+    expect(block).toHaveTextContent("free during the pilot");
+    expect(block).not.toHaveTextContent("sole trader");
+    expect(block).not.toHaveTextContent("becomes a company");
     expect(block).not.toHaveTextContent("PayNow");
   });
 });
