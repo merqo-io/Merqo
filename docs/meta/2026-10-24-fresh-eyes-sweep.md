@@ -48,6 +48,7 @@ The `templatecentral:standards` skill was not available to this run, so no code-
 
 ## Fixed in this PR
 
+- `eslint.config.mjs` ignores `coverage/**` (already in `.gitignore` and `.prettierignore`), so `pnpm check` passes after a local coverage run.
 - knip findings above, with `knip.json`.
 - `/mfa` and `/profile` loading skeletons and tests.
 - Profile page await waterfall.

@@ -90,6 +90,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "coverage/**",
     "next-env.d.ts",
     // Enforcement-layer scripts, not app code — integrity is hash-checked via
     // .claude/harness.json, not style-checked here (mirrors .husky/pre-commit's
