@@ -26,7 +26,8 @@ which is an open owner decision.
   `expected-fingerprint` artifact.
 - `scripts/drift-compare.mjs <expected.csv> <actual.csv> [--known <file>]`:
   prints objects missing from the database, extra in it, or changed, and
-  exits 1 on any of them. `--known` takes a list of accepted drift, one
+  exits 1 on any of them, or 2 on bad usage or an unreadable fingerprint
+  (such as duplicate names). `--known` takes a list of accepted drift, one
   `schema,kind,name` per line, where a trailing `*` matches a prefix.
 - `scripts/schema-drift-known.txt`: the accepted drift list.
 

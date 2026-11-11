@@ -130,9 +130,16 @@ export function main(argv) {
     );
     return 2;
   }
-  const [expected, actual] = args.map((file) =>
-    readFingerprint(readFileSync(file, "utf8")),
-  );
+  let expected;
+  let actual;
+  try {
+    [expected, actual] = args.map((file) =>
+      readFingerprint(readFileSync(file, "utf8")),
+    );
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    return 2;
+  }
   const result = compareFingerprints(expected, actual, known);
   console.log(formatReport(result));
   return driftCount(result) === 0 ? 0 : 1;
