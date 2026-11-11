@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { ErrorPage } from "@merqo/ui";
 import { Wordmark } from "@/components/brand/wordmark";
-import { Button } from "@merqo/ui/primitives";
 
 /**
- * Root error boundary — replaces the raw Next error overlay in production if an
+ * Root error boundary: replaces the raw Next error overlay in production if an
  * RSC throws (e.g. Supabase or a kit's metrics API is briefly unreachable).
  */
 export default function ErrorBoundary({
@@ -15,28 +14,14 @@ export default function ErrorBoundary({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error("Unhandled error", error);
-  }, [error]);
-
   return (
-    <div
-      data-error-boundary="true"
-      className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center gap-4 px-6 text-center"
-    >
-      <Wordmark className="text-2xl" />
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-        Something went wrong
-      </p>
-      <h1 className="font-display text-3xl font-semibold">
-        That didn&apos;t load
-      </h1>
-      <p className="text-sm text-muted-foreground">
-        Something went wrong on our side. Try again.
-      </p>
-      <Button onClick={reset} className="h-11 rounded-xl px-6 font-semibold">
-        Try again
-      </Button>
-    </div>
+    <ErrorPage
+      error={error}
+      reset={reset}
+      wordmark={<Wordmark className="text-2xl" />}
+      eyebrow="Something went wrong"
+      title="That didn't load"
+      description="Something went wrong on our side. Try again."
+    />
   );
 }

@@ -1,20 +1,18 @@
 import Link from "next/link";
+import { NotFound } from "@merqo/ui";
 import { Wordmark } from "@/components/brand/wordmark";
-import { Button } from "@merqo/ui/primitives";
 
-/** Branded 404 — reached e.g. from a stale or mistyped console URL. */
-export default function NotFound() {
+/** Branded 404: reached e.g. from a stale or mistyped console URL. */
+export default function NotFoundPage() {
   return (
-    <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center gap-4 px-6 text-center">
-      <Wordmark className="text-2xl" />
-      <p className="font-mono text-5xl font-bold text-primary">404</p>
-      <h1 className="font-display text-3xl font-semibold">Not found</h1>
-      <p className="text-sm text-muted-foreground">
-        This page does not exist, or you do not have access to it.
-      </p>
-      <Button asChild variant="outline" className="h-11 rounded-xl px-6">
-        <Link href="/">Back to home</Link>
-      </Button>
-    </div>
+    <NotFound
+      wordmark={<Wordmark className="text-2xl" />}
+      code="404"
+      title="Not found"
+      description="This page does not exist, or you do not have access to it."
+      homeHref="/"
+      homeLabel="Back to home"
+      LinkComponent={Link}
+    />
   );
 }

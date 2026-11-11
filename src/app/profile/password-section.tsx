@@ -2,10 +2,9 @@
 import { useState } from "react";
 
 import { toast } from "sonner";
-import { Section } from "@merqo/ui";
+import { FORM_ERROR_CLASS, FORM_LABEL_CLASS, Section } from "@merqo/ui";
 import { Button, Input, Label } from "@merqo/ui/primitives";
 import { useAsyncAction } from "@/hooks/use-async-action";
-import { FORM_ERROR_CLASS, FORM_LABEL_CLASS } from "@/lib/utils";
 import { KeyRound } from "lucide-react";
 import { passwordChangeSchema } from "@/lib/schemas";
 import { createClient } from "@/lib/supabase/client";
