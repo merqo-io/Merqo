@@ -1,3 +1,8 @@
 # Accepted drift for drift-compare.mjs --known. One entry per line as
 # schema,kind,name; a trailing `*` matches a prefix. Add an entry only with a
 # comment saying why the drift is accepted.
+#
+# qkit migration 0041 grants EXECUTE on every qkit function that exists when it
+# runs. On production booth_open already existed then; on a fresh stack it is
+# created later (0044/0046), so only production carries this grant. Harmless.
+qkit,routine_grant,booth_open(p_hours jsonb, p_now timestamp with time zone):service_role

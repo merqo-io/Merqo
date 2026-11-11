@@ -1,8 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   compareFingerprints,
   main,
+  readKnown,
   parseCsv,
   readFingerprint,
 } from "../../scripts/drift-compare.mjs";
@@ -85,6 +89,32 @@ describe("readFingerprint", () => {
   it("rejects a CSV without the fingerprint columns", () => {
     expect(() => readFingerprint("a,b\n1,2\n")).toThrow(/schema/);
   });
+
+  it("rejects a duplicate schema,kind,name key", () => {
+    const csv =
+      "schema,kind,name,md5\nqkit,table,orders,1\nqkit,table,orders,2\n";
+    expect(() => readFingerprint(csv)).toThrow(
+      /duplicate object "qkit,table,orders".*truncating/,
+    );
+  });
+});
+
+describe("schema-drift-known.txt", () => {
+  it("matches the qkit booth_open service_role grant by its full key", () => {
+    const key =
+      "qkit,routine_grant,booth_open(p_hours jsonb, p_now timestamp with time zone):service_role";
+    const known = readKnown(
+      readFileSync(
+        fileURLToPath(
+          new URL("../../scripts/schema-drift-known.txt", import.meta.url),
+        ),
+        "utf8",
+      ),
+    );
+    const result = compareFingerprints(new Map(), new Map([[key, "1"]]), known);
+    expect(result.known).toEqual([key]);
+    expect(result.extra).toEqual([]);
+  });
 });
 
 describe("main", () => {
@@ -118,6 +148,21 @@ describe("main", () => {
     const report = String(log.mock.calls[0]?.[0]);
     expect(report).toContain("Known drift (ignored) (1):");
     expect(report).toContain("2 object(s) drifted.");
+  });
+
+  it("exits 2 without reporting drift when a fingerprint has duplicate keys", () => {
+    const dir = mkdtempSync(join(tmpdir(), "drift-"));
+    const file = join(dir, "dup.csv");
+    writeFileSync(
+      file,
+      "schema,kind,name,md5\nqkit,table,orders,1\nqkit,table,orders,2\n",
+    );
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    expect(main([file, file])).toBe(2);
+    expect(error).toHaveBeenCalledWith(expect.stringMatching(/duplicate/));
+    expect(log).not.toHaveBeenCalled();
+    rmSync(dir, { recursive: true, force: true });
   });
 
   it("prints usage and exits 2 without two files", () => {

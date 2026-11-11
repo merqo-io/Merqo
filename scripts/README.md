@@ -22,13 +22,13 @@ Founder-run maintenance scripts, invoked manually.
 
 - `schema-fingerprint.sql` returns one `(schema, kind, name, md5)` row per
   table, column, constraint, index, trigger, policy, function and grant in the
-  six kit schemas. Read-only; carriage returns are stripped before hashing, so line endings
+  six kit schemas, with full untruncated names. Read-only; carriage returns are stripped before hashing, so line endings
   are ignored; the owner runs it on staging and production.
 - `drift-compare.mjs <expected.csv> <actual.csv> [--known <file>]` lists
   objects missing, extra or changed between two fingerprints and exits 1 on
-  any. `schema-drift-known.txt` is the accepted-drift list it takes with
-  `--known`; it is currently empty, and an entry needs a comment saying why
-  the drift is accepted. Runbook: `docs/SCHEMA-DRIFT.md`.
+  any. It exits 2 on bad usage or an unreadable fingerprint, including
+  duplicate names. `schema-drift-known.txt` is the accepted-drift list it takes
+  with `--known`; an entry needs a comment saying why the drift is accepted. Runbook: `docs/SCHEMA-DRIFT.md`.
 
 ## Parent
 
