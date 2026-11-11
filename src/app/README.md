@@ -22,7 +22,7 @@ console, auth, and shared account pages.
 - `apple-icon.tsx` — `AppleIcon` route handler; renders a 180×180 PNG for iOS home-screen touch icons.
 - `auth/` — Supabase auth callback route (OAuth code exchange).
 - `dashboard/` — vendor dashboard: `(app)/` (the dashboard itself — overview + kit discovery, open to every signed-in user) and `profile/` (a redirect shim to `/profile` — `@merqo/ui`'s `AccountMenu` hardcodes its Profile link to `/dashboard/profile`, the convention every other kit follows, but Merqo's real shared account page lives at the top-level `/profile`).
-- `error.tsx` / `global-error.tsx` — root React error boundaries, thin wrappers over `ErrorPage` and `GlobalError` from `@merqo/ui`. `error.tsx` shows a "Reference: <digest>" line when Next supplies a digest; `global-error.tsx` keeps the app's literal token values because the stylesheet has not loaded when the root layout throws.
+- `error.tsx` / `global-error.tsx` — root React error boundaries, thin wrappers over `ErrorPage` and `GlobalError` from `@merqo/ui`. `error.tsx` shows a "Reference: <digest>" line when Next supplies a digest; `global-error.tsx` no longer shows the wordmark (the shared `GlobalError` has no wordmark slot; `error.tsx` and `not-found.tsx` keep it) and keeps the app's literal token values because the stylesheet has not loaded when the root layout throws.
 - `mfa/` — TOTP enrol/verify page that `requireMerqoTeam()` sends password-only team sessions to; see its README.
 - `login/` and `reset-password/` carry a `force-dynamic` layout so the nonce CSP from `proxy.ts` reaches their scripts.
 - `robots.ts` — disallows all crawling except on the production deployment.

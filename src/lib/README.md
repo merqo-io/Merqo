@@ -92,3 +92,5 @@ ateLimit, a Postgres fixed-window counter that fails open or closed per caller. 
 
 `auth-error-copy.ts` holds `authErrorCopy(raw, fallback)`, which maps known Supabase auth error messages to plain copy and otherwise logs only a tag and error code and returns the fallback.
 `pricing/format.ts` maps the stored `qkit` tier to the label Pro; the stored value is unchanged, only its label. The dashboard kit card uses the shared `tierLabel` from `@merqo/ui`.
+
+`components.json` still lists the shadcn `utils` alias `@/lib/utils`, which no longer exists: primitives come from `@merqo/ui/primitives` (see `src/components/ui/README.md`), so local shadcn generation is not used and the alias is stale.
