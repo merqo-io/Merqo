@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The schema fingerprint no longer truncates object names to 63 bytes, which collapsed overloaded functions and per-role grants into duplicate keys and hid or misreported drift. `drift-compare.mjs` now fails on duplicate keys. Re-run the fingerprint on production and staging. The qkit `booth_open` `service_role` grant is listed as known drift.
 - The schema fingerprint (`scripts/schema-fingerprint.sql`) strips carriage returns before hashing, so objects applied from a Windows checkout no longer show as drifted against the Linux-built expected fingerprint. Re-run it on production and staging after this lands.
 
 ### Changed

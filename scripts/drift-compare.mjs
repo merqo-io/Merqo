@@ -53,9 +53,17 @@ export function readFingerprint(text) {
     return index;
   };
   const [schema, kind, name, md5] = ["schema", "kind", "name", "md5"].map(at);
-  return new Map(
-    rows.map((row) => [objectKey(row[schema], row[kind], row[name]), row[md5]]),
-  );
+  const objects = new Map();
+  for (const row of rows) {
+    const key = objectKey(row[schema], row[kind], row[name]);
+    if (objects.has(key)) {
+      throw new Error(
+        `fingerprint CSV has duplicate object "${key}"; the fingerprint SQL is outdated or truncating names, re-run the current scripts/schema-fingerprint.sql`,
+      );
+    }
+    objects.set(key, row[md5]);
+  }
+  return objects;
 }
 
 /** Known drift: one "schema,kind,name" per line, a trailing * matches a prefix; # starts a comment. */

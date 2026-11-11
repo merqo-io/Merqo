@@ -56,9 +56,16 @@ replaces a function or policy.
 
 ## Known drift
 
-`scripts/schema-drift-known.txt` is currently empty: every difference the
-check reports is real drift. Add an entry there only with a comment saying
-why the drift is accepted.
+`scripts/schema-drift-known.txt` lists accepted drift. Add an entry there
+only with a comment saying why the drift is accepted. Names in the fingerprint
+are full signatures (never truncated to 63 bytes), and the compare rejects a
+CSV with duplicate names, which means the fingerprint SQL is outdated.
+
+- `qkit,routine_grant,booth_open(p_hours jsonb, p_now timestamp with time zone):service_role`:
+  qkit migration 0041 grants EXECUTE on every qkit function that exists when
+  it runs. On production `booth_open` already existed then; on a fresh stack
+  it is created later (0044/0046), so only production carries the grant.
+  Harmless.
 
 The expected side runs migrations as `postgres` on a clean stack. An object
 that is the same everywhere but owned or granted differently on a project

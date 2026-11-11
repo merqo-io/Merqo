@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
   compareFingerprints,
   main,
+  readKnown,
   parseCsv,
   readFingerprint,
 } from "../../scripts/drift-compare.mjs";
@@ -84,6 +86,32 @@ describe("compareFingerprints", () => {
 describe("readFingerprint", () => {
   it("rejects a CSV without the fingerprint columns", () => {
     expect(() => readFingerprint("a,b\n1,2\n")).toThrow(/schema/);
+  });
+
+  it("rejects a duplicate schema,kind,name key", () => {
+    const csv =
+      "schema,kind,name,md5\nqkit,table,orders,1\nqkit,table,orders,2\n";
+    expect(() => readFingerprint(csv)).toThrow(
+      /duplicate object "qkit,table,orders".*truncating/,
+    );
+  });
+});
+
+describe("schema-drift-known.txt", () => {
+  it("matches the qkit booth_open service_role grant by its full key", () => {
+    const key =
+      "qkit,routine_grant,booth_open(p_hours jsonb, p_now timestamp with time zone):service_role";
+    const known = readKnown(
+      readFileSync(
+        fileURLToPath(
+          new URL("../../scripts/schema-drift-known.txt", import.meta.url),
+        ),
+        "utf8",
+      ),
+    );
+    const result = compareFingerprints(new Map(), new Map([[key, "1"]]), known);
+    expect(result.known).toEqual([key]);
+    expect(result.extra).toEqual([]);
   });
 });
 
