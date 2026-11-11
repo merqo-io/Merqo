@@ -16,7 +16,8 @@ which is an open owner decision.
   Kinds: `table` (kind and RLS flags), `column` (type,
   nullability, default), `constraint`, `index`, `trigger`, `policy`,
   `function` (`pg_get_functiondef`), `grant` (table privileges per role) and
-  `routine_grant` (function privileges per role). Read-only.
+  `routine_grant` (function privileges per role). Read-only. Carriage returns
+  are stripped before hashing, so line-ending differences are not drift.
 - `.github/workflows/schema-fingerprint.yml`: on demand and every Monday,
   loads all six repos' `main` migrations into a fresh local Supabase stack in
   the staging order (merqo, qkit, loopkit, paykit, stockkit, printkit, with
