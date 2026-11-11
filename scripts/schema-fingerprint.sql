@@ -80,6 +80,8 @@ objects(schema, kind, name, body) as (
   left join pg_roles g on g.oid = acl.grantee
   group by f.nspname, f.signature, g.rolname
 )
-select schema, kind, name, md5(body) as md5
+-- Carriage returns are stripped so bodies applied from a CRLF checkout hash
+-- the same as LF ones.
+select schema, kind, name, md5(replace(body, chr(13), '')) as md5
 from objects
 order by schema, kind, name;

@@ -22,7 +22,8 @@ Founder-run maintenance scripts, invoked manually.
 
 - `schema-fingerprint.sql` returns one `(schema, kind, name, md5)` row per
   table, column, constraint, index, trigger, policy, function and grant in the
-  six kit schemas. Read-only; the owner runs it on staging and production.
+  six kit schemas. Read-only; carriage returns are stripped before hashing, so line endings
+  are ignored; the owner runs it on staging and production.
 - `drift-compare.mjs <expected.csv> <actual.csv> [--known <file>]` lists
   objects missing, extra or changed between two fingerprints and exits 1 on
   any. `schema-drift-known.txt` is the accepted-drift list it takes with

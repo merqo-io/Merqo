@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- The schema fingerprint (`scripts/schema-fingerprint.sql`) strips carriage returns before hashing, so objects applied from a Windows checkout no longer show as drifted against the Linux-built expected fingerprint. Re-run it on production and staging after this lands.
+
 ### Changed
 
 - The MFA form and the wordmark are now thin wrappers over `MfaForm` and `Wordmark` from `@merqo/ui`; error copy and the Supabase call order are unchanged. Shared-form differences: pasted text is reduced to six digits; the input gains a placeholder, `name="code"`, `pattern="[0-9]*"`, `aria-invalid` and `aria-describedby`, and non-digits are stripped as typed; the input is disabled while pending; the button reads "Verifying" while pending and ignores duplicate taps; the error clears on edit; thrown errors are shown; the QR code renders only for `data:image/` sources. The wordmark keeps its text and colour classes locally.
