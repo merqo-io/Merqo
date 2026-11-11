@@ -10,6 +10,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The MFA form and the wordmark are now thin wrappers over `MfaForm` and `Wordmark` from `@merqo/ui`; error copy and the Supabase call order are unchanged. Shared-form differences: pasted text is reduced to six digits; the input gains a placeholder, `name="code"`, `pattern="[0-9]*"`, `aria-invalid` and `aria-describedby`, and non-digits are stripped as typed; the input is disabled while pending; the button reads "Verifying" while pending and ignores duplicate taps; the error clears on edit; thrown errors are shown; the QR code renders only for `data:image/` sources. The wordmark keeps its text and colour classes locally.
 
+## [0.14.2] - 2026-11-11
+
+### Changed
+
+- `@merqo/ui` moves from v0.44.1 to v0.44.2. The terms, privacy policy, pilot agreement and About text are reworded so that charging and incorporation are conditional and Merqo is described as a personal software project. `LEGAL_VERSIONS` for terms and privacy moves to 2026-11-10, so signed-in vendors are asked to re-accept.
+
 ## [0.14.1] - 2026-11-10
 
 ### Changed
