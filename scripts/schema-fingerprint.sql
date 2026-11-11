@@ -23,8 +23,11 @@ funcs as (
       where d.objid = p.oid and d.classid = 'pg_proc'::regclass and d.deptype = 'e'
     )
 ),
+-- The first branch fixes each column's type for the whole union. nspname and
+-- relname are `name` (63 bytes), so they are cast to text here; otherwise every
+-- later branch is truncated and overloads and per-role grants collide.
 objects(schema, kind, name, body) as (
-  select nspname, 'table', relname,
+  select nspname::text, 'table', relname::text,
          relkind::text || '|rls=' || relrowsecurity || '|force=' || relforcerowsecurity
   from rels
   union all

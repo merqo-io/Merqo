@@ -172,7 +172,7 @@ scripts/staging-migrate.sh: applies migrations to the staging project with psql
 scripts/check-legal-version-skew.mjs — asserts merqo + all 5 kit repos pin
                                matching terms/privacy/pilot versions from exact locked UI commits
 scripts/schema-fingerprint.sql, scripts/drift-compare.mjs — schema drift check, line endings ignored (docs/SCHEMA-DRIFT.md)
-scripts/schema-drift-known.txt — accepted-drift list for that check (currently empty)
+scripts/schema-drift-known.txt — accepted-drift list for that check (names are full signatures; the compare rejects duplicates)
 ```
 
 ## Data model
