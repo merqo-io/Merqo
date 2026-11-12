@@ -23,7 +23,8 @@ Founder-run maintenance scripts, invoked manually.
 - `schema-fingerprint.sql` returns one `(schema, kind, name, md5)` row per
   table, column, constraint, index, trigger, policy, function and grant in the
   six kit schemas, with full untruncated names. Read-only; carriage returns are stripped before hashing, so line endings
-  are ignored; the owner runs it on staging and production.
+  are ignored, and function bodies also ignore whole-line `--` comments and
+  whitespace; the owner runs it on staging and production.
 - `drift-compare.mjs <expected.csv> <actual.csv> [--known <file>]` lists
   objects missing, extra or changed between two fingerprints and exits 1 on
   any. It exits 2 on bad usage or an unreadable fingerprint, including
