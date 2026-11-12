@@ -19,3 +19,5 @@ Profile regressions verify independent simultaneous saves, rejected-save feedbac
 `vendor-list.test.tsx` and `admin-overview-health.test.tsx` assert the admin empty-state copy ("No vendors yet", "No products yet", "No live products yet").
 
 Tests that mocked the deleted local primitive paths import from `@merqo/ui/primitives` instead.
+
+`savings-summary.test.tsx` asserts the dashboard Pro estimate line ("more with Pro features") shows only when there is upside and never reads as an upgrade prompt.

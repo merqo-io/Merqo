@@ -210,7 +210,7 @@ secrets and administrative writes use server-only service clients, so
 - Admin nav is Overview, Vendors, Requests and Products; Team, Feedback and Activity sit in a "More admin pages" row that marks the current page, and `/admin/health` redirects to `/admin/products`.
 - Browser tabs read `<page> | merqo`; the dashboard (`Kits`) and profile (`Profile`) pages set their own titles.
 - The terms gate at `/legal/accept` has a Sign out button, so a user who declines the updated terms can leave.
-- Changelog: `CHANGELOG.md` (the top paid tier is labelled Pro, stored `qkit` unchanged; includes the new admin-audit trail, plus a fix
+- Changelog: `CHANGELOG.md` (the top paid tier is labelled Pro, stored `qkit` unchanged; the dashboard savings summary states the Pro estimate without an upgrade prompt; includes the new admin-audit trail, plus a fix
   restoring card/background contrast in both modes after the Harbour
   Control rebrand had accidentally collapsed them to the same color and a
   follow-up dark-mode brightness bump, a fix routing every signed-in
