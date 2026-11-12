@@ -45,11 +45,12 @@ describe("SavingsSummary", () => {
     expect(screen.getByText("$230")).toBeInTheDocument();
     expect(screen.getByText(/3 hrs\/week/)).toBeInTheDocument();
     expect(screen.getByText("Estimated")).toBeInTheDocument();
-    expect(screen.getByText(/Upgrade to Pro/)).toBeInTheDocument();
+    expect(screen.getByText(/more with Pro features/)).toBeInTheDocument();
+    expect(screen.queryByText(/upgrade/i)).not.toBeInTheDocument();
     expect(screen.getByText("+$240")).toBeInTheDocument();
   });
 
-  it("shows the Pro upgrade line only when there is upside", () => {
+  it("shows the Pro estimate line only when there is upside", () => {
     render(
       <TooltipProvider>
         <SavingsSummary
@@ -70,6 +71,6 @@ describe("SavingsSummary", () => {
         />
       </TooltipProvider>,
     );
-    expect(screen.queryByText(/Upgrade to Pro/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/with Pro features/)).not.toBeInTheDocument();
   });
 });
