@@ -13,6 +13,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The dashboard savings summary no longer says "Upgrade to Pro to save +S$X more". It now reads "Est. +S$X more with Pro features", stating the estimate without prompting a purchase while Merqo is a free pilot.
 - The MFA form and the wordmark are now thin wrappers over `MfaForm` and `Wordmark` from `@merqo/ui`; error copy and the Supabase call order are unchanged. Shared-form differences: pasted text is reduced to six digits; the input gains a placeholder, `name="code"`, `pattern="[0-9]*"`, `aria-invalid` and `aria-describedby`, and non-digits are stripped as typed; the input is disabled while pending; the button reads "Verifying" while pending and ignores duplicate taps; the error clears on edit; thrown errors are shown; the QR code renders only for `data:image/` sources. The wordmark keeps its text and colour classes locally.
 
 ## [0.14.2] - 2026-11-11
