@@ -49,8 +49,6 @@ section; one or more kits gets the savings + per-kit overview.
   explaining the estimate's basis. The Pro line is a neutral estimate
   ("Est. +S$X more with Pro features"), not a purchase prompt, because Merqo
   is a free pilot.
-- `savings-summary.dom.test.tsx` — asserts the Pro line renders only when
-  there is upside and never reads as an upgrade prompt.
 - `vendor-kit-card.tsx` — `VendorKitCard({ tile, savings, metrics, now })`:
   one active kit's card — plan badge (the tier Merqo derived, not one the kit reported; labelled via `tierLabel`, so `qkit` shows as Pro), per-kit savings line (same
   `InfoTooltip` from `@merqo/ui`), `VendorMetricList`, and the
