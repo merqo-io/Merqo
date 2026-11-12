@@ -18,6 +18,13 @@ which is an open owner decision.
   `function` (`pg_get_functiondef`), `grant` (table privileges per role) and
   `routine_grant` (function privileges per role). Read-only. Carriage returns
   are stripped before hashing, so line-ending differences are not drift.
+  Function hashes also ignore whole-line `--` comments and all whitespace, so
+  a function applied without its comment lines or with a different layout is
+  not drift. Blind spots: whitespace-only changes inside string literals and
+  comment-only edits are not detected, and trailing comments (`code -- note`)
+  still count because `--` can appear inside a string. Expected and actual
+  fingerprints must come from the same version of the script; one taken with
+  an older version is not comparable and shows every function as changed.
 - `.github/workflows/schema-fingerprint.yml`: on demand and every Monday,
   loads all six repos' `main` migrations into a fresh local Supabase stack in
   the staging order (merqo, qkit, loopkit, paykit, stockkit, printkit, with
