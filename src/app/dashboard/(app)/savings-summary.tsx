@@ -30,11 +30,11 @@ export function SavingsSummary({ totals }: { totals: VendorSavings }) {
       </p>
       {totals.totalUpsideCostCentsPerMonth > 0 && (
         <p className="mt-1 text-muted-foreground">
-          Upgrade to Pro to save{" "}
+          Est.{" "}
           <span className="font-semibold text-foreground">
             +{money(totals.totalUpsideCostCentsPerMonth)}
           </span>{" "}
-          more
+          more with Pro features
         </p>
       )}
       <p className="mt-1 text-xs text-muted-foreground">Estimated</p>
