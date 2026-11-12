@@ -84,7 +84,19 @@ objects(schema, kind, name, body) as (
   group by f.nspname, f.signature, g.rolname
 )
 -- Carriage returns are stripped so bodies applied from a CRLF checkout hash
--- the same as LF ones.
-select schema, kind, name, md5(replace(body, chr(13), '')) as md5
+-- the same as LF ones. Function bodies additionally drop whole-line `--`
+-- comments and all whitespace, because the live database can hold the same
+-- code without the comment lines or with different line breaks and
+-- indentation. Trailing comments are kept: `--` can occur inside a string
+-- literal, so only lines that start with it are provably comments. Other
+-- kinds are hashed as-is so their fingerprints stay comparable.
+select schema, kind, name,
+       md5(case when kind = 'function'
+                then regexp_replace(
+                       regexp_replace(replace(body, chr(13), ''),
+                                      '^[[:blank:]]*--[^\n]*$', '', 'gn'),
+                       '\s+', '', 'g')
+                else replace(body, chr(13), '')
+           end) as md5
 from objects
 order by schema, kind, name;
