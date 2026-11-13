@@ -127,14 +127,14 @@ from unnest(array['anon', 'authenticated', 'service_role']) r;
 
 set local role anon;
 select set_config('request.jwt.claims', json_build_object('role', 'anon')::text, true);
-select is((select count(*)::int from merqo.plans), 7, 'anon reads only active plans');
-select is((select count(*)::int from merqo.plans where slug = 'paykit'), 0, 'anon cannot see inactive paykit');
+select is((select count(*)::int from merqo.plans), 4, 'anon reads only active plans');
+select is((select count(*)::int from merqo.plans where not active), 0, 'anon cannot see inactive plans');
 select throws_ok($$ select 1 from merqo.subscriptions $$, '42501', null, 'anon cannot read subscriptions');
 reset role;
 
 set local role authenticated;
 select set_config('request.jwt.claims', json_build_object('sub', '36000000-0000-0000-0000-000000000001', 'role', 'authenticated')::text, true);
-select is((select count(*)::int from merqo.plans), 7, 'a vendor reads only active plans');
+select is((select count(*)::int from merqo.plans), 4, 'a vendor reads only active plans');
 select is((select count(*)::int from merqo.subscriptions where vendor_id <> '36000000-0000-0000-0000-000000000001'), 0, 'a vendor reads no other vendor subscription');
 select cmp_ok((select count(*)::int from merqo.subscriptions), '>', 0, 'a vendor reads their own subscriptions');
 select is((select count(*)::int from merqo.billing_credits), 1, 'a vendor reads their own credits');
