@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { EmptyState } from "@merqo/ui";
 import { filterVendorGrants } from "@/lib/vendor-grants";
 import type {
   GrantStatus,
@@ -76,11 +77,15 @@ export function VendorList({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          {grants.length === 0
-            ? "No vendors yet. Approved requests show up here."
-            : "No vendors match these filters."}
-        </div>
+        <EmptyState
+          size="compact"
+          className="mt-4"
+          title={
+            grants.length === 0
+              ? "No vendors yet. Approved requests show up here."
+              : "No vendors match these filters."
+          }
+        />
       ) : (
         <ul className="mt-3 space-y-2">
           {filtered.map((v) => (

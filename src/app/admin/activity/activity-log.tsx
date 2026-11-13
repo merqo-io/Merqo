@@ -1,6 +1,6 @@
 "use client";
 
-import { AuditLogTable, type AuditLogEntry } from "@merqo/ui";
+import { AuditLogTable, EmptyState, type AuditLogEntry } from "@merqo/ui";
 
 // Keep display-label callbacks in this client adapter; the server page passes
 // only serializable audit entries.
@@ -31,11 +31,7 @@ export function ActivityLog({ entries }: { entries: AuditLogEntry[] }) {
     <AuditLogTable
       entries={entries}
       formatAction={formatAction}
-      emptyState={
-        <div className="rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No admin activity yet.
-        </div>
-      }
+      emptyState={<EmptyState size="compact" title="No admin activity yet." />}
     />
   );
 }

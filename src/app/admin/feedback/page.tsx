@@ -1,6 +1,7 @@
 import { requireMerqoTeam } from "@/lib/team";
 import { createServerClient } from "@/lib/supabase/server";
 import { NpsCard } from "@/components/nps-card";
+import { EmptyState } from "@merqo/ui";
 import {
   groupVendorFeedbackByKit,
   type VendorFeedbackRow,
@@ -84,9 +85,11 @@ export default async function AdminFeedbackPage() {
       )}
 
       {all.length === 0 && (
-        <div className="mt-6 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No feedback yet. Scores and comments show up here.
-        </div>
+        <EmptyState
+          size="compact"
+          className="mt-6"
+          title="No feedback yet. Scores and comments show up here."
+        />
       )}
 
       <div className="mt-10">
@@ -99,9 +102,11 @@ export default async function AdminFeedbackPage() {
       </div>
 
       {byKit.size === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No vendor feedback yet. Scores for each kit show up here.
-        </div>
+        <EmptyState
+          size="compact"
+          className="mt-4"
+          title="No vendor feedback yet. Scores for each kit show up here."
+        />
       ) : (
         [...byKit.entries()].map(([kitSlug, kitRows]) => (
           <NpsCard
