@@ -55,8 +55,8 @@ own admin console separately.
   (`grantSubscriptionAction`, `cancelSubscriptionAction`, `mintEventPassAction`,
   `cancelEventPassAction`, `repushEntitlementsAction`). Each write is audited,
   pushes the vendor's entitlements to the kits and revalidates; a grant or cancel
-  that carries a `requestId` also resolves that request. A full founder cap shows
-  "All 20 founder slots are taken." `subscription-actions.test.ts` covers them.
+  that carries a `requestId` also resolves that request. A founder grant needs the `qkit` or `all_access` plan ("Founders need a Counter
+  subscription."), and a full founder cap shows "All 20 founder slots are taken." `subscription-actions.test.ts` covers them.
 - Event pass settle: for an active pass that has ended, `subscription-section.tsx`
   shows the cups read live from qkit (`getEventPassUsage`, loaded in `page.tsx`),
   total charge, prepaid and top-up due, with a `SettleEventPassButton`. Usage

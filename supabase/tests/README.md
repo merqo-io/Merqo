@@ -7,7 +7,7 @@ Run the rollback-only pgTAP suites with `supabase test db` against local Supabas
 - `vendor-profile-partial-updates.test.sql`: owner-scoped atomic partial profile writes.
 - `vendor-profile-reader-permissions.test.sql`: owner/service profile creation and permitted existing reads.
 - `private-helper-acl.test.sql`: private customer synchronization, owner-trigger continuity, and founder helper denial.
-- `pricing-catalog.test.sql`: `0036` seeded plan values, plan and subscription CHECKs, the 20-founder cap, one active subscription per vendor and plan, and RLS/grants on plans, subscriptions and billing credits.
+- `pricing-catalog.test.sql`: the plan catalog as of `0044` (v3 prices, kit lists, off-sale plans), plan and subscription CHECKs, the 20-founder cap and the founder floor (a founder needs a `qkit` or `all_access` plan), one active subscription per vendor and plan, and RLS/grants on plans, subscriptions and billing credits.
 - `retention-purges.test.sql`: `0037` purge functions delete or null only rows past retention and are not executable by anon or authenticated.
 - `entitlements.test.sql`: `0038` event pass, request and push-log CHECKs (including `0039`'s `last_error_kind`), one pending request per vendor, `user_id_for_email` access, and RLS/grants (vendors read their own passes and requests, only the team reads the push log), plus `0043`'s settled-status and settle-field CHECK.
 - `db-hygiene.test.sql`: `0035` foreign key indexes, RLS on every table, and `admin_audit` access (no anon access, team-only reads, no client writes). It also covers `0040` `marketing_consents` (RLS on, no policies, no anon or authenticated writes, service role insert and update).

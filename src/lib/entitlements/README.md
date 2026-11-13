@@ -15,7 +15,7 @@ charges anyone; prices and payment stay manual until billing exists.
 - `derive.ts`: `deriveEntitlements()`, pure. Takes a vendor's subscriptions and
   event passes, the plan catalog, the live kit slugs and `now`; returns one
   entitlement per push target (`listEntitlementTargets()`: live and `push_only`). Kit tier is the highest across all active sources.
-- `derive.test.ts`: free default, each plan, starter vs qkit, All Access,
+- `derive.test.ts`: free default, each plan, starter vs qkit (starter paykit), off-sale plans, All Access,
   founder active vs expired, event pass running/upcoming/expired, overlapping
   sources, canceled and lapsed subscriptions, kits that are not live.
 - `periods.ts`: `addMonths`, `periodEnd`, `founderUntil` (UTC calendar months,
@@ -62,7 +62,10 @@ per vendor, JSON body:
 ```
 
 - `tier`: `qkit` takes `free | starter | qkit`; every other kit takes
-  `free | paid`. printkit is `paid` when the qkit tier is `qkit` (qkit plan,
+  `free | paid`. A starter subscription grants qkit `starter` plus `paid` for
+  the other kits in its sold `included_kits` (paykit on new sales, not
+  printkit). Plans switched off in the catalog still entitle existing
+  subscriptions. printkit is `paid` when the qkit tier is `qkit` (qkit plan,
   All Access or an active founder).
 - `founder`: true only while a founder subscription is active and inside its
   12-month founder window and paid period. The benefits (All Access) arrive as

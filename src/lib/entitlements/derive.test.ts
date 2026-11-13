@@ -30,11 +30,11 @@ function plan(
 
 const CATALOG: Plan[] = [
   plan("free", "free", ["qkit"]),
-  plan("starter", "starter", ["qkit"]),
-  plan("qkit", "kit", ["qkit", "printkit"]),
-  plan("loopkit", "kit", ["loopkit"]),
-  plan("stockkit", "kit", ["stockkit"]),
-  plan("all_access", "bundle", ALL),
+  plan("starter", "starter", ["qkit", "paykit"]),
+  plan("qkit", "kit", ["qkit", "printkit", "paykit"]),
+  plan("loopkit", "kit", ["loopkit"], { active: false }),
+  plan("stockkit", "kit", ["stockkit"], { active: false }),
+  plan("all_access", "bundle", ALL, { active: false }),
   plan("event_pass", "event_pass", ["qkit", "printkit", "paykit"]),
 ];
 
@@ -95,6 +95,33 @@ describe("deriveEntitlements", () => {
       valid_until: FUTURE,
     });
     expect(out.printkit.tier).toBe("free");
+  });
+
+  it("gives starter paykit paid but not printkit or the full qkit tier", () => {
+    const out = derive([sub("starter")]);
+    expect(out.qkit.tier).toBe("starter");
+    expect(out.paykit.tier).toBe("paid");
+    expect(out.printkit.tier).toBe("free");
+  });
+
+  it("leaves paykit free on an old starter subscription sold without it", () => {
+    const out = derive([sub("starter", { includedKits: ["qkit"] })]);
+    expect(out.qkit.tier).toBe("starter");
+    expect(out.paykit.tier).toBe("free");
+  });
+
+  it("gives the qkit plan paykit paid", () => {
+    expect(derive([sub("qkit")]).paykit.tier).toBe("paid");
+  });
+
+  it("still entitles subscriptions on plans that are off sale", () => {
+    expect(derive([sub("loopkit")]).loopkit.tier).toBe("paid");
+    expect(derive([sub("all_access")]).stockkit.tier).toBe("paid");
+  });
+
+  it("gives a founder every kit even though all_access is off sale", () => {
+    const out = derive([sub("qkit", { founder: true, founderUntil: FUTURE })]);
+    for (const kit of ALL) expect(out[kit].tier).not.toBe("free");
   });
 
   it("gives the qkit plan qkit, printkit and 90d stats", () => {
