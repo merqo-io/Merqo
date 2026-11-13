@@ -62,12 +62,15 @@ describe("WaitlistPage", () => {
     const block = screen
       .getByRole("heading", { name: "Founding merchant offer" })
       .closest("section")!;
-    expect(block).toHaveTextContent("first 15");
-    expect(block).toHaveTextContent("12 months");
+    expect(block).toHaveTextContent("20 founding merchant spots");
+    expect(block).toHaveTextContent("every kit we release");
+    expect(block).toHaveTextContent("setup done for them");
+    expect(block).toHaveTextContent("never goes up");
     expect(block).toHaveTextContent("Nothing to pay today");
     expect(block).toHaveTextContent("free during the pilot");
     expect(block).not.toHaveTextContent("sole trader");
     expect(block).not.toHaveTextContent("becomes a company");
     expect(block).not.toHaveTextContent("PayNow");
+    expect(block).not.toHaveTextContent(/S\$|\$\d/);
   });
 });

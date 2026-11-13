@@ -4,7 +4,14 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.15.0] - 2026-11-13
+
+### Changed
+
+- Plan catalog follows the 13 Nov 2026 pricing spec (migration `0044`): Starter S$14.90 and Counter (`qkit`) S$19.90, both now including paykit. loopkit, stockkit and All-Access are switched off (rows kept). Existing subscriptions keep their locked price and kit snapshot.
+- A Starter subscription grants paykit's paid tier when it was sold with paykit; printkit and the full qkit tier stay Counter-only.
+- Founder status requires a Counter (`qkit` or All-Access) subscription, enforced in the database trigger and the admin grant action.
+- The waitlist founding offer now reads 20 spots, every kit released in the first year, done-for-you setup and a price that never goes up, with no price figures.
 
 ### Fixed
 

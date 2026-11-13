@@ -6,7 +6,7 @@ Public waitlist page for the kits still in build.
 
 ## Contents
 
-- `page.tsx` — `WaitlistPage`: reads `?kit=` (Zod-validated against the in-build kit slugs, leaving the select empty when missing or invalid) and renders the founding merchant offer block (free pilot, any future pricing conditional, no payment taken, not-registered disclosure) above `WaitlistForm` inside the landing `Nav`/`Footer`.
+- `page.tsx` — `WaitlistPage`: reads `?kit=` (Zod-validated against the in-build kit slugs, leaving the select empty when missing or invalid) and renders the founding merchant offer block (free pilot, 20 founding spots, every kit released in year one, setup done for them, price never rises, no price figures, no payment taken, not-registered disclosure) above `WaitlistForm` inside the landing `Nav`/`Footer`.
 - `page.test.tsx` — covers the preselect, the empty fallback and the offer block copy.
 
 ## Connectivity

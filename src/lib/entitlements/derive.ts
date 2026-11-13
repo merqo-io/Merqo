@@ -44,7 +44,14 @@ function planGrants(
   allKits: string[],
   untilMs: number,
 ): Grant[] {
-  if (plan.kind === "starter") return [{ kit: QKIT, level: 1, untilMs }];
+  if (plan.kind === "starter") {
+    return [
+      { kit: QKIT, level: 1, untilMs },
+      ...sub.includedKits
+        .filter((kit) => kit !== QKIT)
+        .map((kit): Grant => ({ kit, level: 1, untilMs })),
+    ];
+  }
   if (plan.kind === "kit") {
     return sub.includedKits.map((kit) => ({
       kit,
