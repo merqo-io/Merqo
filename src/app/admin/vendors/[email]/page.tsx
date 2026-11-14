@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import Link from "next/link";
-import { BackButton } from "@merqo/ui";
+import { BackButton, EmptyState } from "@merqo/ui";
 import { notFound } from "next/navigation";
 import { requireMerqoTeam } from "@/lib/team";
 import { getVendorGrant, listProducts, recordAudit } from "@/lib/admin";
@@ -147,9 +147,11 @@ export default async function VendorDetailPage({
       <section>
         <h2 className="font-display text-lg font-bold">Kits</h2>
         {grant.kits.length === 0 ? (
-          <div className="mt-3 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-            No kits yet. Grant one below.
-          </div>
+          <EmptyState
+            size="compact"
+            className="mt-3"
+            title="No kits yet. Grant one below."
+          />
         ) : (
           <ul className="mt-3 space-y-2">
             {grant.kits.map((k) => (
@@ -181,10 +183,10 @@ export default async function VendorDetailPage({
           nowMs={now}
         />
       ) : (
-        <div className="rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          This vendor has no Merqo account yet, so subscriptions and event
-          passes unlock after they sign in once.
-        </div>
+        <EmptyState
+          size="compact"
+          title="This vendor has no Merqo account yet, so subscriptions and event passes unlock after they sign in once."
+        />
       )}
 
       {activeSlugs.size > 0 && (

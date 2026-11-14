@@ -69,6 +69,9 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   toasts on failure.
 - `feedback/` — sub-route: per-kit NPS/CSAT breakdown plus a combined,
   kit-tagged vendor-comments list, backed by `merqo.vendor_feedback`.
+- Empty lists across these routes (activity log, feedback, overview and
+  products, requests, vendors, vendor detail) render the shared `@merqo/ui`
+  `EmptyState size="compact"` rather than hand-written dashed boxes.
 - `products/` — sub-route: product/kit registry health list
   (`product-health-card.tsx`) plus the per-tenant incident table across kits
   (`tenant-health-section.tsx`, built from `getTenantHealth()`).
