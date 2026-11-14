@@ -51,7 +51,7 @@ badge actually looks like — see
 (workspace root, cross-kit spec). The landing footer matches qkit's exactly
 (single-row wordmark/tagline/credit-line/sign-in link, no CTA band above it).
 
-`@merqo/ui` is pinned at v0.45.1 (`6bd6bd7`). The root error, not-found and global-error pages and the form label and error classes come from the shared package. Button, input, label, select, switch and tooltip come from `@merqo/ui/primitives`; only the badge stays local, for its `gold` variant. The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing.
+`@merqo/ui` is pinned at v0.45.1 (`6bd6bd7`). The root error, not-found and global-error pages and the form label and error classes come from the shared package. Button, input, label, select, switch and tooltip come from `@merqo/ui/primitives`; only the badge stays local, for its `gold` variant. The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing. Empty lists across the admin console (activity, feedback, products, requests, vendors, vendor detail and the overview) render the shared `EmptyState` from `@merqo/ui`.
 
 Merqo uses `@merqo/ui`, the shared component package for the kit family (see
 qkit/loopkit/paykit/stockkit for the same dependency). `/about`'s own story
