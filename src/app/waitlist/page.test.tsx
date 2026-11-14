@@ -62,15 +62,25 @@ describe("WaitlistPage", () => {
     const block = screen
       .getByRole("heading", { name: "Founding merchant offer" })
       .closest("section")!;
-    expect(block).toHaveTextContent("20 founding merchant spots");
+    expect(block).toHaveTextContent("If we introduce paid plans");
+    expect(block).toHaveTextContent("first 20 founding merchants");
     expect(block).toHaveTextContent("every kit we release");
     expect(block).toHaveTextContent("setup done for them");
-    expect(block).toHaveTextContent("never goes up");
+    expect(block).toHaveTextContent("does not go up");
     expect(block).toHaveTextContent("Nothing to pay today");
     expect(block).toHaveTextContent("free during the pilot");
     expect(block).not.toHaveTextContent("sole trader");
     expect(block).not.toHaveTextContent("becomes a company");
     expect(block).not.toHaveTextContent("PayNow");
     expect(block).not.toHaveTextContent(/S\$|\$\d/);
+  });
+
+  it("keeps the founding offer conditional on paid plans", async () => {
+    await selected("stockkit");
+    const block = screen
+      .getByRole("heading", { name: "Founding merchant offer" })
+      .closest("section")!;
+    expect(block).not.toHaveTextContent("We have 20 founding merchant spots");
+    expect(block).not.toHaveTextContent("before any charge");
   });
 });
