@@ -51,11 +51,11 @@ export default async function WaitlistPage({
             Founding merchant offer
           </h2>
           <p className="mt-2 text-sm">
-            Merqo is free during the pilot. We have 20 founding merchant spots.
-            Founding merchants get every kit we release during their first year,
-            setup done for them, and a price that never goes up while they stay
-            subscribed. Nothing to pay today. We confirm the price with you
-            before any charge.
+            Merqo is free during the pilot. If we introduce paid plans, the
+            first 20 founding merchants get every kit we release during their
+            first year, setup done for them, and a price that does not go up
+            while they stay subscribed. Nothing to pay today: we&apos;ll confirm
+            any price with you before you&apos;re charged.
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
             Merqo is a personal software project by Clarence Lee, not registered
