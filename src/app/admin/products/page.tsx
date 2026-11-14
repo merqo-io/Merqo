@@ -1,6 +1,7 @@
 import { requireMerqoTeam } from "@/lib/team";
 import { listLiveProducts } from "@/lib/products";
 import { fetchProductMetrics } from "@/lib/metrics-client";
+import { EmptyState } from "@merqo/ui";
 import { ProductHealthCard } from "./product-health-card";
 import { TenantHealthSection } from "./tenant-health-section";
 
@@ -31,9 +32,11 @@ export default async function AdminProductsPage() {
       </p>
 
       {products.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No live products yet. Kits show up here once they go live.
-        </div>
+        <EmptyState
+          size="compact"
+          className="mt-6"
+          title="No live products yet. Kits show up here once they go live."
+        />
       ) : (
         <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {products.map((p, i) => (

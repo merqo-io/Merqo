@@ -11,7 +11,7 @@ import { onboardingFunnel } from "@/lib/funnel";
 import { money, computeTrend, type Trend } from "@/lib/format";
 import { getTenantHealth } from "@/lib/tenant-health";
 import { cn } from "@merqo/ui/primitives";
-import { StatCard } from "@merqo/ui";
+import { EmptyState, StatCard } from "@merqo/ui";
 import { TrendIndicator } from "@/components/dashboard/trend-indicator";
 import { OnboardingFunnelView } from "./onboarding-funnel";
 import { ProductTile } from "./product-tile";
@@ -189,9 +189,11 @@ export default async function AdminOverviewPage() {
         Products
       </h2>
       {products.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No products yet. Kits show up here once they are added.
-        </div>
+        <EmptyState
+          size="compact"
+          className="mt-4"
+          title="No products yet. Kits show up here once they are added."
+        />
       ) : (
         <section className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {products.map((p, i) => (

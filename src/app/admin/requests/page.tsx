@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireMerqoTeam } from "@/lib/team";
+import { EmptyState } from "@merqo/ui";
 import {
   listPendingRequests,
   vendorEmailsById,
@@ -39,9 +40,10 @@ export default async function RequestsPage() {
       </div>
 
       {requests.length === 0 ? (
-        <div className="rounded-xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
-          No pending requests. Plan changes vendors ask for show up here.
-        </div>
+        <EmptyState
+          size="compact"
+          title="No pending requests. Plan changes vendors ask for show up here."
+        />
       ) : (
         <ul className="space-y-2">
           {requests.map((r) => {
