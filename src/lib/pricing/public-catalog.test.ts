@@ -34,14 +34,14 @@ const EVENT = {
 
 // Deliberately unordered, with an inactive row, to prove the loader sorts and filters.
 const ROWS = [
-  row("all_access", "bundle", 3600, ["qkit", "loopkit"]),
+  { ...row("all_access", "bundle", 3600, ["qkit", "loopkit"]), active: false },
   EVENT,
   { ...row("paykit", "kit", 800, ["paykit"]), active: false },
-  row("qkit", "kit", 1600, ["qkit", "printkit"]),
+  row("qkit", "kit", 1990, ["qkit", "printkit", "paykit"]),
   row("free", "free", 0, ["qkit"]),
-  row("loopkit", "kit", 1000, ["loopkit"]),
-  row("starter", "starter", 1200, ["qkit"]),
-  row("stockkit", "kit", 1500, ["stockkit"]),
+  { ...row("loopkit", "kit", 1000, ["loopkit"]), active: false },
+  row("starter", "starter", 1490, ["qkit", "paykit"]),
+  { ...row("stockkit", "kit", 1500, ["stockkit"]), active: false },
 ];
 
 function mockQuery(result: { data: unknown; error: unknown }) {
@@ -67,19 +67,16 @@ describe("loadPublicPlanCatalog", () => {
     const out = await loadPublicPlanCatalog();
     expect(out.plans.map((p) => [p.slug, p.monthly_cents])).toEqual([
       ["free", 0],
-      ["loopkit", 1000],
-      ["starter", 1200],
-      ["stockkit", 1500],
-      ["qkit", 1600],
-      ["all_access", 3600],
+      ["starter", 1490],
+      ["qkit", 1990],
     ]);
-    expect(out.plans[5]).toEqual({
-      slug: "all_access",
-      kind: "bundle",
-      name: "All Access",
-      monthly_cents: 3600,
-      annual_cents: 36000,
-      kits: ["qkit", "loopkit"],
+    expect(out.plans[2]).toEqual({
+      slug: "qkit",
+      kind: "kit",
+      name: "Pro",
+      monthly_cents: 1990,
+      annual_cents: 19900,
+      kits: ["qkit", "printkit", "paykit"],
     });
   });
 
@@ -87,7 +84,9 @@ describe("loadPublicPlanCatalog", () => {
     mockQuery({ data: ROWS, error: null });
     const out = await loadPublicPlanCatalog();
     const slugs = out.plans.map((p) => p.slug);
-    expect(slugs).not.toContain("paykit");
+    for (const off of ["paykit", "loopkit", "stockkit", "all_access"]) {
+      expect(slugs).not.toContain(off);
+    }
     expect(slugs).not.toContain("event_pass");
     expect(out.event_pass).toEqual({
       per_cup_cents: 15,

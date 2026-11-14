@@ -1,18 +1,22 @@
 begin;
 select no_plan();
 
--- Seeded catalog (0036): monthly cents, kind and active flag per plan.
+-- Catalog after 0044: monthly cents, kind and active flag per plan.
 select results_eq(
   $$ select slug, kind, monthly_cents, active from merqo.plans where kind <> 'event_pass' order by monthly_cents, slug $$,
   $$ values
     ('free'::text, 'free'::text, 0, true),
     ('paykit', 'kit', 800, false),
-    ('loopkit', 'kit', 1000, true),
-    ('starter', 'starter', 1200, true),
-    ('stockkit', 'kit', 1500, true),
-    ('qkit', 'kit', 1600, true),
-    ('all_access', 'bundle', 3600, true) $$,
-  'ladder and bundle are seeded with the approved prices');
+    ('loopkit', 'kit', 1000, false),
+    ('starter', 'starter', 1490, true),
+    ('stockkit', 'kit', 1500, false),
+    ('qkit', 'kit', 1990, true),
+    ('all_access', 'bundle', 3600, false) $$,
+  'v3 ladder prices; paykit, loopkit, stockkit and all_access are off sale');
+select results_eq(
+  $$ select slug, included_kits from merqo.plans where slug in ('starter', 'qkit') order by slug $$,
+  $$ values ('qkit'::text, array['qkit', 'printkit', 'paykit']), ('starter', array['qkit', 'paykit']) $$,
+  'starter and qkit include paykit');
 select results_eq(
   $$ select per_cup_cents, min_cents, cap_cents, duration_days from merqo.plans where slug = 'event_pass' $$,
   $$ values (15, 1400, 2800, 2) $$,
@@ -70,27 +74,38 @@ select throws_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, inter
 
 -- Founder cap: vendors 1..20 become founders, the 21st is refused.
 insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, founder, founder_until)
-select ('36000000-0000-0000-0000-' || lpad(n::text, 12, '0'))::uuid, 'loopkit', 'month',
-       '2026-01-01', '2026-02-01', '2026-02-01', 1000, true, '2027-01-01'
+select ('36000000-0000-0000-0000-' || lpad(n::text, 12, '0'))::uuid, 'all_access', 'month',
+       '2026-01-01', '2026-02-01', '2026-02-01', 3600, true, '2027-01-01'
 from generate_series(1, 20) n;
 select is((select count(distinct vendor_id)::int from merqo.subscriptions where founder), 20, 'twenty founders are allowed');
 select throws_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, founder, founder_until)
-  values ('36000000-0000-0000-0000-000000000021', 'loopkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1000, true, '2027-01-01') $$,
+  values ('36000000-0000-0000-0000-000000000021', 'qkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1990, true, '2027-01-01') $$,
   '23514', 'founder cap of 20 reached', 'a 21st founder is refused');
 select lives_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, founder, founder_until)
-  values ('36000000-0000-0000-0000-000000000005', 'stockkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1500, true, '2027-01-01') $$,
+  values ('36000000-0000-0000-0000-000000000005', 'qkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1990, true, '2027-01-01') $$,
   'an existing founder can hold a second founder subscription');
 select throws_ok($$ update merqo.subscriptions set vendor_id = '36000000-0000-0000-0000-000000000022'
-  where vendor_id = '36000000-0000-0000-0000-000000000005' and plan_slug = 'stockkit' $$,
+  where vendor_id = '36000000-0000-0000-0000-000000000005' and plan_slug = 'qkit' and founder $$,
   '23514', 'founder cap of 20 reached', 'moving a founder subscription to a new vendor is refused at the cap');
 select lives_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents)
-  values ('36000000-0000-0000-0000-000000000021', 'loopkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1000) $$,
+  values ('36000000-0000-0000-0000-000000000021', 'qkit', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1990) $$,
   'a non-founder subscription is unaffected by the cap');
 select throws_ok($$ update merqo.subscriptions set founder = true, founder_until = '2027-01-01'
   where vendor_id = '36000000-0000-0000-0000-000000000021' $$,
   '23514', 'founder cap of 20 reached', 'flipping a 21st vendor to founder is refused');
 select lives_ok($$ update merqo.subscriptions set founder_until = '2026-06-01' where vendor_id = '36000000-0000-0000-0000-000000000003' $$,
   'ending founder benefits keeps the badge flag and is allowed at the cap');
+
+-- Founder floor: founders must hold a Counter plan (qkit or all_access).
+select throws_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, founder, founder_until)
+  values ('36000000-0000-0000-0000-000000000022', 'starter', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1490, true, '2027-01-01') $$,
+  '23514', 'founder status requires a qkit or all_access subscription', 'a founder on starter is refused');
+select throws_ok($$ update merqo.subscriptions set plan_slug = 'starter'
+  where vendor_id = '36000000-0000-0000-0000-000000000005' and plan_slug = 'qkit' and founder $$,
+  '23514', 'founder status requires a qkit or all_access subscription', 'moving a founder subscription to starter is refused');
+select lives_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents)
+  values ('36000000-0000-0000-0000-000000000022', 'starter', 'month', '2026-01-01', '2026-02-01', '2026-02-01', 1490) $$,
+  'a non-founder starter subscription is unaffected by the floor');
 
 -- billing_credits.
 select throws_ok($$ insert into merqo.billing_credits (vendor_id, amount_cents, reason)
@@ -112,14 +127,14 @@ from unnest(array['anon', 'authenticated', 'service_role']) r;
 
 set local role anon;
 select set_config('request.jwt.claims', json_build_object('role', 'anon')::text, true);
-select is((select count(*)::int from merqo.plans), 7, 'anon reads only active plans');
-select is((select count(*)::int from merqo.plans where slug = 'paykit'), 0, 'anon cannot see inactive paykit');
+select is((select count(*)::int from merqo.plans), 4, 'anon reads only active plans');
+select is((select count(*)::int from merqo.plans where not active), 0, 'anon cannot see inactive plans');
 select throws_ok($$ select 1 from merqo.subscriptions $$, '42501', null, 'anon cannot read subscriptions');
 reset role;
 
 set local role authenticated;
 select set_config('request.jwt.claims', json_build_object('sub', '36000000-0000-0000-0000-000000000001', 'role', 'authenticated')::text, true);
-select is((select count(*)::int from merqo.plans), 7, 'a vendor reads only active plans');
+select is((select count(*)::int from merqo.plans), 4, 'a vendor reads only active plans');
 select is((select count(*)::int from merqo.subscriptions where vendor_id <> '36000000-0000-0000-0000-000000000001'), 0, 'a vendor reads no other vendor subscription');
 select cmp_ok((select count(*)::int from merqo.subscriptions), '>', 0, 'a vendor reads their own subscriptions');
 select is((select count(*)::int from merqo.billing_credits), 1, 'a vendor reads their own credits');

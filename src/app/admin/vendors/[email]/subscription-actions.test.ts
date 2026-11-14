@@ -70,15 +70,15 @@ const plan = (
   slug,
   kind,
   active,
-  monthlyCents: 1600,
-  includedKits: ["qkit"],
+  monthlyCents: 1990,
+  includedKits: ["qkit", "printkit", "paykit"],
   eventPass,
 });
 const grant = {
   email: "Vendor@Business.sg",
   planSlug: "qkit",
   interval: "month" as const,
-  priceCents: 1600,
+  priceCents: 1990,
   periodStart: "2026-11-02",
   renewalAnchor: "2026-11-02",
   founder: false,
@@ -89,6 +89,7 @@ beforeEach(() => {
   mocks.requireMerqoTeam.mockResolvedValue({ user: { id: "admin-1" } });
   mocks.loadPlanCatalog.mockResolvedValue([
     plan("qkit", "kit"),
+    plan("starter", "starter"),
     plan("paykit", "kit", false),
     plan("free", "free"),
     plan("event_pass", "event_pass", true, { minCents: 1400, durationDays: 2 }),
@@ -110,7 +111,7 @@ describe("grantSubscriptionAction", () => {
     expect(mocks.grantSubscription).toHaveBeenCalledWith(
       expect.objectContaining({
         vendorId: "vendor-1",
-        priceCents: 1600,
+        priceCents: 1990,
         periodStart: new Date("2026-11-02T00:00:00.000Z"),
       }),
     );
@@ -222,6 +223,20 @@ describe("grantSubscriptionAction", () => {
     mocks.findVendorId.mockResolvedValue(null);
     const res = await grantSubscriptionAction(grant);
     expect(res).toMatchObject({ success: false });
+    expect(mocks.grantSubscription).not.toHaveBeenCalled();
+  });
+
+  it("refuses a founder on a plan without Counter", async () => {
+    expect(
+      await grantSubscriptionAction({
+        ...grant,
+        planSlug: "starter",
+        founder: true,
+      }),
+    ).toEqual({
+      success: false,
+      error: "Founders need a Counter subscription.",
+    });
     expect(mocks.grantSubscription).not.toHaveBeenCalled();
   });
 

@@ -22,6 +22,9 @@ import { syncVendorEntitlements } from "@/lib/entitlements/push";
 import { closeRequest, getPendingRequest } from "@/lib/subscription-requests";
 
 const DAY_MS = 86_400_000;
+// Mirrors merqo.enforce_founder_cap: founders must hold a Counter plan.
+const FOUNDER_PLANS = ["qkit", "all_access"];
+
 const GENERIC_ERROR = "Could not save that. Try again.";
 
 const emailSchema = z.string().trim().toLowerCase().email();
@@ -129,6 +132,12 @@ export async function grantSubscriptionAction(
       !["kit", "starter", "bundle"].includes(plan.kind)
     ) {
       return { success: false, error: "That plan is not on sale." };
+    }
+    if (data.founder && !FOUNDER_PLANS.includes(plan.slug)) {
+      return {
+        success: false,
+        error: "Founders need a Counter subscription.",
+      };
     }
     const vendorId = await findVendorId(data.email);
     if (!vendorId) {
