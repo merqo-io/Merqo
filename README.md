@@ -202,8 +202,8 @@ secrets and administrative writes use server-only service clients, so
 
 ## Docs
 
-- Public waitlist: an unticked general-updates checkbox is recorded in `merqo.marketing_consents` (migration `0040`) with the wording shown and the time, only when ticked. The founding offer copy states no prices: Merqo is free during the pilot, and the price is confirmed with the merchant before any charge.
-- The public waitlist page shows a founding merchant offer (20 spots, every kit released in the first year, setup done for them, a price that never goes up while subscribed, nothing to pay today) and states that Merqo is a sole trader, not yet registered with ACRA.
+- Public waitlist: an unticked general-updates checkbox is recorded in `merqo.marketing_consents` (migration `0040`) with the wording shown and the time, only when ticked. The founding offer copy states no prices: Merqo is free during the pilot, and paid plans are stated only as a possibility, and any price is confirmed with the merchant before they are charged.
+- The public waitlist page shows a founding merchant offer conditional on paid plans being introduced (first 20 founding merchants, every kit released in the first year, setup done for them, a price that does not go up while subscribed, nothing to pay today) and states that Merqo is a sole trader, not yet registered with ACRA.
 - Vendor admin page: dates are shown in Singapore time, and each kit's last entitlement push shows its failure kind (migration `0039`).
 - printkit receives entitlement pushes as a `push_only` product (migration `0042`); it is not grantable and stays out of the dashboard, metrics and the grant list.
 - Event passes can be settled on the vendor page once they end (migration `0043`): cups come live from qkit and the team records the offline top-up; Merqo charges nobody.
