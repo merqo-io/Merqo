@@ -226,7 +226,7 @@ describe("grantSubscriptionAction", () => {
     expect(mocks.grantSubscription).not.toHaveBeenCalled();
   });
 
-  it("refuses a founder on a plan without Counter", async () => {
+  it("refuses a founder on a plan without Pro", async () => {
     expect(
       await grantSubscriptionAction({
         ...grant,
@@ -235,7 +235,7 @@ describe("grantSubscriptionAction", () => {
       }),
     ).toEqual({
       success: false,
-      error: "Founders need a Counter subscription.",
+      error: "Founders need a Pro subscription.",
     });
     expect(mocks.grantSubscription).not.toHaveBeenCalled();
   });
