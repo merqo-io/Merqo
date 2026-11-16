@@ -1,0 +1,38 @@
+name: staging keepalive
+
+# Free-tier Supabase projects pause after 7 days idle, and Vercel crons do not
+# run on staging deployments, so this makes one real database read twice a week.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 4 * * 1,4"
+
+permissions: {}
+
+jobs:
+  keepalive:
+    name: read staging database
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      STAGING_SUPABASE_URL: ${{ vars.STAGING_SUPABASE_URL }}
+      STAGING_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+    steps:
+      - name: Read merqo.billing_settings
+        run: |
+          if [ -z "$STAGING_SUPABASE_URL" ]; then
+            echo "Missing repo variable STAGING_SUPABASE_URL" >&2
+            exit 1
+          fi
+          if [ -z "$STAGING_SUPABASE_ANON_KEY" ]; then
+            echo "Missing repo secret STAGING_SUPABASE_ANON_KEY" >&2
+            exit 1
+          fi
+          status=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            --max-time 20 --retry 2 --retry-delay 5 --retry-all-errors \
+            --header "apikey: $STAGING_SUPABASE_ANON_KEY" \
+            --header "Authorization: Bearer $STAGING_SUPABASE_ANON_KEY" \
+            --header "Accept-Profile: merqo" \
+            "$STAGING_SUPABASE_URL/rest/v1/billing_settings?select=*&limit=1") || status="curl-failed"
+          echo "HTTP status: $status"
+          [ "$status" = "200" ]

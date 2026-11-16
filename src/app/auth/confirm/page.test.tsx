@@ -93,4 +93,14 @@ describe("KIT_AUTH_ORIGINS", () => {
       "https://printkit.merqo.io",
     ]);
   });
+
+  it("falls back to the default host when an env override is empty", async () => {
+    vi.stubEnv("NEXT_PUBLIC_QKIT_URL", "");
+    vi.stubEnv("NEXT_PUBLIC_PRINTKIT_URL", "  ");
+    vi.resetModules();
+    const { KIT_AUTH_ORIGINS: origins } = await import("@/lib/kits");
+    expect(origins).toContain("https://qkit.merqo.io");
+    expect(origins).toContain("https://printkit.merqo.io");
+    vi.unstubAllEnvs();
+  });
 });

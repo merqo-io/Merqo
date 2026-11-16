@@ -22,11 +22,12 @@ const OWN_MESSAGES: ReadonlySet<string> = new Set([
 
 export default function LoginPage() {
   const router = useRouter();
+  const linkExpired = useSearchParams().get("error") === "link";
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(
-    useSearchParams().get("error") === "link" ? LINK_ERROR : null,
+    linkExpired ? LINK_ERROR : null,
   );
   const [busy, setBusy] = useState(false);
   // Set once we've emailed the user and are waiting on their click:

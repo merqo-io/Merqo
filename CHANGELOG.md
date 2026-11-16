@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - `/auth/confirm` for own-domain email links: forwards links meant for a kit to that kit's `/auth/confirm` and verifies merqo's own on a Continue click, so email scanners cannot consume the token. The login page shows a message for `?error=link`. `NEXT_PUBLIC_PRINTKIT_URL` joins the kit URL overrides.
+- A scheduled `staging-keepalive` workflow reads the staging database twice a week so the free-tier Supabase project does not pause, and fails if the read does not return 200.
 
 ### Changed
 

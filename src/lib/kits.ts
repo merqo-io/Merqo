@@ -38,24 +38,39 @@ export type Kit = {
   href: string;
 };
 
+/** An empty or blank env var counts as unset, so a kit cannot drop out of KIT_AUTH_ORIGINS. */
+const kitUrl = (value: string | undefined, fallback: string) =>
+  value?.trim() || fallback;
+
 /** Set NEXT_PUBLIC_QKIT_URL per environment to override (e.g. a preview deploy). */
-const QKIT_URL = process.env.NEXT_PUBLIC_QKIT_URL ?? "https://qkit.merqo.io";
+const QKIT_URL = kitUrl(
+  process.env.NEXT_PUBLIC_QKIT_URL,
+  "https://qkit.merqo.io",
+);
 
 /** Set NEXT_PUBLIC_LOOPKIT_URL per environment to override. */
-const LOOPKIT_URL =
-  process.env.NEXT_PUBLIC_LOOPKIT_URL ?? "https://loopkit.merqo.io";
+const LOOPKIT_URL = kitUrl(
+  process.env.NEXT_PUBLIC_LOOPKIT_URL,
+  "https://loopkit.merqo.io",
+);
 
 /** Set NEXT_PUBLIC_PAYKIT_URL per environment to override. */
-const PAYKIT_URL =
-  process.env.NEXT_PUBLIC_PAYKIT_URL ?? "https://paykit.merqo.io";
+const PAYKIT_URL = kitUrl(
+  process.env.NEXT_PUBLIC_PAYKIT_URL,
+  "https://paykit.merqo.io",
+);
 
 /** Set NEXT_PUBLIC_STOCKKIT_URL per environment to override. */
-const STOCKKIT_URL =
-  process.env.NEXT_PUBLIC_STOCKKIT_URL ?? "https://stockkit.merqo.io";
+const STOCKKIT_URL = kitUrl(
+  process.env.NEXT_PUBLIC_STOCKKIT_URL,
+  "https://stockkit.merqo.io",
+);
 
 /** Set NEXT_PUBLIC_PRINTKIT_URL per environment to override. */
-const PRINTKIT_URL =
-  process.env.NEXT_PUBLIC_PRINTKIT_URL ?? "https://printkit.merqo.io";
+const PRINTKIT_URL = kitUrl(
+  process.env.NEXT_PUBLIC_PRINTKIT_URL,
+  "https://printkit.merqo.io",
+);
 
 /** Exact origins an emailed auth link may be forwarded to. Staging hosts come
  *  from the env overrides above; no wildcard or suffix matching. */
