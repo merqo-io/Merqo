@@ -236,7 +236,7 @@ secrets and administrative writes use server-only service clients, so
 - The `staging-sync` workflow pushes to `staging` with a `merqo-staging-sync`
   GitHub App token (a ruleset limits that branch to the app); see
   `.github/workflows/README.md`.
-- The `staging-keepalive` workflow reads staging twice a week with the publishable key so the free-tier project does not pause; setup in `docs/STAGING.md`.
+- The `staging-keepalive` workflow reads `merqo.plans` on staging twice a week with the publishable key so the free-tier project does not pause; setup in `docs/STAGING.md`.
 - Schema drift check (fingerprint SQL, compare script, owner runbook):
   `docs/SCHEMA-DRIFT.md`
 - Security records (data inventory, incident response runbook, subprocessor
