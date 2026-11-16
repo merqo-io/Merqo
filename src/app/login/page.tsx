@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { ALREADY_REGISTERED, authErrorCopy } from "@/lib/auth-error-copy";
 import { signInWithPasswordAction } from "@/app/actions/auth";
@@ -9,6 +9,8 @@ import { Button, Input, Label } from "@merqo/ui/primitives";
 import { Wordmark } from "@/components/brand/wordmark";
 import { ElevatedCard } from "@merqo/ui";
 import { GoogleMark } from "@merqo/ui";
+
+const LINK_ERROR = "That link is invalid or has expired. Request a new one.";
 
 type Mode = "signin" | "signup";
 
@@ -20,10 +22,13 @@ const OWN_MESSAGES: ReadonlySet<string> = new Set([
 
 export default function LoginPage() {
   const router = useRouter();
+  const linkExpired = useSearchParams().get("error") === "link";
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    linkExpired ? LINK_ERROR : null,
+  );
   const [busy, setBusy] = useState(false);
   // Set once we've emailed the user and are waiting on their click:
   // "signup" = confirm the new account, "reset" = choose a new password.
