@@ -13,7 +13,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- `@merqo/ui` bumped from 0.45.1 to 0.49.0.
+- `@merqo/ui` bumped from 0.45.1 to 0.49.1.
 
 ### Fixed
 
