@@ -53,6 +53,20 @@ const PAYKIT_URL =
 const STOCKKIT_URL =
   process.env.NEXT_PUBLIC_STOCKKIT_URL ?? "https://stockkit.merqo.io";
 
+/** Set NEXT_PUBLIC_PRINTKIT_URL per environment to override. */
+const PRINTKIT_URL =
+  process.env.NEXT_PUBLIC_PRINTKIT_URL ?? "https://printkit.merqo.io";
+
+/** Exact origins an emailed auth link may be forwarded to. Staging hosts come
+ *  from the env overrides above; no wildcard or suffix matching. */
+export const KIT_AUTH_ORIGINS: string[] = [
+  QKIT_URL,
+  LOOPKIT_URL,
+  PAYKIT_URL,
+  STOCKKIT_URL,
+  PRINTKIT_URL,
+];
+
 // Each kit is a standalone product on its own merqo.io subdomain.
 export const KITS: Kit[] = [
   {

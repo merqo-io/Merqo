@@ -94,3 +94,5 @@ ateLimit, a Postgres fixed-window counter that fails open or closed per caller. 
 `pricing/format.ts` maps the stored `qkit` tier to the label Pro; the stored value is unchanged, only its label. The dashboard kit card uses the shared `tierLabel` from `@merqo/ui`.
 
 `components.json` still lists the shadcn `utils` alias `@/lib/utils`, which no longer exists: primitives come from `@merqo/ui/primitives` (see `src/components/ui/README.md`), so local shadcn generation is not used and the alias is stale.
+
+kits.ts also exports KIT_AUTH_ORIGINS, the exact kit origins (from the NEXT_PUBLIC_<KIT>_URL overrides, printkit included) that /auth/confirm may forward emailed auth links to.

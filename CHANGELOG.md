@@ -6,6 +6,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `/auth/confirm` for own-domain email links: forwards links meant for a kit to that kit's `/auth/confirm` and verifies merqo's own on a Continue click, so email scanners cannot consume the token. The login page shows a message for `?error=link`. `NEXT_PUBLIC_PRINTKIT_URL` joins the kit URL overrides.
+
+### Changed
+
+- `@merqo/ui` bumped from 0.45.1 to 0.49.0.
+
 ### Fixed
 
 - The admin founder-grant error names the Pro plan instead of the old working name Counter.

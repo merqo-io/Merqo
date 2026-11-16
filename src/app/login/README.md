@@ -34,3 +34,5 @@ Password sign-in runs through the signInWithPasswordAction server action so atte
 The page shows plain "Could not ... Try again." errors through `authErrorCopy` instead of raw Supabase messages.
 
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
+
+The page reads ?error=link after mount and shows the expired-link message; page.dom.test.tsx covers it.
