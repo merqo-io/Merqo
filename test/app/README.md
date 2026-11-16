@@ -21,3 +21,5 @@ Profile regressions verify independent simultaneous saves, rejected-save feedbac
 Tests that mocked the deleted local primitive paths import from `@merqo/ui/primitives` instead.
 
 `savings-summary.test.tsx` asserts the dashboard Pro estimate line ("more with Pro features") shows only when there is upside and never reads as an upgrade prompt.
+
+Both login test files mock `useSearchParams` because the login page reads `?error=link`.
