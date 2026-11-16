@@ -39,7 +39,7 @@ this private repo's free tier).
 - `staging-keepalive.yml`: twice a week and on demand, one curl read of
   `merqo.billing_settings` on staging so the free Supabase project does not
   pause. Needs repo variable `STAGING_SUPABASE_URL` and secret
-  `STAGING_SUPABASE_ANON_KEY`; see `docs/STAGING.md`.
+  `STAGING_SUPABASE_PUBLISHABLE_KEY`; see `docs/STAGING.md`.
 
 Every third-party action in both workflows is pinned to a full commit SHA,
 not a floating version tag.

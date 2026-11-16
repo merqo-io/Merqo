@@ -12,6 +12,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The `staging-keepalive` workflow authenticates with the staging publishable key in the `apikey` header only, replacing the legacy anon key and its `Authorization` header.
 - The admin founder-grant error names the Pro plan instead of the old working name Counter.
 
 ## [0.15.1] - 2026-11-14

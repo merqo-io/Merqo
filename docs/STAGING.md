@@ -122,8 +122,9 @@ run on staging deployments, which is why this lives in GitHub Actions.
 Set both in GitHub, repo Settings > Secrets and variables > Actions:
 
 - Variable `STAGING_SUPABASE_URL`: the staging project URL.
-- Secret `STAGING_SUPABASE_ANON_KEY`: the staging public anon key (a secret
-  only so logs mask it).
+- Secret `STAGING_SUPABASE_PUBLISHABLE_KEY`: the staging project's publishable
+  key (`sb_publishable_...`), never the secret key. It is sent in the `apikey`
+  header only and is stored as a secret just so logs mask it.
 
 GitHub runs schedules only from the default branch, so the workflow starts
 working after staging is promoted to `main`. A manual run works from the same
