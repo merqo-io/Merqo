@@ -111,6 +111,24 @@ staging project's Authentication, Providers, Google.
   mailer only sends to members of the Supabase organization and only a few
   emails per hour, which is enough for a test vendor.
 
+## Keepalive
+
+The `staging-keepalive` workflow (`.github/workflows/staging-keepalive.yml`)
+reads one row from `merqo.billing_settings` through the staging REST API every
+Monday and Thursday, so the free project never reaches 7 days idle. It prints
+only the HTTP status and fails unless the status is 200. Vercel crons do not
+run on staging deployments, which is why this lives in GitHub Actions.
+
+Set both in GitHub, repo Settings > Secrets and variables > Actions:
+
+- Variable `STAGING_SUPABASE_URL`: the staging project URL.
+- Secret `STAGING_SUPABASE_ANON_KEY`: the staging public anon key (a secret
+  only so logs mask it).
+
+GitHub runs schedules only from the default branch, so the workflow starts
+working after staging is promoted to `main`. A manual run works from the same
+point.
+
 ## One-time setup (owner)
 
 Done for merqo and qkit. Keep every password, key and secret in your password
