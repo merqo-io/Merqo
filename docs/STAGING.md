@@ -114,7 +114,7 @@ staging project's Authentication, Providers, Google.
 ## Keepalive
 
 The `staging-keepalive` workflow (`.github/workflows/staging-keepalive.yml`)
-reads one row from `merqo.billing_settings` through the staging REST API every
+reads one row from `merqo.plans` (anon-readable) through the staging REST API every
 Monday and Thursday, so the free project never reaches 7 days idle. It prints
 only the HTTP status and fails unless the status is 200. Vercel crons do not
 run on staging deployments, which is why this lives in GitHub Actions.
