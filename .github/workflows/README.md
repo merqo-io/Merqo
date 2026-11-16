@@ -36,6 +36,10 @@ this private repo's free tier).
   fingerprint SQL, loads all six repos' migrations into a fresh local Supabase
   stack in staging order and uploads `expected-fingerprint.csv` as an
   artifact for `docs/SCHEMA-DRIFT.md`. It never connects to a real project.
+- `staging-keepalive.yml`: twice a week and on demand, one curl read of
+  `merqo.billing_settings` on staging so the free Supabase project does not
+  pause. Needs repo variable `STAGING_SUPABASE_URL` and secret
+  `STAGING_SUPABASE_ANON_KEY`; see `docs/STAGING.md`.
 
 Every third-party action in both workflows is pinned to a full commit SHA,
 not a floating version tag.

@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- A scheduled `staging-keepalive` workflow reads the staging database twice a week so the free-tier Supabase project does not pause, and fails if the read does not return 200.
+
 ### Fixed
 
 - The admin founder-grant error names the Pro plan instead of the old working name Counter.
