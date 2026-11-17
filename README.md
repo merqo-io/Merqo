@@ -16,6 +16,7 @@ This app is the public brand landing plus a role-gated operator console:
 - `/admin/activity` — the admin-audit trail (every real mutating admin action)
 - `/about` — public "Why Merqo" page: the qkit origin story and a
   founder/business-name line matching `/legal/terms`'s phrasing
+- `/faq` — public FAQ page on the shared `FaqPage` from `@merqo/ui`
 
 Each kit runs its own app on its own schema in a shared Supabase project.
 Merqo pulls per-kit metrics over an HTTP API (bearer secret) — it never
