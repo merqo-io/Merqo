@@ -1,25 +1,29 @@
 import { NextResponse } from "next/server";
+import { guardBearerRoute } from "@/lib/bearer-guard";
 import { loadPublicPlanCatalog } from "@/lib/pricing/public-catalog";
 
-// Prices change rarely; five minutes keeps the CDN and the database calm
-// while a price edit still reaches kit pages quickly. Next needs `revalidate`
-// as a literal, so keep it equal to the s-maxage in CACHE_CONTROL below.
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
-const CACHE_CONTROL = "public, s-maxage=300, stale-while-revalidate=3600";
+// Credential-gated, so a shared CDN must never store it.
+const NO_STORE = "private, no-store";
 
-/** Public, unauthenticated plan catalog that kit plan pages fetch server-side. */
-export async function GET(): Promise<Response> {
+/** Plan catalog that kit plan pages fetch server-side with the kit bearer secret. */
+export async function GET(request: Request): Promise<Response> {
+  const rejected = await guardBearerRoute(request, "plans");
+  if (rejected) {
+    rejected.headers.set("Cache-Control", NO_STORE);
+    return rejected;
+  }
   try {
     const catalog = await loadPublicPlanCatalog();
     return NextResponse.json(catalog, {
-      headers: { "Cache-Control": CACHE_CONTROL },
+      headers: { "Cache-Control": NO_STORE },
     });
   } catch (err) {
     console.error("plans route failed", err);
     return NextResponse.json(
       { error: "Plans are unavailable" },
-      { status: 500, headers: { "Cache-Control": "no-store" } },
+      { status: 500, headers: { "Cache-Control": NO_STORE } },
     );
   }
 }
