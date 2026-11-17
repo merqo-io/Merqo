@@ -25,12 +25,12 @@ per file. Presentational only — no data fetching, no client state beyond the
 - `footer.tsx` — single-row site footer matching qkit's landing footer
   exactly — `Wordmark`, tagline, `© <year> Merqo` credit line (no "· a
   Merqo kit" suffix — Merqo is the parent, per the landing-page standard),
-  an `/about` link, `@merqo/ui`'s `LegalFooterLinks` (Terms/Privacy,
+  an `/about` link, a `/faq` link (via `faqHref`), `@merqo/ui`'s `LegalFooterLinks` (Terms/Privacy,
   linking to `/legal/terms` and `/legal/privacy`), `Sign in →` link. No
   bottom call-to-action band above it (removed to match qkit, which never
   had one).
 - `footer.test.tsx` — asserts the wordmark link, tagline, copyright line,
-  sign-in link, the About link, and the Terms/Privacy footer links all
+  sign-in link, the About and FAQ links, and the Terms/Privacy footer links all
   render.
 - `waitlist-form.tsx` — kit picker + email capture for the in-build kits, with
   the "Clarence may email you" notice; rendered by `/waitlist`.
