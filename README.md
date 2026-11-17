@@ -219,8 +219,8 @@ secrets and administrative writes use server-only service clients, so
   landing CTA through `/post-login` instead of straight to `/admin`,
   founder Telegram alerts on any kit's help/feedback submission, a
   fix to that alert's own setup runbook (it was missing the step where
-  you message the bot first), and security bumps of `next` to `16.3.4`,
-  `browserslist` to `4.28.9`, and `vitest` to `4.1.11`, and a `vitest.config.ts`
+  you message the bot first), and security bumps of `next` to `16.3.4`
+  and `16.4.6` (GHSA-mfr8-8qww-v76h), `browserslist` to `4.28.9`, and `vitest` to `4.1.11`, and a `vitest.config.ts`
   `testTimeout` bump from 10s to 30s fixing a real test-isolation leak where a
   timed-out test skipped its cleanup and bled a stale render into the next test)
 - Agent reference docs split out of `AGENTS.md`: `docs/FILE-LAYOUT.md`,
