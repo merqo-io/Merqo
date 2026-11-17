@@ -279,19 +279,21 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-3">
-                  <Label
-                    htmlFor="password"
-                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                  >
-                    Password
-                  </Label>
-                  {!isSignin && (
-                    <InfoTooltip
-                      trigger="tap"
-                      ariaLabel="Password requirements"
-                      content={PASSWORD_REQUIREMENTS_HINT}
-                    />
-                  )}
+                  <div className="flex items-center gap-1">
+                    <Label
+                      htmlFor="password"
+                      className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                    >
+                      Password
+                    </Label>
+                    {!isSignin && (
+                      <InfoTooltip
+                        trigger="tap"
+                        ariaLabel="Password requirements"
+                        content={PASSWORD_REQUIREMENTS_HINT}
+                      />
+                    )}
+                  </div>
                   {isSignin && (
                     <button
                       type="button"
