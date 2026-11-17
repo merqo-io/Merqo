@@ -3,7 +3,8 @@
 ## Purpose
 
 `GET /api/plans`: the plan catalog, gated by the kit bearer secret
-(`MERQO_CUSTOMER_SECRET`) and not public. Kit plan pages fetch it server-side (merqo-ui's `fetchPlanCatalog`) so no kit stores a plan
+(`MERQO_CUSTOMER_SECRET`) and not public. Kit plan pages
+fetch it server-side (merqo-ui's `fetchPlanCatalog`) so no kit stores a plan
 price.
 
 ## Contents
