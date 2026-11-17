@@ -3,11 +3,16 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ALREADY_REGISTERED, authErrorCopy } from "@/lib/auth-error-copy";
+import {
+  ALREADY_REGISTERED,
+  PASSWORD_REQUIREMENTS_HINT,
+  authErrorCopy,
+  errorReasons,
+} from "@/lib/auth-error-copy";
 import { signInWithPasswordAction } from "@/app/actions/auth";
 import { Button, Input, Label } from "@merqo/ui/primitives";
 import { Wordmark } from "@/components/brand/wordmark";
-import { ElevatedCard } from "@merqo/ui";
+import { ElevatedCard, InfoTooltip } from "@merqo/ui";
 import { GoogleMark } from "@merqo/ui";
 
 const LINK_ERROR = "That link is invalid or has expired. Request a new one.";
@@ -101,6 +106,7 @@ export default function LoginPage() {
               error.message,
               "Could not create your account. Try again.",
               error.code,
+              errorReasons(error),
             ),
           );
           return;
@@ -279,6 +285,13 @@ export default function LoginPage() {
                   >
                     Password
                   </Label>
+                  {!isSignin && (
+                    <InfoTooltip
+                      trigger="tap"
+                      ariaLabel="Password requirements"
+                      content={PASSWORD_REQUIREMENTS_HINT}
+                    />
+                  )}
                   {isSignin && (
                     <button
                       type="button"
