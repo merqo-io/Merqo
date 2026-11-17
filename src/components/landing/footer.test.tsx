@@ -35,6 +35,14 @@ describe("Footer", () => {
     );
   });
 
+  it("links to the FAQ page", () => {
+    render(<Footer />);
+    expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute(
+      "href",
+      "/faq",
+    );
+  });
+
   it("links to the About page", () => {
     render(<Footer />);
     expect(screen.getByRole("link", { name: "About" })).toHaveAttribute(
