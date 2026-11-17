@@ -100,3 +100,32 @@ it("shows the check-your-email screen when the email is already registered", asy
   expect(await screen.findByText("Check your email")).toBeInTheDocument();
   expect(screen.queryByRole("alert")).toBeNull();
 });
+
+it("shows a specific message for a weak password on signup", async () => {
+  const user = userEvent.setup();
+  render(<LoginPage />);
+  await user.click(screen.getByRole("button", { name: "Create an account" }));
+  await user.type(screen.getByLabelText("Email"), "vendor@example.com");
+  await user.type(screen.getByLabelText("Password"), "weakpass");
+  mocks.signup.mockResolvedValueOnce({
+    data: { session: null },
+    error: {
+      message: "Password should be at least 8 characters.",
+      code: "weak_password",
+      reasons: ["length", "pwned"],
+    },
+  });
+  await user.click(screen.getByRole("button", { name: "Create account" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Password is too short. Use at least 8 characters. This password has appeared in a data breach. Choose a different one.",
+  );
+});
+
+it("shows the password requirements hint in signup mode only", async () => {
+  const user = userEvent.setup();
+  render(<LoginPage />);
+  const hint = { name: "Password requirements" };
+  expect(screen.queryByRole("button", hint)).toBeNull();
+  await user.click(screen.getByRole("button", { name: "Create an account" }));
+  expect(screen.getByRole("button", hint)).toBeInTheDocument();
+});

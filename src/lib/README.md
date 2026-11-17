@@ -90,7 +90,7 @@ ateLimit, a Postgres fixed-window counter that fails open or closed per caller. 
 
 `kit-route-limits.ts` holds `KIT_ROUTE_MAX`, the length caps the kit bearer routes apply to free-form strings (`kit_slug` 64, `notify_ref` 128, `phone` 32, `doc_version` 64, `user_agent` 512), since the backing columns are unbounded text.
 
-`auth-error-copy.ts` holds `authErrorCopy(raw, fallback)`, which maps known Supabase auth error messages to plain copy and otherwise logs only a tag and error code and returns the fallback.
+`auth-error-copy.ts` holds `authErrorCopy(raw, fallback, code?, reasons?)`, which maps known Supabase auth error messages to plain copy and otherwise logs only a tag and error code and returns the fallback. It also exports `weakPasswordMessage` (rule-specific weak-password copy built from the server's `reasons` and message), `errorReasons`, and `PASSWORD_REQUIREMENTS_HINT`, the text of the password requirements tooltip.
 `pricing/format.ts` maps the stored `qkit` tier to the label Pro; the stored value is unchanged, only its label. The dashboard kit card uses the shared `tierLabel` from `@merqo/ui`.
 
 `components.json` still lists the shadcn `utils` alias `@/lib/utils`, which no longer exists: primitives come from `@merqo/ui/primitives` (see `src/components/ui/README.md`), so local shadcn generation is not used and the alias is stale.

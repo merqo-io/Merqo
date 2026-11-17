@@ -48,11 +48,34 @@ it("recovers controls after an auth transport rejection", async () => {
   expect(screen.getByRole("button", { name: "Update password" })).toBeEnabled();
   expect(mocks.push).not.toHaveBeenCalled();
 });
-it("shows returned errors without redirecting", async () => {
+it("shows friendly copy for other returned errors without redirecting", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
   mocks.updateUser.mockResolvedValue({ error: { message: "Session expired" } });
   submit();
-  expect(await screen.findByRole("alert")).toHaveTextContent("Session expired");
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Could not update your password. Try again.",
+  );
   expect(mocks.push).not.toHaveBeenCalled();
+});
+it("shows a specific message for a weak password", async () => {
+  mocks.updateUser.mockResolvedValue({
+    error: {
+      message: "Password should be at least 8 characters.",
+      code: "weak_password",
+      reasons: ["length"],
+    },
+  });
+  submit();
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Password is too short. Use at least 8 characters.",
+  );
+  expect(mocks.push).not.toHaveBeenCalled();
+});
+it("offers the password requirements hint", () => {
+  render(<ResetPasswordPage />);
+  expect(
+    screen.getByRole("button", { name: "Password requirements" }),
+  ).toBeInTheDocument();
 });
 it("updates before routing through the role resolver", async () => {
   submit();

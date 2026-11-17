@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { passwordChangeSchema } from "@/lib/schemas";
+import {
+  authErrorCopy,
+  errorReasons,
+  PASSWORD_REQUIREMENTS_HINT,
+} from "@/lib/auth-error-copy";
+import { InfoTooltip } from "@merqo/ui";
 import { Button, Input, Label } from "@merqo/ui/primitives";
 import { Wordmark } from "@/components/brand/wordmark";
 
@@ -33,7 +39,14 @@ export default function ResetPasswordPage() {
         password: parsed.data.password,
       });
       if (updateError) {
-        setError(updateError.message);
+        setError(
+          authErrorCopy(
+            updateError.message,
+            "Could not update your password. Try again.",
+            updateError.code,
+            errorReasons(updateError),
+          ),
+        );
         return;
       }
       router.push("/post-login");
@@ -60,12 +73,19 @@ export default function ResetPasswordPage() {
           </p>
           <form onSubmit={submit} className="mt-7 space-y-5">
             <div className="space-y-2">
-              <Label
-                htmlFor="password"
-                className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-              >
-                New password
-              </Label>
+              <div className="flex items-center gap-1">
+                <Label
+                  htmlFor="password"
+                  className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                >
+                  New password
+                </Label>
+                <InfoTooltip
+                  trigger="tap"
+                  ariaLabel="Password requirements"
+                  content={PASSWORD_REQUIREMENTS_HINT}
+                />
+              </div>
               <Input
                 id="password"
                 type="password"
