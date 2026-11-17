@@ -20,6 +20,14 @@ describe("Nav", () => {
     );
   });
 
+  it("links to the /faq page", () => {
+    render(<Nav />);
+    expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute(
+      "href",
+      "/faq",
+    );
+  });
+
   it("sends a signed-in vendor through /post-login, not straight to /admin", () => {
     render(<Nav authed />);
     expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(

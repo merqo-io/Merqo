@@ -18,6 +18,7 @@ console, auth, and shared account pages.
   kit family grew out of it, plus the founder/business-name line matching
   the legal docs' phrasing. Wraps in the same `Nav`/`Footer` as the
   landing page; linked from both.
+- `faq/` - public `/faq` page: shared `FaqPage` from `@merqo/ui` inside the same `Nav`/`Footer`; see its README.
 - `waitlist/` — public `/waitlist?kit=<slug>` page: the waitlist form with the in-build kit preselected; see its README.
 - `apple-icon.tsx` — `AppleIcon` route handler; renders a 180×180 PNG for iOS home-screen touch icons.
 - `auth/` — Supabase auth callback route (OAuth code exchange) and `confirm/` (own-domain email links: forwards kit links, verifies merqo links).
