@@ -14,6 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- A weak password on signup or on the reset-password form now shows which rule failed (length, character mix or a known breach), taken from the server response, and both forms have a tap hint stating the password requirements.
 - `GET /api/plans` now requires the kit bearer secret and responds with `Cache-Control: private, no-store` instead of public CDN caching.
 - `@merqo/ui` bumped from 0.45.1 to 0.50.0.
 - `@merqo/ui` repinned from v0.50.0 to v0.50.1: footer links get a 44px minimum touch height and a visible focus ring at every width, and the footer reserves bottom padding so the fixed Back to top button no longer covers them.

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { authErrorCopy } from "./auth-error-copy";
+import { authErrorCopy, weakPasswordMessage } from "./auth-error-copy";
 
 describe("authErrorCopy", () => {
   afterEach(() => vi.restoreAllMocks());
@@ -16,10 +16,23 @@ describe("authErrorCopy", () => {
     );
   });
 
-  it("maps weak passwords", () => {
-    expect(authErrorCopy("Password should be at least 8 characters", "x")).toBe(
-      "Choose a stronger password.",
-    );
+  it("maps weak_password by code without logging it as unmapped", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(
+      authErrorCopy(
+        "Password should be at least 8 characters.",
+        "x",
+        "weak_password",
+        ["length"],
+      ),
+    ).toBe("Password is too short. Use at least 8 characters.");
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it("maps weak-password messages without a code", () => {
+    expect(
+      authErrorCopy("Password should be at least 6 characters.", "x"),
+    ).toBe("Password is too short. Use at least 6 characters.");
   });
 
   it("uses neutral copy for already-registered emails", () => {
@@ -66,6 +79,83 @@ describe("authErrorCopy", () => {
   it("falls back when there is no message", () => {
     expect(authErrorCopy(null, "Could not save. Try again.")).toBe(
       "Could not save. Try again.",
+    );
+  });
+});
+
+const SETS =
+  "Password should contain at least one character of each: abcdefghijklmnopqrstuvwxyz, ABCDEFGHIJKLMNOPQRSTUVWXYZ, 0123456789, !@#$%^&*().";
+
+describe("weakPasswordMessage", () => {
+  it("names the length from the message", () => {
+    expect(
+      weakPasswordMessage({
+        reasons: ["length"],
+        message: "Password should be at least 8 characters.",
+      }),
+    ).toBe("Password is too short. Use at least 8 characters.");
+  });
+
+  it("handles length without a number", () => {
+    expect(weakPasswordMessage({ reasons: ["length"], message: "x" })).toBe(
+      "Password is too short. Use a longer one.",
+    );
+  });
+
+  it("names parsed character classes", () => {
+    expect(
+      weakPasswordMessage({ reasons: ["characters"], message: SETS }),
+    ).toBe(
+      "Password must include a lowercase letter, an uppercase letter, a number and a symbol.",
+    );
+    expect(
+      weakPasswordMessage({
+        reasons: ["characters"],
+        message:
+          "Password should contain at least one character of each: abcdefghijklmnopqrstuvwxyz, 0123456789.",
+      }),
+    ).toBe("Password must include a lowercase letter and a number.");
+  });
+
+  it("falls back when character sets cannot be parsed", () => {
+    expect(weakPasswordMessage({ reasons: ["characters"], message: "x" })).toBe(
+      "Password needs a wider mix of characters, such as upper and lower case letters, numbers and symbols.",
+    );
+  });
+
+  it("explains breached passwords", () => {
+    expect(weakPasswordMessage({ reasons: ["pwned"], message: "x" })).toBe(
+      "This password has appeared in a data breach. Choose a different one.",
+    );
+  });
+
+  it("joins several reasons", () => {
+    expect(
+      weakPasswordMessage({
+        reasons: ["length", "pwned"],
+        message: "Password should be at least 8 characters.",
+      }),
+    ).toBe(
+      "Password is too short. Use at least 8 characters. This password has appeared in a data breach. Choose a different one.",
+    );
+  });
+
+  it("infers reasons from the message when none are given", () => {
+    expect(
+      weakPasswordMessage({
+        message: `Password should be at least 8 characters. ${SETS}`,
+      }),
+    ).toBe(
+      "Password is too short. Use at least 8 characters. Password must include a lowercase letter, an uppercase letter, a number and a symbol.",
+    );
+  });
+
+  it("uses a generic message when nothing is recognisable", () => {
+    expect(weakPasswordMessage({ reasons: [], message: "nope" })).toBe(
+      "That password is too weak. Choose a longer, less common one.",
+    );
+    expect(weakPasswordMessage({})).toBe(
+      "That password is too weak. Choose a longer, less common one.",
     );
   });
 });

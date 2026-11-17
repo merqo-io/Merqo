@@ -283,7 +283,7 @@ Kit bearer routes now cap free-form string lengths (see `src/lib/kit-route-limit
 
 Error copy across the console is action-specific ("Could not <action>. Try again.") and raw errors are logged server-side rather than shown; see CHANGELOG.md.
 
-Sign-in and profile error copy is plain and action-specific; `src/lib/auth-error-copy.ts` maps known Supabase auth messages to friendly text and logs only an error code.
+Sign-in and profile error copy is plain and action-specific; `src/lib/auth-error-copy.ts` maps known Supabase auth messages to friendly text and logs only an error code. Weak-password errors name the failed rule from the server response.
 
 ## Touch targets and loading states
 
