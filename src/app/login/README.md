@@ -29,6 +29,8 @@ layout.
 
 `layout.tsx` forces per-request rendering so the nonce CSP from `proxy.ts` reaches this page's scripts.
 
+In sign-up mode a weak password shows the specific failed rule (from the server's `reasons`), and an InfoTooltip next to the Password label states the requirements.
+
 Password sign-in runs through the signInWithPasswordAction server action so attempts are counted per IP (10 per 15 minutes, fail open).
 
 The page shows plain "Could not ... Try again." errors through `authErrorCopy` instead of raw Supabase messages.
