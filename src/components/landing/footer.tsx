@@ -17,6 +17,7 @@ export function Footer({ showSignIn = true }: { showSignIn?: boolean }) {
       copyright="© 2026 Merqo"
       signInLabel="Sign in →"
       showSignIn={showSignIn}
+      faqHref="/faq"
       wordmark={
         <Link
           href="/"
