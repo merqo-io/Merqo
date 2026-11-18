@@ -15,6 +15,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Landing: the kit stacker highlight now works by tap and keyboard focus, not hover only; the add/remove toggle has a 44px hit area; surfaces on the landing use `rounded-lg` with no shadow; small text is raised to `text-xs`; the hero board is labelled "Sample"; the benefits grid is a plain list and "How Merqo works" is a numbered list instead of three cards.
 - A weak password on signup or on the reset-password form now shows which rule failed (length, character mix or a known breach), taken from the server response, and both forms have a tap hint stating the password requirements.
 - `GET /api/plans` now requires the kit bearer secret and responds with `Cache-Control: private, no-store` instead of public CDN caching.
 - `@merqo/ui` bumped from 0.45.1 to 0.50.0.

@@ -8,6 +8,7 @@ import {
   type KitStatus,
 } from "@/lib/kits";
 import { cn } from "@merqo/ui/primitives";
+import { highlightHandlers } from "./highlight-handlers";
 import { Badge } from "@/components/ui/badge";
 
 const GROUPS: { status: KitStatus; label: string }[] = [
@@ -17,9 +18,11 @@ const GROUPS: { status: KitStatus; label: string }[] = [
 
 export function ModuleList({
   stacked,
+  highlight = null,
   onToggle,
   onHighlight,
 }: {
+  highlight?: string | null;
   stacked: ReadonlySet<string>;
   onToggle: (slug: string) => void;
   onHighlight: (slug: string | null) => void;
@@ -40,30 +43,40 @@ export function ModuleList({
                 return (
                   <li
                     key={k.slug}
-                    onMouseEnter={() => onHighlight(k.slug)}
-                    onMouseLeave={() => onHighlight(null)}
+                    {...highlightHandlers(k.slug, highlight, onHighlight)}
+                    data-highlighted={highlight === k.slug || undefined}
                     className={cn(
-                      "rounded-xl border bg-card p-3 shadow-sm transition-colors",
+                      "rounded-lg border bg-card p-3 transition-colors",
                       on && "border-primary/40",
+                      highlight === k.slug && "ring-2 ring-primary/40",
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <button
                         type="button"
                         aria-pressed={on}
+                        onPointerDown={(e) => e.stopPropagation()}
                         onClick={() => onToggle(k.slug)}
                         className={cn(
-                          "flex size-7 shrink-0 items-center justify-center rounded-full border outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-100",
-                          on
-                            ? "border-transparent bg-primary text-primary-foreground"
-                            : "hover:bg-accent",
+                          "group -m-2 flex size-11 shrink-0 items-center justify-center rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
                         )}
                       >
-                        {on ? (
-                          <Check className="size-4" />
-                        ) : (
-                          <Plus className="size-4" />
-                        )}
+                        <span
+                          aria-hidden
+                          className={cn(
+                            "flex size-7 items-center justify-center rounded-full border transition-colors group-active:bg-accent",
+                            on
+                              ? "border-transparent bg-primary text-primary-foreground"
+                              : "group-hover:bg-accent",
+                            on && "group-hover:bg-primary/90",
+                          )}
+                        >
+                          {on ? (
+                            <Check className="size-4" />
+                          ) : (
+                            <Plus className="size-4" />
+                          )}
+                        </span>
                         <span className="sr-only">
                           {on
                             ? `Remove ${k.name} from the stack`
@@ -77,7 +90,7 @@ export function ModuleList({
                           </span>
                           <Badge
                             variant={k.status === "piloting" ? "gold" : "muted"}
-                            className="px-1.5 py-0 text-[10px]"
+                            className="px-1.5 py-0 text-xs"
                           >
                             {KIT_STATUS_LABEL[k.status]}
                           </Badge>

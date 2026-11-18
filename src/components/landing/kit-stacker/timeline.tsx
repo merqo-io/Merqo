@@ -26,7 +26,7 @@ export function Timeline() {
             />
             <span
               className={cn(
-                "font-mono text-[10px]",
+                "font-mono text-xs",
                 k.status === "piloting"
                   ? "font-semibold text-foreground"
                   : "text-muted-foreground",
@@ -35,7 +35,7 @@ export function Timeline() {
               {k.slug}
             </span>
             {k.status === "piloting" && (
-              <span className="text-[9px] text-muted-foreground">pilot</span>
+              <span className="text-xs text-muted-foreground">pilot</span>
             )}
           </div>
         ))}

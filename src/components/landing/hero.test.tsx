@@ -19,3 +19,10 @@ describe("Hero", () => {
     ).toHaveAttribute("href", "/post-login");
   });
 });
+
+describe("Hero sample board", () => {
+  it("labels the now-serving board as sample data in visible text", () => {
+    render(<Hero />);
+    expect(screen.getByText("Sample")).toBeVisible();
+  });
+});
