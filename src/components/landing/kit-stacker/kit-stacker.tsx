@@ -99,6 +99,17 @@ export function KitStacker() {
 
   useEffect(() => clearTimers, []);
 
+  useEffect(() => {
+    if (!highlight) return;
+    const clearOnOutsideTap = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      const target = e.target as Element | null;
+      if (!target?.closest?.("[data-kit-slug]")) setHighlight(null);
+    };
+    document.addEventListener("pointerdown", clearOnOutsideTap);
+    return () => document.removeEventListener("pointerdown", clearOnOutsideTap);
+  }, [highlight]);
+
   const route = JOURNEY_STEPS.filter((s) => stacked.has(s.slug));
   const canPlay = route.length >= 2;
 
@@ -178,7 +189,7 @@ export function KitStacker() {
             </div>
 
             {/* graph on desktop; the block tower reads better on phones */}
-            <div className="mt-3 hidden lg:block">
+            <div className="mt-3 hidden overflow-x-auto lg:block">
               <GraphCanvas
                 stacked={stacked}
                 highlight={highlight}

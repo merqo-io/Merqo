@@ -8,6 +8,7 @@ import {
   type KitStatus,
 } from "@/lib/kits";
 import { cn } from "@merqo/ui/primitives";
+import { highlightHandlers } from "./highlight-handlers";
 import { Badge } from "@/components/ui/badge";
 
 const GROUPS: { status: KitStatus; label: string }[] = [
@@ -42,14 +43,7 @@ export function ModuleList({
                 return (
                   <li
                     key={k.slug}
-                    onMouseEnter={() => onHighlight(k.slug)}
-                    onMouseLeave={() => onHighlight(null)}
-                    onPointerDown={(e) => {
-                      if (e.pointerType !== "mouse")
-                        onHighlight(highlight === k.slug ? null : k.slug);
-                    }}
-                    onFocus={() => onHighlight(k.slug)}
-                    onBlur={() => onHighlight(null)}
+                    {...highlightHandlers(k.slug, highlight, onHighlight)}
                     data-highlighted={highlight === k.slug || undefined}
                     className={cn(
                       "rounded-lg border bg-card p-3 transition-colors",
@@ -61,6 +55,7 @@ export function ModuleList({
                       <button
                         type="button"
                         aria-pressed={on}
+                        onPointerDown={(e) => e.stopPropagation()}
                         onClick={() => onToggle(k.slug)}
                         className={cn(
                           "group -m-2 flex size-11 shrink-0 items-center justify-center rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
@@ -73,6 +68,7 @@ export function ModuleList({
                             on
                               ? "border-transparent bg-primary text-primary-foreground"
                               : "group-hover:bg-accent",
+                            on && "group-hover:bg-primary/90",
                           )}
                         >
                           {on ? (

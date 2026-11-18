@@ -1,6 +1,6 @@
 # Merqo
 
-Public page rules (radius, shadow, hover and motion) are recorded in `DESIGN.md`.
+Public page rules (radius, shadow, hover and motion) are recorded in `DESIGN.md`. The landing follows them: no shadows, `rounded-lg` surfaces, 44px touch targets, and the kit stacker highlight works by tap and keyboard focus as well as mouse hover (`src/components/landing/kit-stacker/`).
 
 House brand + operator console for a modular family of small-business tools
 ("kits") for Singapore micro/small sellers. `qkit` (queue/orders), `loopkit`
