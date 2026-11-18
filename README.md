@@ -1,5 +1,7 @@
 # Merqo
 
+Public page rules (radius, shadow, hover and motion) are recorded in `DESIGN.md`.
+
 House brand + operator console for a modular family of small-business tools
 ("kits") for Singapore micro/small sellers. `qkit` (queue/orders), `loopkit`
 (stamp-card loyalty), `paykit` (payments), and `stockkit` (inventory).
