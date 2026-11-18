@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `DESIGN.md` records merqo's public-page values and the places the public pages still break the shared rules.
 - A public `/faq` page built on `@merqo/ui`'s shared `FaqPage` (with FAQ JSON-LD). The landing nav's FAQ link now points to it at every width.
 - `/auth/confirm` for own-domain email links: forwards links meant for a kit to that kit's `/auth/confirm` and verifies merqo's own on a Continue click, so email scanners cannot consume the token. The login page shows a message for `?error=link`. `NEXT_PUBLIC_PRINTKIT_URL` joins the kit URL overrides.
 - A scheduled `staging-keepalive` workflow reads the staging database twice a week so the free-tier Supabase project does not pause, and fails if the read does not return 200.
@@ -22,6 +23,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `GET /api/plans` now requires the kit bearer secret and responds with `Cache-Control: private, no-store` instead of public CDN caching.
 - `@merqo/ui` bumped from 0.45.1 to 0.50.0.
 - `@merqo/ui` repinned from v0.50.0 to v0.50.1: footer links get a 44px minimum touch height and a visible focus ring at every width, and the footer reserves bottom padding so the fixed Back to top button no longer covers them.
+- `next` and `eslint-config-next` bumped from 16.4.2 to 16.4.6, fixing GHSA-mfr8-8qww-v76h.
 - `@merqo/ui` repinned from v0.50.1 to v0.51.0. The footer now links to the `/faq` page after About.
 
 ### Fixed
