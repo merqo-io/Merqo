@@ -99,6 +99,17 @@ export function KitStacker() {
 
   useEffect(() => clearTimers, []);
 
+  useEffect(() => {
+    if (!highlight) return;
+    const clearOnOutsideTap = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      const target = e.target as Element | null;
+      if (!target?.closest?.("[data-kit-slug]")) setHighlight(null);
+    };
+    document.addEventListener("pointerdown", clearOnOutsideTap);
+    return () => document.removeEventListener("pointerdown", clearOnOutsideTap);
+  }, [highlight]);
+
   const route = JOURNEY_STEPS.filter((s) => stacked.has(s.slug));
   const canPlay = route.length >= 2;
 
@@ -143,7 +154,7 @@ export function KitStacker() {
         </p>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
-          <div className="rounded-2xl border bg-card p-4 shadow-sm sm:p-6">
+          <div className="rounded-lg border bg-card p-4 sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 Your stack
@@ -178,7 +189,7 @@ export function KitStacker() {
             </div>
 
             {/* graph on desktop; the block tower reads better on phones */}
-            <div className="mt-3 hidden lg:block">
+            <div className="mt-3 hidden overflow-x-auto lg:block">
               <GraphCanvas
                 stacked={stacked}
                 highlight={highlight}
@@ -208,6 +219,7 @@ export function KitStacker() {
 
           <ModuleList
             stacked={stacked}
+            highlight={highlight}
             onToggle={toggle}
             onHighlight={setHighlight}
           />

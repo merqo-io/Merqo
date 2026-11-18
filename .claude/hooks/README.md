@@ -20,7 +20,10 @@ behavioral description of each hook and the events they're wired to.
   branches pass. A strict `&&` chain (`cd <repo> && git commit`) is judged only
   by the directories git actually runs in, so it passes from a `main` checkout
   when the `cd` lands on a feature branch; anything looser keeps the starting
-  directory as a candidate.
+  directory as a candidate. A repo other than the project root is judged by its
+  own branch, whatever the session's cwd. A heredoc commit message
+  (`-m "$(cat <<'EOF' ...)"`) and a trailing `| tail` keep the chain strict;
+  `||`, `;`, a piped `cd`, or a `git` after a pipe do not.
 - `block-no-verify.test.sh` — regression tests for the hook (run `bash .claude/hooks/block-no-verify.test.sh`).
 - `user-prompt-guard.cjs` — reports injection phrases as advisory context and blocks embedded credentials (OWASP LLM02).
 - `post-edit-typecheck.sh` — PostToolUse(Edit|Write): runs

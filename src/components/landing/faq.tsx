@@ -21,7 +21,7 @@ const FAQ: FaqEntry[] = [
 
 function FaqItem({ q, a }: FaqEntry) {
   return (
-    <details className="group overflow-hidden rounded-xl border bg-card open:border-primary/50">
+    <details className="group overflow-hidden rounded-lg border bg-card open:border-primary/50">
       <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-5 py-4 outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-inset">
         <span className="text-base font-display font-semibold leading-snug">
           {q}

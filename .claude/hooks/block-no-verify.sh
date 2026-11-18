@@ -33,6 +33,12 @@ cmd=$(printf '%s\n' "$cmd" | awk '
   { print; l = $0; gsub(/<<</, "", l)
     if (match(l, /<<-?[[:space:]]*["\047]?[A-Za-z_][A-Za-z0-9_]*/)) {
       w = substr(l, RSTART, RLENGTH); tabs = (w ~ /^<<-/); sub(/^<<-?[[:space:]]*["\047]?/, "", w); inh = 1 } }')
+# A heredoc commit message (`-m "$(cat <<'EOF' … EOF\n)"`) leaves a `"$(cat <<'EOF'` line and a `)"` line
+# once the body is gone. Those parentheses would otherwise make the `&&` chain below non-strict, so
+# `cd repo && git commit -m "$(cat <<EOF …)"` would be judged against the hook's cwd (the session root)
+# rather than repo. Collapse the pair to a placeholder, as the quote scrub does for any quoted text.
+sq="'"
+cmd=$(printf '%s' "$cmd" | sed -zE "s/\"\\\$\([[:space:]]*cat[[:space:]]+<<-?[[:space:]]*[\"${sq}]?[A-Za-z_][A-Za-z0-9_]*[\"${sq}]?[[:space:]]*\n[[:space:]]*\)\"/ Q /g")
 block() { echo "BLOCKED: $1" >&2; exit 2; }
 protected='main'
 root=$PWD
@@ -169,12 +175,24 @@ done
 # through from a protected checkout. A cd that is not a plain literal at the start of a segment, a git
 # that is not the first word of its segment, or any redir leaves the candidate set as it is.
 chain_dirs() {
-  local chk seg w d cur first sawgit=0
+  local chk seg rest w d cur first sawgit=0
   local -a t out=()
   chk=$(printf '%s' "$scan" | sed -E 's/[0-9]*>&[0-9-]*//g; s/&>>?//g; s/&&/ /g')
-  [[ "$chk" == *[\;\|\&\(\)\`]* || "$chk" == *$'\n'* ]] && return 1
+  # `||` can skip the cd's success guarantee; a single `|` is allowed only after a git word (see below).
+  [[ "$chk" == *[\;\&\(\)\`]* || "$chk" == *'||'* || "$chk" == *$'\n'* ]] && return 1
   cur=$orig_dir
   while IFS= read -r seg; do
+    # `git commit … | tail`: pipe stages after the first run in the cwd the cd left, so they need no
+    # judging, but a cd or git there (or a cd that is itself piped, i.e. a subshell) is not followed.
+    if [[ "$seg" == *'|'* ]]; then
+      rest=${seg#*|}; seg=${seg%%|*}
+      read -ra t <<< "$rest"
+      for w in "${t[@]}"; do
+        case "${w#\\}" in cd|pushd|popd|env|sudo|command|builtin|exec|git|*/git) return 1 ;; esac
+      done
+      read -ra t <<< "$seg"
+      [[ "${t[0]#\\}" == cd || "${t[0]#\\}" == pushd ]] && return 1
+    fi
     read -ra t <<< "$seg"
     [ "${#t[@]}" -eq 0 ] && continue
     first="${t[0]#\\}"

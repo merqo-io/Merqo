@@ -14,15 +14,12 @@ function NowServingBoard() {
     { n: "04", label: "Iced kopi ×2", tone: "text-muted-foreground" },
   ];
   return (
-    <div
-      aria-hidden
-      className="w-full max-w-sm rounded-2xl border bg-card p-5 shadow-sm"
-    >
+    <div aria-hidden className="w-full max-w-sm rounded-lg border bg-card p-5">
       <div className="flex items-center justify-between border-b pb-3">
         <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
           Now serving
         </span>
-        <span className="size-2 rounded-full bg-primary" />
+        <span className="text-xs text-muted-foreground">Sample</span>
       </div>
       <div className="py-4 text-center">
         <div className="font-mono text-6xl font-bold tabular-nums text-primary">
@@ -37,7 +34,7 @@ function NowServingBoard() {
               {r.n}
             </span>
             <span className={r.tone}>{r.label}</span>
-            <span className="ml-auto rounded-full bg-gold/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-gold-text">
+            <span className="ml-auto rounded-full bg-gold/20 px-2 py-0.5 font-mono text-xs uppercase tracking-widest text-gold-text">
               Ready
             </span>
           </li>

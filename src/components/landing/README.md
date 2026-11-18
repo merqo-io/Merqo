@@ -16,11 +16,12 @@ per file. Presentational only — no data fetching, no client state beyond the
   `/admin`) as the end slot. Header padding/logo size (`px-5 py-4`,
   `text-3xl`) matches qkit's landing nav exactly.
 - `hero.tsx` — headline, stat row, CTA (same `/post-login` routing as
-  `nav.tsx`'s dashboard link). Its "Ready" pill uses `text-gold-text` on
+  `nav.tsx`'s dashboard link). Its board carries a visible "Sample" label so it is not read as live data. Its board carries a visible "Sample" label so it is not read as live data.
+  Its "Ready" pill uses `text-gold-text` on
   the gold tint.
-- `benefits.tsx` — the "why Merqo" feature grid.
+- `benefits.tsx` — the "why Merqo" points as a plain definition list (no icon tiles, no three-up grid).
 - `kit-stacker/` — the interactive kit-stacking demo.
-- `how-it-works.tsx` — step-by-step explainer.
+- `how-it-works.tsx` — step-by-step explainer as a numbered list on a vertical rule, not three cards.
 - `faq.tsx` — static Q&A list.
 - `footer.tsx` — single-row site footer matching qkit's landing footer
   exactly — `Wordmark`, tagline, `© <year> Merqo` credit line (no "· a

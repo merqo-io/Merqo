@@ -1,5 +1,6 @@
 import { KIT_NODES, KIT_EDGES, nodeBySlug } from "@/lib/ecosystem";
 import { cn } from "@merqo/ui/primitives";
+import { highlightHandlers } from "./highlight-handlers";
 
 // Bottom → top: qkit renders first if stacked, the rest follow in the same
 // order as the landing graph (KIT_NODES) so both views stay in sync.
@@ -40,10 +41,13 @@ export function BlockTower({
         return (
           <div
             key={slug}
-            onMouseEnter={() => onHighlight(slug)}
-            onMouseLeave={() => onHighlight(null)}
+            {...highlightHandlers(slug, highlight, onHighlight)}
+            role="group"
+            aria-label={node.short}
+            tabIndex={0}
+            data-highlighted={hot || undefined}
             className={cn(
-              "mb-2 rounded-xl border border-b-4 px-4 py-3 shadow-sm transition-all",
+              "mb-2 rounded-lg border border-b-4 px-4 py-3 outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring",
               piloting
                 ? "border-gold bg-primary text-primary-foreground"
                 : "border-primary/30 border-b-primary/40 bg-card",
