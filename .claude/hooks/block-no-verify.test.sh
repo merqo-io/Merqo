@@ -81,4 +81,31 @@ check 2 "block: --no-verify"                   "$wt"      "git commit --no-verif
 check 2 "block: force push to main"            "$wt"      "git push --force origin main"
 check 2 "block: bash -c wrapper"               "$wt"      "bash -c \"git commit --no-verify -m x\""
 
+# A different repo than the project root: its branch decides, whatever the session cwd (a main checkout).
+other_main="$base/other main"
+other_feat="$base/other feat"
+mkdir -p "$other_main" "$other_feat"
+git -C "$other_main" init -q -b main
+git -C "$other_main" -c user.name=t -c user.email=t@t commit -q --allow-empty -m init
+git -C "$other_feat" init -q -b feat/y
+git -C "$other_feat" -c user.name=t -c user.email=t@t commit -q --allow-empty -m init
+of_mixed=$(to_mixed "$other_feat"); of_win=$(to_win "$other_feat")
+om_mixed=$(to_mixed "$other_main")
+hd=$'-m "$(cat <<\'EOF\'\nmsg\nEOF\n)"'
+
+check 0 "allow: other repo feature, git -C"                 "$main" "git -C \"$of_mixed\" commit -m x"
+check 0 "allow: other repo feature, cd && commit"           "$main" "cd \"$of_mixed\" && git commit -m x"
+check 0 "allow: other repo feature, bare commit from cwd"   "$of_win" "git commit -m x"
+check 0 "allow: other repo feature, cd && commit heredoc"   "$main" "cd \"$of_mixed\" && git commit $hd"
+check 0 "allow: other repo feature, git -C commit heredoc"  "$main" "git -C \"$of_mixed\" commit $hd"
+check 0 "allow: other repo feature, cd && commit | tail"    "$main" "cd \"$of_mixed\" && git commit -m x 2>&1 | tail -3"
+check 2 "block: other repo main, git -C"                    "$main" "git -C \"$om_mixed\" commit -m x"
+check 2 "block: other repo main, cd && commit"              "$main" "cd \"$om_mixed\" && git commit -m x"
+check 2 "block: other repo main, cd && commit heredoc"      "$main" "cd \"$om_mixed\" && git commit $hd"
+check 2 "block: other repo main, cd && commit | tail"       "$main" "cd \"$om_mixed\" && git commit -m x 2>&1 | tail -3"
+check 2 "block: heredoc commit from main cwd"               "$main" "git commit $hd"
+check 2 "block: piped cd is a subshell, main cwd stays"     "$main" "cd \"$of_mixed\" | cat && git commit -m x"
+check 2 "block: git after pipe not followed"                "$main" "cd \"$of_mixed\" && echo | git commit -m x"
+check 2 "block: || keeps protected cwd a candidate"         "$main" "cd \"$of_mixed\" || git commit -m x"
+
 exit "$fail"

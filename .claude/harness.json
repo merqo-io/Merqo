@@ -23,7 +23,7 @@
       "path": ".claude/hooks/verify.sh"
     },
     ".claude/hooks/block-no-verify.sh": {
-      "origin_hash": "f946e5872fc18d0fce24634d4e441bf6307eaac63cd865c3f3f6aff4f1098328",
+      "origin_hash": "14277d16d1268aa7aacbb834a217e2bb59864fb937eec7edf13aac3208f43269",
       "path": ".claude/hooks/block-no-verify.sh"
     },
     ".claude/hooks/protect-files.sh": {
