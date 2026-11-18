@@ -13,7 +13,8 @@ map of what lives where.
 - `settings.json` — hook wiring (PreToolUse/PostToolUse/Stop/SubagentStop/
   SessionStart) and `permissions.allow/ask/deny`.
 - `hooks/` — the scripts `settings.json` wires up: `protect-files.sh`,
-  `block-no-verify.sh`, `user-prompt-guard.cjs`, `post-edit-typecheck.sh`,
+  `block-no-verify.sh` (judges a commit in another repo's worktree by that
+  repo's own branch), `user-prompt-guard.cjs`, `post-edit-typecheck.sh`,
   `post-edit-comment-check.sh`, `stop-checks.sh`,
   `subagent-stop.sh`, `session-context.sh`, `skill-usage-log.sh`.
 - `comment-hygiene-patterns.txt` — the change-narration/ticket-reference
