@@ -19,21 +19,22 @@ export function HowItWorks() {
       <h2 className="mb-10 text-center text-3xl font-display font-bold tracking-tight">
         How Merqo works
       </h2>
-      <div className="grid gap-5 sm:grid-cols-3">
+      <ol className="mx-auto max-w-2xl border-l">
         {STEPS.map((step, i) => (
-          <div key={step.title} className="rounded-2xl border p-6">
-            <p className="font-mono text-xs text-muted-foreground">
-              Step {i + 1}
-            </p>
-            <h3 className="mt-1 font-display text-xl font-semibold">
-              {step.title}
-            </h3>
+          <li key={step.title} className="relative pb-8 pl-8 last:pb-0">
+            <span
+              aria-hidden
+              className="absolute -left-3 top-0 grid size-6 place-items-center rounded-full border bg-background font-mono text-xs tabular-nums"
+            >
+              {i + 1}
+            </span>
+            <h3 className="font-display text-xl font-semibold">{step.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               {step.body}
             </p>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </section>
   );
 }

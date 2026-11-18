@@ -7,3 +7,5 @@ BlockTower resolves selected slugs with the existing ecosystem nodeBySlug helper
 `graph-canvas.tsx` picks node classes with `nodeClasses`, and `kit-stacker.tsx` passes the journey timer and setters to `scheduleJourneyStep` as one `JourneyHandlers` object.
 
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
+
+Touch and keyboard: the highlight that hover used to drive also follows a tap (a second tap clears it) and keyboard focus on module rows and tower blocks. The add/remove toggle has a 44px hit area around a 28px glyph. Surfaces use `rounded-lg` with no shadow, and text a vendor reads is at least `text-xs`.

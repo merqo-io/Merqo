@@ -42,8 +42,16 @@ export function BlockTower({
             key={slug}
             onMouseEnter={() => onHighlight(slug)}
             onMouseLeave={() => onHighlight(null)}
+            onPointerDown={(e) => {
+              if (e.pointerType !== "mouse")
+                onHighlight(highlight === slug ? null : slug);
+            }}
+            onFocus={() => onHighlight(slug)}
+            onBlur={() => onHighlight(null)}
+            tabIndex={0}
+            data-highlighted={hot || undefined}
             className={cn(
-              "mb-2 rounded-xl border border-b-4 px-4 py-3 shadow-sm transition-all",
+              "mb-2 rounded-lg border border-b-4 px-4 py-3 outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring",
               piloting
                 ? "border-gold bg-primary text-primary-foreground"
                 : "border-primary/30 border-b-primary/40 bg-card",

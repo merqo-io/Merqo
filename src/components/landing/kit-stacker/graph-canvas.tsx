@@ -77,7 +77,7 @@ export function GraphCanvas({
         const dim = highlight
           ? highlight !== e.from && highlight !== e.to
           : false;
-        const chipW = e.label.length * 7 + 16;
+        const chipW = e.label.length * 8 + 16;
         return (
           <g
             key={`${e.from}-${e.to}`}
@@ -115,7 +115,7 @@ export function GraphCanvas({
                 x={mx}
                 y={my + 4}
                 textAnchor="middle"
-                className="fill-muted-foreground font-mono text-[11px]"
+                className="fill-muted-foreground font-mono text-xs"
               >
                 {e.label}
               </text>
@@ -137,6 +137,10 @@ export function GraphCanvas({
             transform={`translate(${n.x - NODE_W / 2} ${n.y - NODE_H / 2})`}
             onMouseEnter={() => onHighlight(n.slug)}
             onMouseLeave={() => onHighlight(null)}
+            onPointerDown={(e) => {
+              if (e.pointerType !== "mouse")
+                onHighlight(highlight === n.slug ? null : n.slug);
+            }}
             className={cn(
               "transition-opacity duration-300",
               on ? "opacity-100" : "opacity-45",
@@ -177,7 +181,7 @@ export function GraphCanvas({
               y={NODE_H / 2 + 13}
               textAnchor="middle"
               className={cn(
-                "font-mono text-[9px]",
+                "font-mono text-xs",
                 on && piloting
                   ? "fill-primary-foreground/80"
                   : "fill-muted-foreground/80",
