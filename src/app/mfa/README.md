@@ -11,7 +11,7 @@ password alone.
 - `page.tsx` — server page; `requireTeamMember()` only (it lives outside
   `/admin` so the `aal2` gate cannot loop back), forwards an `aal2` session to
   `/admin`, otherwise passes the verified TOTP factor (or stale unverified ones)
-  to the form.
+  to the form inside the shared `AuthShell`.
 - `mfa-form.tsx` — thin adapter over the shared `MfaForm` from `@merqo/ui`: unenrols stale factors, enrols a TOTP factor, verifies with `challengeAndVerify`, then enters `/admin`. Error copy is unchanged.
 - `loading.tsx` — route skeleton shown while the team and MFA lookups resolve.
 - `mfa-form.dom.test.tsx`, `mfa-form.shared.dom.test.tsx` — verify, wrong code, rate limit, enrol failure and throw, paste, touch tap, input attributes.
