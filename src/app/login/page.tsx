@@ -5,15 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import {
   ALREADY_REGISTERED,
-  PASSWORD_REQUIREMENTS_HINT,
   authErrorCopy,
   errorReasons,
 } from "@/lib/auth-error-copy";
 import { signInWithPasswordAction } from "@/app/actions/auth";
 import { Button, Input, Label } from "@merqo/ui/primitives";
 import { Wordmark } from "@/components/brand/wordmark";
-import { ElevatedCard, InfoTooltip } from "@merqo/ui";
-import { GoogleMark } from "@merqo/ui";
+import { AuthShell, GoogleMark, PasswordRequirementsHint } from "@merqo/ui";
 
 const LINK_ERROR = "That link is invalid or has expired. Request a new one.";
 
@@ -175,182 +173,152 @@ export default function LoginPage() {
   if (sent) {
     const isReset = sent.kind === "reset";
     return (
-      <main className="flex min-h-screen items-center justify-center p-5">
-        <div className="w-full max-w-md text-center">
-          <ElevatedCard className="px-7 py-10">
-            <Wordmark className="text-2xl" />
-            <h1 className="mt-6 font-display text-3xl font-bold tracking-tight">
-              Check your email
-            </h1>
-            <p className="mt-3 text-sm text-muted-foreground">
-              {isReset ? (
-                <>
-                  We sent a password reset link to{" "}
-                  <span className="font-medium text-foreground">
-                    {sent.email}
-                  </span>
-                  . Open it to choose a new password.
-                </>
-              ) : (
-                <>
-                  We sent a confirmation link to{" "}
-                  <span className="font-medium text-foreground">
-                    {sent.email}
-                  </span>
-                  . Click it to activate your account, then sign in.
-                </>
-              )}
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              className="mt-7 h-11 w-full rounded-xl"
-              onClick={() => {
-                setSent(null);
-                setMode("signin");
-              }}
-            >
-              Back to sign in
-            </Button>
-          </ElevatedCard>
-        </div>
-      </main>
+      <AuthShell
+        align="center"
+        wordmark={<Wordmark className="text-2xl" />}
+        title="Check your email"
+        subtitle={
+          isReset ? (
+            <>
+              We sent a password reset link to{" "}
+              <span className="font-medium text-foreground">{sent.email}</span>.
+              Open it to choose a new password.
+            </>
+          ) : (
+            <>
+              We sent a confirmation link to{" "}
+              <span className="font-medium text-foreground">{sent.email}</span>.
+              Click it to activate your account, then sign in.
+            </>
+          )
+        }
+      >
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11 w-full rounded-xl"
+          onClick={() => {
+            setSent(null);
+            setMode("signin");
+          }}
+        >
+          Back to sign in
+        </Button>
+      </AuthShell>
     );
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-5">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <Wordmark className="text-3xl" />
-          <p className="mt-1 text-sm text-muted-foreground">
-            Run your business from one place.
-          </p>
-        </div>
+    <AuthShell
+      wordmark={<Wordmark className="text-3xl" />}
+      tagline="Run your business from one place."
+      title={isSignin ? "Welcome back" : "Create your account"}
+      subtitle={
+        isSignin
+          ? "Sign in to your Merqo dashboard."
+          : "Set up a Merqo account in seconds."
+      }
+      footer={
+        <p className="text-sm">
+          {isSignin ? "New to Merqo? " : "Already have an account? "}
+          <button
+            type="button"
+            className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline"
+            onClick={() => {
+              setMode(isSignin ? "signup" : "signin");
+              setError(null);
+            }}
+          >
+            {isSignin ? "Create an account" : "Sign in"}
+          </button>
+        </p>
+      }
+    >
+      <Button
+        type="button"
+        variant="outline"
+        onClick={signInWithGoogle}
+        disabled={busy}
+        className="h-12 w-full gap-2.5 rounded-xl text-[0.95rem] font-medium"
+      >
+        <GoogleMark />
+        Continue with Google
+      </Button>
 
-        <ElevatedCard>
-          <div className="px-7 pt-9 pb-8">
-            <h1 className="font-display text-3xl font-bold tracking-tight">
-              {isSignin ? "Welcome back" : "Create your account"}
-            </h1>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              {isSignin
-                ? "Sign in to your Merqo dashboard."
-                : "Set up a Merqo account in seconds."}
-            </p>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={signInWithGoogle}
-              disabled={busy}
-              className="mt-7 h-12 w-full gap-2.5 rounded-xl text-[0.95rem] font-medium"
-            >
-              <GoogleMark />
-              Continue with Google
-            </Button>
-
-            <div className="my-6 flex items-center gap-3">
-              <span className="h-px flex-1 bg-border" />
-              <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                or with email
-              </span>
-              <span className="h-px flex-1 bg-border" />
-            </div>
-
-            <form onSubmit={submit} className="space-y-5">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="you@business.sg"
-                  className="h-11 rounded-xl"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-1">
-                    <Label
-                      htmlFor="password"
-                      className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                    >
-                      Password
-                    </Label>
-                    {!isSignin && (
-                      <InfoTooltip
-                        trigger="tap"
-                        ariaLabel="Password requirements"
-                        content={PASSWORD_REQUIREMENTS_HINT}
-                      />
-                    )}
-                  </div>
-                  {isSignin && (
-                    <button
-                      type="button"
-                      onClick={sendReset}
-                      disabled={busy}
-                      className="text-xs font-semibold text-primary underline-offset-4 hover:underline disabled:opacity-50"
-                    >
-                      Forgot password?
-                    </button>
-                  )}
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  autoComplete={isSignin ? "current-password" : "new-password"}
-                  placeholder="••••••••"
-                  className="h-11 rounded-xl"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && (
-                <p
-                  role="alert"
-                  className="text-sm font-medium text-destructive"
-                >
-                  {error}
-                </p>
-              )}
-              <Button
-                type="submit"
-                size="lg"
-                className="h-12 w-full rounded-xl text-base font-semibold"
-                disabled={busy}
-              >
-                {submitLabel}
-              </Button>
-            </form>
-          </div>
-
-          <div className="border-t" />
-          <p className="px-7 py-4 text-center text-sm text-muted-foreground">
-            {isSignin ? "New to Merqo? " : "Already have an account? "}
-            <button
-              type="button"
-              className="font-semibold text-primary underline-offset-4 hover:underline"
-              onClick={() => {
-                setMode(isSignin ? "signup" : "signin");
-                setError(null);
-              }}
-            >
-              {isSignin ? "Create an account" : "Sign in"}
-            </button>
-          </p>
-        </ElevatedCard>
+      <div className="my-6 flex items-center gap-3">
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          or with email
+        </span>
+        <span className="h-px flex-1 bg-border" />
       </div>
-    </main>
+
+      <form onSubmit={submit} className="space-y-5">
+        <div className="space-y-2">
+          <Label
+            htmlFor="email"
+            className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+          >
+            Email
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="you@business.sg"
+            className="h-11 rounded-xl"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-1">
+              <Label
+                htmlFor="password"
+                className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              >
+                Password
+              </Label>
+              {!isSignin && <PasswordRequirementsHint />}
+            </div>
+            {isSignin && (
+              <button
+                type="button"
+                onClick={sendReset}
+                disabled={busy}
+                className="text-xs font-semibold text-primary underline-offset-4 hover:underline disabled:opacity-50"
+              >
+                Forgot password?
+              </button>
+            )}
+          </div>
+          <Input
+            id="password"
+            type="password"
+            required
+            autoComplete={isSignin ? "current-password" : "new-password"}
+            placeholder="••••••••"
+            className="h-11 rounded-xl"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        {error && (
+          <p role="alert" className="text-sm font-medium text-destructive">
+            {error}
+          </p>
+        )}
+        <Button
+          type="submit"
+          size="lg"
+          className="h-12 w-full rounded-xl text-base font-semibold"
+          disabled={busy}
+        >
+          {submitLabel}
+        </Button>
+      </form>
+    </AuthShell>
   );
 }

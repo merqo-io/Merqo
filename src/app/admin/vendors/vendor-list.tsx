@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { EmptyState } from "@merqo/ui";
+import { EmptyState, SearchField } from "@merqo/ui";
 import { filterVendorGrants } from "@/lib/vendor-grants";
 import type {
   GrantStatus,
@@ -10,7 +10,6 @@ import type {
 } from "@/lib/vendor-grants";
 import { Badge } from "@/components/ui/badge";
 import {
-  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -38,15 +37,13 @@ export function VendorList({
   return (
     <>
       <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-        <label htmlFor="vendor-search" className="sr-only">
-          Search by email
-        </label>
-        <Input
+        <SearchField
           id="vendor-search"
+          aria-label="Search by email"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onValueChange={setQuery}
           placeholder="Search by email…"
-          className="sm:max-w-xs"
+          wrapperClassName="sm:w-72"
         />
         <Select
           value={status}

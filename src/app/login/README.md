@@ -8,7 +8,7 @@ Merqo kit.
 
 ## Contents
 
-- `page.tsx` — `LoginPage`: `ElevatedCard`-wrapped form with
+- `page.tsx` — `LoginPage`: `AuthShell`-wrapped form with
   Google OAuth (`signInWithOAuth`, forced `hl=en`), email/password
   sign-in/sign-up via controlled fields and Supabase Auth,
   a "check your email" state for signup confirmation, and forgot-password
@@ -16,7 +16,7 @@ Merqo kit.
 
 ## Connectivity
 
-Uses `ElevatedCard` (`@merqo/ui`) for the card container.
+Uses `AuthShell` (`@merqo/ui`) for the card container; the sign-in/sign-up toggle is its footer.
 Successful sign-in/sign-up navigates to `/post-login`, which selects the
 account's vendor or team destination.
 
@@ -29,7 +29,7 @@ layout.
 
 `layout.tsx` forces per-request rendering so the nonce CSP from `proxy.ts` reaches this page's scripts.
 
-In sign-up mode a weak password shows the specific failed rule (from the server's `reasons`), and an InfoTooltip next to the Password label states the requirements.
+In sign-up mode a weak password shows the specific failed rule (from the server's `reasons`), and the shared `PasswordRequirementsHint` next to the Password label states the requirements.
 
 Password sign-in runs through the signInWithPasswordAction server action so attempts are counted per IP (10 per 15 minutes, fail open).
 

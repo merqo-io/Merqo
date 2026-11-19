@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `@merqo/ui` repinned to v0.54.1 (`272bf23`). The vendor Telegram disconnect now asks for confirmation, and the legal gate no longer caches failed legal checks and retries dropped idempotent requests.
+- Login, reset-password, MFA, no-access and `/auth/confirm` render inside `@merqo/ui`'s `AuthShell` instead of hand-built cards. The login "new to Merqo" toggle now sits under the card.
+- The password requirements hint on login and reset-password is the shared `PasswordRequirementsHint`; the local `PASSWORD_REQUIREMENTS_HINT` copy is removed (the wording was identical).
+- The admin vendor list search uses the shared `SearchField`, which adds a clear button and Escape to clear.
+
 ### Added
 
 - `DESIGN.md` records merqo's public-page values and the places the public pages still break the shared rules.
