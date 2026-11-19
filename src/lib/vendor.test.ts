@@ -27,6 +27,7 @@ function mockMerqoTeamTable() {
 
 function mockLegalAcceptancesTable(
   rows: { doc_type: string; doc_version: string; accepted_at?: string }[],
+  error: { message: string } | null = null,
 ) {
   let document = "";
   const query = {
@@ -37,13 +38,15 @@ function mockLegalAcceptancesTable(
     }),
     order: vi.fn().mockReturnThis(),
     limit: vi.fn(async (limit: number) => ({
-      data: rows
-        .filter((row) => row.doc_type === document)
-        .sort((a, b) =>
-          String(b.accepted_at).localeCompare(String(a.accepted_at)),
-        )
-        .slice(0, limit),
-      error: null,
+      data: error
+        ? null
+        : rows
+            .filter((row) => row.doc_type === document)
+            .sort((a, b) =>
+              String(b.accepted_at).localeCompare(String(a.accepted_at)),
+            )
+            .slice(0, limit),
+      error,
     })),
   };
   return query;
@@ -64,11 +67,15 @@ function mockFrom(overrides: {
     doc_version: string;
     accepted_at?: string;
   }[];
+  legalError?: { message: string };
 }) {
   fromMock.mockImplementation((table: string) => {
     if (table === "merqo_team") return mockMerqoTeamTable();
     if (table === "legal_acceptances")
-      return mockLegalAcceptancesTable(overrides.legalAcceptances ?? []);
+      return mockLegalAcceptancesTable(
+        overrides.legalAcceptances ?? [],
+        overrides.legalError ?? null,
+      );
     return mockVendorLinksTable();
   });
 }
@@ -177,6 +184,64 @@ describe("requireVendorSession", () => {
     await requireVendorSession();
 
     expect(redirectMock).toHaveBeenCalledWith("/legal/accept");
+  });
+
+  describe("legal check logging", () => {
+    const user = { id: "u1", email: "vendor@business.sg" };
+
+    it("logs the error and fails closed when the read fails", async () => {
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      getUserMock.mockResolvedValue({ data: { user } });
+      mockFrom({ legalError: { message: "permission denied" } });
+
+      await requireVendorSession();
+
+      expect(redirectMock).toHaveBeenCalledWith("/legal/accept");
+      expect(errorSpy).toHaveBeenCalledTimes(1);
+      expect(JSON.stringify(errorSpy.mock.calls[0])).toContain(
+        "permission denied",
+      );
+      expect(JSON.stringify(errorSpy.mock.calls[0])).not.toContain(user.email);
+      errorSpy.mockRestore();
+    });
+
+    it("warns with accepted vs required versions when not current", async () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      getUserMock.mockResolvedValue({ data: { user } });
+      mockFrom({
+        legalAcceptances: [{ doc_type: "terms", doc_version: "2020-01-01" }],
+      });
+
+      await requireVendorSession();
+
+      expect(redirectMock).toHaveBeenCalledWith("/legal/accept");
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      const logged = JSON.stringify(warnSpy.mock.calls[0]);
+      expect(logged).toContain("2020-01-01");
+      expect(logged).toContain(LEGAL_VERSIONS.terms);
+      expect(logged).not.toContain(user.email);
+      warnSpy.mockRestore();
+    });
+
+    it("logs nothing when acceptance is current", async () => {
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      getUserMock.mockResolvedValue({ data: { user } });
+      mockFrom({
+        legalAcceptances: [
+          { doc_type: "terms", doc_version: LEGAL_VERSIONS.terms },
+          { doc_type: "privacy", doc_version: LEGAL_VERSIONS.privacy },
+        ],
+      });
+
+      await requireVendorSession();
+
+      expect(redirectMock).not.toHaveBeenCalled();
+      expect(errorSpy).not.toHaveBeenCalled();
+      expect(warnSpy).not.toHaveBeenCalled();
+      errorSpy.mockRestore();
+      warnSpy.mockRestore();
+    });
   });
 });
 

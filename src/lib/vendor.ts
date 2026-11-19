@@ -186,10 +186,27 @@ async function hasCurrentLegalAcceptance(email: string): Promise<boolean> {
   let accepted = {};
   try {
     accepted = await latestLegalVersions(supabase, email, ["terms", "privacy"]);
-  } catch {
+  } catch (err) {
+    // Failing closed bounces the vendor to /legal/accept; log the cause so a
+    // read failure is distinguishable from a genuinely missing acceptance.
+    const detail =
+      err instanceof Error
+        ? { message: err.message, code: (err as { code?: unknown }).code }
+        : { message: String(err) };
+    console.error(
+      "hasCurrentLegalAcceptance: legal acceptance read failed",
+      detail,
+    );
     return false;
   }
-  return isLegalCurrent(accepted, LEGAL_VERSIONS);
+  const current = isLegalCurrent(accepted, LEGAL_VERSIONS);
+  if (!current) {
+    console.warn("hasCurrentLegalAcceptance: legal acceptance not current", {
+      accepted,
+      required: LEGAL_VERSIONS,
+    });
+  }
+  return current;
 }
 
 /** Gate a /dashboard page on being signed in, with a current legal
