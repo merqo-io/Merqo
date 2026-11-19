@@ -8,6 +8,8 @@ per file. Presentational only — no data fetching, no client state beyond the
 
 ## Contents
 
+- `account-menu.tsx` - `LandingAccountMenu`, a client wrapper around `@merqo/ui`'s `AccountMenu` for the signed-in nav. It owns the sign-out, help and feedback handlers (closures cannot cross the server/client boundary) and reuses the dashboard's server actions. Avatar-only trigger, so it fits one row at 375px.
+- `account-menu.test.tsx` - touch sign-out, the sign-out error toast and the help and feedback handlers.
 - `nav.tsx` — sticky top nav built on `@merqo/ui`'s shared `LandingNav` shell
   (`wordmark`/`end` slots): `Wordmark` as the wordmark slot, a `#kits`
   anchor, an `/about` link, an `/faq` link, and a sign-in/dashboard link

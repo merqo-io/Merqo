@@ -78,7 +78,7 @@ menu, kit switcher on the dashboard), and both layouts end with the landing
 `/dashboard/profile`; `src/app/dashboard/profile/page.tsx` redirects that
 to Merqo's real, persona-shared `/profile` route. The landing nav
 (`src/components/landing/nav.tsx`) is built on `@merqo/ui`'s `LandingNav`
-shell (`wordmark`/`end` slots), added in v0.9.0. v0.10.0 added an optional
+shell (`wordmark`/`end` slots), added in v0.9.0. When signed in it shows a Dashboard link and `landing/account-menu.tsx`, an `AccountMenu` with Sign out, instead of a lone Dashboard button. v0.10.0 added an optional
 `LinkComponent` prop to `AccountMenu`/`DashboardNav` so Next.js consumers can
 opt their internal nav links out of a plain `<a>`'s full page reload;
 `dashboard-nav.tsx` passes `LinkComponent={Link}` (`next/link`).

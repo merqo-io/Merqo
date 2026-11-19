@@ -7,7 +7,10 @@ vi.mock("@/lib/supabase/server", () => ({
     auth: { getUser: async () => ({ data: { user: null } }) },
   }),
 }));
-vi.mock("@/components/landing/nav", () => ({ Nav: () => null }));
+vi.mock("@/components/landing/nav", () => ({
+  Nav: () => null,
+  navAccount: () => undefined,
+}));
 vi.mock("@/components/landing/footer", () => ({ Footer: () => null }));
 vi.mock("@/app/actions/waitlist", () => ({ joinKitWaitlist: vi.fn() }));
 
