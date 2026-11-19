@@ -33,6 +33,7 @@
   --gold: oklch(0.759 0.139 72.8);
   --gold-foreground: oklch(0.247 0.028 249.3);
   --gold-text: oklch(0.48 0.11 70);
+  --success: oklch(0.46 0.14 150);
 }
 
 .dark {
@@ -59,6 +60,7 @@
   --gold: oklch(0.751 0.13 79.7);
   --gold-foreground: oklch(0.247 0.028 249.3);
   --gold-text: oklch(0.88 0.1 85);
+  --success: oklch(0.78 0.14 150);
 }
 
 @theme inline {
@@ -85,6 +87,8 @@
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-gold-text: var(--gold-text);
+  /* DeltaPill text on a 12% success tint; lightness is set for 4.5:1 on the card in each mode. */
+  --color-success: var(--success);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

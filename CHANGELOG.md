@@ -22,6 +22,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Landing: the kit stacker highlight now works by tap and keyboard focus, not hover only; the add/remove toggle has a 44px hit area; surfaces on the landing use `rounded-lg` with no shadow; small text is raised to `text-xs`; the hero board is labelled "Sample"; the benefits grid is a plain list and "How Merqo works" is a numbered list instead of three cards.
 - A weak password on signup or on the reset-password form now shows which rule failed (length, character mix or a known breach), taken from the server response, and both forms have a tap hint stating the password requirements.
 - `GET /api/plans` now requires the kit bearer secret and responds with `Cache-Control: private, no-store` instead of public CDN caching.
+- `@merqo/ui` bumped from 0.51.0 to 0.54.0 (commit 378bd898). `globals.css` gains a `--success` token (light and dark) and `--color-success`, which the shared `DeltaPill` now uses.
 - `@merqo/ui` bumped from 0.45.1 to 0.50.0.
 - `@merqo/ui` repinned from v0.50.0 to v0.50.1: footer links get a 44px minimum touch height and a visible focus ring at every width, and the footer reserves bottom padding so the fixed Back to top button no longer covers them.
 - `next` and `eslint-config-next` bumped from 16.4.2 to 16.4.6, fixing GHSA-mfr8-8qww-v76h.
