@@ -15,6 +15,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The legal acceptance check now logs why it fails: an error when the read fails, and a warning with accepted versus required versions when they are not current. Both still send the vendor to `/legal/accept`. This is diagnostic logging for the sign-in `/legal/accept` loop incident.
 - The `block-no-verify.sh` commit guard no longer blocks a `git commit` that runs in a feature-branch worktree of another repo when the session root is on `main`. A heredoc commit message or a trailing `| tail` made the `cd repo && git commit` chain non-strict, so the hook's cwd (the session root) was judged too. Commits that land on `main` are still blocked.
 
 ### Changed
