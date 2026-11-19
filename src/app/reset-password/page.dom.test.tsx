@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 const mocks = vi.hoisted(() => ({
   updateUser: vi.fn(),
   push: vi.fn(),
@@ -71,10 +72,15 @@ it("shows a specific message for a weak password", async () => {
   );
   expect(mocks.push).not.toHaveBeenCalled();
 });
-it("offers the password requirements hint", () => {
+it("shows the password requirements when the hint is tapped", async () => {
+  const user = userEvent.setup();
   render(<ResetPasswordPage />);
+  await user.pointer({
+    keys: "[TouchA]",
+    target: screen.getByRole("button", { name: "Password requirements" }),
+  });
   expect(
-    screen.getByRole("button", { name: "Password requirements" }),
+    await screen.findByText(/Use at least 8 characters/),
   ).toBeInTheDocument();
 });
 it("updates before routing through the role resolver", async () => {

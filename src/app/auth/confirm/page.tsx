@@ -36,7 +36,7 @@ export default async function AuthConfirmPage({
     <AuthShell
       align="center"
       wordmark={<Wordmark className="text-2xl" />}
-      title="Confirm your link"
+      title={params ? "Confirm your email" : "Link problem"}
     >
       {params ? (
         <AuthConfirmForm
