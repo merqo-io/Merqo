@@ -15,3 +15,5 @@ Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are i
 Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
 
 Empty states use the shared `EmptyState size="compact"` from `@merqo/ui`; there is no local dashed box.
+
+`vendor-list.tsx` filters with the shared `SearchField` (clear button, Escape to clear) plus status and kit selects.

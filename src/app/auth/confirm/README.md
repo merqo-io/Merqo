@@ -6,7 +6,7 @@ Landing page for emailed auth links (`/auth/confirm?token_hash&type&redirect_to`
 
 ## Contents
 
-- `page.tsx`: forwards a link whose `redirect_to` origin is in `KIT_AUTH_ORIGINS` to that kit's `/auth/confirm` (never calls Supabase); otherwise renders `AuthConfirmForm` or `AuthConfirmInvalid`. Metadata is noindex with `referrer: no-referrer`.
+- `page.tsx`: forwards a link whose `redirect_to` origin is in `KIT_AUTH_ORIGINS` to that kit's `/auth/confirm` (never calls Supabase); otherwise renders `AuthConfirmForm` or `AuthConfirmInvalid` inside `AuthShell`. Metadata is noindex with `referrer: no-referrer`.
 - `page.test.tsx`: forwarding, non-forwarded origins, form and invalid states, allowlist contents.
 
 ## Parent

@@ -34,6 +34,20 @@ describe("auth confirm page", () => {
     expect(mocks.createServerClient).not.toHaveBeenCalled();
   });
 
+  it("has a single h1 in the form state", async () => {
+    await render_(TOKEN);
+    const h1s = screen.getAllByRole("heading", { level: 1 });
+    expect(h1s).toHaveLength(1);
+    expect(h1s[0]).toHaveTextContent("Confirm your email");
+  });
+
+  it("has a single h1 in the invalid state", async () => {
+    await render_({ type: "recovery" });
+    const h1s = screen.getAllByRole("heading", { level: 1 });
+    expect(h1s).toHaveLength(1);
+    expect(h1s[0]).toHaveTextContent("Link problem");
+  });
+
   it("renders the form when redirect_to is missing", async () => {
     await render_(TOKEN);
     expect(mocks.redirect).not.toHaveBeenCalled();
