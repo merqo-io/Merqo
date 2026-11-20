@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Nav, navAccount } from "./nav";
+import { Nav } from "./nav";
 
 vi.mock("@/app/actions/auth", () => ({ signOutAction: vi.fn() }));
 vi.mock("@/app/actions/feedback", () => ({ submitFeedbackAction: vi.fn() }));
@@ -10,12 +10,15 @@ vi.mock("@/app/actions/support", () => ({
   submitSupportMessageAction: vi.fn(),
 }));
 
+const ana = { name: "Ana", email: "ana@example.com" };
+
 describe("Nav", () => {
   it("renders the sticky header matching qkit's px-5 py-4 sizing", () => {
     render(<Nav />);
 
     const header = screen.getByRole("banner");
-    expect(header).toHaveClass("px-5", "py-4", "backdrop-blur-md");
+    expect(header).toHaveClass("py-4", "backdrop-blur-md");
+    expect(header.querySelector("nav")).toHaveClass("px-5");
     expect(screen.getByText("Merqo home")).toBeInTheDocument();
   });
 
@@ -36,7 +39,7 @@ describe("Nav", () => {
   });
 
   it("sends a signed-in vendor through /post-login, not straight to /admin", () => {
-    render(<Nav authed />);
+    render(<Nav user={ana} />);
     expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
       "href",
       "/post-login",
@@ -44,7 +47,7 @@ describe("Nav", () => {
   });
 
   it("sends a signed-out visitor to /login", () => {
-    render(<Nav authed={false} />);
+    render(<Nav user={null} />);
     expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute(
       "href",
       "/login",
@@ -53,8 +56,8 @@ describe("Nav", () => {
 });
 
 describe("Nav account menu", () => {
-  it("shows a Dashboard link and an account menu, not Sign in, when authed", () => {
-    render(<Nav authed account={{ name: "Ana" }} />);
+  it("shows a Dashboard link and an account menu, not Sign in, when signed in", () => {
+    render(<Nav user={ana} />);
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Account menu" }),
@@ -64,7 +67,7 @@ describe("Nav account menu", () => {
 
   it("opens the menu by touch and offers Sign out", async () => {
     const user = userEvent.setup();
-    render(<Nav authed account={{ name: "Ana" }} />);
+    render(<Nav user={ana} />);
     await user.pointer({
       keys: "[TouchA]",
       target: screen.getByRole("button", { name: "Account menu" }),
@@ -74,46 +77,17 @@ describe("Nav account menu", () => {
     ).toBeInTheDocument();
   });
 
-  it("falls back to a generic account label without an account", () => {
-    render(<Nav authed />);
-    expect(
-      screen.getByRole("button", { name: "Account menu" }),
-    ).toBeInTheDocument();
-  });
-
   it("has no menu when signed out", () => {
     render(<Nav />);
+    expect(screen.queryByRole("button", { name: "Account menu" })).toBeNull();
     expect(screen.queryByRole("menuitem")).toBeNull();
     expect(screen.getByRole("link", { name: "Sign in" })).toBeInTheDocument();
   });
 });
 
-describe("navAccount", () => {
-  it("is undefined for a signed-out visitor", () => {
-    expect(navAccount(null)).toBeUndefined();
-  });
-
-  it("prefers the display name and reads the avatar", () => {
-    expect(
-      navAccount({
-        email: "a@b.co",
-        user_metadata: { display_name: "Ana", avatar_url: "https://x/a.png" },
-      }),
-    ).toEqual({ name: "Ana", avatarUrl: "https://x/a.png" });
-  });
-
-  it("falls back to the email, then a generic label", () => {
-    expect(navAccount({ email: "a@b.co" })).toEqual({
-      name: "a@b.co",
-      avatarUrl: undefined,
-    });
-    expect(navAccount({})?.name).toBe("Account");
-  });
-});
-
 describe("Nav at phone width", () => {
   it("hides Kits and FAQ below sm so the avatar stays inside 375px", () => {
-    render(<Nav authed account={{ name: "Ana" }} />);
+    render(<Nav user={ana} />);
     for (const name of ["Kits", "FAQ"]) {
       expect(screen.getByRole("link", { name })).toHaveClass(
         "hidden",

@@ -8,8 +8,6 @@ per file. Presentational only — no data fetching, no client state beyond the
 
 ## Contents
 
-- `account-menu.tsx` - `LandingAccountMenu`, a client wrapper around `@merqo/ui`'s `AccountMenu` for the signed-in nav. It owns the sign-out, help and feedback handlers (closures cannot cross the server/client boundary) and reuses the dashboard's server actions. Avatar-only trigger, so it fits one row at 375px.
-- `account-menu.test.tsx` - touch sign-out, the sign-out error toast and the help and feedback handlers.
 - `nav.tsx` — sticky top nav built on `@merqo/ui`'s shared `LandingNav` shell
   (`wordmark`/`end` slots): `Wordmark` as the wordmark slot, a `#kits`
   anchor, an `/about` link, an `/faq` link (`#kits` and `/faq` are
@@ -17,7 +15,7 @@ per file. Presentational only — no data fetching, no client state beyond the
   show and the row fits 375px), and a sign-in/dashboard link
   (`Sign in` when signed out, `Dashboard` when signed in, both linking to
   `/post-login` — the single role-routing funnel — never straight to
-  `/admin`) as the end slot. Header padding/logo size (`px-5 py-4`,
+  `/admin`) as the end slot. The signed-in end is `@merqo/ui`'s `LandingAccountNav` (Dashboard link, account menu with Switch products, help and feedback), fed by `toNavUser`; `Nav` takes `user` (a `NavUser`) rather than the old `authed`/`account` pair. Header padding/logo size (`px-5 py-4`,
   `text-3xl`) matches qkit's landing nav exactly.
 - `hero.tsx` — headline, stat row, CTA (same `/post-login` routing as
   `nav.tsx`'s dashboard link). Its board carries a visible "Sample" label so it is not read as live data. Its board carries a visible "Sample" label so it is not read as live data.
