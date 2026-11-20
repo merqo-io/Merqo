@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AboutMerqo } from "@merqo/ui";
-import { Nav } from "@/components/landing/nav";
+import { Nav, navAccount } from "@/components/landing/nav";
 import { Footer } from "@/components/landing/footer";
 import { Button } from "@merqo/ui/primitives";
 import { createServerClient } from "@/lib/supabase/server";
@@ -18,7 +18,7 @@ export default async function AboutPage() {
 
   return (
     <>
-      <Nav authed={authed} />
+      <Nav authed={authed} account={navAccount(user)} />
       <main className="flex-1">
         <AboutMerqo>
           <Button asChild size="lg">

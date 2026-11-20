@@ -17,9 +17,6 @@ const KNOWN: ReadonlyArray<readonly [RegExp, string]> = [
   ],
 ];
 
-export const PASSWORD_REQUIREMENTS_HINT =
-  "Use at least 8 characters, with a lowercase letter, an uppercase letter, a number and a symbol.";
-
 export type WeakPasswordReason = "length" | "characters" | "pwned";
 
 const WEAK_PASSWORD_MESSAGE =

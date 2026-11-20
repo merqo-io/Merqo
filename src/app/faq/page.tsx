@@ -1,5 +1,5 @@
 import { FaqPage } from "@merqo/ui";
-import { Nav } from "@/components/landing/nav";
+import { Nav, navAccount } from "@/components/landing/nav";
 import { Footer } from "@/components/landing/footer";
 import { createServerClient } from "@/lib/supabase/server";
 import { FAQ_GROUPS, FAQ_INTRO, FAQ_TITLE } from "./faq-content";
@@ -16,7 +16,7 @@ export default async function FaqRoute() {
 
   return (
     <>
-      <Nav authed={!!user} />
+      <Nav authed={!!user} account={navAccount(user)} />
       <main className="flex-1">
         <FaqPage title={FAQ_TITLE} intro={FAQ_INTRO} groups={FAQ_GROUPS} />
       </main>

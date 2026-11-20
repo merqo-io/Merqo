@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { AuthConfirmForm, AuthConfirmInvalid, ElevatedCard } from "@merqo/ui";
+import { AuthConfirmForm, AuthConfirmInvalid, AuthShell } from "@merqo/ui";
 import { authConfirmForwardUrl, readAuthConfirmParams } from "@merqo/ui/auth";
 import { Wordmark } from "@/components/brand/wordmark";
 import { KIT_AUTH_ORIGINS } from "@/lib/kits";
@@ -33,23 +33,20 @@ export default async function AuthConfirmPage({
 
   const params = readAuthConfirmParams(query);
   return (
-    <main className="flex min-h-screen items-center justify-center p-5">
-      <div className="w-full max-w-md text-center">
-        <ElevatedCard className="px-7 py-10">
-          <Wordmark className="text-2xl" />
-          <div className="mt-6">
-            {params ? (
-              <AuthConfirmForm
-                tokenHash={params.tokenHash}
-                type={params.type}
-                next={params.next}
-              />
-            ) : (
-              <AuthConfirmInvalid />
-            )}
-          </div>
-        </ElevatedCard>
-      </div>
-    </main>
+    <AuthShell
+      align="center"
+      wordmark={<Wordmark className="text-2xl" />}
+      title={params ? "Confirm your email" : "Link problem"}
+    >
+      {params ? (
+        <AuthConfirmForm
+          tokenHash={params.tokenHash}
+          type={params.type}
+          next={params.next}
+        />
+      ) : (
+        <AuthConfirmInvalid />
+      )}
+    </AuthShell>
   );
 }

@@ -1,4 +1,4 @@
-import { Nav } from "@/components/landing/nav";
+import { Nav, navAccount } from "@/components/landing/nav";
 import { Hero } from "@/components/landing/hero";
 import { Benefits } from "@/components/landing/benefits";
 import { KitStacker } from "@/components/landing/kit-stacker/kit-stacker";
@@ -21,7 +21,7 @@ export default async function Home() {
 
   return (
     <>
-      <Nav authed={authed} />
+      <Nav authed={authed} account={navAccount(user)} />
       <main className="flex-1">
         <Hero authed={authed} />
         <Benefits />

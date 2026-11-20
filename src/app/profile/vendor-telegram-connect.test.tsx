@@ -1,6 +1,13 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 const {
   mintVendorTelegramConnectToken,
@@ -24,6 +31,20 @@ vi.mock("next/navigation", () => ({
 vi.mock("sonner", () => ({ toast: { error: toastError, success: vi.fn() } }));
 
 import { VendorTelegramConnect } from "./vendor-telegram-connect";
+
+// The kit asks for confirmation before disconnecting; tap through it by touch.
+async function confirmDisconnect() {
+  const user = userEvent.setup();
+  await user.pointer({
+    keys: "[TouchA]",
+    target: screen.getByRole("button", { name: /disconnect/i }),
+  });
+  const dialog = await screen.findByRole("alertdialog");
+  await user.pointer({
+    keys: "[TouchA]",
+    target: within(dialog).getByRole("button", { name: "Disconnect" }),
+  });
+}
 
 describe("VendorTelegramConnect", () => {
   beforeEach(() => vi.clearAllMocks());
@@ -67,7 +88,7 @@ describe("VendorTelegramConnect", () => {
     disconnectVendorTelegram.mockResolvedValue({ success: true });
     render(<VendorTelegramConnect connected={true} />);
 
-    fireEvent.click(screen.getByRole("button", { name: /disconnect/i }));
+    await confirmDisconnect();
 
     await waitFor(() => {
       expect(disconnectVendorTelegram).toHaveBeenCalledTimes(1);
@@ -82,7 +103,7 @@ describe("VendorTelegramConnect", () => {
     });
     render(<VendorTelegramConnect connected={true} />);
 
-    fireEvent.click(screen.getByRole("button", { name: /disconnect/i }));
+    await confirmDisconnect();
 
     await waitFor(() => {
       expect(toastError).toHaveBeenCalledWith(

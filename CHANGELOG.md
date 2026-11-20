@@ -6,8 +6,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `@merqo/ui` repinned to v0.54.1 (`272bf23`). The vendor Telegram disconnect now asks for confirmation, and the legal gate no longer caches failed legal checks and retries dropped idempotent requests.
+- Login, reset-password, MFA, no-access and `/auth/confirm` render inside `@merqo/ui`'s `AuthShell` instead of hand-built cards. The login "new to Merqo" toggle now sits under the card.
+- The password requirements hint on login and reset-password is the shared `PasswordRequirementsHint`; the local `PASSWORD_REQUIREMENTS_HINT` copy is removed (the wording was identical).
+- The admin vendor list search uses the shared `SearchField`, which adds a clear button and Escape to clear. The search box is now a fixed `sm:w-72` instead of `sm:max-w-xs`.
+
 ### Added
 
+- Signed-in visitors on the public pages (landing, about, FAQ, waitlist) now get a Dashboard link and an account menu with Sign out, Help and Feedback, instead of only a Dashboard button.
 - `DESIGN.md` records merqo's public-page values and the places the public pages still break the shared rules.
 - A public `/faq` page built on `@merqo/ui`'s shared `FaqPage` (with FAQ JSON-LD). The landing nav's FAQ link now points to it at every width.
 - `/auth/confirm` for own-domain email links: forwards links meant for a kit to that kit's `/auth/confirm` and verifies merqo's own on a Continue click, so email scanners cannot consume the token. The login page shows a message for `?error=link`. `NEXT_PUBLIC_PRINTKIT_URL` joins the kit URL overrides.
@@ -15,6 +23,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The landing nav no longer overflows at 375px: Kits and FAQ are hidden below `sm`, so the account avatar is no longer cut off and the page does not scroll sideways.
 - The legal acceptance check now logs why it fails: an error when the read fails, and a warning with accepted versus required versions when they are not current. Both still send the vendor to `/legal/accept`. This is diagnostic logging for the sign-in `/legal/accept` loop incident.
 - The `block-no-verify.sh` commit guard no longer blocks a `git commit` that runs in a feature-branch worktree of another repo when the session root is on `main`. A heredoc commit message or a trailing `| tail` made the `cd repo && git commit` chain non-strict, so the hook's cwd (the session root) was judged too. Commits that land on `main` are still blocked.
 
