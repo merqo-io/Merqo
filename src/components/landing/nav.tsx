@@ -40,7 +40,7 @@ export function Nav({
         <>
           <Link
             href="#kits"
-            className="rounded-sm px-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="hidden sm:inline-flex rounded-sm px-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             Kits
           </Link>
@@ -52,7 +52,7 @@ export function Nav({
           </Link>
           <Link
             href="/faq"
-            className="rounded-sm px-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="hidden sm:inline-flex rounded-sm px-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             FAQ
           </Link>

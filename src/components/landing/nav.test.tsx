@@ -110,3 +110,22 @@ describe("navAccount", () => {
     expect(navAccount({})?.name).toBe("Account");
   });
 });
+
+describe("Nav at phone width", () => {
+  it("hides Kits and FAQ below sm so the avatar stays inside 375px", () => {
+    render(<Nav authed account={{ name: "Ana" }} />);
+    for (const name of ["Kits", "FAQ"]) {
+      expect(screen.getByRole("link", { name })).toHaveClass(
+        "hidden",
+        "sm:inline-flex",
+      );
+    }
+    expect(screen.getByRole("link", { name: "About" })).not.toHaveClass(
+      "hidden",
+    );
+    expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Account menu" }),
+    ).toBeInTheDocument();
+  });
+});
