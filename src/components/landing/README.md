@@ -12,7 +12,9 @@ per file. Presentational only — no data fetching, no client state beyond the
 - `account-menu.test.tsx` - touch sign-out, the sign-out error toast and the help and feedback handlers.
 - `nav.tsx` — sticky top nav built on `@merqo/ui`'s shared `LandingNav` shell
   (`wordmark`/`end` slots): `Wordmark` as the wordmark slot, a `#kits`
-  anchor, an `/about` link, an `/faq` link, and a sign-in/dashboard link
+  anchor, an `/about` link, an `/faq` link (`#kits` and `/faq` are
+  `hidden sm:inline-flex`, so below 640px only About, Dashboard and the avatar
+  show and the row fits 375px), and a sign-in/dashboard link
   (`Sign in` when signed out, `Dashboard` when signed in, both linking to
   `/post-login` — the single role-routing funnel — never straight to
   `/admin`) as the end slot. Header padding/logo size (`px-5 py-4`,
