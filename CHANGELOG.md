@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Every signed-in visit to the landing pages returned a 500 on staging. The landing nav (a Server Component) passed `next/link` as `LinkComponent` to the client `LandingAccountNav`, and a function cannot cross that boundary. The prop is dropped, so the Dashboard and menu links fall back to plain `<a>`.
+
 ### Changed
 
 - `@merqo/ui` repinned to v0.56.0 (`9705d39`). The landing nav (home, about, faq, waitlist) now uses the shared `LandingAccountNav` and `toNavUser`, replacing the local account menu wrapper and `navAccount`. The menu gains Switch products, and feedback is filed with source "vendor". merqo has no vendors table, so the name comes from the auth user alone.

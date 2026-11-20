@@ -50,7 +50,6 @@ export function Nav({ user = null }: { user?: NavUser | null }) {
                 submitFeedback: submitFeedbackAction,
               }}
               supportCategories={SUPPORT_CATEGORY_LABELS}
-              LinkComponent={Link}
             />
           ) : (
             <Button asChild size="sm">

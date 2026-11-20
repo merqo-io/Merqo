@@ -4,6 +4,24 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Nav } from "./nav";
 
+const accountNavProps = vi.hoisted(() => ({
+  current: null as Record<string, unknown> | null,
+}));
+
+vi.mock("@merqo/ui", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@merqo/ui")>();
+  return {
+    ...actual,
+    LandingAccountNav: (props: Record<string, unknown>) => {
+      accountNavProps.current = props;
+      const Real = actual.LandingAccountNav as unknown as React.ComponentType<
+        Record<string, unknown>
+      >;
+      return <Real {...props} />;
+    },
+  };
+});
+
 vi.mock("@/app/actions/auth", () => ({ signOutAction: vi.fn() }));
 vi.mock("@/app/actions/feedback", () => ({ submitFeedbackAction: vi.fn() }));
 vi.mock("@/app/actions/support", () => ({
@@ -56,6 +74,12 @@ describe("Nav", () => {
 });
 
 describe("Nav account menu", () => {
+  it("passes no LinkComponent: next/link is a plain function in a Server Component and cannot cross to the client", () => {
+    render(<Nav user={ana} />);
+    expect(accountNavProps.current).not.toBeNull();
+    expect(accountNavProps.current?.LinkComponent).toBeUndefined();
+  });
+
   it("shows a Dashboard link and an account menu, not Sign in, when signed in", () => {
     render(<Nav user={ana} />);
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
