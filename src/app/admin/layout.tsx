@@ -42,7 +42,7 @@ export default async function AdminLayout({
           // Four links still crowd the bar at md width, so collapse until lg.
           collapseBelow="lg"
           navLinks={ADMIN_LINKS}
-          email={user.email}
+          accountLabel={user.email ?? ""}
           avatarUrl={getAvatarUrl(user)}
           switchTo={
             canSwitch

@@ -2,17 +2,26 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-const { requireVendorSessionMock, maybeSingleMock, stampTourSeenMock } =
-  vi.hoisted(() => ({
-    requireVendorSessionMock: vi.fn(),
-    maybeSingleMock: vi.fn(),
-    stampTourSeenMock: vi.fn(async () => {}),
-  }));
+const {
+  requireVendorSessionMock,
+  maybeSingleMock,
+  stampTourSeenMock,
+  getProfileMock,
+} = vi.hoisted(() => ({
+  getProfileMock: vi.fn(),
+  requireVendorSessionMock: vi.fn(),
+  maybeSingleMock: vi.fn(),
+  stampTourSeenMock: vi.fn(async () => {}),
+}));
 
 vi.mock("@/lib/vendor", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/vendor")>();
   return { ...actual, requireVendorSession: requireVendorSessionMock };
 });
+
+vi.mock("@/lib/merqo-vendor-profile", () => ({
+  getOrCreateVendorProfile: getProfileMock,
+}));
 
 vi.mock("@/lib/tour-prefs", () => ({
   stampTourSeen: stampTourSeenMock,
@@ -45,6 +54,34 @@ describe("DashboardLayout", () => {
   beforeEach(() => {
     maybeSingleMock.mockReset().mockResolvedValue({ data: null });
     stampTourSeenMock.mockClear();
+    getProfileMock.mockReset().mockResolvedValue({ stall_name: "Kopi & Co" });
+  });
+
+  it("labels the account menu with the stall name", async () => {
+    requireVendorSessionMock.mockResolvedValue({
+      user: { id: "v1", email: "vendor@business.sg" },
+      isTeam: false,
+      links: [],
+    });
+
+    render(await DashboardLayout({ children: <p>content</p> }));
+
+    expect(screen.getByText("Kopi & Co")).toBeInTheDocument();
+    expect(screen.queryByText("vendor@business.sg")).not.toBeInTheDocument();
+  });
+
+  it("falls back to the email local part when the stall name is blank", async () => {
+    getProfileMock.mockResolvedValue({ stall_name: "   " });
+    requireVendorSessionMock.mockResolvedValue({
+      user: { id: "v1", email: "vendor@business.sg" },
+      isTeam: false,
+      links: [],
+    });
+
+    render(await DashboardLayout({ children: <p>content</p> }));
+
+    expect(screen.getByText("vendor")).toBeInTheDocument();
+    expect(screen.queryByText("vendor@business.sg")).not.toBeInTheDocument();
   });
 
   it("links the logo to /dashboard and renders the account menu", async () => {
