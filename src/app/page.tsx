@@ -1,11 +1,11 @@
-import { Nav, navAccount } from "@/components/landing/nav";
+import { Nav } from "@/components/landing/nav";
 import { Hero } from "@/components/landing/hero";
 import { Benefits } from "@/components/landing/benefits";
 import { KitStacker } from "@/components/landing/kit-stacker/kit-stacker";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Faq } from "@/components/landing/faq";
 import { Footer } from "@/components/landing/footer";
-import { BackToTop } from "@merqo/ui";
+import { BackToTop, toNavUser } from "@merqo/ui";
 import { Button } from "@merqo/ui/primitives";
 import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
@@ -21,7 +21,7 @@ export default async function Home() {
 
   return (
     <>
-      <Nav authed={authed} account={navAccount(user)} />
+      <Nav user={toNavUser(user)} />
       <main className="flex-1">
         <Hero authed={authed} />
         <Benefits />
