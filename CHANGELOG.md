@@ -15,6 +15,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Signed-in visitors on the public pages (landing, about, FAQ, waitlist) now get a Dashboard link and an account menu with Sign out, Help and Feedback, instead of only a Dashboard button.
 - `DESIGN.md` records merqo's public-page values and the places the public pages still break the shared rules.
 - A public `/faq` page built on `@merqo/ui`'s shared `FaqPage` (with FAQ JSON-LD). The landing nav's FAQ link now points to it at every width.
 - `/auth/confirm` for own-domain email links: forwards links meant for a kit to that kit's `/auth/confirm` and verifies merqo's own on a Continue click, so email scanners cannot consume the token. The login page shows a message for `?error=link`. `NEXT_PUBLIC_PRINTKIT_URL` joins the kit URL overrides.

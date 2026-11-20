@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Nav } from "@/components/landing/nav";
+import { Nav, navAccount } from "@/components/landing/nav";
 import { Footer } from "@/components/landing/footer";
 import { WaitlistForm } from "@/components/landing/waitlist-form";
 import { KITS, WAITLISTABLE_SLUGS } from "@/lib/kits";
@@ -31,7 +31,7 @@ export default async function WaitlistPage({
 
   return (
     <>
-      <Nav authed={!!user} />
+      <Nav authed={!!user} account={navAccount(user)} />
       <main className="mx-auto w-full max-w-md flex-1 px-6 py-16">
         <h1 className="font-display text-3xl font-bold tracking-tight">
           Join the waitlist

@@ -9,7 +9,7 @@ line matching the legal docs' phrasing, linked from the landing `Nav` and
 ## Contents
 
 - `page.tsx` — `AboutPage`, an async Server Component. Reflects the
-  session (same pattern as `page.tsx` at the app root) so its `Nav` CTA
+  session (same pattern as `page.tsx` at the app root; the account menu comes from `navAccount`) so its `Nav` CTA
   reads "Dashboard" for a signed-in vendor and "Sign in" otherwise. Wraps
   the same `Nav`/`Footer` from `@/components/landing/` as the landing
   page, so this page keeps normal site navigation instead of the bare,
