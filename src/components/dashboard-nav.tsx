@@ -106,7 +106,6 @@ export function DashboardNav({
       }
       navLinks={navLinks}
       isActiveHref={(href) => isActive(path, href, homeHref)}
-      LinkComponent={Link}
       vendor={{
         name: email ?? "",
         avatarUrl: avatarUrl ?? undefined,

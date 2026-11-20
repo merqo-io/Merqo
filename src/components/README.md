@@ -16,7 +16,7 @@ or scoped to `dashboard/`/`landing/`.
   (`collapseBelow`: `"sm" | "md" | "lg" | "xl"`, default `"sm"`); it wires Merqo's
   `signOutAction`, `submitFeedbackAction`/`submitSupportMessageAction`
   (throw-adapting, since both return `{success, error}`), the support-category
-  list and `LinkComponent={Link}`. No `/dashboard/plan` route exists, so
+  list. Links use `next/link` through `AppLinkProvider` in `providers.tsx`. No `/dashboard/plan` route exists, so
   `showPlanItem` is off. `email` fills both `vendor.name` (initials fallback)
   and `vendor.subtitle`.
 - `admin-secondary-nav.tsx` — client "More admin pages" row; reuses `dashboard-nav`'s `isActive` for `aria-current`.

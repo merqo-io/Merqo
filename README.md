@@ -54,7 +54,7 @@ badge actually looks like — see
 (workspace root, cross-kit spec). The landing footer matches qkit's exactly
 (single-row wordmark/tagline/credit-line/sign-in link, no CTA band above it).
 
-`@merqo/ui` is pinned at v0.56.0 (`9705d39`). The landing nav uses its shared `LandingAccountNav` and `toNavUser`, without a `LinkComponent` prop because a Server Component cannot pass `next/link` to a client component. Login, reset-password, MFA, no-access and `/auth/confirm` use the shared `AuthShell`, the password hint is `PasswordRequirementsHint`, and the admin vendor search is `SearchField`. The root error, not-found and global-error pages and the form label and error classes come from the shared package. Button, input, label, select, switch and tooltip come from `@merqo/ui/primitives`; only the badge stays local, for its `gold` variant. The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing. Empty lists across the admin console (activity, feedback, products, requests, vendors, vendor detail and the overview) render the shared `EmptyState` from `@merqo/ui`.
+`@merqo/ui` is pinned at v0.57.0 (`b496faa`). `Providers` mounts `AppLinkProvider` with `next/link` once in the root layout, so client exports navigate client-side without a `LinkComponent` prop (a Server Component cannot pass `next/link` to a client component). The landing nav uses its shared `LandingAccountNav` and `toNavUser`. Login, reset-password, MFA, no-access and `/auth/confirm` use the shared `AuthShell`, the password hint is `PasswordRequirementsHint`, and the admin vendor search is `SearchField`. The root error, not-found and global-error pages and the form label and error classes come from the shared package. Button, input, label, select, switch and tooltip come from `@merqo/ui/primitives`; only the badge stays local, for its `gold` variant. The admin console passes `collapseBelow="xl"` to `DashboardNav` so its eight links collapse into the burger menu below 1280px instead of overflowing. Empty lists across the admin console (activity, feedback, products, requests, vendors, vendor detail and the overview) render the shared `EmptyState` from `@merqo/ui`.
 
 Merqo uses `@merqo/ui`, the shared component package for the kit family (see
 qkit/loopkit/paykit/stockkit for the same dependency). `/about`'s own story
@@ -81,7 +81,7 @@ to Merqo's real, persona-shared `/profile` route. The landing nav
 shell (`wordmark`/`end` slots), added in v0.9.0. When signed in it shows a Dashboard link and `LandingAccountNav` (an `AccountMenu` with Sign out, Switch products, help and feedback), instead of a lone Dashboard button. Below 640px the Kits and FAQ links are hidden so the row fits a 375px phone. v0.10.0 added an optional
 `LinkComponent` prop to `AccountMenu`/`DashboardNav` so Next.js consumers can
 opt their internal nav links out of a plain `<a>`'s full page reload;
-`dashboard-nav.tsx` passes `LinkComponent={Link}` (`next/link`).
+`dashboard-nav.tsx` now relies on `AppLinkProvider` (v0.57.0) instead.
 
 `@merqo/ui` bumped to v0.32.0 (2026-09-22), for currency. It adds
 `ImageUploader`'s `deferUpload` mode (upload on save instead of on pick);
