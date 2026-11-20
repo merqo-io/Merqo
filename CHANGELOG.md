@@ -6,9 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Every signed-in visit to the landing pages returned a 500 on staging. The landing nav (a Server Component) passed `next/link` as `LinkComponent` to the client `LandingAccountNav`, and a function cannot cross that boundary. The prop is dropped, so the Dashboard and menu links fall back to plain `<a>`.
+
 ### Changed
 
-- `@merqo/ui` repinned to v0.54.1 (`272bf23`). The vendor Telegram disconnect now asks for confirmation, and the legal gate no longer caches failed legal checks and retries dropped idempotent requests.
+- `@merqo/ui` repinned to v0.56.0 (`9705d39`). The landing nav (home, about, faq, waitlist) now uses the shared `LandingAccountNav` and `toNavUser`, replacing the local account menu wrapper and `navAccount`. The menu gains Switch products, and feedback is filed with source "vendor". merqo has no vendors table, so the name comes from the auth user alone.
 - Login, reset-password, MFA, no-access and `/auth/confirm` render inside `@merqo/ui`'s `AuthShell` instead of hand-built cards. The login "new to Merqo" toggle now sits under the card.
 - The password requirements hint on login and reset-password is the shared `PasswordRequirementsHint`; the local `PASSWORD_REQUIREMENTS_HINT` copy is removed (the wording was identical).
 - The admin vendor list search uses the shared `SearchField`, which adds a clear button and Escape to clear. The search box is now a fixed `sm:w-72` instead of `sm:max-w-xs`.

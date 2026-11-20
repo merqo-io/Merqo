@@ -11,3 +11,5 @@ The waitlist (5/hour per IP), password sign-in in `auth.ts` (10 per 15 minutes p
 `waitlist.ts` failures return "Could not join the waitlist. Try again." and log the raw error with `console.error`; the success message is "You're on the list. We'll email you when it opens."
 
 Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
+
+`landing-account.ts` adapts the shared account menu's `{ category, message }` support payload to `submitSupportMessageAction`'s `{ category, body }`.

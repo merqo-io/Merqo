@@ -1,30 +1,13 @@
 import Link from "next/link";
-import { LandingNav } from "@merqo/ui";
+import { LandingAccountNav, LandingNav, type NavUser } from "@merqo/ui";
 import { Button } from "@merqo/ui/primitives";
 import { Wordmark } from "@/components/brand/wordmark";
-import { getAvatarUrl, getDisplayName } from "@/lib/account";
-import { LandingAccountMenu } from "./account-menu";
+import { signOutAction } from "@/app/actions/auth";
+import { submitFeedbackAction } from "@/app/actions/feedback";
+import { submitLandingSupport } from "@/app/actions/landing-account";
+import { SUPPORT_CATEGORY_LABELS } from "@/lib/feedback-support-schemas";
 
-export type NavAccount = { name: string; avatarUrl?: string };
-
-/** Name and avatar from the auth user alone, so public pages need no profile query. */
-export function navAccount(
-  user: { email?: string; user_metadata?: unknown } | null,
-): NavAccount | undefined {
-  if (!user) return undefined;
-  return {
-    name: getDisplayName(user) || user.email || "Account",
-    avatarUrl: getAvatarUrl(user) ?? undefined,
-  };
-}
-
-export function Nav({
-  authed = false,
-  account,
-}: {
-  authed?: boolean;
-  account?: NavAccount;
-}) {
+export function Nav({ user = null }: { user?: NavUser | null }) {
   return (
     <LandingNav
       wordmark={
@@ -56,16 +39,18 @@ export function Nav({
           >
             FAQ
           </Link>
-          {authed ? (
-            <>
-              <Button asChild size="sm" variant="ghost">
-                <Link href="/post-login">Dashboard</Link>
-              </Button>
-              <LandingAccountMenu
-                name={account?.name || "Account"}
-                avatarUrl={account?.avatarUrl}
-              />
-            </>
+          {user ? (
+            <LandingAccountNav
+              kit="merqo"
+              dashboardHref="/post-login"
+              user={user}
+              signOutAction={signOutAction}
+              actions={{
+                submitSupport: submitLandingSupport,
+                submitFeedback: submitFeedbackAction,
+              }}
+              supportCategories={SUPPORT_CATEGORY_LABELS}
+            />
           ) : (
             <Button asChild size="sm">
               <Link href="/login">Sign in</Link>
