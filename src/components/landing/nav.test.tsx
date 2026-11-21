@@ -35,7 +35,7 @@ describe("Nav", () => {
     render(<Nav />);
 
     const header = screen.getByRole("banner");
-    expect(header).toHaveClass("py-4", "backdrop-blur-md");
+    expect(header).toHaveClass("py-4", "sticky", "before:backdrop-blur-md");
     expect(header.querySelector("nav")).toHaveClass("px-5");
     expect(screen.getByText("Merqo home")).toBeInTheDocument();
   });
