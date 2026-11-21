@@ -87,3 +87,7 @@ Account and tour components adapt shared UI contracts to Merqo actions. Authenti
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
 
 `dashboard-nav.test.tsx` takes `ActionResult` from `@merqo/ui/kit-api`.
+
+## Account label
+
+`DashboardNav` takes a required `accountLabel` string. The vendor dashboard layout builds it with `@merqo/ui`'s `accountLabel(user, stall_name)` so it matches the landing nav; the admin layout passes the email.

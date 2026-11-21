@@ -52,10 +52,10 @@ type NavLink = { href: string; label: string };
  * kit's own dashboard nav is. This file owns only merqo's bits: the
  * wordmark, the active-link rule, and the account menu's actions.
  *
- * Merqo has no per-user display name distinct from email at the account-menu
- * level (unlike a kit's vendor "stall name"), so `email` fills both
- * `vendor.name` (used only for the initials fallback) and `vendor.subtitle`
- * (the one line rendered next to the trigger and in the dropdown header).
+ * `accountLabel` fills both `vendor.name` (used only for the initials
+ * fallback) and `vendor.subtitle` (the one line rendered next to the trigger
+ * and in the dropdown header). Callers resolve it with @merqo/ui's
+ * `accountLabel()` so the landing nav and the dashboard show the same text.
  * Merqo has no `/dashboard/plan` route, so `showPlanItem` is off. The shared
  * menu's Profile link is hardcoded to `/dashboard/profile`, which
  * `src/app/dashboard/profile/page.tsx` redirects to Merqo's real,
@@ -66,7 +66,7 @@ export function DashboardNav({
   homeLabel,
   badge,
   navLinks,
-  email,
+  accountLabel,
   avatarUrl,
   switchTo,
   switchKits,
@@ -78,7 +78,7 @@ export function DashboardNav({
   /** Small label beside the wordmark, e.g. "Admin" for the team console. */
   badge?: ReactNode;
   navLinks: NavLink[];
-  email?: string | null;
+  accountLabel: string;
   avatarUrl?: string | null;
   /** Dual-role accounts get a link to the other area (dashboard or admin). */
   switchTo?: NavLink;
@@ -107,9 +107,9 @@ export function DashboardNav({
       navLinks={navLinks}
       isActiveHref={(href) => isActive(path, href, homeHref)}
       vendor={{
-        name: email ?? "",
+        name: accountLabel,
         avatarUrl: avatarUrl ?? undefined,
-        subtitle: email ?? undefined,
+        subtitle: accountLabel,
       }}
       signOutAction={signOutAction}
       showPlanItem={false}
