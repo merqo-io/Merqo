@@ -19,26 +19,13 @@ export function Nav({ user = null }: { user?: NavUser | null }) {
           <span className="sr-only">Merqo home</span>
         </Link>
       }
+      links={[
+        { label: "Kits", href: "/#kits" },
+        { label: "About", href: "/about" },
+        { label: "FAQ", href: "/faq" },
+      ]}
       end={
         <>
-          <Link
-            href="#kits"
-            className="hidden sm:inline-flex rounded-sm px-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
-          >
-            Kits
-          </Link>
-          <Link
-            href="/about"
-            className="rounded-sm px-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
-          >
-            About
-          </Link>
-          <Link
-            href="/faq"
-            className="hidden sm:inline-flex rounded-sm px-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
-          >
-            FAQ
-          </Link>
           {user ? (
             <LandingAccountNav
               kit="merqo"
