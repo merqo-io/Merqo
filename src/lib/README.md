@@ -36,6 +36,8 @@ clients; `vendor-activity-client.ts` validates with `vendorActivityPayloadSchema
 from `@merqo/ui/contracts` (optional `incidents`/`recent`). `tenant-health.ts`
 `getTenantHealth()` pools those activity reads (6 at a time, 3000 ms timeout)
 into per-vendor incident rows for `/admin/products`, never throwing on a dead kit. `subscription-requests.ts` files and closes vendor upgrade/cancel requests for the admin queue;
+`landing-nav-user.ts` (`getLandingNavUser`) builds the public pages' nav user: a read-only service-client select of `stall_name` for the session user (`merqo.vendor_profile` has RLS with no policies, so the user client cannot read it), never creating a row, falling back to `toNavUser(user)` on a miss or error.
+
 `event-pass-usage-client.ts` reads the cups a vendor sold on qkit inside an Event Pass window (`getEventPassUsage`, never throws, `ok: false` when unavailable) for the admin settle view;
 `entitlements/` derives what each vendor may use per kit and pushes it to the kits (see its README);
 `vendor-sync.ts` refreshes grants against the live registry with an email-scoped

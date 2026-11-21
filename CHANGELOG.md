@@ -12,6 +12,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The public landing, About, FAQ and waitlist pages labelled the signed-in nav with the full name while the dashboard showed the stall name. A new read-only `getLandingNavUser` helper reads `stall_name` (never creating a profile row) so every nav shows the dashboard's label, and falls back to the full name when the read fails or no row exists.
 - Every signed-in visit to the landing pages returned a 500 on staging. The landing nav (a Server Component) passed `next/link` as `LinkComponent` to the client `LandingAccountNav`, and a function cannot cross that boundary. The prop is dropped, so the Dashboard and menu links fall back to plain `<a>`.
 
 ### Changed

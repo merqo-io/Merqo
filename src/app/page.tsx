@@ -5,7 +5,8 @@ import { KitStacker } from "@/components/landing/kit-stacker/kit-stacker";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Faq } from "@/components/landing/faq";
 import { Footer } from "@/components/landing/footer";
-import { BackToTop, toNavUser } from "@merqo/ui";
+import { BackToTop } from "@merqo/ui";
+import { getLandingNavUser } from "@/lib/landing-nav-user";
 import { Button } from "@merqo/ui/primitives";
 import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
@@ -21,7 +22,7 @@ export default async function Home() {
 
   return (
     <>
-      <Nav user={toNavUser(user)} />
+      <Nav user={await getLandingNavUser(user)} />
       <main className="flex-1">
         <Hero authed={authed} />
         <Benefits />
