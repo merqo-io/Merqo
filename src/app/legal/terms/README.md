@@ -6,8 +6,9 @@ Public `/legal/terms` page.
 
 ## Contents
 
-- `page.tsx` — one-line Server Component rendering `@merqo/ui`'s
-  `LegalDocument` with `doc="terms"`. The rendered content is the base
+- `page.tsx` — exports `legalPageMetadata("terms")` and renders
+  `../legal-page-client.tsx` with `doc="terms"` (no `kit`, so the hub view).
+  The rendered content is the base
   Terms of Service composed with every per-kit schedule appended (see
   `@merqo/ui`'s `getLegalDocSource`).
 

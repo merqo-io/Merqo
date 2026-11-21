@@ -6,8 +6,8 @@ Public `/legal/privacy` page.
 
 ## Contents
 
-- `page.tsx` — one-line Server Component rendering `@merqo/ui`'s
-  `LegalDocument` with `doc="privacy"`.
+- `page.tsx` — exports `legalPageMetadata("privacy")` and renders
+  `../legal-page-client.tsx` with `doc="privacy"`.
 
 ## Parent
 

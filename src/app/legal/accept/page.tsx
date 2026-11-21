@@ -1,5 +1,8 @@
-import { AcceptForm } from "./accept-form";
-import { safeRedirectPath } from "@merqo/ui";
+import { AcceptTermsForm, AuthShell, safeRedirectPath } from "@merqo/ui";
+import { Button } from "@merqo/ui/primitives";
+import { signOutAction } from "@/app/actions/auth";
+import { Wordmark } from "@/components/brand/wordmark";
+import { acceptLegalTerms } from "./actions";
 
 export const revalidate = 0;
 
@@ -15,17 +18,23 @@ export default async function LegalAcceptPage({
   const { next } = await searchParams;
 
   return (
-    <div className="mx-auto max-w-md px-5 py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-        Before you continue
-      </p>
-      <h1 className="mb-4 font-display text-3xl font-bold tracking-tight">
-        Our terms have been updated
-      </h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Please review and accept before continuing.
-      </p>
-      <AcceptForm next={safeRedirectPath(next, "/dashboard")} />
-    </div>
+    <AuthShell
+      wordmark={<Wordmark className="text-2xl" />}
+      title="Our terms have been updated"
+      subtitle="Please review and accept before continuing."
+    >
+      <div className="space-y-4">
+        <AcceptTermsForm
+          action={acceptLegalTerms}
+          next={safeRedirectPath(next, "/dashboard")}
+        />
+        {/* Separate form: nesting forms is invalid HTML. */}
+        <form action={signOutAction}>
+          <Button type="submit" variant="outline" className="h-11 w-full">
+            Sign out
+          </Button>
+        </form>
+      </div>
+    </AuthShell>
   );
 }
