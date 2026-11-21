@@ -12,6 +12,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The landing nav passes Kits, About and FAQ as `LandingNav`'s `links`, so below 640px they collapse into a burger menu and the header stays one line at 375px. Kits now links to `/#kits`, so it works from `/about` and `/faq`. `@merqo/ui` repinned to v0.59.0 (`c20c39b`).
 - The vendor dashboard's account menu shows the stall name, using the shared `accountLabel()` fallback chain from `@merqo/ui` (stall name, then display name, then email local part, then "Account"), so it matches the landing nav. `@merqo/ui` repinned to v0.58.0 (`716824e`). The admin console keeps showing the email.
 - `@merqo/ui` repinned to v0.57.0 (`b496faa`). `Providers` mounts `AppLinkProvider` with `next/link`, so every client export (`DashboardNav`, `AccountMenu`, `LandingAccountNav`, the auth forms) navigates client-side without a `LinkComponent` prop. `DashboardNav` no longer passes one, and the signed-in landing nav now gets `next/link` instead of plain `<a>`.
 - `@merqo/ui` repinned to v0.56.0 (`9705d39`). The landing nav (home, about, faq, waitlist) now uses the shared `LandingAccountNav` and `toNavUser`, replacing the local account menu wrapper and `navAccount`. The menu gains Switch products, and feedback is filed with source "vendor". merqo has no vendors table, so the name comes from the auth user alone.
