@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `/legal/terms`, `/legal/privacy` and `/legal/accept` now use the shared `@merqo/ui` `LegalPage`, `legalPageMetadata`, `AuthShell` and `AcceptTermsForm`. Terms and privacy go through a local client wrapper because the package bundle drops the client boundary. The local `accept-form.tsx` is removed; the Sign out exit stays.
+
 ### Fixed
 
 - Every signed-in visit to the landing pages returned a 500 on staging. The landing nav (a Server Component) passed `next/link` as `LinkComponent` to the client `LandingAccountNav`, and a function cannot cross that boundary. The prop is dropped, so the Dashboard and menu links fall back to plain `<a>`.
