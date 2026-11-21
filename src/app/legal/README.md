@@ -9,6 +9,11 @@ redirected to when their acceptance is stale or missing.
 
 ## Contents
 
+- `legal-page-client.tsx` — client wrapper around `@merqo/ui`'s `LegalPage`
+  (merqo wordmark, `next/link`), used by `terms/` and `privacy/`. Needed
+  because the package bundle drops `LegalDocument`'s client boundary, so
+  `LegalPage` cannot render straight from a Server Component in a production
+  build.
 - `terms/` — the Terms of Service, composed with every per-kit schedule
   appended; see its own README.
 - `privacy/` — the Privacy Policy; see its own README.
@@ -19,8 +24,8 @@ redirected to when their acceptance is stale or missing.
 
 ## Connectivity
 
-`terms/`, `privacy/`, and `end-customer-notice/` are
-each a one-line Server Component page; none is gated. `accept/` is the
+`terms/` and `privacy/` render `LegalPageClient`, and `end-customer-notice/`
+is a one-line Server Component page; none is gated. `accept/` is the
 one page in this folder a signed-in vendor gets redirected to
 (`requireVendorSession`, `src/lib/vendor.ts`) and is deliberately excluded
 from that same gate to avoid a redirect loop. Linked from the landing
