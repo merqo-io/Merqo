@@ -91,3 +91,7 @@ The layout reads preferences with the authenticated user ID and uses the session
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
 
 The vendor kit card labels a plan with the shared `tierLabel` from `@merqo/ui`.
+
+## Account menu label
+
+`layout.tsx` loads the vendor profile and passes `accountLabel(user, profile.stall_name)` to the header, so the menu shows the stall name (falling back to display name, then the email local part).

@@ -1,10 +1,11 @@
-import { getSwitchKits } from "@merqo/ui";
+import { accountLabel, getSwitchKits } from "@merqo/ui";
 import { requireVendorSession } from "@/lib/vendor";
 import { getAvatarUrl } from "@/lib/account";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { DashboardTour } from "@/components/dashboard-tour";
 import { Footer } from "@/components/landing/footer";
 import { createServerClient } from "@/lib/supabase/server";
+import { getOrCreateVendorProfile } from "@/lib/merqo-vendor-profile";
 import { stampTourSeen } from "@/lib/tour-prefs";
 
 export default async function DashboardLayout({
@@ -20,11 +21,14 @@ export default async function DashboardLayout({
   // column-on-an-existing-row, this table starts empty) — maybeSingle()
   // treats "no row" the same as "never marked seen".
   const supabase = await createServerClient();
-  const { data: prefs } = await supabase
-    .from("dashboard_prefs")
-    .select("tour_seen_at")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const [{ data: prefs }, profile] = await Promise.all([
+    supabase
+      .from("dashboard_prefs")
+      .select("tour_seen_at")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    getOrCreateVendorProfile(supabase, user.id, null),
+  ]);
 
   // Durable "start" stamp, in addition to dashboard-tour.tsx's client-fired
   // one: this layout wraps every /dashboard/* route, so stamping here —
@@ -44,7 +48,7 @@ export default async function DashboardLayout({
           homeHref="/dashboard"
           homeLabel="merqo dashboard home"
           navLinks={[{ href: "/dashboard", label: "Kits" }]}
-          email={user.email}
+          accountLabel={accountLabel(user, profile.stall_name)}
           avatarUrl={getAvatarUrl(user)}
           switchTo={
             isTeam ? { href: "/admin", label: "Go to admin" } : undefined

@@ -15,7 +15,7 @@ per file. Presentational only — no data fetching, no client state beyond the
   show and the row fits 375px), and a sign-in/dashboard link
   (`Sign in` when signed out, `Dashboard` when signed in, both linking to
   `/post-login` — the single role-routing funnel — never straight to
-  `/admin`) as the end slot. The signed-in end is `@merqo/ui`'s `LandingAccountNav` (Dashboard link, account menu with Switch products, help and feedback), fed by `toNavUser`, with no `LinkComponent` (`next/link` is not serializable from a Server Component, so those links are plain `<a>`); `Nav` takes `user` (a `NavUser`) rather than the old `authed`/`account` pair. Header padding/logo size (`px-5 py-4`,
+  `/admin`) as the end slot. The signed-in end is `@merqo/ui`'s `LandingAccountNav` (Dashboard link, account menu with Switch products, help and feedback), fed by `toNavUser`, with no `LinkComponent` (`next/link` is not serializable from a Server Component; `AppLinkProvider` in the root layout supplies it); `Nav` takes `user` (a `NavUser`) rather than the old `authed`/`account` pair. Header padding/logo size (`px-5 py-4`,
   `text-3xl`) matches qkit's landing nav exactly.
 - `hero.tsx` — headline, stat row, CTA (same `/post-login` routing as
   `nav.tsx`'s dashboard link). Its board carries a visible "Sample" label so it is not read as live data. Its board carries a visible "Sample" label so it is not read as live data.

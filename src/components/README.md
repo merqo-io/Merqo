@@ -16,7 +16,7 @@ or scoped to `dashboard/`/`landing/`.
   (`collapseBelow`: `"sm" | "md" | "lg" | "xl"`, default `"sm"`); it wires Merqo's
   `signOutAction`, `submitFeedbackAction`/`submitSupportMessageAction`
   (throw-adapting, since both return `{success, error}`), the support-category
-  list and `LinkComponent={Link}`. No `/dashboard/plan` route exists, so
+  list. Links use `next/link` through `AppLinkProvider` in `providers.tsx`. No `/dashboard/plan` route exists, so
   `showPlanItem` is off. `email` fills both `vendor.name` (initials fallback)
   and `vendor.subtitle`.
 - `admin-secondary-nav.tsx` — client "More admin pages" row; reuses `dashboard-nav`'s `isActive` for `aria-current`.
@@ -87,3 +87,7 @@ Account and tour components adapt shared UI contracts to Merqo actions. Authenti
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
 
 `dashboard-nav.test.tsx` takes `ActionResult` from `@merqo/ui/kit-api`.
+
+## Account label
+
+`DashboardNav` takes a required `accountLabel` string. The vendor dashboard layout builds it with `@merqo/ui`'s `accountLabel(user, stall_name)` so it matches the landing nav; the admin layout passes the email.

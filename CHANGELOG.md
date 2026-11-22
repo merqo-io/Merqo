@@ -6,12 +6,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `/legal/terms`, `/legal/privacy` and `/legal/accept` now use the shared `@merqo/ui` `LegalPage`, `legalPageMetadata`, `AuthShell` and `AcceptTermsForm`. Terms and privacy go through a local client wrapper because the package bundle drops the client boundary. The local `accept-form.tsx` is removed; the Sign out exit stays.
+
 ### Fixed
 
 - Every signed-in visit to the landing pages returned a 500 on staging. The landing nav (a Server Component) passed `next/link` as `LinkComponent` to the client `LandingAccountNav`, and a function cannot cross that boundary. The prop is dropped, so the Dashboard and menu links fall back to plain `<a>`.
 
 ### Changed
 
+- The vendor dashboard's account menu shows the stall name, using the shared `accountLabel()` fallback chain from `@merqo/ui` (stall name, then display name, then email local part, then "Account"), so it matches the landing nav. `@merqo/ui` repinned to v0.58.0 (`716824e`). The admin console keeps showing the email.
+- `@merqo/ui` repinned to v0.57.0 (`b496faa`). `Providers` mounts `AppLinkProvider` with `next/link`, so every client export (`DashboardNav`, `AccountMenu`, `LandingAccountNav`, the auth forms) navigates client-side without a `LinkComponent` prop. `DashboardNav` no longer passes one, and the signed-in landing nav now gets `next/link` instead of plain `<a>`.
 - `@merqo/ui` repinned to v0.56.0 (`9705d39`). The landing nav (home, about, faq, waitlist) now uses the shared `LandingAccountNav` and `toNavUser`, replacing the local account menu wrapper and `navAccount`. The menu gains Switch products, and feedback is filed with source "vendor". merqo has no vendors table, so the name comes from the auth user alone.
 - Login, reset-password, MFA, no-access and `/auth/confirm` render inside `@merqo/ui`'s `AuthShell` instead of hand-built cards. The login "new to Merqo" toggle now sits under the card.
 - The password requirements hint on login and reset-password is the shared `PasswordRequirementsHint`; the local `PASSWORD_REQUIREMENTS_HINT` copy is removed (the wording was identical).

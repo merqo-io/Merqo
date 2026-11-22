@@ -38,7 +38,7 @@ const LINKS = [
 // Most cases here exercise the account menu the nav carries, so this keeps
 // each render down to the props those cases care about.
 function AccountMenu(props: {
-  email?: string | null;
+  accountLabel?: string;
   avatarUrl?: string | null;
   switchTo?: { href: string; label: string };
 }) {
@@ -47,6 +47,7 @@ function AccountMenu(props: {
       homeHref="/admin"
       homeLabel="merqo admin home"
       navLinks={LINKS}
+      accountLabel=""
       {...props}
     />
   );
@@ -64,6 +65,7 @@ describe("DashboardNav", () => {
   it("links the wordmark home and shows the optional badge beside it", () => {
     render(
       <DashboardNav
+        accountLabel="team@merqo.io"
         homeHref="/admin"
         homeLabel="merqo admin home"
         badge="Admin"
@@ -78,6 +80,7 @@ describe("DashboardNav", () => {
   it("switches to the inline links at the collapseBelow breakpoint", () => {
     const { container } = render(
       <DashboardNav
+        accountLabel="team@merqo.io"
         homeHref="/admin"
         homeLabel="home"
         navLinks={LINKS}
@@ -91,7 +94,12 @@ describe("DashboardNav", () => {
 
   it("collapses below sm when collapseBelow is omitted", () => {
     const { container } = render(
-      <DashboardNav homeHref="/admin" homeLabel="home" navLinks={LINKS} />,
+      <DashboardNav
+        homeHref="/admin"
+        homeLabel="home"
+        navLinks={LINKS}
+        accountLabel="team@merqo.io"
+      />,
     );
     expect(container.querySelector(".sm\\:flex")).toBeInTheDocument();
     expect(container.querySelector(".xl\\:flex")).not.toBeInTheDocument();
@@ -127,7 +135,7 @@ describe("DashboardNav", () => {
         homeHref="/dashboard"
         homeLabel="merqo dashboard home"
         navLinks={[{ href: "/dashboard", label: "Dashboard" }]}
-        email="vendor@business.sg"
+        accountLabel="vendor@business.sg"
         switchKits={[{ label: "qkit", href: "https://qkit.merqo.io" }]}
       />,
     );
@@ -140,20 +148,20 @@ describe("DashboardNav", () => {
 });
 
 describe("AccountMenu", () => {
-  it("shows the signed-in email as the trigger subtitle, not a placeholder", () => {
-    render(<AccountMenu email="team@merqo.io" avatarUrl={null} />);
+  it("shows the account label as the trigger subtitle, not a placeholder", () => {
+    render(<AccountMenu accountLabel="team@merqo.io" avatarUrl={null} />);
     expect(screen.getByText("team@merqo.io")).toBeInTheDocument();
   });
 
   it("falls back to the • initials avatar when there is no email", () => {
-    render(<AccountMenu email={null} avatarUrl={null} />);
+    render(<AccountMenu accountLabel="" avatarUrl={null} />);
     expect(screen.getByText("•")).toBeInTheDocument();
   });
 
   it("renders an image avatar when avatarUrl is provided", () => {
     const { container } = render(
       <AccountMenu
-        email="vendor@business.sg"
+        accountLabel="vendor@business.sg"
         avatarUrl="https://lh3.googleusercontent.com/a/pic.jpg"
       />,
     );
@@ -170,7 +178,7 @@ describe("AccountMenu", () => {
 
   it("the Profile link points at /dashboard/profile, which redirects to Merqo's real /profile route", async () => {
     const user = userEvent.setup();
-    render(<AccountMenu email="team@merqo.io" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="team@merqo.io" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
 
     expect(screen.getByRole("menuitem", { name: "Profile" })).toHaveAttribute(
@@ -181,7 +189,7 @@ describe("AccountMenu", () => {
 
   it("account menu has Profile, Get help, Feedback, Theme (in that order), then Sign out — no Plan item", async () => {
     const user = userEvent.setup();
-    render(<AccountMenu email="team@merqo.io" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="team@merqo.io" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
 
     const menuItems = screen.getAllByRole("menuitem");
@@ -198,7 +206,7 @@ describe("AccountMenu", () => {
     const user = userEvent.setup();
     render(
       <AccountMenu
-        email="vendor@business.sg"
+        accountLabel="vendor@business.sg"
         avatarUrl={null}
         switchTo={{ href: "/admin", label: "Go to admin" }}
       />,
@@ -212,7 +220,7 @@ describe("AccountMenu", () => {
 
   it("omits the switch link when switchTo is not passed", async () => {
     const user = userEvent.setup();
-    render(<AccountMenu email="vendor@business.sg" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="vendor@business.sg" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
 
     expect(
@@ -222,7 +230,7 @@ describe("AccountMenu", () => {
 
   it("opening Feedback and submitting calls submitFeedbackAction with the picked NPS score", async () => {
     const user = userEvent.setup();
-    render(<AccountMenu email="vendor@business.sg" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="vendor@business.sg" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
     await user.click(screen.getByRole("menuitem", { name: "Feedback" }));
 
@@ -242,7 +250,7 @@ describe("AccountMenu", () => {
       error: "Thanks — you've already sent feedback.",
     });
     const user = userEvent.setup();
-    render(<AccountMenu email="vendor@business.sg" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="vendor@business.sg" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
     await user.click(screen.getByRole("menuitem", { name: "Feedback" }));
 
@@ -256,7 +264,7 @@ describe("AccountMenu", () => {
 
   it("opening Get help submits the selected billing category", async () => {
     const user = userEvent.setup();
-    render(<AccountMenu email="vendor@business.sg" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="vendor@business.sg" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
     await user.click(screen.getByRole("menuitem", { name: "Get help" }));
 
@@ -272,7 +280,7 @@ describe("AccountMenu", () => {
 
   it("signing out calls signOutAction", async () => {
     const user = userEvent.setup();
-    render(<AccountMenu email="team@merqo.io" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="team@merqo.io" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
     await user.click(screen.getByRole("menuitem", { name: "Sign out" }));
 
@@ -285,7 +293,7 @@ describe("AccountMenu", () => {
     });
     mocks.signOutAction.mockRejectedValue(redirectError);
     const user = userEvent.setup();
-    render(<AccountMenu email="team@merqo.io" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="team@merqo.io" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
     await user.click(screen.getByRole("menuitem", { name: "Sign out" }));
 
@@ -296,7 +304,7 @@ describe("AccountMenu", () => {
   it("a genuine sign-out failure still surfaces an error toast", async () => {
     mocks.signOutAction.mockRejectedValue(new Error("Network error"));
     const user = userEvent.setup();
-    render(<AccountMenu email="team@merqo.io" avatarUrl={null} />);
+    render(<AccountMenu accountLabel="team@merqo.io" avatarUrl={null} />);
     await user.click(screen.getByRole("button", { name: /account menu/i }));
     await user.click(screen.getByRole("menuitem", { name: "Sign out" }));
 

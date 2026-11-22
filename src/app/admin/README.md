@@ -142,3 +142,7 @@ Admin action errors use plain copy ("Could not ... Try again.") with no em dashe
 Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are imported from `@merqo/ui/primitives`; there are no local copies.
 
 Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
+
+## Account menu label
+
+The admin header passes the signed-in email as `accountLabel`; the stall-name label applies to the vendor dashboard only.
