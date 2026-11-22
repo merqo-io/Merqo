@@ -35,7 +35,7 @@ describe("Nav", () => {
     render(<Nav />);
 
     const header = screen.getByRole("banner");
-    expect(header).toHaveClass("py-4", "backdrop-blur-md");
+    expect(header).toHaveClass("py-4", "sticky", "before:backdrop-blur-md");
     expect(header.querySelector("nav")).toHaveClass("px-5");
     expect(screen.getByText("Merqo home")).toBeInTheDocument();
   });
@@ -110,20 +110,22 @@ describe("Nav account menu", () => {
 });
 
 describe("Nav at phone width", () => {
-  it("hides Kits and FAQ below sm so the avatar stays inside 375px", () => {
+  it("collapses Kits, About and FAQ into a burger, keeping the account control visible", async () => {
+    const user = userEvent.setup();
     render(<Nav user={ana} />);
-    for (const name of ["Kits", "FAQ"]) {
-      expect(screen.getByRole("link", { name })).toHaveClass(
-        "hidden",
-        "sm:inline-flex",
-      );
-    }
-    expect(screen.getByRole("link", { name: "About" })).not.toHaveClass(
-      "hidden",
-    );
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Account menu" }),
     ).toBeInTheDocument();
+    const burger = screen
+      .getAllByRole("button")
+      .find((b) => b !== screen.getByRole("button", { name: "Account menu" }));
+    expect(burger).toBeDefined();
+    await user.click(burger as HTMLElement);
+    expect(
+      screen
+        .getAllByRole("link", { name: "Kits" })
+        .map((l) => l.getAttribute("href")),
+    ).toContain("/#kits");
   });
 });
