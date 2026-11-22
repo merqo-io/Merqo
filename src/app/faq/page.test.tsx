@@ -54,13 +54,13 @@ describe("FaqRoute", () => {
     expect(metadata.title).toBe("FAQ");
   });
 
-  it("has the three groups and ten rows", () => {
+  it("has the three groups and eleven rows", () => {
     expect(FAQ_GROUPS.map((g) => g.heading)).toEqual([
       "About Merqo",
       "Accounts and kits",
       "Waitlist",
     ]);
-    expect(FAQ_GROUPS.flatMap((g) => g.rows)).toHaveLength(10);
+    expect(FAQ_GROUPS.flatMap((g) => g.rows)).toHaveLength(11);
   });
 
   it("emits FAQ JSON-LD and no closing line", async () => {

@@ -48,6 +48,10 @@ export const FAQ_GROUPS: FaqGroup[] = [
         q: "Do the kits work together?",
         a: "Two links are in build: paykit showing a PayNow QR on a qkit order page, and loopkit offering a stamp on a qkit order page. stockkit is not linked to the others.",
       },
+      {
+        q: "Which plan would suit me?",
+        a: "Merqo is free during the pilot. The Which plan fits you page at /which-plan suggests a plan for each kind of vendor, in case paid plans are introduced.",
+      },
     ],
   },
   {
