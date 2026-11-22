@@ -7,8 +7,13 @@ vi.mock("@/lib/supabase/server", () => ({
     auth: { getUser: async () => ({ data: { user: null } }) },
   }),
 }));
+vi.mock("@/lib/landing-nav-user", () => ({
+  getLandingNavUser: vi.fn().mockResolvedValue({ name: "My Stall" }),
+}));
 vi.mock("@/components/landing/nav", () => ({
-  Nav: () => null,
+  Nav: ({ user }: { user: { name: string } | null }) => (
+    <span data-testid="nav-label">{user?.name}</span>
+  ),
 }));
 vi.mock("@/components/landing/footer", () => ({ Footer: () => null }));
 vi.mock("@/app/actions/waitlist", () => ({ joinKitWaitlist: vi.fn() }));
@@ -21,6 +26,11 @@ async function selected(kit?: string | string[]) {
 }
 
 describe("WaitlistPage", () => {
+  it("passes the stall-name nav user to the nav", async () => {
+    await selected();
+    expect(screen.getByTestId("nav-label")).toHaveTextContent("My Stall");
+  });
+
   it("preselects an in-build kit from ?kit=", async () => {
     expect(await selected("paykit")).toBe("paykit");
   });

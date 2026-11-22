@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { AboutMerqo, toNavUser } from "@merqo/ui";
+import { AboutMerqo } from "@merqo/ui";
+import { getLandingNavUser } from "@/lib/landing-nav-user";
 import { Nav } from "@/components/landing/nav";
 import { Footer } from "@/components/landing/footer";
 import { Button } from "@merqo/ui/primitives";
@@ -17,7 +18,7 @@ export default async function AboutPage() {
 
   return (
     <>
-      <Nav user={toNavUser(user)} />
+      <Nav user={await getLandingNavUser(user)} />
       <main className="flex-1">
         <AboutMerqo>
           <Button asChild size="lg">
