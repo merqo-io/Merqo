@@ -8,7 +8,7 @@ signed out.
 ## Contents
 
 - `page.tsx` - `FaqRoute`, an async Server Component. Reflects the session so
-  the nav shows the account menu (Sign out) via `toNavUser`, and so
+  the nav shows the account menu (Sign out, labelled with the stall name) via `getLandingNavUser`, and so
   the `Nav` CTA reads "Dashboard" for a signed-in vendor, and wraps
   `@merqo/ui`'s shared `FaqPage` in the same `Nav`/`Footer` as the other
   public pages. `FaqPage` emits the FAQ JSON-LD; no closing line is passed.

@@ -5,6 +5,18 @@ import { render, screen } from "@testing-library/react";
 const { getUser } = vi.hoisted(() => ({ getUser: vi.fn() }));
 
 vi.mock("@/lib/supabase/server", () => ({
+  createServiceClient: vi.fn().mockResolvedValue({
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          maybeSingle: async () => ({
+            data: { stall_name: "My Stall" },
+            error: null,
+          }),
+        }),
+      }),
+    }),
+  }),
   createServerClient: vi.fn().mockResolvedValue({
     auth: { getUser: () => getUser() },
   }),
@@ -76,5 +88,22 @@ describe("FaqRoute", () => {
       "href",
       "/post-login",
     );
+  });
+
+  it("labels the nav with the stall name, not the full name", async () => {
+    getUser.mockResolvedValue({
+      data: {
+        user: {
+          id: "u1",
+          email: "vendor@example.com",
+          user_metadata: { full_name: "Clarence Lee" },
+        },
+      },
+    });
+
+    render(await FaqRoute());
+
+    expect(screen.getByText("My Stall")).toBeInTheDocument();
+    expect(screen.queryByText("Clarence Lee")).not.toBeInTheDocument();
   });
 });
