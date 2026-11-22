@@ -12,7 +12,7 @@ signed out.
   the `Nav` CTA reads "Dashboard" for a signed-in vendor, and wraps
   `@merqo/ui`'s shared `FaqPage` in the same `Nav`/`Footer` as the other
   public pages. `FaqPage` emits the FAQ JSON-LD; no closing line is passed.
-- `faq-content.ts` - the title, intro and grouped rows, exported so tests can
+- `faq-content.ts` - the title, intro and grouped rows (eleven, including "Which plan would suit me?", which points to `/which-plan`), exported so tests can
   check them.
 - `page.test.tsx` - covers the rendered groups and questions, the copy
   guardrails and the nav CTA.

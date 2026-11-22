@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.16.0]
+
+### Added
+
+- Public `/which-plan` page, "Which plan fits you": suggests Free, Starter, Pro or Event Pass by vendor type, with no prices and a conditional intro since Merqo is free during the pilot. A new FAQ row points to it.
+
 ### Changed
 
 - `/legal/terms`, `/legal/privacy` and `/legal/accept` now use the shared `@merqo/ui` `LegalPage`, `legalPageMetadata`, `AuthShell` and `AcceptTermsForm`. Terms and privacy go through a local client wrapper because the package bundle drops the client boundary. The local `accept-form.tsx` is removed; the Sign out exit stays.
