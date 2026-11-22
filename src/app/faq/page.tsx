@@ -1,4 +1,5 @@
-import { FaqPage, toNavUser } from "@merqo/ui";
+import { FaqPage } from "@merqo/ui";
+import { getLandingNavUser } from "@/lib/landing-nav-user";
 import { Nav } from "@/components/landing/nav";
 import { Footer } from "@/components/landing/footer";
 import { createServerClient } from "@/lib/supabase/server";
@@ -16,7 +17,7 @@ export default async function FaqRoute() {
 
   return (
     <>
-      <Nav user={toNavUser(user)} />
+      <Nav user={await getLandingNavUser(user)} />
       <main className="flex-1">
         <FaqPage title={FAQ_TITLE} intro={FAQ_INTRO} groups={FAQ_GROUPS} />
       </main>
