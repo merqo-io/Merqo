@@ -170,7 +170,7 @@ src/lib/entitlements/     — derive what a vendor may use per kit from subscrip
 src/lib/schemas.ts          — Zod schemas for the profile page's forms
 src/lib/merqo-vendor-profile.ts — typed wrapper over the shared vendor_profile RPCs
 src/lib/supabase/           — browser / server (schema=merqo) / service-role clients
-supabase/migrations/        — SQL schema (merqo.* tables) + RLS + grants; 0037 adds pg_cron retention purges; 0046 adds the trials tables
+supabase/migrations/        — SQL schema (merqo.* tables) + RLS + grants; 0037 adds pg_cron retention purges; 0046 adds the trials tables; 0047 adds subscription pauses and scheduled plan changes
 supabase/seed/staging-registry.sql: one-time staging registry wiring (docs/STAGING.md)
 scripts/staging-migrate.sh: applies migrations to the staging project with psql
 scripts/check-legal-version-skew.mjs — asserts merqo + all 5 kit repos pin
