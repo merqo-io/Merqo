@@ -43,6 +43,14 @@ trial or Free. `subscriptions.scheduled_plan_slug` holds a downgrade that applie
 an upgrade ends the old row and inserts a new one on the same period and billing date. Founder rows
 are not changed through this path, and pro-rata ignores paused days.
 
+**Payments ledger and revenue cap (0048):** `merqo.payments` holds the PayNow and bank transfers the team
+records by hand (integer `amount_cents` above 0, `received_on`, `method`, optional `reference` and `note`).
+`vendor_id`, `subscription_id` and `recorded_by` become null if their rows go, so the ledger survives an
+erased account. RLS is team-read; writes go through the service role. `billing_config.revenue_cap_cents`
+and `revenue_window_start` are null until the owner enters them in `/admin/billing`; with no window start
+the total counts from 1 January of the Singapore year. `revenue_total(date)` and `recent_payments(int)`
+are service-role-only. The cap is a value the owner types in, never part of code or seed data.
+
 **Founder numbers and billing open date (0045):** `founder_numbers` (`number` PK 1 to 20, nullable unique
 `vendor_id` to `auth.users` with `on delete set null`, `assigned_at`) holds the founding merchant badge
 (#01 to #20). A trigger on `subscriptions` gives a vendor the lowest free number the first

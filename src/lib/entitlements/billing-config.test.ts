@@ -11,7 +11,12 @@ vi.mock("@/lib/supabase/server", () => ({
   createServiceClient: mocks.createServiceClient,
 }));
 
-import { getBillingOpensAt, setBillingOpensAt } from "./billing-config";
+import {
+  getBillingOpensAt,
+  getRevenueConfig,
+  setBillingOpensAt,
+  setRevenueConfig,
+} from "./billing-config";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -44,6 +49,63 @@ describe("getBillingOpensAt", () => {
       error: { message: "x" },
     });
     await expect(getBillingOpensAt()).rejects.toThrow("billing config read: x");
+  });
+});
+
+describe("getRevenueConfig", () => {
+  it("returns a null cap and window by default", async () => {
+    mocks.maybeSingle.mockResolvedValue({
+      data: { revenue_cap_cents: null, revenue_window_start: null },
+      error: null,
+    });
+    expect(await getRevenueConfig()).toEqual({
+      capCents: null,
+      windowStart: null,
+    });
+  });
+
+  it("converts a bigint string to a number", async () => {
+    mocks.maybeSingle.mockResolvedValue({
+      data: { revenue_cap_cents: "123456", revenue_window_start: "2026-02-01" },
+      error: null,
+    });
+    expect(await getRevenueConfig()).toEqual({
+      capCents: 123456,
+      windowStart: "2026-02-01",
+    });
+  });
+
+  it("treats a missing row as unset", async () => {
+    mocks.maybeSingle.mockResolvedValue({ data: null, error: null });
+    expect((await getRevenueConfig()).capCents).toBeNull();
+  });
+
+  it("throws on a read error", async () => {
+    mocks.maybeSingle.mockResolvedValue({
+      data: null,
+      error: { message: "x" },
+    });
+    await expect(getRevenueConfig()).rejects.toThrow("revenue config read: x");
+  });
+});
+
+describe("setRevenueConfig", () => {
+  it("writes the cap and window", async () => {
+    mocks.updateEq.mockResolvedValue({ error: null });
+    await setRevenueConfig({ capCents: 123456, windowStart: "2026-02-01" });
+    expect(mocks.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        revenue_cap_cents: 123456,
+        revenue_window_start: "2026-02-01",
+      }),
+    );
+  });
+
+  it("throws on a write error", async () => {
+    mocks.updateEq.mockResolvedValue({ error: { message: "y" } });
+    await expect(
+      setRevenueConfig({ capCents: null, windowStart: null }),
+    ).rejects.toThrow("revenue config write: y");
   });
 });
 

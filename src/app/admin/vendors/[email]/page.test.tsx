@@ -137,6 +137,13 @@ vi.mock("@/lib/event-pass-usage-client", () => ({
 vi.mock("@/lib/entitlements/trial-store", () => ({
   loadVendorTrial: vi.fn().mockResolvedValue(null),
 }));
+vi.mock("@/lib/entitlements/ledger", () => ({
+  listVendorPayments: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("../../billing/payment-actions", () => ({
+  recordPaymentAction: vi.fn(),
+  deletePaymentAction: vi.fn(),
+}));
 vi.mock("./trial-actions", () => ({
   checkFirstOrderAction: vi.fn(),
   setTrialUenAction: vi.fn(),
@@ -214,6 +221,23 @@ describe("VendorDetailPage", () => {
     expect(
       screen.getByText("No incidents in the last 72 hours"),
     ).toBeInTheDocument();
+  });
+
+  it("shows the vendor's payments with a record form", async () => {
+    getVendorActivityMock.mockResolvedValue({ ok: false });
+    render(
+      await VendorDetailPage({
+        params: Promise.resolve({ email: "vendor@business.sg" }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+    expect(
+      screen.getByRole("heading", { name: "Payments" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Record payment" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("No payments recorded yet.")).toBeInTheDocument();
   });
 
   it("renders a kit's incidents on its activity card", async () => {

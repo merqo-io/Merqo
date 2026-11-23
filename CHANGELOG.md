@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.20.0]
+
+### Added
+
+- Admin payments ledger and revenue total: record PayNow and bank transfer payments by vendor email in `/admin/billing` or on the vendor page, see the running total since a start date, and compare it with a cap the owner types in (Under cap, Near cap from 80%, Over cap from 100%). Admin only; no cap is set until entered. Needs migration `0048`.
+
 ## [0.19.0]
 
 ### Added
