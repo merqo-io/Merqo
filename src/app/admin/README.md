@@ -16,7 +16,7 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
   email/avatar, and passes them to the shared header (`@/components/dashboard-nav.tsx`,
   a thin wrapper over `@merqo/ui`'s `DashboardNav`) with the four daily links
   (Overview / Vendors / Requests / Products) and an "Admin"
-  badge beside the wordmark. Team / Feedback / Activity sit in a quiet "More
+  badge beside the wordmark. Team / Feedback / Activity / Billing sit in a quiet "More
   admin pages" row under the header (`@/components/admin-secondary-nav.tsx`, which
   marks the current page with `aria-current` and wraps on narrow screens),
   because the shared account menu takes only one extra link. It passes `collapseBelow="lg"` so the links fold into the
@@ -100,6 +100,13 @@ folder is gated by `requireMerqoTeam()` (via `layout.tsx`).
 - `requests/` — sub-route: the queue of plan changes vendors asked for from
   their dashboard; resolve on the vendor page or decline. See
   `requests/README.md`.
+- `billing/` — sub-route (`page.tsx`, `billing-form.tsx`, `actions.ts`, tests):
+  `BillingPage` (`revalidate = 0`) shows the founder offer: state (open, or closed
+  by date or by 20 founders), spots left, the close date (billing open date plus
+  60 days) and the founder price (S$199, admin only). `BillingOpenForm` sets or
+  clears the billing open date through `setBillingOpensAtAction` (Zod-validated,
+  a Singapore calendar day, service-role write to `merqo.billing_config`,
+  audited as `set_billing_opens_at`). Later billing settings belong on this page.
 - `activity/` — sub-route (`page.tsx` + `page.test.tsx`): `AdminActivityPage`
   server-fetches the most recent 100 `merqo.admin_audit` rows via
   `listAdminAuditEntries()` (`@/lib/admin`) and maps each row to an

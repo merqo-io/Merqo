@@ -5,6 +5,7 @@ import { Footer } from "@/components/landing/footer";
 import { WaitlistForm } from "@/components/landing/waitlist-form";
 import { KITS, WAITLISTABLE_SLUGS } from "@/lib/kits";
 import { createServerClient } from "@/lib/supabase/server";
+import { getFounderSpotsLeft } from "@/lib/entitlements/founder-spots";
 
 export const metadata = {
   title: "Join the waitlist",
@@ -26,6 +27,7 @@ export default async function WaitlistPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const spotsLeft = await getFounderSpotsLeft();
   const kits = KITS.filter((k) => WAITLISTABLE_SLUGS.includes(k.slug)).map(
     (k) => ({ slug: k.slug, name: k.name }),
   );
@@ -58,6 +60,13 @@ export default async function WaitlistPage({
             while they stay subscribed. Nothing to pay today: we&apos;ll confirm
             any price with you before you&apos;re charged.
           </p>
+          {spotsLeft !== null && (
+            <p className="mt-2 text-sm font-medium">
+              {spotsLeft > 0
+                ? `${spotsLeft} of 20 founder spots left`
+                : "Founder spots are full"}
+            </p>
+          )}
           <p className="mt-2 text-xs text-muted-foreground">
             Merqo is a personal software project by Clarence Lee, not registered
             with ACRA or incorporated. If that changes, your founding offer

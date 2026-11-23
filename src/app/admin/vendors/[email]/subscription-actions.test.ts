@@ -26,8 +26,10 @@ vi.mock("@/lib/pricing/catalog", () => ({
 }));
 vi.mock("@/lib/entitlements/store", () => {
   class FounderCapError extends Error {}
+  class FounderClosedError extends Error {}
   return {
     FounderCapError,
+    FounderClosedError,
     findVendorId: mocks.findVendorId,
     grantSubscription: mocks.grantSubscription,
     cancelSubscription: mocks.cancelSubscription,
@@ -49,7 +51,7 @@ vi.mock("@/lib/subscription-requests", () => ({
   getPendingRequest: mocks.getPendingRequest,
 }));
 
-import { FounderCapError } from "@/lib/entitlements/store";
+import { FounderCapError, FounderClosedError } from "@/lib/entitlements/store";
 import {
   cancelEventPassAction,
   cancelSubscriptionAction,
@@ -247,6 +249,14 @@ describe("grantSubscriptionAction", () => {
       error: "All 20 founder slots are taken.",
     });
     expect(mocks.recordAudit).not.toHaveBeenCalled();
+  });
+
+  it("explains a closed founder offer", async () => {
+    mocks.grantSubscription.mockRejectedValue(new FounderClosedError());
+    expect(await grantSubscriptionAction({ ...grant, founder: true })).toEqual({
+      success: false,
+      error: "The founder offer has closed.",
+    });
   });
 
   it("returns a generic error on other failures", async () => {

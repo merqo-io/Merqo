@@ -1,11 +1,15 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from "vitest";
+import { beforeEach, describe, it, expect, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 
 vi.mock("@/lib/supabase/server", () => ({
   createServerClient: async () => ({
     auth: { getUser: async () => ({ data: { user: null } }) },
   }),
+}));
+const spotsMock = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/entitlements/founder-spots", () => ({
+  getFounderSpotsLeft: spotsMock,
 }));
 vi.mock("@/lib/landing-nav-user", () => ({
   getLandingNavUser: vi.fn().mockResolvedValue({ name: "My Stall" }),
@@ -26,6 +30,27 @@ async function selected(kit?: string | string[]) {
 }
 
 describe("WaitlistPage", () => {
+  beforeEach(() => spotsMock.mockResolvedValue(null));
+
+  it("shows the live founder spots left", async () => {
+    spotsMock.mockResolvedValue(14);
+    await selected();
+    expect(screen.getByText("14 of 20 founder spots left")).toBeInTheDocument();
+  });
+
+  it("says the spots are full at zero", async () => {
+    spotsMock.mockResolvedValue(0);
+    await selected();
+    expect(screen.getByText("Founder spots are full")).toBeInTheDocument();
+    expect(screen.queryByText(/founder spots left/)).not.toBeInTheDocument();
+  });
+
+  it("renders without a counter when the count is unavailable", async () => {
+    await selected();
+    expect(screen.queryByText(/founder spots/)).not.toBeInTheDocument();
+    expect(screen.getByText("Founding merchant offer")).toBeInTheDocument();
+  });
+
   it("passes the stall-name nav user to the nav", async () => {
     await selected();
     expect(screen.getByTestId("nav-label")).toHaveTextContent("My Stall");

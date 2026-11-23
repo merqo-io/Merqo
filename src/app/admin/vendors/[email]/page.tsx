@@ -14,6 +14,7 @@ import { loadPlanCatalog } from "@/lib/pricing/catalog";
 import {
   countFounders,
   findVendorId,
+  loadFounderNumber,
   loadSyncRows,
   loadVendorEventPasses,
   loadVendorSubscriptions,
@@ -36,17 +37,25 @@ export async function generateMetadata({
 }
 
 async function loadBilling(vendorId: string, requestId: string | undefined) {
-  const [subscriptions, eventPasses, syncRows, founderCount, catalog, request] =
-    await Promise.all([
-      loadVendorSubscriptions(vendorId),
-      loadVendorEventPasses(vendorId),
-      loadSyncRows(vendorId),
-      countFounders(),
-      loadPlanCatalog(),
-      z.string().uuid().safeParse(requestId).success
-        ? getPendingRequest(requestId as string, vendorId)
-        : null,
-    ]);
+  const [
+    subscriptions,
+    eventPasses,
+    syncRows,
+    founderCount,
+    founderNumber,
+    catalog,
+    request,
+  ] = await Promise.all([
+    loadVendorSubscriptions(vendorId),
+    loadVendorEventPasses(vendorId),
+    loadSyncRows(vendorId),
+    countFounders(),
+    loadFounderNumber(vendorId),
+    loadPlanCatalog(),
+    z.string().uuid().safeParse(requestId).success
+      ? getPendingRequest(requestId as string, vendorId)
+      : null,
+  ]);
   const pass = catalog.find((p) => p.kind === "event_pass" && p.active);
   const nowMs = Date.now();
   // Usage is only meaningful once a pass has started; settled and cancelled
@@ -75,6 +84,7 @@ async function loadBilling(vendorId: string, requestId: string | undefined) {
     passUsage,
     syncRows,
     founderCount,
+    founderNumber,
     plans: catalog.filter(
       (p) =>
         p.active &&

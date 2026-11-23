@@ -169,11 +169,17 @@ export function GrantSubscriptionForm({
         <Switch
           id="sub-founder"
           checked={founder}
-          onCheckedChange={setFounder}
+          onCheckedChange={(on) => {
+            setFounder(on);
+            if (on) {
+              setInterval("year");
+              setPriceInput(null);
+            }
+          }}
           disabled={founderSlotsLeft === 0 && !founder}
         />
         <Label htmlFor="sub-founder">
-          Founder (All Access benefits for 12 months)
+          Founder (prepaid 12 months, All Access benefits)
         </Label>
       </div>
       {current.length > 0 && (

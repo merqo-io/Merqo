@@ -44,6 +44,7 @@ vi.mock("@/lib/entitlements/store", () => ({
   FOUNDER_CAP: 20,
   findVendorId: findVendorIdMock,
   countFounders: countFoundersMock,
+  loadFounderNumber: vi.fn().mockResolvedValue(7),
   loadVendorSubscriptions: vi.fn().mockResolvedValue([
     {
       id: "sub-1",
@@ -306,7 +307,9 @@ describe("VendorDetailPage", () => {
     expect(
       screen.getByRole("switch", { name: /Replace current plan \(.*\)/ }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Founder until 2099-01-01/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Founder #07 until 2099-01-01/),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(/Founder slots left: 13 of 20/),
     ).toBeInTheDocument();

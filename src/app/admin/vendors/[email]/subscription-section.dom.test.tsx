@@ -11,6 +11,7 @@ vi.mock("./subscription-actions", () => ({
   settleEventPassAction: vi.fn(),
 }));
 
+import type { SubscriptionRow } from "@/lib/entitlements/store";
 import { SubscriptionSection } from "./subscription-section";
 
 const terms = {
@@ -37,17 +38,22 @@ function renderWith(
   eventPasses: ReturnType<typeof pass>[],
   passUsage: Record<string, { ok: true; cups: number } | { ok: false }>,
   nowMs = NOW,
+  founder: {
+    number: number | null;
+    subscriptions: SubscriptionRow[];
+  } = { number: null, subscriptions: [] },
 ) {
   render(
     <SubscriptionSection
       email="v@x.com"
-      subscriptions={[]}
+      subscriptions={founder.subscriptions}
       eventPasses={eventPasses}
       syncRows={[]}
       plans={[]}
       eventTerms={terms}
       passUsage={passUsage}
       founderCount={0}
+      founderNumber={founder.number}
       today="2026-12-10"
       request={null}
       nowMs={nowMs}
@@ -119,5 +125,42 @@ describe("event pass settle view", () => {
   it("shows no usage line for a cancelled pass", () => {
     renderWith([pass({ status: "cancelled" })], {});
     expect(screen.queryByText(/cups/)).not.toBeInTheDocument();
+  });
+});
+
+describe("founder badge", () => {
+  const founderSub: SubscriptionRow = {
+    id: "sub-1",
+    planSlug: "qkit",
+    interval: "year",
+    status: "active",
+    currentPeriodStart: "2026-12-01T00:00:00Z",
+    currentPeriodEnd: "2027-12-01T00:00:00Z",
+    renewalAnchor: "2027-12-01T00:00:00Z",
+    lockedPriceCents: 19900,
+    includedKits: ["qkit"],
+    source: "admin_manual",
+    founder: true,
+    founderUntil: "2027-12-01T00:00:00Z",
+  };
+
+  it("shows the zero-padded founder number", () => {
+    renderWith([], {}, NOW, { number: 3, subscriptions: [founderSub] });
+    expect(screen.getByText(/Founder #03 until/)).toBeInTheDocument();
+  });
+
+  it("keeps the number after the benefits end", () => {
+    renderWith([], {}, NOW, {
+      number: 12,
+      subscriptions: [{ ...founderSub, founderUntil: "2026-12-05T00:00:00Z" }],
+    });
+    expect(
+      screen.getByText("Founder #12 (benefits ended)"),
+    ).toBeInTheDocument();
+  });
+
+  it("falls back to plain Founder with no number", () => {
+    renderWith([], {}, NOW, { number: null, subscriptions: [founderSub] });
+    expect(screen.getByText(/^Founder until/)).toBeInTheDocument();
   });
 });

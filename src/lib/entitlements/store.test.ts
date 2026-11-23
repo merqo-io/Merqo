@@ -11,11 +11,13 @@ vi.mock("@/lib/supabase/server", () => ({
 
 import {
   FounderCapError,
+  FounderClosedError,
   cancelEventPass,
   cancelSubscription,
   countFounders,
   findVendorId,
   grantSubscription,
+  loadFounderNumber,
   loadSyncRows,
   loadVendorEventPasses,
   loadVendorSubscriptions,
@@ -254,6 +256,17 @@ describe("grantSubscription", () => {
     );
   });
 
+  it("turns the closed-offer trigger into FounderClosedError", async () => {
+    mocks.from.mockReturnValueOnce(chain({ data: null })).mockReturnValueOnce(
+      chain({
+        error: { code: "23514", message: "founder offer closed" },
+      }),
+    );
+    await expect(grantSubscription(input)).rejects.toBeInstanceOf(
+      FounderClosedError,
+    );
+  });
+
   it("throws other write and read errors", async () => {
     mocks.from
       .mockReturnValueOnce(chain({ data: null }))
@@ -324,5 +337,22 @@ describe("cancel and mint", () => {
     await expect(cancelEventPass("v1", "p1")).rejects.toThrow(
       "cancel event pass",
     );
+  });
+});
+
+describe("loadFounderNumber", () => {
+  it("returns the kept number", async () => {
+    mocks.from.mockReturnValueOnce(chain({ data: { number: 7 } }));
+    expect(await loadFounderNumber("v1")).toBe(7);
+  });
+
+  it("returns null for a vendor who was never a founder", async () => {
+    mocks.from.mockReturnValueOnce(chain({ data: null }));
+    expect(await loadFounderNumber("v1")).toBeNull();
+  });
+
+  it("throws on a read error", async () => {
+    mocks.from.mockReturnValueOnce(chain({ error: { message: "boom" } }));
+    await expect(loadFounderNumber("v1")).rejects.toThrow("founder number");
   });
 });

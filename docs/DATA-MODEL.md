@@ -22,6 +22,18 @@ from qkit (`GET /api/merqo/event-pass-usage`, bearer `metrics_secret`) and store
 cups and the top-up (`eventPassChargeCents` minus `prepaid_cents`, floored at 0).
 RLS and grants are unchanged.
 
+**Founder numbers and billing open date (0045):** `founder_numbers` (`number` PK 1 to 20, nullable unique
+`vendor_id` to `auth.users` with `on delete set null`, `assigned_at`) holds the founding merchant badge
+(#01 to #20). A trigger on `subscriptions` gives a vendor the lowest free number the first
+time they get a founder row; numbers are kept after `founder_until` passes and after an account is erased (the row stays with a null `vendor_id`, so the number is retired and never reused) and existing
+founders were backfilled by earliest founder `created_at`. `billing_config` is a one-row
+table (`id` boolean PK) whose `billing_opens_at` is set on `/admin/billing`; once now is
+past it plus 60 days, `enforce_founder_cap()` refuses a new founder vendor (existing
+founders can still be updated). `founder_spots_left()` (security definer, executable by
+anon and authenticated) returns 0 when closed by date, else 20 minus distinct founders,
+and nothing else. Both tables are team-read only through RLS; writes go through the
+service role or the trigger.
+
 **Customer Telegram identity (0019, 2026-08-16):** `customers` (0018) was widened
 — surrogate `id` PK, `phone` now nullable, plus `telegram_chat_id`/
 `consent_given_at`/`pending_notify_ref` and a `customers_identity_check`

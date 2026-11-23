@@ -1,12 +1,14 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 
-const { getUser, getOrCreateVendorProfile, maybeSingle } = vi.hoisted(() => ({
-  getUser: vi.fn(),
-  getOrCreateVendorProfile: vi.fn(),
-  maybeSingle: vi.fn(),
-}));
+const { getUser, getOrCreateVendorProfile, maybeSingle, loadFounderNumber } =
+  vi.hoisted(() => ({
+    loadFounderNumber: vi.fn(),
+    getUser: vi.fn(),
+    getOrCreateVendorProfile: vi.fn(),
+    maybeSingle: vi.fn(),
+  }));
 
 vi.mock("@/lib/supabase/server", () => ({
   createServerClient: vi.fn().mockResolvedValue({
@@ -17,6 +19,7 @@ vi.mock("@/lib/supabase/server", () => ({
 vi.mock("@/lib/supabase/client", () => ({
   createClient: () => ({ auth: { updateUser: vi.fn() } }),
 }));
+vi.mock("@/lib/entitlements/store", () => ({ loadFounderNumber }));
 vi.mock("@/lib/merqo-vendor-profile", () => ({ getOrCreateVendorProfile }));
 vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
@@ -32,6 +35,34 @@ import ProfilePage from "./page";
 describe("ProfilePage", () => {
   beforeEach(() => {
     maybeSingle.mockResolvedValue({ data: null, error: null });
+    loadFounderNumber.mockResolvedValue(null);
+  });
+
+  async function renderAs() {
+    getUser.mockResolvedValue({
+      data: { user: { id: "v1", email: "v@x.sg", user_metadata: {} } },
+    });
+    getOrCreateVendorProfile.mockResolvedValue({
+      vendor_id: "v1",
+      stall_name: "Kopi",
+      social_links: {},
+    });
+    render(await ProfilePage());
+  }
+
+  it("shows the founding merchant badge for a founder", async () => {
+    loadFounderNumber.mockResolvedValue(3);
+    await renderAs();
+    expect(screen.getByText("Founding merchant #03")).toBeInTheDocument();
+  });
+
+  it("shows no badge for a non-founder or when the lookup fails", async () => {
+    await renderAs();
+    expect(screen.queryByText(/Founding merchant/)).not.toBeInTheDocument();
+    cleanup();
+    loadFounderNumber.mockRejectedValue(new Error("db"));
+    await renderAs();
+    expect(screen.queryByText(/Founding merchant/)).not.toBeInTheDocument();
   });
 
   it("renders the form with the vendor's shared profile and auth-user fields", async () => {
