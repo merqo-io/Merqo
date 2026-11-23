@@ -18,6 +18,7 @@ export function normalizeEmail(email: string): string {
   const domain = clean.slice(at + 1);
   let local = clean.slice(0, at).split("+")[0];
   if (GMAIL_DOMAINS.has(domain)) local = local.replaceAll(".", "");
+  if (local === "") return clean;
   return `${local}@${domain}`;
 }
 
