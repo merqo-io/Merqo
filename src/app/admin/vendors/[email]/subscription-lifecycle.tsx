@@ -51,6 +51,7 @@ function changeOptions(
         currentPeriodEnd: sub.currentPeriodEnd,
         newMonthlyCents: p.monthlyCents,
         nowMs,
+        pauses: sub.pauses,
       });
       const hint =
         quote.kind === "upgrade"

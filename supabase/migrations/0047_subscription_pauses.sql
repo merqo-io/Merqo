@@ -48,10 +48,11 @@ as $$
 declare
   v_vendor uuid;
   v_id     uuid;
+  v_sub    merqo.subscriptions;
 begin
   select s.vendor_id into v_vendor
   from merqo.subscriptions s
-  where s.id = p_subscription_id and s.status = 'active';
+  where s.id = p_subscription_id;
   if not found then
     raise exception 'subscription is not active' using errcode = '23514';
   end if;
@@ -64,7 +65,22 @@ begin
   end if;
 
   perform pg_advisory_xact_lock(hashtext('merqo.pause:' || v_vendor::text));
-  perform 1 from merqo.subscriptions s where s.id = p_subscription_id for update;
+  select s.* into v_sub
+  from merqo.subscriptions s
+  where s.id = p_subscription_id
+  for update;
+  if v_sub.status <> 'active' then
+    raise exception 'subscription is not active' using errcode = '23514';
+  end if;
+  -- Manual subscriptions keep their plan through a 7 day grace; others end with the period.
+  if v_sub.current_period_end
+       + case when v_sub.source = 'admin_manual' then interval '7 days' else interval '0' end
+       < now() then
+    raise exception 'subscription is no longer active' using errcode = '23514';
+  end if;
+  if p_starts_on > v_sub.current_period_end::date then
+    raise exception 'pause cannot start after the paid period ends' using errcode = '23514';
+  end if;
 
   if exists (
     select 1
@@ -108,6 +124,11 @@ begin
 
   update merqo.subscriptions
   set current_period_end = current_period_end + make_interval(days => p_ends_on - p_starts_on),
+      founder_until = case
+        when founder and founder_until is not null
+          then founder_until + make_interval(days => p_ends_on - p_starts_on)
+        else founder_until
+      end,
       updated_at = now()
   where id = p_subscription_id;
 
@@ -149,8 +170,77 @@ begin
 
   update merqo.subscriptions
   set current_period_end = current_period_end - make_interval(days => v_pause.ends_on - v_new_end),
+      founder_until = case
+        when founder and founder_until is not null
+          then founder_until - make_interval(days => v_pause.ends_on - v_new_end)
+        else founder_until
+      end,
       updated_at = now()
   where id = v_pause.subscription_id;
+end;
+$$;
+
+-- A vendor who ever held a subscription, in any status or source, is never a
+-- trial candidate: a lapsed or grace-period customer must not restart a trial.
+create or replace function merqo.trial_candidates(p_limit int)
+returns table (vendor_id uuid, email text)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select u.id, l.email
+  from merqo.vendor_links l
+  join auth.users u on lower(u.email) = lower(l.email)
+  left join merqo.trial_checks c on c.vendor_id = u.id
+  where l.product_slug = 'qkit'
+    and l.status = 'active'
+    and not exists (select 1 from merqo.trials t where t.vendor_id = u.id)
+    and not exists (select 1 from merqo.subscriptions s where s.vendor_id = u.id)
+  order by c.checked_at nulls first, u.created_at
+  limit greatest(p_limit, 0);
+$$;
+
+-- Same rule as trial_candidates so the admin button cannot bypass it. Returns
+-- 'ineligible' without writing a row.
+create or replace function merqo.start_trial(
+  p_vendor_id uuid,
+  p_email text,
+  p_first_order_at timestamptz,
+  p_paynow_uen text default null
+) returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_ends   timestamptz := p_first_order_at + interval '30 days';
+  v_status text;
+begin
+  perform pg_advisory_xact_lock(hashtext('trial:email:' || p_email));
+  if p_paynow_uen is not null then
+    perform pg_advisory_xact_lock(hashtext('trial:uen:' || p_paynow_uen));
+  end if;
+
+  if exists (select 1 from merqo.subscriptions s where s.vendor_id = p_vendor_id) then
+    return 'ineligible';
+  end if;
+
+  if merqo.trial_already_used(p_vendor_id, p_email, p_paynow_uen) then
+    v_status := 'blocked';
+  elsif v_ends <= now() then
+    v_status := 'ended';
+  else
+    v_status := 'active';
+  end if;
+
+  insert into merqo.trials
+    (vendor_id, email_normalized, paynow_uen, status, started_at, ends_at, first_order_at)
+  values
+    (p_vendor_id, p_email, p_paynow_uen, v_status, p_first_order_at, v_ends, p_first_order_at)
+  on conflict (vendor_id) do nothing;
+
+  return (select t.status from merqo.trials t where t.vendor_id = p_vendor_id);
 end;
 $$;
 

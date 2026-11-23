@@ -119,6 +119,18 @@ describe("trial actions", () => {
     });
   });
 
+  it("refuses a vendor who has had a paid plan", async () => {
+    mocks.checkFirstOrderAndStart.mockResolvedValue({
+      kind: "started",
+      status: "ineligible",
+    });
+    const res = await checkFirstOrderAction({ email: "v@x.com" });
+    expect(res).toEqual({
+      success: false,
+      error: "This vendor has had a paid plan, so no trial applies.",
+    });
+  });
+
   it("says so when the first order matches an earlier trial", async () => {
     mocks.checkFirstOrderAndStart.mockResolvedValue({
       kind: "started",

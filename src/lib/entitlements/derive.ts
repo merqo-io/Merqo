@@ -10,7 +10,7 @@ export interface SubscriptionInput {
   includedKits: string[];
   founder: boolean;
   founderUntil: string | null;
-  source?: string;
+  source: string;
   pauses?: PauseWindow[];
   scheduledPlanSlug?: string | null;
 }
@@ -98,14 +98,16 @@ function subscriptionGrants(
 }
 
 /** When a subscription's founder benefits end; NaN when none are running
- *  (not founder, not active, paused, or past its paid period). */
+ *  (not founder, paused, or no longer granting). They follow the plan, so
+ *  they continue through grace. */
 function founderEndMs(sub: SubscriptionInput, nowMs: number): number {
-  if (!sub.founder || subscriptionPhase(sub, nowMs).kind !== "active") {
-    return NaN;
-  }
-  const periodEndMs = Date.parse(sub.currentPeriodEnd);
+  if (!sub.founder) return NaN;
+  const phase = subscriptionPhase(sub, nowMs);
+  if (phase.kind !== "active" && phase.kind !== "grace") return NaN;
+  const planEndMs =
+    phase.kind === "grace" ? phase.untilMs : Date.parse(sub.currentPeriodEnd);
   const founderUntilMs = sub.founderUntil ? Date.parse(sub.founderUntil) : NaN;
-  return Math.min(founderUntilMs, periodEndMs);
+  return Math.min(founderUntilMs, planEndMs);
 }
 
 /** A running trial is Pro until it ends. It never stacks on a paid plan. */

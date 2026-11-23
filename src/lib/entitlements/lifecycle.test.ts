@@ -55,7 +55,7 @@ describe("subscriptionPhase grace boundaries", () => {
     expect(subscriptionPhase(sub({ source: "stripe" }), END)).toEqual({
       kind: "expired",
     });
-    expect(subscriptionPhase(sub({ source: undefined }), END)).toEqual({
+    expect(subscriptionPhase(sub({ source: "" }), END)).toEqual({
       kind: "expired",
     });
   });
@@ -191,6 +191,58 @@ describe("prorateUpgradeCents", () => {
         nowMs: 5,
       }),
     ).toBe(0);
+  });
+});
+
+describe("prorateUpgradeCents with pauses", () => {
+  const stretched = {
+    oldCents: 1490,
+    newCents: 1990,
+    periodStartMs: Date.parse("2026-11-01T00:00:00Z"),
+    periodEndMs: Date.parse("2026-12-11T00:00:00Z"),
+    pauses: [{ startsOn: "2026-11-11", endsOn: "2026-11-21" }],
+  };
+
+  it("leaves a past pause out of the days in the period and the days left", () => {
+    expect(
+      prorateUpgradeCents({
+        ...stretched,
+        nowMs: Date.parse("2026-11-25T00:00:00Z"),
+      }),
+    ).toBe(267);
+  });
+
+  it("leaves a coming pause out of the days left", () => {
+    expect(
+      prorateUpgradeCents({
+        ...stretched,
+        nowMs: Date.parse("2026-11-05T00:00:00Z"),
+      }),
+    ).toBe(433);
+  });
+
+  it("ignores a pause outside the period", () => {
+    expect(
+      prorateUpgradeCents({
+        ...stretched,
+        pauses: [{ startsOn: "2027-02-01", endsOn: "2027-02-11" }],
+        nowMs: Date.parse("2026-11-25T00:00:00Z"),
+      }),
+    ).toBe(200);
+  });
+
+  it("passes the pauses through a plan change quote", () => {
+    expect(
+      quotePlanChange({
+        interval: "month",
+        lockedPriceCents: 1490,
+        currentPeriodStart: "2026-11-01T00:00:00Z",
+        currentPeriodEnd: "2026-12-11T00:00:00Z",
+        newMonthlyCents: 1990,
+        nowMs: Date.parse("2026-11-25T00:00:00Z"),
+        pauses: stretched.pauses,
+      }),
+    ).toEqual({ kind: "upgrade", newPriceCents: 1990, owedCents: 267 });
   });
 });
 

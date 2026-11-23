@@ -97,13 +97,12 @@ describe("deriveEntitlements grace and pauses", () => {
     expect(run([done]).qkit.tier).toBe("qkit");
   });
 
-  it("does not apply founder benefits while paused or in grace", () => {
+  it("turns founder benefits off while paused", () => {
     const founder = { founder: true, founderUntil: FUTURE };
     const paused = sub({
       ...founder,
       pauses: [{ startsOn: "2026-11-05", endsOn: "2026-11-15" }],
     });
     expect(run([paused]).printkit.tier).toBe("free");
-    expect(run([lapsed(2, founder)]).loopkit.tier).toBe("free");
   });
 });

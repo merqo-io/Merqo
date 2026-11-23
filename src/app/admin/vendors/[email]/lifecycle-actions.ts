@@ -16,7 +16,11 @@ import {
   type SubscriptionRow,
 } from "@/lib/entitlements/store";
 import { syncVendorEntitlements } from "@/lib/entitlements/push";
-import { MAX_PAUSE_DAYS, quotePlanChange } from "@/lib/entitlements/lifecycle";
+import {
+  MAX_PAUSE_DAYS,
+  quotePlanChange,
+  subscriptionPhase,
+} from "@/lib/entitlements/lifecycle";
 
 const DAY_MS = 86_400_000;
 const GENERIC_ERROR = "Could not save that. Try again.";
@@ -52,6 +56,7 @@ const PAUSE_MESSAGES: Record<PauseError["kind"], string> = {
   overlap: "That overlaps another pause.",
   past: "A pause cannot start in the past.",
   inactive: "That subscription is already closed.",
+  late: "A pause cannot start after the paid period ends.",
   ended: "That pause has already ended.",
 };
 
@@ -152,6 +157,18 @@ function pauseStillOpen(sub: SubscriptionRow, nowMs: number): boolean {
   );
 }
 
+/** Why an upgrade cannot happen yet, or null. A subscription in grace owes its
+ *  renewal first, so the pro-rata difference is never mixed into an overdue bill. */
+function upgradeBlock(sub: SubscriptionRow, nowMs: number): string | null {
+  if (pauseStillOpen(sub, nowMs)) {
+    return "End the pause before upgrading this subscription.";
+  }
+  if (subscriptionPhase(sub, nowMs).kind === "grace") {
+    return "Renew first, then change plan";
+  }
+  return null;
+}
+
 export async function changePlanAction(
   input: z.input<typeof changePlanSchema>,
 ): Promise<
@@ -208,6 +225,7 @@ export async function changePlanAction(
       currentPeriodEnd: sub.currentPeriodEnd,
       newMonthlyCents: plan.monthlyCents,
       nowMs,
+      pauses: sub.pauses,
     });
     if (quote.kind === "downgrade") {
       if (!(await setScheduledPlan(vendorId, sub.id, plan.slug))) {
@@ -229,12 +247,8 @@ export async function changePlanAction(
         effectiveOn: sub.currentPeriodEnd,
       };
     }
-    if (pauseStillOpen(sub, nowMs)) {
-      return {
-        success: false,
-        error: "End the pause before upgrading this subscription.",
-      };
-    }
+    const blocked = upgradeBlock(sub, nowMs);
+    if (blocked) return { success: false, error: blocked };
     const newId = await upgradeSubscription({
       vendorId,
       from: sub,

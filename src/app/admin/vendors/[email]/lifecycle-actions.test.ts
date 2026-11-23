@@ -157,6 +157,11 @@ describe("pauseSubscriptionAction", () => {
   });
 
   it("turns a database rule into a plain message", async () => {
+    mocks.pauseSubscription.mockRejectedValue(new PauseError("late"));
+    expect(await pauseSubscriptionAction(pause)).toEqual({
+      success: false,
+      error: "A pause cannot start after the paid period ends.",
+    });
     mocks.pauseSubscription.mockRejectedValue(new PauseError("cap"));
     expect(await pauseSubscriptionAction(pause)).toEqual({
       success: false,
@@ -298,6 +303,17 @@ describe("changePlanAction", () => {
     ]);
     const res = await changePlanAction(input("qkit"));
     expect(res.success).toBe(false);
+    expect(mocks.upgradeSubscription).not.toHaveBeenCalled();
+  });
+
+  it("blocks an upgrade during grace until the vendor renews", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      row({ currentPeriodEnd: new Date(Date.now() - 2 * DAY).toISOString() }),
+    ]);
+    expect(await changePlanAction(input("qkit"))).toEqual({
+      success: false,
+      error: "Renew first, then change plan",
+    });
     expect(mocks.upgradeSubscription).not.toHaveBeenCalled();
   });
 
