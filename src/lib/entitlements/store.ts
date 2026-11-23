@@ -259,7 +259,11 @@ export async function grantSubscription(input: GrantInput): Promise<string> {
         .single();
   const { data, error } = await write;
   if (error) {
-    if (error.code === "23514" && error.message.includes("founder cap")) {
+    if (
+      error.code === "23514" &&
+      (error.message.includes("founder cap") ||
+        error.message.includes("no founder number free"))
+    ) {
       throw new FounderCapError();
     }
     if (

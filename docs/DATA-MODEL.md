@@ -30,7 +30,7 @@ founders were backfilled by earliest founder `created_at`. `billing_config` is a
 table (`id` boolean PK) whose `billing_opens_at` is set on `/admin/billing`; once now is
 past it plus 60 days, `enforce_founder_cap()` refuses a new founder vendor (existing
 founders can still be updated). `founder_spots_left()` (security definer, executable by
-anon and authenticated) returns 0 when closed by date, else 20 minus distinct founders,
+anon and authenticated) returns 0 when closed by date, else 20 minus the numbers held or retired (an erased founder does not free a spot),
 and nothing else. Both tables are team-read only through RLS; writes go through the
 service role or the trigger.
 

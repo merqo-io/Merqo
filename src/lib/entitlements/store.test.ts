@@ -256,6 +256,17 @@ describe("grantSubscription", () => {
     );
   });
 
+  it("treats running out of founder numbers as the cap", async () => {
+    mocks.from.mockReturnValueOnce(chain({ data: null })).mockReturnValueOnce(
+      chain({
+        error: { code: "23514", message: "no founder number free" },
+      }),
+    );
+    await expect(grantSubscription(input)).rejects.toBeInstanceOf(
+      FounderCapError,
+    );
+  });
+
   it("turns the closed-offer trigger into FounderClosedError", async () => {
     mocks.from.mockReturnValueOnce(chain({ data: null })).mockReturnValueOnce(
       chain({

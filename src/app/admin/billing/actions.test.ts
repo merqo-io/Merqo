@@ -46,7 +46,7 @@ describe("setBillingOpensAtAction", () => {
   });
 
   it("rejects a malformed or impossible date", async () => {
-    for (const date of ["12/01/2026", "2026-13-45", ""]) {
+    for (const date of ["12/01/2026", "2026-13-45", "2026-02-31", ""]) {
       expect(await setBillingOpensAtAction({ date })).toEqual({
         success: false,
         error: "Pick a valid date.",
