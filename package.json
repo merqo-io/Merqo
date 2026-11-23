@@ -1,6 +1,6 @@
 {
   "name": "merqo",
-  "version": "0.15.1",
+  "version": "0.16.1",
   "private": true,
   "packageManager": "pnpm@11.10.0",
   "engines": {
@@ -21,7 +21,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@merqo/ui": "github:merqo-io/merqo-ui#716824ed5cfff959df9d88f709df2886dbeb15f2",
+    "@merqo/ui": "github:merqo-io/merqo-ui#d9ba206c56e982b59e0cd089a96a5876645dcbbc",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "2.110.0",
     "class-variance-authority": "^0.7.1",

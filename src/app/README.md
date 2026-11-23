@@ -19,6 +19,7 @@ console, auth, and shared account pages.
   the legal docs' phrasing. Wraps in the same `Nav`/`Footer` as the
   landing page; linked from both.
 - `faq/` - public `/faq` page: shared `FaqPage` from `@merqo/ui` inside the same `Nav`/`Footer`; see its README.
+- `which-plan/` - public `/which-plan` page: a plan suggestion per vendor type, no prices; see its README.
 - Every public page (landing, about, faq, waitlist) passes `await getLandingNavUser(user)` (`src/lib/landing-nav-user.ts`) to `Nav`, so a signed-in visitor gets the account menu, labelled with the stall name the dashboard shows, with Sign out beside the Dashboard link.
 - `waitlist/` — public `/waitlist?kit=<slug>` page: the waitlist form with the in-build kit preselected; see its README.
 - `apple-icon.tsx` — `AppleIcon` route handler; renders a 180×180 PNG for iOS home-screen touch icons.
