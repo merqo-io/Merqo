@@ -72,8 +72,9 @@ export async function runTrialSweep(
         email: c.email,
       });
       if (r.kind === "started") {
-        if (r.status === "blocked") summary.blocked += 1;
-        else summary.started += 1;
+        if (r.status === "blocked" || r.status === "ineligible") {
+          summary.blocked += 1;
+        } else summary.started += 1;
       } else if (r.kind === "no_order") summary.noOrder += 1;
       else summary.unavailable += 1;
     } catch (err) {

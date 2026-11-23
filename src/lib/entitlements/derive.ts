@@ -1,5 +1,6 @@
 import type { Plan } from "@/lib/pricing/catalog";
 import type { EntitlementPayload } from "./contract";
+import { subscriptionPhase, type PauseWindow } from "./lifecycle";
 import { isTrialLive, type TrialInput } from "./trial";
 
 export interface SubscriptionInput {
@@ -9,6 +10,9 @@ export interface SubscriptionInput {
   includedKits: string[];
   founder: boolean;
   founderUntil: string | null;
+  source: string;
+  pauses?: PauseWindow[];
+  scheduledPlanSlug?: string | null;
 }
 
 export interface EventPassInput {
@@ -69,7 +73,8 @@ function planGrants(
 
 /** A subscription counts while its status is active and its paid period has
  *  not ended: admin-collected subscriptions have no renewal job to expire them.
- *  Founder benefits end with the founder window or the paid period, whichever
+ *  Those keep their plan through a short grace after the period ends, and grant
+ *  nothing while paused. Founder benefits end with the founder window or the paid period, whichever
  *  comes first. */
 function subscriptionGrants(
   sub: SubscriptionInput,
@@ -77,11 +82,12 @@ function subscriptionGrants(
   allKits: string[],
   nowMs: number,
 ): Grant[] {
-  const periodEndMs = Date.parse(sub.currentPeriodEnd);
-  if (sub.status !== "active" || Number.isNaN(periodEndMs)) return [];
-  if (periodEndMs <= nowMs) return [];
+  const phase = subscriptionPhase(sub, nowMs);
+  if (phase.kind === "expired" || phase.kind === "paused") return [];
 
-  const grants = planGrants(sub, plan, allKits, periodEndMs);
+  const untilMs =
+    phase.kind === "grace" ? phase.untilMs : Date.parse(sub.currentPeriodEnd);
+  const grants = planGrants(sub, plan, allKits, untilMs);
   const founderEnd = founderEndMs(sub, nowMs);
   if (founderEnd > nowMs) {
     for (const kit of allKits) {
@@ -92,19 +98,16 @@ function subscriptionGrants(
 }
 
 /** When a subscription's founder benefits end; NaN when none are running
- *  (not founder, not active, or past its paid period). */
+ *  (not founder, paused, or no longer granting). They follow the plan, so
+ *  they continue through grace. */
 function founderEndMs(sub: SubscriptionInput, nowMs: number): number {
-  const periodEndMs = Date.parse(sub.currentPeriodEnd);
-  if (
-    !sub.founder ||
-    sub.status !== "active" ||
-    Number.isNaN(periodEndMs) ||
-    periodEndMs <= nowMs
-  ) {
-    return NaN;
-  }
+  if (!sub.founder) return NaN;
+  const phase = subscriptionPhase(sub, nowMs);
+  if (phase.kind !== "active" && phase.kind !== "grace") return NaN;
+  const planEndMs =
+    phase.kind === "grace" ? phase.untilMs : Date.parse(sub.currentPeriodEnd);
   const founderUntilMs = sub.founderUntil ? Date.parse(sub.founderUntil) : NaN;
-  return Math.min(founderUntilMs, periodEndMs);
+  return Math.min(founderUntilMs, planEndMs);
 }
 
 /** A running trial is Pro until it ends. It never stacks on a paid plan. */

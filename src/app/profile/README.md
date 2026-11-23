@@ -58,3 +58,5 @@ Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
 Profile form sections import `FORM_LABEL_CLASS` and `FORM_ERROR_CLASS` from `@merqo/ui`.
 
 Since `@merqo/ui` 0.54.1 the Telegram disconnect asks for confirmation in a dialog before calling the action; `vendor-telegram-connect.test.tsx` taps through it by touch.
+
+The page shows "Renewal due in N days" during a subscription's grace week and "Plan paused until <date>" while a pause runs, from `vendorStatusLine`. It names no price.
