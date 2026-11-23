@@ -106,3 +106,5 @@ Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are i
 Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
 
 Empty states use the shared `EmptyState size="compact"` from `@merqo/ui`; there is no local dashed box.
+
+Pause, plan-change and scheduled-downgrade controls (`lifecycle-actions.ts`, `lifecycle-controls.tsx`, `subscription-lifecycle.tsx`) show only on active `admin_manual` subscriptions. The pro-rata amount owed is shown here and never to the vendor. A scheduled downgrade is applied by the existing renew action in `subscription-actions.ts`, which ends grace.

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireMerqoTeam } from "@/lib/team";
 import { recordAudit } from "@/lib/admin";
 import type { ActionResult } from "@merqo/ui/kit-api";
-import { loadPlanCatalog } from "@/lib/pricing/catalog";
+import { loadPlanCatalog, type Plan } from "@/lib/pricing/catalog";
 import {
   FounderCapError,
   FounderClosedError,
@@ -17,7 +17,7 @@ import {
   mintEventPass,
   settleEventPass,
 } from "@/lib/entitlements/store";
-import { eventPassTopUpCents } from "@/lib/pricing/calc";
+import { annualCents, eventPassTopUpCents } from "@/lib/pricing/calc";
 import { getEventPassUsage } from "@/lib/event-pass-usage-client";
 import { syncVendorEntitlements } from "@/lib/entitlements/push";
 import { closeRequest, getPendingRequest } from "@/lib/subscription-requests";
@@ -62,6 +62,36 @@ const mintSchema = z.object({
 const cancelPassSchema = z.object({ email: emailSchema, passId: uuidSchema });
 const settlePassSchema = z.object({ email: emailSchema, passId: uuidSchema });
 const repushSchema = z.object({ email: emailSchema });
+
+function isSellable(plan: Plan): boolean {
+  return plan.active && ["kit", "starter", "bundle"].includes(plan.kind);
+}
+
+function defaultPriceCents(
+  monthlyCents: number,
+  interval: "month" | "year",
+): number {
+  return interval === "year" ? annualCents(monthlyCents) : monthlyCents;
+}
+
+/** Renewing a subscription that has a downgrade scheduled grants the
+ *  scheduled plan instead, as long as it is still on sale. A failed lookup
+ *  falls back to the requested plan so a renewal is never blocked by it. */
+async function effectivePlan(
+  vendorId: string,
+  requested: Plan,
+  catalog: Plan[],
+): Promise<Plan> {
+  const existing = await loadVendorSubscriptions(vendorId).catch(() => []);
+  const scheduled = existing.find(
+    (s) =>
+      s.status === "active" &&
+      s.planSlug === requested.slug &&
+      s.scheduledPlanSlug,
+  )?.scheduledPlanSlug;
+  const due = scheduled ? catalog.find((p) => p.slug === scheduled) : null;
+  return due && isSellable(due) ? due : requested;
+}
 
 function utcDay(day: string): Date {
   return new Date(`${day}T00:00:00.000Z`);
@@ -124,21 +154,10 @@ export async function grantSubscriptionAction(
   }
   const data = parsed.data;
   try {
-    const plan = (await loadPlanCatalog()).find(
-      (p) => p.slug === data.planSlug,
-    );
-    if (
-      !plan ||
-      !plan.active ||
-      !["kit", "starter", "bundle"].includes(plan.kind)
-    ) {
+    const catalog = await loadPlanCatalog();
+    const requested = catalog.find((p) => p.slug === data.planSlug);
+    if (!requested || !isSellable(requested)) {
       return { success: false, error: "That plan is not on sale." };
-    }
-    if (data.founder && !FOUNDER_PLANS.includes(plan.slug)) {
-      return {
-        success: false,
-        error: "Founders need a Pro subscription.",
-      };
     }
     const vendorId = await findVendorId(data.email);
     if (!vendorId) {
@@ -148,11 +167,22 @@ export async function grantSubscriptionAction(
           "That vendor has no Merqo account yet. Ask them to sign in once.",
       };
     }
+    const plan = await effectivePlan(vendorId, requested, catalog);
+    const applied = plan !== requested;
+    if (data.founder && !FOUNDER_PLANS.includes(plan.slug)) {
+      return {
+        success: false,
+        error: "Founders need a Pro subscription.",
+      };
+    }
+    const priceCents = applied
+      ? defaultPriceCents(plan.monthlyCents, data.interval)
+      : data.priceCents;
     const subscriptionId = await grantSubscription({
       vendorId,
       plan,
       interval: data.interval,
-      priceCents: data.priceCents,
+      priceCents,
       periodStart: utcDay(data.periodStart),
       renewalAnchor: utcDay(data.renewalAnchor),
       founder: data.founder,
@@ -161,11 +191,12 @@ export async function grantSubscriptionAction(
       email: data.email,
       plan: plan.slug,
       interval: data.interval,
-      price_cents: data.priceCents,
+      price_cents: priceCents,
       founder: data.founder,
+      scheduled_change_applied: applied,
     });
     let replaced = true;
-    if (data.replaceCurrent) {
+    if (data.replaceCurrent || applied) {
       try {
         await cancelSuperseded(user.id, vendorId, data.email, subscriptionId);
       } catch (err) {

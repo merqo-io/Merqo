@@ -33,6 +33,16 @@ value, and keeps the row as the record. `set_trial_uen()` re-runs that match and
 cron (least recently checked first, using `trial_checks`). RLS is on, the team reads, and every write goes
 through service-role-only functions. Trials are not subscriptions: nothing is charged.
 
+**Grace, pauses and plan changes (0047):** grace is computed on read, not stored: an active `admin_manual`
+subscription keeps its plan for 7 days after `current_period_end`, and the admin renew action ends it.
+`subscription_pauses` holds one row per pause (`ends_on` exclusive). `pause_subscription()` takes a per-vendor
+advisory lock, rejects overlaps and any pause that takes the vendor past 92 paused days in a rolling 365
+(counted per vendor, so a plan change does not reset it), then moves `current_period_end` out by the paused
+days; `end_pause()` gives unused days back. A running pause grants nothing and the vendor falls back to a
+trial or Free. `subscriptions.scheduled_plan_slug` holds a downgrade that applies when the admin renews;
+an upgrade ends the old row and inserts a new one on the same period and billing date. Founder rows
+are not changed through this path, and pro-rata ignores paused days.
+
 **Founder numbers and billing open date (0045):** `founder_numbers` (`number` PK 1 to 20, nullable unique
 `vendor_id` to `auth.users` with `on delete set null`, `assigned_at`) holds the founding merchant badge
 (#01 to #20). A trigger on `subscriptions` gives a vendor the lowest free number the first

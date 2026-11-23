@@ -96,6 +96,15 @@ describe("reads", () => {
             source: "admin_manual",
             founder: true,
             founder_until: "d",
+            scheduled_plan_slug: "starter",
+            subscription_pauses: [
+              {
+                id: "p1",
+                starts_on: "2026-11-01",
+                ends_on: "2026-11-05",
+                reason: "away",
+              },
+            ],
           },
         ],
       }),
@@ -114,6 +123,15 @@ describe("reads", () => {
         source: "admin_manual",
         founder: true,
         founderUntil: "d",
+        scheduledPlanSlug: "starter",
+        pauses: [
+          {
+            id: "p1",
+            startsOn: "2026-11-01",
+            endsOn: "2026-11-05",
+            reason: "away",
+          },
+        ],
       },
     ]);
     mocks.from.mockReturnValue(chain({ error: { message: "boom" } }));

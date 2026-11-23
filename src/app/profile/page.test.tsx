@@ -8,9 +8,11 @@ const {
   maybeSingle,
   loadFounderNumber,
   loadVendorTrial,
+  loadVendorSubscriptions,
 } = vi.hoisted(() => ({
   loadFounderNumber: vi.fn(),
   loadVendorTrial: vi.fn(),
+  loadVendorSubscriptions: vi.fn(),
   getUser: vi.fn(),
   getOrCreateVendorProfile: vi.fn(),
   maybeSingle: vi.fn(),
@@ -25,7 +27,10 @@ vi.mock("@/lib/supabase/server", () => ({
 vi.mock("@/lib/supabase/client", () => ({
   createClient: () => ({ auth: { updateUser: vi.fn() } }),
 }));
-vi.mock("@/lib/entitlements/store", () => ({ loadFounderNumber }));
+vi.mock("@/lib/entitlements/store", () => ({
+  loadFounderNumber,
+  loadVendorSubscriptions,
+}));
 vi.mock("@/lib/entitlements/trial-store", () => ({ loadVendorTrial }));
 vi.mock("@/lib/merqo-vendor-profile", () => ({ getOrCreateVendorProfile }));
 vi.mock("next/navigation", () => ({
@@ -44,6 +49,7 @@ describe("ProfilePage", () => {
     maybeSingle.mockResolvedValue({ data: null, error: null });
     loadFounderNumber.mockResolvedValue(null);
     loadVendorTrial.mockResolvedValue(null);
+    loadVendorSubscriptions.mockResolvedValue([]);
   });
 
   async function renderAs() {
@@ -71,6 +77,39 @@ describe("ProfilePage", () => {
     });
     await renderAs();
     expect(screen.getByText("Pro trial: 6 days left")).toBeInTheDocument();
+  });
+
+  it("shows the days left to renew during the grace week", async () => {
+    loadVendorSubscriptions.mockResolvedValue([
+      {
+        status: "active",
+        source: "admin_manual",
+        currentPeriodEnd: new Date(Date.now() - 2 * 86_400_000).toISOString(),
+      },
+    ]);
+    await renderAs();
+    expect(screen.getByText("Renewal due in 5 days")).toBeInTheDocument();
+  });
+
+  it("shows when a paused plan resumes", async () => {
+    const day = (offset: number) =>
+      new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
+    loadVendorSubscriptions.mockResolvedValue([
+      {
+        status: "active",
+        source: "admin_manual",
+        currentPeriodEnd: new Date(Date.now() + 30 * 86_400_000).toISOString(),
+        pauses: [{ startsOn: day(-1), endsOn: day(9) }],
+      },
+    ]);
+    await renderAs();
+    expect(screen.getByText(`Plan paused until ${day(9)}`)).toBeInTheDocument();
+  });
+
+  it("shows no plan status when the subscription lookup fails", async () => {
+    loadVendorSubscriptions.mockRejectedValue(new Error("db"));
+    await renderAs();
+    expect(screen.queryByText(/Renewal due|Plan paused/)).toBeNull();
   });
 
   it("shows nothing for a blocked or expired trial", async () => {

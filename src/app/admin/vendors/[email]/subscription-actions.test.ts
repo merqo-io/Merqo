@@ -179,6 +179,52 @@ describe("grantSubscriptionAction", () => {
     expect(mocks.recordAudit).toHaveBeenCalledTimes(1);
   });
 
+  it("applies a scheduled downgrade at the catalog price and replaces the old row", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      {
+        id: "old-1",
+        status: "active",
+        planSlug: "qkit",
+        scheduledPlanSlug: "starter",
+      },
+    ]);
+    await grantSubscriptionAction({ ...grant, replaceCurrent: false });
+    expect(mocks.grantSubscription).toHaveBeenCalledWith(
+      expect.objectContaining({
+        plan: expect.objectContaining({ slug: "starter" }),
+        priceCents: 1990,
+      }),
+    );
+    expect(mocks.cancelSubscription).toHaveBeenCalledWith("vendor-1", "old-1");
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "grant_subscription",
+      "sub-1",
+      expect.objectContaining({
+        plan: "starter",
+        scheduled_change_applied: true,
+      }),
+    );
+  });
+
+  it("ignores a scheduled plan that has since gone off sale", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      {
+        id: "old-1",
+        status: "active",
+        planSlug: "qkit",
+        scheduledPlanSlug: "paykit",
+      },
+    ]);
+    await grantSubscriptionAction({ ...grant, replaceCurrent: false });
+    expect(mocks.grantSubscription).toHaveBeenCalledWith(
+      expect.objectContaining({
+        plan: expect.objectContaining({ slug: "qkit" }),
+      }),
+    );
+    expect(mocks.cancelSubscription).not.toHaveBeenCalled();
+  });
+
   it("resolves the request it answers", async () => {
     await grantSubscriptionAction({ ...grant, requestId: REQ });
     expect(mocks.closeRequest).toHaveBeenCalledWith(REQ, "resolved", "admin-1");
