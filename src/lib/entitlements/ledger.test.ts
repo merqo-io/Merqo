@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   insert: vi.fn(),
   deleteEq: vi.fn(),
   order2: vi.fn(),
+  maybeSingle: vi.fn(),
 }));
 
 vi.mock("@/lib/supabase/server", () => ({
@@ -14,6 +15,7 @@ vi.mock("@/lib/supabase/server", () => ({
 
 import {
   deletePayment,
+  findPayment,
   insertPayment,
   listRecentPayments,
   listVendorPayments,
@@ -28,7 +30,10 @@ beforeEach(() => {
       insert: mocks.insert,
       delete: () => ({ eq: mocks.deleteEq }),
       select: () => ({
-        eq: () => ({ order: () => ({ order: mocks.order2 }) }),
+        eq: () => ({
+          order: () => ({ order: mocks.order2 }),
+          maybeSingle: mocks.maybeSingle,
+        }),
       }),
     }),
   });
@@ -157,6 +162,33 @@ describe("insertPayment", () => {
   it("throws on error", async () => {
     mocks.insert.mockResolvedValue({ error: { message: "x" } });
     await expect(insertPayment(payment)).rejects.toThrow("payment insert: x");
+  });
+});
+
+describe("findPayment", () => {
+  it("returns the row summary", async () => {
+    mocks.maybeSingle.mockResolvedValue({
+      data: { vendor_id: "v1", amount_cents: 500, received_on: "2026-03-01" },
+      error: null,
+    });
+    expect(await findPayment("p1")).toEqual({
+      vendorId: "v1",
+      amountCents: 500,
+      receivedOn: "2026-03-01",
+    });
+  });
+
+  it("returns null when no row matches", async () => {
+    mocks.maybeSingle.mockResolvedValue({ data: null, error: null });
+    expect(await findPayment("p1")).toBeNull();
+  });
+
+  it("throws on error", async () => {
+    mocks.maybeSingle.mockResolvedValue({
+      data: null,
+      error: { message: "x" },
+    });
+    await expect(findPayment("p1")).rejects.toThrow("payment read: x");
   });
 });
 

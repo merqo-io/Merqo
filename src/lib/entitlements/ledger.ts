@@ -97,6 +97,28 @@ export async function insertPayment(p: NewPayment): Promise<void> {
   if (error) throw new Error(`payment insert: ${error.message}`);
 }
 
+export interface PaymentSummary {
+  vendorId: string | null;
+  amountCents: number;
+  receivedOn: string;
+}
+
+export async function findPayment(id: string): Promise<PaymentSummary | null> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase
+    .from("payments")
+    .select("vendor_id, amount_cents, received_on")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`payment read: ${error.message}`);
+  if (!data) return null;
+  return {
+    vendorId: data.vendor_id as string | null,
+    amountCents: data.amount_cents as number,
+    receivedOn: data.received_on as string,
+  };
+}
+
 export async function deletePayment(id: string): Promise<void> {
   const supabase = await createServiceClient();
   const { error } = await supabase.from("payments").delete().eq("id", id);

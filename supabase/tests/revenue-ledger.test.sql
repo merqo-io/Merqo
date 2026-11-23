@@ -1,5 +1,5 @@
 begin;
-select no_plan();
+select plan(14);
 
 insert into auth.users (id, instance_id, aud, role, email)
 select ('48000000-0000-0000-0000-' || lpad(n::text, 12, '0'))::uuid,
@@ -39,5 +39,6 @@ select throws_ok($$ select merqo.revenue_total('2026-01-01') $$, '42501', null, 
 select set_config('request.jwt.claims', json_build_object('sub', '48000000-0000-0000-0000-000000000099', 'role', 'authenticated')::text, true);
 select is((select count(*)::int from merqo.payments), 0, 'a non-team user reads nothing');
 
+reset role;
 select * from finish();
 rollback;

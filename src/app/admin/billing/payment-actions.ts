@@ -9,6 +9,7 @@ import { setRevenueConfig } from "@/lib/entitlements/billing-config";
 import {
   PAYMENT_METHODS,
   deletePayment,
+  findPayment,
   insertPayment,
 } from "@/lib/entitlements/ledger";
 import { MAX_AMOUNT_CENTS, dollarsToCents } from "@/lib/entitlements/revenue";
@@ -123,9 +124,13 @@ export async function deletePaymentAction(
   const parsed = deleteSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: GENERIC_ERROR };
   try {
+    const existing = await findPayment(parsed.data.id);
+    if (!existing) return { success: false, error: "Payment not found" };
     await deletePayment(parsed.data.id);
-    await recordAudit(user.id, "delete_payment", null, {
+    await recordAudit(user.id, "delete_payment", existing.vendorId, {
       payment_id: parsed.data.id,
+      amount_cents: existing.amountCents,
+      received_on: existing.receivedOn,
     });
     refresh(parsed.data.email);
     return { success: true };

@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   setRevenueConfig: vi.fn(),
   insertPayment: vi.fn(),
   deletePayment: vi.fn(),
+  findPayment: vi.fn(),
   revalidatePath: vi.fn(),
 }));
 vi.mock("@/lib/team", () => ({ requireMerqoTeam: mocks.requireMerqoTeam }));
@@ -21,6 +22,7 @@ vi.mock("@/lib/entitlements/ledger", () => ({
   PAYMENT_METHODS: ["paynow", "bank_transfer", "other"],
   insertPayment: mocks.insertPayment,
   deletePayment: mocks.deletePayment,
+  findPayment: mocks.findPayment,
 }));
 vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidatePath }));
 
@@ -44,6 +46,11 @@ beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => undefined);
   mocks.requireMerqoTeam.mockResolvedValue({ user: { id: "admin-1" } });
   mocks.findVendorId.mockResolvedValue("vendor-1");
+  mocks.findPayment.mockResolvedValue({
+    vendorId: "vendor-1",
+    amountCents: 123456,
+    receivedOn: "2026-03-01",
+  });
 });
 
 describe("auth", () => {
@@ -179,12 +186,22 @@ describe("deletePaymentAction", () => {
     expect(mocks.recordAudit).toHaveBeenCalledWith(
       "admin-1",
       "delete_payment",
-      null,
-      { payment_id: id },
+      "vendor-1",
+      { payment_id: id, amount_cents: 123456, received_on: "2026-03-01" },
     );
     expect(mocks.revalidatePath).toHaveBeenCalledWith(
       "/admin/vendors/v%40t.sg",
     );
+  });
+
+  it("returns an error and no audit row when the payment is gone", async () => {
+    mocks.findPayment.mockResolvedValue(null);
+    expect(await deletePaymentAction({ id })).toEqual({
+      success: false,
+      error: "Payment not found",
+    });
+    expect(mocks.deletePayment).not.toHaveBeenCalled();
+    expect(mocks.recordAudit).not.toHaveBeenCalled();
   });
 
   it("rejects a malformed id", async () => {
