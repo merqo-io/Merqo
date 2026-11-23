@@ -118,4 +118,52 @@ describe("trial actions", () => {
       message: "No first order yet.",
     });
   });
+
+  it("says so when the first order matches an earlier trial", async () => {
+    mocks.checkFirstOrderAndStart.mockResolvedValue({
+      kind: "started",
+      status: "blocked",
+    });
+    const res = await checkFirstOrderAction({ email: "v@x.com" });
+    expect(res).toMatchObject({
+      success: true,
+      message: "A trial was already used for this email or PayNow/UEN.",
+    });
+  });
+
+  it("confirms a recorded trial", async () => {
+    mocks.checkFirstOrderAndStart.mockResolvedValue({
+      kind: "started",
+      status: "active",
+    });
+    const res = await checkFirstOrderAction({ email: "v@x.com" });
+    expect(res).toMatchObject({ success: true, message: "Trial recorded." });
+  });
+
+  it("returns a generic error when a check throws", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    mocks.checkFirstOrderAndStart.mockRejectedValue(new Error("boom"));
+    const res = await checkFirstOrderAction({ email: "v@x.com" });
+    expect(res.success).toBe(false);
+  });
+
+  it("returns a generic error when saving a UEN throws", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    mocks.setTrialUen.mockRejectedValue(new Error("boom"));
+    const res = await setTrialUenAction({
+      email: "v@x.com",
+      paynowUen: "201912345A",
+    });
+    expect(res.success).toBe(false);
+  });
+
+  it("returns a generic error when an override throws", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    mocks.overrideTrial.mockRejectedValue(new Error("boom"));
+    const res = await overrideTrialAction({
+      email: "v@x.com",
+      reason: "Because",
+    });
+    expect(res.success).toBe(false);
+  });
 });

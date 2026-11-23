@@ -82,6 +82,12 @@ describe("ProfilePage", () => {
     expect(screen.queryByText(/Pro trial/)).toBeNull();
   });
 
+  it("shows no trial text when the trial lookup fails", async () => {
+    loadVendorTrial.mockRejectedValue(new Error("db"));
+    await renderAs();
+    expect(screen.queryByText(/Pro trial/)).toBeNull();
+  });
+
   it("shows no badge for a non-founder or when the lookup fails", async () => {
     await renderAs();
     expect(screen.queryByText(/Founding merchant/)).not.toBeInTheDocument();

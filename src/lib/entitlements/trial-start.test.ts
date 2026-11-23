@@ -137,4 +137,26 @@ describe("runTrialSweep", () => {
     const summary = await runTrialSweep();
     expect(summary).toMatchObject({ checked: 2, started: 1, unavailable: 1 });
   });
+
+  it("counts blocked, no-order and unreported vendors separately", async () => {
+    mocks.loadTrialCandidates.mockResolvedValue([
+      { vendorId: "a", email: "a@x.test" },
+      { vendorId: "b", email: "b@x.test" },
+      { vendorId: "c", email: "c@x.test" },
+    ]);
+    mocks.startTrial.mockResolvedValueOnce("blocked");
+    mocks.getVendorActivity
+      .mockResolvedValueOnce(
+        activity({ firstOrderAt: "2026-11-01T00:00:00.000Z" }),
+      )
+      .mockResolvedValueOnce(activity({ firstOrderAt: null }))
+      .mockResolvedValueOnce(activity({}));
+    const summary = await runTrialSweep();
+    expect(summary).toMatchObject({
+      checked: 3,
+      blocked: 1,
+      noOrder: 1,
+      unavailable: 1,
+    });
+  });
 });
