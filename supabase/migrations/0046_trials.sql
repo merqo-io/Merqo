@@ -68,6 +68,11 @@ declare
   v_ends   timestamptz := p_first_order_at + interval '30 days';
   v_status text;
 begin
+  perform pg_advisory_xact_lock(hashtext('trial:email:' || p_email));
+  if p_paynow_uen is not null then
+    perform pg_advisory_xact_lock(hashtext('trial:uen:' || p_paynow_uen));
+  end if;
+
   if merqo.trial_already_used(p_vendor_id, p_email, p_paynow_uen) then
     v_status := 'blocked';
   elsif v_ends <= now() then
@@ -95,8 +100,18 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_row merqo.trials;
+  v_row   merqo.trials;
+  v_email text;
 begin
+  select t.email_normalized into v_email
+  from merqo.trials t where t.vendor_id = p_vendor_id;
+  if v_email is null then
+    return null;
+  end if;
+
+  perform pg_advisory_xact_lock(hashtext('trial:email:' || v_email));
+  perform pg_advisory_xact_lock(hashtext('trial:uen:' || p_uen));
+
   update merqo.trials set paynow_uen = p_uen
   where vendor_id = p_vendor_id
   returning * into v_row;

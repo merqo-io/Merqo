@@ -7,6 +7,11 @@ import {
 } from "./trial";
 
 describe("normalizeEmail", () => {
+  it("keeps the address when stripping would empty the local part", () => {
+    expect(normalizeEmail("+Tag@Example.com")).toBe("+tag@example.com");
+    expect(normalizeEmail("...@gmail.com")).toBe("...@gmail.com");
+  });
+
   it("lowercases and trims", () => {
     expect(normalizeEmail("  Vendor@Example.COM ")).toBe("vendor@example.com");
   });
