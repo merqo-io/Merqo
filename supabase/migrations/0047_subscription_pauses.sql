@@ -72,7 +72,7 @@ begin
   if v_sub.status <> 'active' then
     raise exception 'subscription is not active' using errcode = '23514';
   end if;
-  -- Manual subscriptions keep their plan through a 7 day grace; others end with the period.
+  -- Manual subscriptions keep their plan through a 7 day grace, others end with the period.
   if v_sub.current_period_end
        + case when v_sub.source = 'admin_manual' then interval '7 days' else interval '0' end
        < now() then
