@@ -2,13 +2,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 
-const { getUser, getOrCreateVendorProfile, maybeSingle, loadFounderNumber } =
-  vi.hoisted(() => ({
-    loadFounderNumber: vi.fn(),
-    getUser: vi.fn(),
-    getOrCreateVendorProfile: vi.fn(),
-    maybeSingle: vi.fn(),
-  }));
+const {
+  getUser,
+  getOrCreateVendorProfile,
+  maybeSingle,
+  loadFounderNumber,
+  loadVendorTrial,
+} = vi.hoisted(() => ({
+  loadFounderNumber: vi.fn(),
+  loadVendorTrial: vi.fn(),
+  getUser: vi.fn(),
+  getOrCreateVendorProfile: vi.fn(),
+  maybeSingle: vi.fn(),
+}));
 
 vi.mock("@/lib/supabase/server", () => ({
   createServerClient: vi.fn().mockResolvedValue({
@@ -20,6 +26,7 @@ vi.mock("@/lib/supabase/client", () => ({
   createClient: () => ({ auth: { updateUser: vi.fn() } }),
 }));
 vi.mock("@/lib/entitlements/store", () => ({ loadFounderNumber }));
+vi.mock("@/lib/entitlements/trial-store", () => ({ loadVendorTrial }));
 vi.mock("@/lib/merqo-vendor-profile", () => ({ getOrCreateVendorProfile }));
 vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
@@ -36,6 +43,7 @@ describe("ProfilePage", () => {
   beforeEach(() => {
     maybeSingle.mockResolvedValue({ data: null, error: null });
     loadFounderNumber.mockResolvedValue(null);
+    loadVendorTrial.mockResolvedValue(null);
   });
 
   async function renderAs() {
@@ -54,6 +62,24 @@ describe("ProfilePage", () => {
     loadFounderNumber.mockResolvedValue(3);
     await renderAs();
     expect(screen.getByText("Founding merchant #03")).toBeInTheDocument();
+  });
+
+  it("shows the days left while a trial is running", async () => {
+    loadVendorTrial.mockResolvedValue({
+      status: "active",
+      endsAt: new Date(Date.now() + 5.5 * 86_400_000).toISOString(),
+    });
+    await renderAs();
+    expect(screen.getByText("Pro trial: 6 days left")).toBeInTheDocument();
+  });
+
+  it("shows nothing for a blocked or expired trial", async () => {
+    loadVendorTrial.mockResolvedValue({
+      status: "blocked",
+      endsAt: new Date(Date.now() + 5 * 86_400_000).toISOString(),
+    });
+    await renderAs();
+    expect(screen.queryByText(/Pro trial/)).toBeNull();
   });
 
   it("shows no badge for a non-founder or when the lookup fails", async () => {

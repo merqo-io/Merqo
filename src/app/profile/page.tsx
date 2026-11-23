@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 import { formatFounderNumber } from "@/lib/entitlements/founder";
 import { loadFounderNumber } from "@/lib/entitlements/store";
+import { loadVendorTrial } from "@/lib/entitlements/trial-store";
+import { isTrialLive, trialDaysLeft } from "@/lib/entitlements/trial";
 import { getAvatarUrl, getDisplayName } from "@/lib/account";
 import { getOrCreateVendorProfile } from "@/lib/merqo-vendor-profile";
 import { ProfileForm } from "./profile-form";
@@ -31,7 +33,14 @@ export default async function ProfilePage() {
       .maybeSingle(),
   ]);
 
-  const founderNumber = await loadFounderNumber(user.id).catch(() => null);
+  const [founderNumber, trial] = await Promise.all([
+    loadFounderNumber(user.id).catch(() => null),
+    loadVendorTrial(user.id).catch(() => null),
+  ]);
+  // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
+  const nowMs = Date.now();
+  const trialDays =
+    trial && isTrialLive(trial, nowMs) ? trialDaysLeft(trial, nowMs) : 0;
 
   return (
     <div className="mx-auto max-w-lg space-y-8 px-5 py-7 md:max-w-4xl">
@@ -46,6 +55,11 @@ export default async function ProfilePage() {
         {founderNumber !== null && (
           <p className="mt-2 inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
             Founding merchant {formatFounderNumber(founderNumber)}
+          </p>
+        )}
+        {trialDays > 0 && (
+          <p className="mt-2 inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
+            Pro trial: {trialDays} {trialDays === 1 ? "day" : "days"} left
           </p>
         )}
         <p className="mt-2 text-sm text-muted-foreground">

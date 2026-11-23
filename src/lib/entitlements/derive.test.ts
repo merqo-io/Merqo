@@ -348,3 +348,48 @@ describe("deriveEntitlements", () => {
     });
   });
 });
+
+describe("deriveEntitlements with a trial", () => {
+  const trialEnd = "2026-11-25T00:00:00.000Z";
+  const run = (
+    trial: { status: string; endsAt: string } | null,
+    subscriptions: SubscriptionInput[] = [],
+  ) =>
+    deriveEntitlements({
+      subscriptions,
+      eventPasses: [],
+      trial,
+      catalog: CATALOG,
+      liveKits: ALL,
+      now: NOW,
+    });
+
+  it("gives a running trial the Pro tier until it ends", () => {
+    const out = run({ status: "active", endsAt: trialEnd });
+    expect(out.qkit.tier).toBe("qkit");
+    expect(out.qkit.valid_until).toBe(trialEnd);
+    expect(out.qkit.stats_window).toBe("90d");
+    expect(out.printkit.tier).toBe("paid");
+    expect(out.loopkit.tier).toBe("free");
+  });
+
+  it("treats an overridden trial the same", () => {
+    expect(run({ status: "overridden", endsAt: trialEnd }).qkit.tier).toBe(
+      "qkit",
+    );
+  });
+
+  it("falls back to free once the trial has expired", () => {
+    expect(run({ status: "active", endsAt: PAST }).qkit.tier).toBe("free");
+  });
+
+  it("gives a blocked trial nothing", () => {
+    expect(run({ status: "blocked", endsAt: trialEnd }).qkit.tier).toBe("free");
+  });
+
+  it("does not stack on a paid plan", () => {
+    const out = run({ status: "active", endsAt: trialEnd }, [sub("starter")]);
+    expect(out.qkit.tier).toBe("starter");
+    expect(out.qkit.valid_until).toBe(FUTURE);
+  });
+});

@@ -9,6 +9,7 @@ import {
   loadVendorEventPasses,
   loadVendorSubscriptions,
 } from "./store";
+import { loadVendorTrial } from "./trial-store";
 
 type PushTarget = Pick<RegistryRow, "slug" | "app_url" | "provision_secret">;
 
@@ -108,15 +109,18 @@ async function mirrorPlan(
 }
 
 async function deriveForVendor(vendorId: string, now: Date) {
-  const [subscriptions, eventPasses, catalog, targets] = await Promise.all([
-    loadVendorSubscriptions(vendorId),
-    loadVendorEventPasses(vendorId),
-    loadPlanCatalog(),
-    listEntitlementTargets(),
-  ]);
+  const [subscriptions, eventPasses, trial, catalog, targets] =
+    await Promise.all([
+      loadVendorSubscriptions(vendorId),
+      loadVendorEventPasses(vendorId),
+      loadVendorTrial(vendorId),
+      loadPlanCatalog(),
+      listEntitlementTargets(),
+    ]);
   const derived = deriveEntitlements({
     subscriptions,
     eventPasses,
+    trial,
     catalog,
     liveKits: targets.map((k) => k.slug),
     now,

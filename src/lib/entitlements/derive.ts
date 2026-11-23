@@ -1,5 +1,6 @@
 import type { Plan } from "@/lib/pricing/catalog";
 import type { EntitlementPayload } from "./contract";
+import { isTrialLive, type TrialInput } from "./trial";
 
 export interface SubscriptionInput {
   planSlug: string;
@@ -31,6 +32,7 @@ interface Grant {
 }
 
 const QKIT = "qkit";
+const PRO_PLAN_SLUG = "qkit";
 const PRINTKIT = "printkit";
 
 function toTier(kit: string, level: Level): KitEntitlement["tier"] {
@@ -105,6 +107,24 @@ function founderEndMs(sub: SubscriptionInput, nowMs: number): number {
   return Math.min(founderUntilMs, periodEndMs);
 }
 
+/** A running trial is Pro until it ends. It never stacks on a paid plan. */
+function trialGrants(
+  trial: TrialInput | null | undefined,
+  proPlan: Plan | undefined,
+  nowMs: number,
+  hasPaidGrants: boolean,
+): Grant[] {
+  if (hasPaidGrants || !trial || !proPlan || !isTrialLive(trial, nowMs)) {
+    return [];
+  }
+  const untilMs = Date.parse(trial.endsAt);
+  return proPlan.includedKits.map((kit) => ({
+    kit,
+    level: kit === QKIT ? 2 : 1,
+    untilMs,
+  }));
+}
+
 function pickEventPass(
   passes: EventPassInput[],
   nowMs: number,
@@ -127,6 +147,7 @@ function pickEventPass(
 export function deriveEntitlements(input: {
   subscriptions: SubscriptionInput[];
   eventPasses: EventPassInput[];
+  trial?: TrialInput | null;
   catalog: Plan[];
   liveKits: string[];
   now: Date;
@@ -148,6 +169,14 @@ export function deriveEntitlements(input: {
     const plan = planBySlug.get(sub.planSlug);
     if (plan) grants.push(...subscriptionGrants(sub, plan, allKits, nowMs));
   }
+  grants.push(
+    ...trialGrants(
+      input.trial,
+      planBySlug.get(PRO_PLAN_SLUG),
+      nowMs,
+      grants.length > 0,
+    ),
+  );
   // A full qkit tier includes printkit labels.
   for (const g of [...grants]) {
     if (g.kit === QKIT && g.level === 2) {

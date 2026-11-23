@@ -33,7 +33,7 @@ charges). See `pricing/README.md`.
 `kit-action-request.ts` centralizes timeout, parse and Zod validation for peer
 HTTP calls. Metrics and vendor metrics have separate response schemas and
 clients; `vendor-activity-client.ts` validates with `vendorActivityPayloadSchema`
-from `@merqo/ui/contracts` (optional `incidents`/`recent`). `tenant-health.ts`
+from `@merqo/ui/contracts` (optional `incidents`/`recent`) and also accepts an optional `firstOrderAt` (ISO or null; a malformed value is dropped) that starts the free trial. `tenant-health.ts`
 `getTenantHealth()` pools those activity reads (6 at a time, 3000 ms timeout)
 into per-vendor incident rows for `/admin/products`, never throwing on a dead kit. `subscription-requests.ts` files and closes vendor upgrade/cancel requests for the admin queue;
 `landing-nav-user.ts` (`getLandingNavUser`) builds the public pages' nav user: a read-only service-client select of `stall_name` for the session user (`merqo.vendor_profile` has RLS with no policies, so the user client cannot read it), never creating a row, falling back to `toNavUser(user)` on a miss or error.
