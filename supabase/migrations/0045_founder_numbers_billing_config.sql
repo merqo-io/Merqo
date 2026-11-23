@@ -39,6 +39,15 @@ grant select, insert on merqo.founder_numbers to service_role;
 grant select, update on merqo.billing_config to service_role;
 
 -- Existing founders get numbers in the order of their earliest founder row.
+-- The offer is capped at 20, so a larger backfill means the data is wrong and
+-- must be looked at rather than silently truncated.
+do $$
+begin
+  if (select count(distinct vendor_id) from merqo.subscriptions where founder) > 20 then
+    raise exception 'more than 20 founder vendors; resolve before numbering';
+  end if;
+end $$;
+
 insert into merqo.founder_numbers (number, vendor_id)
 select (row_number() over (order by first_at, vendor_id))::smallint, vendor_id
 from (
@@ -73,8 +82,8 @@ begin
     if merqo.founder_offer_closed() then
       raise exception 'founder offer closed' using errcode = '23514';
     end if;
-    if (select count(distinct s.vendor_id) from merqo.subscriptions s
-        where s.founder and s.id <> new.id) >= 20 then
+    if (select count(*) from merqo.founder_numbers) >= 20
+       and not exists (select 1 from merqo.founder_numbers n where n.vendor_id = new.vendor_id) then
       raise exception 'founder cap of 20 reached' using errcode = '23514';
     end if;
   end if;
@@ -113,8 +122,7 @@ create function merqo.founder_spots_left() returns integer
 language sql stable security definer set search_path = '' as $$
   select case
     when merqo.founder_offer_closed() then 0
-    else greatest(0, 20 - (select count(distinct s.vendor_id)::int
-                           from merqo.subscriptions s where s.founder))
+    else greatest(0, 20 - (select count(*)::int from merqo.founder_numbers))
   end;
 $$;
 

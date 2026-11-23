@@ -7,11 +7,7 @@ import { recordAudit } from "@/lib/admin";
 import { setBillingOpensAt } from "@/lib/entitlements/billing-config";
 
 const inputSchema = z.object({
-  date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .refine((d) => !Number.isNaN(Date.parse(`${d}T00:00:00+08:00`)))
-    .nullable(),
+  date: z.iso.date().nullable(),
 });
 
 /** Set the billing open date (a Singapore calendar day), or clear it. */

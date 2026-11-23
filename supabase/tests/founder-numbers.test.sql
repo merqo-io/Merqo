@@ -95,6 +95,16 @@ values ('45000000-0000-0000-0000-000000000007', 'qkit', 'year', '2026-01-01', '2
 select is((select number::int from merqo.founder_numbers where vendor_id = '45000000-0000-0000-0000-000000000007'), 6,
   'the next founder skips the retired number');
 
+-- Retired numbers still count against the cap.
+insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, founder, founder_until)
+select ('45000000-0000-0000-0000-' || lpad(n::text, 12, '0'))::uuid, 'qkit', 'year', '2026-01-01', '2027-01-01', '2027-01-01', 19900, true, '2027-01-01'
+from generate_series(8, 21) n;
+delete from auth.users where id = '45000000-0000-0000-0000-000000000008';
+select is(merqo.founder_spots_left(), 0, 'an erased founder does not free a spot');
+select throws_ok($$ insert into merqo.subscriptions (vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, founder, founder_until)
+  values ('45000000-0000-0000-0000-000000000022', 'qkit', 'year', '2026-01-01', '2027-01-01', '2027-01-01', 19900, true, '2027-01-01') $$,
+  '23514', 'founder cap of 20 reached', 'a new founder is refused while retired numbers fill the cap');
+
 -- RLS and grants.
 select ok(not has_function_privilege(r, f, 'EXECUTE'), r || ' cannot execute ' || f)
 from unnest(array['anon', 'authenticated', 'service_role']) r,
@@ -108,7 +118,7 @@ from unnest(array['INSERT', 'UPDATE', 'DELETE']) p;
 
 set local role anon;
 select set_config('request.jwt.claims', json_build_object('role', 'anon')::text, true);
-select is(merqo.founder_spots_left(), 15, 'anon reads the spots left');
+select is(merqo.founder_spots_left(), 0, 'anon reads the spots left');
 reset role;
 
 set local role authenticated;
