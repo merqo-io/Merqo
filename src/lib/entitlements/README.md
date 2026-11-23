@@ -23,10 +23,17 @@ charges anyone; prices and payment stay manual until billing exists.
 - `store.ts`: service-client reads and writes for subscriptions, event passes,
   push state and the founder count (`FOUNDER_CAP` 20). The founder cap is
   enforced by a database trigger; `grantSubscription` turns its `23514` into
-  `FounderCapError`. `findVendorId` maps an email to the auth id through the
+  `FounderCapError` and the closed-offer `23514` into `FounderClosedError`; `loadFounderNumber` reads a vendor's kept badge number from `merqo.founder_numbers`. `findVendorId` maps an email to the auth id through the
   service-only `user_id_for_email` function. `settleEventPass` records the
   offline settle (cups, top-up cents, who and when) and only matches a still
   active pass. `store.test.ts` covers it.
+- `founder.ts`: `formatFounderNumber` (`#01`), `founderCloseDate` (billing open
+  date plus 60 days) and `founderClosedByDate`. `founder.test.ts` covers them.
+- `billing-config.ts`: team-gated reads and writes of the one-row
+  `merqo.billing_config` (`billing_opens_at`), used by `/admin/billing`.
+- `founder-spots.ts`: `getFounderSpotsLeft()` reads `merqo.founder_spots_left()`
+  with the publishable key, cached for 300 seconds, and returns null on any
+  failure (a failed read is never cached). Used by the public waitlist.
 - `push.ts`: `pushKitEntitlement()` posts one payload with the kit's
   `provision_secret`; `syncVendorEntitlements()` derives, pushes to every live
   and `push_only` kit (printkit; or `opts.kits`), records each result in `merqo.entitlement_sync` and

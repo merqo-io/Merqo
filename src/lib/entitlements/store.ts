@@ -15,6 +15,12 @@ export class FounderCapError extends Error {
   }
 }
 
+export class FounderClosedError extends Error {
+  constructor() {
+    super("founder offer closed");
+  }
+}
+
 export interface SubscriptionRow extends SubscriptionInput {
   id: string;
   interval: "month" | "year";
@@ -180,6 +186,20 @@ export async function countFounders(): Promise<number> {
     .size;
 }
 
+/** The vendor's kept founder badge number, or null if they never were one. */
+export async function loadFounderNumber(
+  vendorId: string,
+): Promise<number | null> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase
+    .from("founder_numbers")
+    .select("number")
+    .eq("vendor_id", vendorId)
+    .maybeSingle();
+  if (error) throw new Error(`founder number read: ${error.message}`);
+  return (data?.number as number | undefined) ?? null;
+}
+
 export interface GrantInput {
   vendorId: string;
   plan: Plan;
@@ -239,8 +259,18 @@ export async function grantSubscription(input: GrantInput): Promise<string> {
         .single();
   const { data, error } = await write;
   if (error) {
-    if (error.code === "23514" && error.message.includes("founder cap")) {
+    if (
+      error.code === "23514" &&
+      (error.message.includes("founder cap") ||
+        error.message.includes("no founder number free"))
+    ) {
       throw new FounderCapError();
+    }
+    if (
+      error.code === "23514" &&
+      error.message.includes("founder offer closed")
+    ) {
+      throw new FounderClosedError();
     }
     throw new Error(`grant subscription: ${error.message}`);
   }

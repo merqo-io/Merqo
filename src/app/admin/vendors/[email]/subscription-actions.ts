@@ -7,6 +7,7 @@ import type { ActionResult } from "@merqo/ui/kit-api";
 import { loadPlanCatalog } from "@/lib/pricing/catalog";
 import {
   FounderCapError,
+  FounderClosedError,
   cancelEventPass,
   cancelSubscription,
   findVendorId,
@@ -185,6 +186,9 @@ export async function grantSubscriptionAction(
   } catch (err) {
     if (err instanceof FounderCapError) {
       return { success: false, error: "All 20 founder slots are taken." };
+    }
+    if (err instanceof FounderClosedError) {
+      return { success: false, error: "The founder offer has closed." };
     }
     console.error("grantSubscriptionAction failed", err);
     return { success: false, error: GENERIC_ERROR };

@@ -216,6 +216,7 @@ secrets and administrative writes use server-only service clients, so
 - The terms gate at `/legal/accept` has a Sign out button, so a user who declines the updated terms can leave.
 - `/legal/terms` and `/legal/privacy` render the shared `@merqo/ui` `LegalPage` through `src/app/legal/legal-page-client.tsx`; the package bundle drops the client boundary, so a Server Component cannot render `LegalPage` directly in a production build.
 - Vendor admin founder grants on a plan other than Pro (or All-Access) are refused with "Founders need a Pro subscription."
+- Founders get a numbered badge #01 to #20 (migration `0045`, never reused after account erasure). The founder offer closes 60 days after the billing open date set at `/admin/billing`, or at 20 founders; the waitlist shows the live spots left.
 - Changelog: `CHANGELOG.md` (the top paid tier is labelled Pro, stored `qkit` unchanged; the dashboard savings summary states the Pro estimate without an upgrade prompt; includes the new admin-audit trail, plus a fix
   restoring card/background contrast in both modes after the Harbour
   Control rebrand had accidentally collapsed them to the same color and a

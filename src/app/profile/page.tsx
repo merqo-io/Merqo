@@ -2,6 +2,8 @@ import Link from "next/link";
 import { BackButton } from "@merqo/ui";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
+import { formatFounderNumber } from "@/lib/entitlements/founder";
+import { loadFounderNumber } from "@/lib/entitlements/store";
 import { getAvatarUrl, getDisplayName } from "@/lib/account";
 import { getOrCreateVendorProfile } from "@/lib/merqo-vendor-profile";
 import { ProfileForm } from "./profile-form";
@@ -29,6 +31,8 @@ export default async function ProfilePage() {
       .maybeSingle(),
   ]);
 
+  const founderNumber = await loadFounderNumber(user.id).catch(() => null);
+
   return (
     <div className="mx-auto max-w-lg space-y-8 px-5 py-7 md:max-w-4xl">
       <header>
@@ -39,6 +43,11 @@ export default async function ProfilePage() {
         <h1 className="font-display text-3xl font-semibold leading-none sm:text-4xl">
           Profile
         </h1>
+        {founderNumber !== null && (
+          <p className="mt-2 inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold">
+            Founding merchant {formatFounderNumber(founderNumber)}
+          </p>
+        )}
         <p className="mt-2 text-sm text-muted-foreground">
           Your business name, icon, display name and password. Each section
           saves on its own.

@@ -40,7 +40,7 @@ own admin console separately.
   with the expected hash and never the raw email.
 - `subscription-section.tsx`: server-rendered Subscriptions, Event passes and
   Kit entitlements sections. Shows each subscription's locked price, period and
-  founder window, an open request banner, the grant form, event pass minting and
+  founder window (with the kept number, for example "Founder #07"), an open request banner, the grant form, event pass minting and
   the last push per kit (status, failure kind and HTTP code, last success).
   Dates are shown in Singapore time (`sgDay`), a canceled or lapsed
   subscription reads "Cancelled. Period was A to B." instead of the renew hint,
@@ -48,7 +48,7 @@ own admin console separately.
   (`subscription-labels.ts`, with `subscription-labels.test.ts`).
 - `subscription-controls.tsx`: client controls. `GrantSubscriptionForm` (active
   plans only, price defaulting from the catalog via `annualCents` for annual,
-  founder switch locked at 0 slots left, a "Replace current plan" switch when an active plan exists, period start and renewal anchor),
+  founder switch locked at 0 slots left (turning it on selects the annual interval and ten months of the plan price, S$199 for Pro), a "Replace current plan" switch when an active plan exists, period start and renewal anchor),
   `CancelSubscriptionButton`, `MintEventPassForm`, `CancelEventPassButton`,
   `RepushButton`. Plan names come from `planLabel` (`qkit` shows as Pro). `subscription-controls.dom.test.tsx` covers them.
 - `subscription-actions.ts`: zod-validated, team-gated server actions
@@ -56,7 +56,7 @@ own admin console separately.
   `cancelEventPassAction`, `repushEntitlementsAction`). Each write is audited,
   pushes the vendor's entitlements to the kits and revalidates; a grant or cancel
   that carries a `requestId` also resolves that request. A founder grant needs the `qkit` or `all_access` plan ("Founders need a Pro
-  subscription."), and a full founder cap shows "All 20 founder slots are taken." `subscription-actions.test.ts` covers them.
+  subscription."), and a full founder cap shows "All 20 founder slots are taken." and a closed offer "The founder offer has closed." `subscription-actions.test.ts` covers them.
 - Event pass settle: for an active pass that has ended, `subscription-section.tsx`
   shows the cups read live from qkit (`getEventPassUsage`, loaded in `page.tsx`),
   total charge, prepaid and top-up due, with a `SettleEventPassButton`. Usage

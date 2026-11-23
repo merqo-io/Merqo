@@ -31,6 +31,8 @@ current connection with its own-row session/RLS client.
 
 The page sets its tab title to "Profile". The page header's way back to `/dashboard` is `@merqo/ui`'s `BackButton`, given `next/link`.
 
+`page.tsx` also shows "Founding merchant #01" under the heading when the vendor holds a kept founder number (read with `loadFounderNumber`; a failed lookup shows nothing, and no price appears).
+
 `loading.tsx` is the route skeleton shown while the session, profile and Telegram lookups resolve; `loading.test.tsx` covers it.
 
 ## Verification

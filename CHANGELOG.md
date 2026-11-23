@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.17.0]
+
+### Added
+
+- Founder numbers: every founder gets a kept badge number, #01 to #20, shown in admin and as "Founding merchant #01" on the vendor's profile. A new `/admin/billing` page sets the billing open date; the founder offer closes at 20 merchants or 60 days after that date. The waitlist shows a live count of founder spots left. Needs migration `0045`.
+
 ## [0.16.1]
 
 ### Changed

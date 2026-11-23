@@ -13,6 +13,7 @@ import {
 } from "@/lib/pricing/calc";
 import type { EventPassUsageResult } from "@/lib/event-pass-usage-client";
 import { FOUNDER_CAP } from "@/lib/entitlements/store";
+import { formatFounderNumber } from "@/lib/entitlements/founder";
 import type {
   EventPassRow,
   SubscriptionRow,
@@ -31,11 +32,19 @@ import {
 
 const day = sgDay;
 
-function founderLabel(until: string | null, nowMs: number): string {
-  if (!until) return "Founder";
+function founderLabel(
+  until: string | null,
+  nowMs: number,
+  founderNumber: number | null,
+): string {
+  const name =
+    founderNumber === null
+      ? "Founder"
+      : `Founder ${formatFounderNumber(founderNumber)}`;
+  if (!until) return name;
   return Date.parse(until) > nowMs
-    ? `Founder until ${day(until)}`
-    : "Founder (benefits ended)";
+    ? `${name} until ${day(until)}`
+    : `${name} (benefits ended)`;
 }
 
 const SYNC_BADGES = {
@@ -130,6 +139,7 @@ export function SubscriptionSection({
   eventTerms,
   passUsage,
   founderCount,
+  founderNumber,
   today,
   request,
   nowMs,
@@ -142,6 +152,7 @@ export function SubscriptionSection({
   eventTerms: PassTerms | null;
   passUsage: Record<string, EventPassUsageResult>;
   founderCount: number;
+  founderNumber: number | null;
   today: string;
   request: (RequestPrefill & { kind: string }) | null;
   nowMs: number;
@@ -189,7 +200,7 @@ export function SubscriptionSection({
                       )}
                     {s.founder && (
                       <Badge variant="gold" className="border-0 px-1.5 py-0">
-                        {founderLabel(s.founderUntil, nowMs)}
+                        {founderLabel(s.founderUntil, nowMs, founderNumber)}
                       </Badge>
                     )}
                   </p>

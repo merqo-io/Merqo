@@ -107,13 +107,13 @@ it("prefills the plan from a request and sends its id", async () => {
 it("keeps a hand-edited price and renewal anchor, and sends the founder flag", async () => {
   const user = userEvent.setup();
   render(grantForm());
+  await user.click(screen.getByRole("switch"));
   const price = screen.getByLabelText("Price charged (S$)");
   await user.clear(price);
   await user.type(price, "12.5");
   const anchor = screen.getByLabelText("Renewal date anchor");
   await user.clear(anchor);
   await user.type(anchor, "2027-01-15");
-  await user.click(screen.getByRole("switch"));
   await user.click(screen.getByRole("button", { name: "Save subscription" }));
   await waitFor(() =>
     expect(actions.grantSubscriptionAction).toHaveBeenCalled(),
@@ -123,6 +123,24 @@ it("keeps a hand-edited price and renewal anchor, and sends the founder flag", a
       priceCents: 1250,
       renewalAnchor: "2027-01-15",
       founder: true,
+    }),
+  );
+});
+
+it("defaults a founder to the annual interval and ten months of the plan price", async () => {
+  const user = userEvent.setup();
+  render(grantForm({ plans: [{ slug: "qkit", monthlyCents: 1990 }] }));
+  await user.click(screen.getByRole("switch"));
+  expect(screen.getByLabelText("Price charged (S$)")).toHaveValue(199);
+  await user.click(screen.getByRole("button", { name: "Save subscription" }));
+  await waitFor(() =>
+    expect(actions.grantSubscriptionAction).toHaveBeenCalled(),
+  );
+  expect(actions.grantSubscriptionAction).toHaveBeenCalledWith(
+    expect.objectContaining({
+      founder: true,
+      interval: "year",
+      priceCents: 19900,
     }),
   );
 });
