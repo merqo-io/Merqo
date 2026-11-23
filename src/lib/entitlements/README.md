@@ -18,6 +18,9 @@ charges anyone; prices and payment stay manual until billing exists.
 - `derive.test.ts`: free default, each plan, starter vs qkit (starter paykit), off-sale plans, All Access,
   founder active vs expired, event pass running/upcoming/expired, overlapping
   sources, canceled and lapsed subscriptions, kits that are not live.
+- `trial.ts`, `trial.test.ts`: `normalizeEmail` (lowercase, trim, drop `+tag`, Gmail dots), `isTrialLive`, `trialDaysLeft`, `TRIAL_DAYS` and the 25-lookup cap `TRIAL_LOOKUPS_PER_RUN`.
+- `trial-store.ts`: service-client reads and the `merqo.trials` functions (start, UEN, override, sweep candidates). `derive.ts` treats a live trial as Pro only when no paid subscription is active, and an expired one as Free on read. `push.ts` loads it.
+- `trial-start.ts`, `trial-start.test.ts`: `checkFirstOrderAndStart` reads qkit's `firstOrderAt` and starts the trial (no `firstOrderAt`, no trial; `lastActivityAt` is never a fallback); `runTrialSweep` is the daily batch, sequential and capped.
 - `periods.ts`: `addMonths`, `periodEnd`, `founderUntil` (UTC calendar months,
   month-end clamped). `periods.test.ts` covers them.
 - `store.ts`: service-client reads and writes for subscriptions, event passes,

@@ -24,6 +24,8 @@ import { getPendingRequest } from "@/lib/subscription-requests";
 import { VendorActivityCard } from "./vendor-activity-card";
 import { getEventPassUsage } from "@/lib/event-pass-usage-client";
 import { SubscriptionSection } from "./subscription-section";
+import { TrialSection } from "./trial-section";
+import { loadVendorTrial } from "@/lib/entitlements/trial-store";
 
 export const revalidate = 0;
 
@@ -131,7 +133,12 @@ export default async function VendorDetailPage({
       .map((p) => getVendorActivity(p, grant.email)),
   );
   const vendorId = await findVendorId(grant.email);
-  const billing = vendorId ? await loadBilling(vendorId, requestId) : null;
+  const [billing, trial] = vendorId
+    ? await Promise.all([
+        loadBilling(vendorId, requestId),
+        loadVendorTrial(vendorId),
+      ])
+    : [null, null];
   // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
 
@@ -197,6 +204,10 @@ export default async function VendorDetailPage({
           size="compact"
           title="This vendor has no Merqo account yet, so subscriptions and event passes unlock after they sign in once."
         />
+      )}
+
+      {billing && (
+        <TrialSection email={grant.email} trial={trial} nowMs={now} />
       )}
 
       {activeSlugs.size > 0 && (

@@ -134,6 +134,14 @@ vi.mock("@/lib/subscription-requests", () => ({
 vi.mock("@/lib/event-pass-usage-client", () => ({
   getEventPassUsage: vi.fn().mockResolvedValue({ ok: false }),
 }));
+vi.mock("@/lib/entitlements/trial-store", () => ({
+  loadVendorTrial: vi.fn().mockResolvedValue(null),
+}));
+vi.mock("./trial-actions", () => ({
+  checkFirstOrderAction: vi.fn(),
+  setTrialUenAction: vi.fn(),
+  overrideTrialAction: vi.fn(),
+}));
 vi.mock("./subscription-actions", () => ({
   settleEventPassAction: vi.fn(),
   grantSubscriptionAction: vi.fn(),

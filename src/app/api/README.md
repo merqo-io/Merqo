@@ -12,6 +12,8 @@ merqo's own pages.
   to run the customer Telegram-connect flow. The first kit → merqo HTTP
   direction in this codebase — every other cross-kit call (metrics pull,
   vendor-provision) flows merqo → kit; see its own README.
+- `cron/trials/` — Vercel cron `GET /api/cron/trials`, gated by
+  `Authorization: Bearer ${CRON_SECRET}`; runs the daily free-trial sweep.
 - `plans/` — bearer-gated `GET /api/plans` plan catalog for kit
   plan pages; see its own README.
 - `telegram/` — Merqo's shared Telegram bot webhook (`webhook/route.ts`),

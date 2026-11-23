@@ -8,6 +8,7 @@ Run the rollback-only pgTAP suites with `supabase test db` against local Supabas
 - `vendor-profile-reader-permissions.test.sql`: owner/service profile creation and permitted existing reads.
 - `private-helper-acl.test.sql`: private customer synchronization, owner-trigger continuity, and founder helper denial.
 - `pricing-catalog.test.sql`: the plan catalog as of `0044` (v3 prices, kit lists, off-sale plans), plan and subscription CHECKs, the 20-founder cap and the founder floor (a founder needs a `qkit` or `all_access` plan), one active subscription per vendor and plan, and RLS/grants on plans, subscriptions and billing credits.
+- `trials.test.sql`: `0046` idempotent start, blocked on email and PayNow/UEN match, UEN re-check, admin override with a required reason, expiry falling back to no entitlement, the sweep candidates and limit, and RLS/execute grants.
 - `founder-numbers.test.sql`: `0045` founder numbering (lowest free, kept for good), backfill order, the close date refusing new founders, `founder_spots_left()` and RLS/grants on `founder_numbers` and `billing_config`.
 - `retention-purges.test.sql`: `0037` purge functions delete or null only rows past retention and are not executable by anon or authenticated.
 - `entitlements.test.sql`: `0038` event pass, request and push-log CHECKs (including `0039`'s `last_error_kind`), one pending request per vendor, `user_id_for_email` access, and RLS/grants (vendors read their own passes and requests, only the team reads the push log), plus `0043`'s settled-status and settle-field CHECK.

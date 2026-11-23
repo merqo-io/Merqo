@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.18.0]
+
+### Added
+
+- Free trial: 30 days of Pro starting at the vendor's first qkit order, with no charge and no public price. A trial is blocked when the same normalised email or PayNow/UEN already had one. A daily cron (`/api/cron/trials`) and a "Check first order now" button on the admin vendor page start trials, and an admin can set a PayNow/UEN or override with a reason. The profile shows "Pro trial: N days left". Needs migration `0046`, `CRON_SECRET` in Vercel, and qkit reporting `firstOrderAt`.
+
 ## [0.17.0]
 
 ### Added

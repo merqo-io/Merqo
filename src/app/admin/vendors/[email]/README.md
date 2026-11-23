@@ -66,6 +66,7 @@ own admin console separately.
   the pass settled and audits `settle_event_pass`. Merqo charges nobody. The
   top-up comes from `eventPassTopUpCents`, shared by the section and the action.
   `subscription-section.dom.test.tsx` covers the view.
+- `trial-section.tsx`, `trial-controls.tsx`, `trial-actions.ts`: the "Free trial" panel (status, days left, PayNow/UEN field that re-runs the match, "Check first order now", and "Override and start trial" with a required reason) and its zod-validated, team-gated actions. `trial-actions.test.ts` and `trial-section.dom.test.tsx` cover them.
 - `vendor-activity-card.tsx` — `VendorActivityCard({ slug, result, now })`.
   Renders nothing when `!result.ok` or the kit reports `active: false`;
   otherwise a `StatusBadge` (skipped entirely when `status` is `null` —

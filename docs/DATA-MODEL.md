@@ -22,6 +22,17 @@ from qkit (`GET /api/merqo/event-pass-usage`, bearer `metrics_secret`) and store
 cups and the top-up (`eventPassChargeCents` minus `prepaid_cents`, floored at 0).
 RLS and grants are unchanged.
 
+**Free trial (0046):** `trials` holds one row per vendor (`vendor_id` unique, nullable, `on delete set null`
+so an erased account still counts as having used a trial). A trial is 30 days of Pro from the vendor's first
+qkit order (`first_order_at`), not from sign-up. `status` is `active`, `blocked`, `overridden` or `ended`;
+an expired trial is read as Free by `deriveEntitlements`, no sweep flips it. `email_normalized` (lowercase,
+`+tag` dropped, Gmail dots dropped; done in `src/lib/entitlements/trial.ts`) and `paynow_uen` are indexed
+but deliberately not unique: `start_trial()` inserts `blocked` when another non-blocked row shares either
+value, and keeps the row as the record. `set_trial_uen()` re-runs that match and blocks a running trial;
+`override_trial()` starts a fresh 30 days with a required reason. `trial_candidates()` feeds the daily
+cron (least recently checked first, using `trial_checks`). RLS is on, the team reads, and every write goes
+through service-role-only functions. Trials are not subscriptions: nothing is charged.
+
 **Founder numbers and billing open date (0045):** `founder_numbers` (`number` PK 1 to 20, nullable unique
 `vendor_id` to `auth.users` with `on delete set null`, `assigned_at`) holds the founding merchant badge
 (#01 to #20). A trigger on `subscriptions` gives a vendor the lowest free number the first

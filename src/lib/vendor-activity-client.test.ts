@@ -37,6 +37,38 @@ describe("getVendorActivity", () => {
     expect(result).toEqual({ ok: true, slug: "qkit", data: PAYLOAD });
   });
 
+  it("passes firstOrderAt through when qkit reports it", async () => {
+    const firstOrderAt = "2026-08-01T03:00:00.000Z";
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ...PAYLOAD, firstOrderAt }),
+    });
+
+    const result = await getVendorActivity(KIT, "vendor@business.sg");
+
+    expect(result).toEqual({
+      ok: true,
+      slug: "qkit",
+      data: { ...PAYLOAD, firstOrderAt },
+    });
+  });
+
+  it("keeps a null firstOrderAt and drops a malformed one", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ...PAYLOAD, firstOrderAt: null }),
+    });
+    const withNull = await getVendorActivity(KIT, "vendor@business.sg");
+    expect(withNull.ok && withNull.data.firstOrderAt).toBeNull();
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ ...PAYLOAD, firstOrderAt: "yesterday" }),
+    });
+    const malformed = await getVendorActivity(KIT, "vendor@business.sg");
+    expect(malformed.ok && malformed.data.firstOrderAt).toBeUndefined();
+  });
+
   it("returns ok:false on a 404 (vendor never touched this kit)", async () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 404 });
 
