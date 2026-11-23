@@ -49,6 +49,7 @@ declare
   v_vendor uuid;
   v_id     uuid;
   v_sub    merqo.subscriptions;
+  v_grace  interval;
 begin
   select s.vendor_id into v_vendor
   from merqo.subscriptions s
@@ -73,9 +74,8 @@ begin
     raise exception 'subscription is not active' using errcode = '23514';
   end if;
   -- Manual subscriptions keep their plan through a 7 day grace, others end with the period.
-  if v_sub.current_period_end
-       + case when v_sub.source = 'admin_manual' then interval '7 days' else interval '0' end
-       < now() then
+  v_grace := case when v_sub.source = 'admin_manual' then interval '7 days' else interval '0' end;
+  if v_sub.current_period_end + v_grace < now() then
     raise exception 'subscription is no longer active' using errcode = '23514';
   end if;
   if p_starts_on > v_sub.current_period_end::date then
