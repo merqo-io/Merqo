@@ -126,7 +126,7 @@ insert into merqo.vendor_links (email, product_slug, status) values
 insert into merqo.subscriptions
   (id, vendor_id, plan_slug, interval, current_period_start, current_period_end, renewal_anchor, locked_price_cents, included_kits, founder, founder_until)
 values
-  ('47aaaaaa-0000-0000-0000-000000000004', '47000000-0000-0000-0000-000000000004', 'starter', 'month',
+  ('47aaaaaa-0000-0000-0000-000000000008', '47000000-0000-0000-0000-000000000004', 'starter', 'month',
    now() - interval '33 days', now() - interval '3 days', date '2030-01-01', 1490, '{qkit,paykit}', false, null),
   ('47aaaaaa-0000-0000-0000-000000000005', '47000000-0000-0000-0000-000000000005', 'starter', 'month',
    now() - interval '60 days', now() - interval '30 days', date '2030-01-01', 1490, '{qkit,paykit}', false, null),
@@ -150,9 +150,9 @@ select is((select count(*)::int from merqo.trials where vendor_id in
 select is(merqo.start_trial('47000000-0000-0000-0000-000000000007', 'cand-fresh@test.local', now() - interval '1 day'),
   'active', 'start_trial still starts a trial for a vendor with no subscription');
 
-select throws_ok($$ select merqo.pause_subscription('47aaaaaa-0000-0000-0000-000000000002', date '2030-03-01', date '2030-03-10', 'x') $$,
+select throws_ok($$ select merqo.pause_subscription('47aaaaaa-0000-0000-0000-000000000001', date '2031-06-01', date '2031-06-10', 'x') $$,
   '23514', 'pause cannot start after the paid period ends', 'a pause cannot start after the paid period ends');
-select throws_ok($$ select merqo.pause_subscription('47aaaaaa-0000-0000-0000-000000000004', current_date, current_date + 5, 'x') $$,
+select throws_ok($$ select merqo.pause_subscription('47aaaaaa-0000-0000-0000-000000000008', current_date, current_date + 5, 'x') $$,
   '23514', 'pause cannot start after the paid period ends', 'a pause in grace cannot start after the period end');
 select throws_ok($$ select merqo.pause_subscription('47aaaaaa-0000-0000-0000-000000000005', current_date, current_date + 5, 'x') $$,
   '23514', 'subscription is no longer active', 'a subscription past grace cannot be paused');

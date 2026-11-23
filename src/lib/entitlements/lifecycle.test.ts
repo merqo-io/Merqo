@@ -231,6 +231,19 @@ describe("prorateUpgradeCents with pauses", () => {
     ).toBe(200);
   });
 
+  it("does not count a day for a period that starts at Singapore midnight", () => {
+    expect(
+      prorateUpgradeCents({
+        oldCents: 1490,
+        newCents: 1990,
+        periodStartMs: Date.parse("2026-11-10T16:00:00Z"),
+        periodEndMs: Date.parse("2026-12-10T16:00:00Z"),
+        pauses: [{ startsOn: "2026-11-10", endsOn: "2026-11-11" }],
+        nowMs: Date.parse("2026-11-25T00:00:00Z"),
+      }),
+    ).toBe(267);
+  });
+
   it("passes the pauses through a plan change quote", () => {
     expect(
       quotePlanChange({

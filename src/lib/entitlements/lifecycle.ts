@@ -66,17 +66,29 @@ function wholeDays(fromMs: number, toMs: number): number {
   return Math.max(0, Math.ceil((toMs - fromMs) / DAY_MS));
 }
 
-/** Paused days inside [fromMs, toMs]. */
+const SGT_OFFSET_MS = 8 * 3_600_000;
+
+/** The Singapore calendar day an instant falls on, as a day number. Periods
+ *  start at Singapore midnight, which is 16:00 UTC the day before. */
+function sgDayNumber(ms: number): number {
+  return Math.floor((ms + SGT_OFFSET_MS) / DAY_MS);
+}
+
+/** Paused days inside [fromMs, toMs], counted in whole Singapore days. Pause
+ *  dates are calendar days, so both sides are snapped to day numbers first. */
 function pausedDays(
   pauses: PauseWindow[] | undefined,
   fromMs: number,
   toMs: number,
 ): number {
+  const from = sgDayNumber(fromMs);
+  const to = sgDayNumber(toMs);
   let days = 0;
   for (const p of pauses ?? []) {
     const overlap =
-      Math.min(toMs, dayMs(p.endsOn)) - Math.max(fromMs, dayMs(p.startsOn));
-    if (overlap > 0) days += Math.ceil(overlap / DAY_MS);
+      Math.min(to, dayMs(p.endsOn) / DAY_MS) -
+      Math.max(from, dayMs(p.startsOn) / DAY_MS);
+    if (overlap > 0) days += overlap;
   }
   return days;
 }
