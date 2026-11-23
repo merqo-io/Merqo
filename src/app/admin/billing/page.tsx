@@ -1,6 +1,14 @@
 import { requireMerqoTeam } from "@/lib/team";
 import { sgDay } from "@/lib/sg-date";
-import { getBillingOpensAt } from "@/lib/entitlements/billing-config";
+import {
+  getBillingOpensAt,
+  getRevenueConfig,
+} from "@/lib/entitlements/billing-config";
+import {
+  listRecentPayments,
+  revenueTotalSince,
+} from "@/lib/entitlements/ledger";
+import { capSummary, windowStart } from "@/lib/entitlements/revenue";
 import { FOUNDER_CAP, countFounders } from "@/lib/entitlements/store";
 import {
   FOUNDER_OFFER_DAYS,
@@ -9,12 +17,23 @@ import {
 } from "@/lib/entitlements/founder";
 import { formatSgd } from "@/lib/pricing/format";
 import { BillingOpenForm } from "./billing-form";
+import { PaymentForm } from "./payment-form";
+import { PaymentList } from "./payment-list";
+import { RevenueCapForm } from "./revenue-form";
 
 export const revalidate = 0;
 
 export const metadata = { title: "Billing" };
 
 const FOUNDER_PRICE_CENTS = 19900;
+const RECENT_PAYMENTS = 25;
+
+const CAP_STATUS_LABELS = {
+  none: "No cap set",
+  under: "Under cap",
+  near: "Near cap",
+  over: "Over cap",
+} as const;
 
 function offerState(closedByDate: boolean, spotsLeft: number): string {
   if (closedByDate) return "Closed: the close date has passed";
@@ -24,12 +43,17 @@ function offerState(closedByDate: boolean, spotsLeft: number): string {
 
 export default async function BillingPage() {
   await requireMerqoTeam();
-  const [opensAt, founders] = await Promise.all([
-    getBillingOpensAt(),
-    countFounders(),
-  ]);
   // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
+  const revenueConfig = await getRevenueConfig();
+  const from = windowStart(revenueConfig.windowStart, now);
+  const [opensAt, founders, total, payments] = await Promise.all([
+    getBillingOpensAt(),
+    countFounders(),
+    revenueTotalSince(from),
+    listRecentPayments(RECENT_PAYMENTS),
+  ]);
+  const cap = capSummary(total, revenueConfig.capCents);
   const close = founderCloseDate(opensAt);
   const closedByDate = founderClosedByDate(opensAt, now);
   const spotsLeft = closedByDate ? 0 : Math.max(0, FOUNDER_CAP - founders);
@@ -85,6 +109,61 @@ export default async function BillingPage() {
             </dd>
           </div>
         </dl>
+      </section>
+
+      <section className="rounded-xl border bg-card p-5 shadow-sm">
+        <h2 className="font-display text-lg font-bold">Revenue</h2>
+        <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-muted-foreground">Received since {from}</dt>
+            <dd className="font-medium">{formatSgd(total)}</dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">Status</dt>
+            <dd className="font-medium">{CAP_STATUS_LABELS[cap.status]}</dd>
+          </div>
+          {revenueConfig.capCents !== null && (
+            <>
+              <div>
+                <dt className="text-muted-foreground">Cap</dt>
+                <dd className="font-medium">
+                  {formatSgd(revenueConfig.capCents)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Used</dt>
+                <dd className="font-medium">
+                  {(cap.percentUsed ?? 0).toFixed(1)}%
+                </dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Remaining</dt>
+                <dd className="font-medium">
+                  {formatSgd(cap.remainingCents ?? 0)}
+                </dd>
+              </div>
+            </>
+          )}
+        </dl>
+        <RevenueCapForm
+          capDollars={
+            revenueConfig.capCents === null
+              ? ""
+              : (revenueConfig.capCents / 100).toFixed(2)
+          }
+          windowStart={revenueConfig.windowStart}
+          defaultWindowStart={windowStart(null, now)}
+        />
+      </section>
+
+      <section className="rounded-xl border bg-card p-5 shadow-sm">
+        <h2 className="font-display text-lg font-bold">Record a payment</h2>
+        <PaymentForm today={sgDay(now)} />
+      </section>
+
+      <section>
+        <h2 className="font-display text-lg font-bold">Latest payments</h2>
+        <PaymentList payments={payments} showVendor />
       </section>
     </main>
   );

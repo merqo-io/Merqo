@@ -34,7 +34,13 @@ charges anyone; prices and payment stay manual until billing exists.
 - `founder.ts`: `formatFounderNumber` (`#01`), `founderCloseDate` (billing open
   date plus 60 days) and `founderClosedByDate`. `founder.test.ts` covers them.
 - `billing-config.ts`: team-gated reads and writes of the one-row
-  `merqo.billing_config` (`billing_opens_at`), used by `/admin/billing`.
+  `merqo.billing_config` (`billing_opens_at`, `revenue_cap_cents`,
+  `revenue_window_start`), used by `/admin/billing`.
+- `revenue.ts`: pure integer-cent helpers: `capSummary` (status at 80% and 100%),
+  `dollarsToCents`, `windowStart` (1 January of the Singapore year by default).
+  `revenue.test.ts` covers them.
+- `ledger.ts`: service-client reads and writes of `merqo.payments` and the
+  `revenue_total` and `recent_payments` functions. `ledger.test.ts` covers it.
 - `founder-spots.ts`: `getFounderSpotsLeft()` reads `merqo.founder_spots_left()`
   with the publishable key, cached for 300 seconds, and returns null on any
   failure (a failed read is never cached). Used by the public waitlist.

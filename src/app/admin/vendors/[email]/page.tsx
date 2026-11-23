@@ -26,6 +26,9 @@ import { getEventPassUsage } from "@/lib/event-pass-usage-client";
 import { SubscriptionSection } from "./subscription-section";
 import { TrialSection } from "./trial-section";
 import { loadVendorTrial } from "@/lib/entitlements/trial-store";
+import { listVendorPayments } from "@/lib/entitlements/ledger";
+import { PaymentForm } from "../../billing/payment-form";
+import { PaymentList } from "../../billing/payment-list";
 
 export const revalidate = 0;
 
@@ -133,12 +136,13 @@ export default async function VendorDetailPage({
       .map((p) => getVendorActivity(p, grant.email)),
   );
   const vendorId = await findVendorId(grant.email);
-  const [billing, trial] = vendorId
+  const [billing, trial, payments] = vendorId
     ? await Promise.all([
         loadBilling(vendorId, requestId),
         loadVendorTrial(vendorId),
+        listVendorPayments(vendorId, grant.email),
       ])
-    : [null, null];
+    : [null, null, []];
   // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
 
@@ -208,6 +212,18 @@ export default async function VendorDetailPage({
 
       {billing && (
         <TrialSection email={grant.email} trial={trial} nowMs={now} />
+      )}
+
+      {billing && (
+        <section className="rounded-xl border bg-card p-5 shadow-sm">
+          <h2 className="font-display text-lg font-bold">Payments</h2>
+          <PaymentForm fixedEmail={grant.email} today={sgDay(now)} />
+          <PaymentList
+            payments={payments}
+            email={grant.email}
+            showVendor={false}
+          />
+        </section>
       )}
 
       {activeSlugs.size > 0 && (
