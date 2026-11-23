@@ -12,7 +12,7 @@ export interface PauseWindow {
 
 export interface LifecycleInput {
   status: string;
-  source?: string;
+  source: string;
   currentPeriodEnd: string;
   pauses?: PauseWindow[];
 }
@@ -66,19 +66,47 @@ function wholeDays(fromMs: number, toMs: number): number {
   return Math.max(0, Math.ceil((toMs - fromMs) / DAY_MS));
 }
 
+/** Paused days inside [fromMs, toMs]. */
+function pausedDays(
+  pauses: PauseWindow[] | undefined,
+  fromMs: number,
+  toMs: number,
+): number {
+  let days = 0;
+  for (const p of pauses ?? []) {
+    const overlap =
+      Math.min(toMs, dayMs(p.endsOn)) - Math.max(fromMs, dayMs(p.startsOn));
+    if (overlap > 0) days += Math.ceil(overlap / DAY_MS);
+  }
+  return days;
+}
+
 /** What an upgrade costs for the rest of the current period: the price
  *  difference scaled by the days left over the days in the period, to cents.
- *  The last day still counts as a day left. */
+ *  The last day still counts as a day left. Paused days are neither billed
+ *  nor left: the period was stretched to cover them. */
 export function prorateUpgradeCents(input: {
   oldCents: number;
   newCents: number;
   periodStartMs: number;
   periodEndMs: number;
   nowMs: number;
+  pauses?: PauseWindow[];
 }): number {
-  const total = wholeDays(input.periodStartMs, input.periodEndMs);
+  const total = Math.max(
+    0,
+    wholeDays(input.periodStartMs, input.periodEndMs) -
+      pausedDays(input.pauses, input.periodStartMs, input.periodEndMs),
+  );
   if (total === 0) return 0;
-  const left = Math.min(total, wholeDays(input.nowMs, input.periodEndMs));
+  const left = Math.min(
+    total,
+    Math.max(
+      0,
+      wholeDays(input.nowMs, input.periodEndMs) -
+        pausedDays(input.pauses, input.nowMs, input.periodEndMs),
+    ),
+  );
   const diff = Math.max(0, input.newCents - input.oldCents);
   return Math.round((diff * left) / total);
 }
@@ -111,6 +139,7 @@ export function quotePlanChange(input: {
   currentPeriodEnd: string;
   newMonthlyCents: number;
   nowMs: number;
+  pauses?: PauseWindow[];
 }): PlanChangeQuote {
   const newPriceCents =
     input.interval === "year"
@@ -128,6 +157,7 @@ export function quotePlanChange(input: {
       periodStartMs: Date.parse(input.currentPeriodStart),
       periodEndMs: Date.parse(input.currentPeriodEnd),
       nowMs: input.nowMs,
+      pauses: input.pauses,
     }),
   };
 }

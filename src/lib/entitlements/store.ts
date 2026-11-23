@@ -24,7 +24,7 @@ export class FounderClosedError extends Error {
 
 export class PauseError extends Error {
   constructor(
-    readonly kind: "cap" | "overlap" | "past" | "inactive" | "ended",
+    readonly kind: "cap" | "overlap" | "past" | "inactive" | "late" | "ended",
   ) {
     super(`pause rejected: ${kind}`);
   }
@@ -345,6 +345,8 @@ export async function upgradeSubscription(input: {
       renewal_anchor: input.from.renewalAnchor,
       locked_price_cents: input.priceCents,
       included_kits: input.plan.includedKits,
+      source: input.from.source,
+      scheduled_plan_slug: null,
     })
     .select("id")
     .single();
@@ -382,6 +384,8 @@ const PAUSE_ERRORS: [string, PauseError["kind"]][] = [
   ["overlaps", "overlap"],
   ["in the past", "past"],
   ["not active", "inactive"],
+  ["no longer active", "inactive"],
+  ["after the paid period", "late"],
   ["already ended", "ended"],
 ];
 

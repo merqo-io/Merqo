@@ -91,6 +91,8 @@ describe("upgradeSubscription", () => {
         current_period_end: from.currentPeriodEnd,
         renewal_anchor: from.renewalAnchor,
         locked_price_cents: 1990,
+        source: "admin_manual",
+        scheduled_plan_slug: null,
       }),
     );
   });
@@ -145,6 +147,8 @@ describe("pauseSubscription and endPause", () => {
       ["pause overlaps an existing pause", "overlap"],
       ["pause cannot start in the past", "past"],
       ["subscription is not active", "inactive"],
+      ["subscription is no longer active", "inactive"],
+      ["pause cannot start after the paid period ends", "late"],
     ] as const) {
       mocks.rpc.mockResolvedValueOnce({ data: null, error: { message } });
       await expect(pauseSubscription(pauseInput)).rejects.toMatchObject({

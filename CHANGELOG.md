@@ -10,7 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Billing lifecycle for subscriptions collected by PayNow: a 7 day grace period after the paid period ends (the plan keeps working, admin sees "Grace: N days left", the vendor sees "Renewal due in N days"), pauses of up to 92 days in any rolling year that move the billing date out and grant nothing while they run, and plan changes where an upgrade applies at once with the pro-rata amount shown to admins and a downgrade waits for renewal. Needs migration `0047`.
+- Billing lifecycle for subscriptions collected by PayNow: a 7 day grace period after the paid period ends (the plan keeps working, admin sees "Grace: N days left", the vendor sees "Renewal due in N days"), pauses of up to 92 days in any rolling year that move the billing date out and grant nothing while they run, and plan changes where an upgrade applies at once with the pro-rata amount shown to admins and a downgrade waits for renewal. Pro-rata leaves paused days out, upgrades wait until a grace-period vendor renews, founder benefits follow the plan through grace and a pause moves the founder window, and a vendor who ever held a subscription no longer gets a trial. Needs migration `0047`.
 
 ## [0.18.0]
 

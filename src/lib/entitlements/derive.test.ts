@@ -50,6 +50,7 @@ function sub(
     includedKits: included,
     founder: false,
     founderUntil: null,
+    source: "stripe",
     ...extra,
   };
 }

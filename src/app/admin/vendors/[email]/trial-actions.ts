@@ -61,6 +61,12 @@ export async function checkFirstOrderAction(
     if (result.kind === "no_order") {
       return { success: true, message: "No first order yet." };
     }
+    if (result.status === "ineligible") {
+      return {
+        success: false,
+        error: "This vendor has had a paid plan, so no trial applies.",
+      };
+    }
     return {
       success: true,
       message:
