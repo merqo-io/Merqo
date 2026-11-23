@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.16.1]
+
+### Changed
+
+- `@merqo/ui` repinned to v0.60.0 (`d9ba206`).
+
 ## [0.16.0]
 
 ### Added
