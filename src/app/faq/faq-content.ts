@@ -50,11 +50,11 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "Which plan would suit me?",
-        a: "Merqo is free during the pilot. The Which plan fits you page at /which-plan suggests a plan for each kind of vendor, in case paid plans are introduced. If they are, payment is manual by PayNow and nothing is charged automatically.",
+        a: "Merqo is free during the pilot. The Which plan fits you page at /which-plan suggests a plan for each kind of vendor, in case paid plans are introduced. If they are, payment is in advance, by PayNow, recorded by hand. Nothing is charged before Merqo is registered as a business.",
       },
       {
         q: "If paid plans are introduced, is there a trial?",
-        a: "Yes. Each vendor would get one 30-day Pro trial. It starts from your first order, not from sign-up.",
+        a: "Yes. Each business would get one 30-day Pro trial. It starts at your first order, not from sign-up. We may refuse a trial if the same email, PayNow number or UEN has already had one.",
       },
       {
         q: "If paid plans are introduced, what is the founder offer?",
@@ -62,7 +62,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "If paid plans are introduced, can I pause or miss a payment?",
-        a: "You could pause for up to 3 months a year and your data is kept. After a missed payment you get a 7-day grace period, then your account goes back to Free. Your data is kept.",
+        a: "You could pause for up to 3 months in any 12 months. Your data and your price are kept while paused. After a missed payment you get 7 days' grace after your billing date, then your account moves to Free. Your data is kept.",
       },
     ],
   },

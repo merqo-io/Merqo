@@ -70,7 +70,8 @@ describe("FaqRoute", () => {
     expect(text).toContain("Merqo is free during the pilot.");
     expect(text).toContain("30-day Pro trial");
     expect(text).toContain("first 20 vendors");
-    expect(text).toContain("7-day grace period");
+    expect(text).toContain("recorded by hand");
+    expect(text).toContain("7 days' grace after your billing date");
     expect(text).not.toContain("$");
   });
 

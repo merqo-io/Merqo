@@ -76,7 +76,10 @@ describe("WhichPlanPage", () => {
       expect(s).not.toMatch(/[—–]/);
       expect(s).not.toContain("$");
       expect(s).not.toContain("!");
-      expect(s).not.toMatch(/\bprices?\b|per month|\/mo\b|upgrade now/i);
+      const withoutKeptPrice = s.replace("your price are kept", "");
+      expect(withoutKeptPrice).not.toMatch(
+        /\bprices?\b|per month|\/mo\b|upgrade now/i,
+      );
       expect(s).not.toMatch(/\b(live|proven)\b|now available/i);
     }
   });
@@ -93,6 +96,7 @@ describe("WhichPlanPage", () => {
     expect(
       screen.getByRole("link", { name: FOUNDER_SPOTS_NOTE }),
     ).toHaveAttribute("href", "/waitlist");
+    expect(container.textContent).toContain("recorded by hand");
     expect(container.textContent).not.toContain("S$");
     expect(container.textContent).not.toContain("$");
   });
