@@ -27,6 +27,9 @@ import {
   PLAN_COVERS,
   PLAN_NAMES,
   PLAN_ROWS,
+  FOUNDER_SPOTS_NOTE,
+  PAID_TERMS,
+  PAID_TERMS_HEADING,
   WHICH_PLAN_INTRO,
   WHICH_PLAN_TITLE,
 } from "./which-plan-content";
@@ -36,6 +39,9 @@ const allStrings = [
   WHICH_PLAN_INTRO,
   ...PLAN_ROWS.flatMap((r) => [r.vendor, r.plan, r.why]),
   ...PLAN_COVERS.flatMap((c) => [c.plan, c.covers]),
+  PAID_TERMS_HEADING,
+  FOUNDER_SPOTS_NOTE,
+  ...PAID_TERMS,
 ];
 
 describe("WhichPlanPage", () => {
@@ -47,7 +53,7 @@ describe("WhichPlanPage", () => {
       screen.getByRole("heading", { level: 1, name: WHICH_PLAN_TITLE }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/If paid plans are introduced/),
+      screen.getByText(/^Merqo is free during the pilot\./),
     ).toBeInTheDocument();
     expect(PLAN_ROWS).toHaveLength(5);
     for (const row of PLAN_ROWS) {
@@ -70,9 +76,29 @@ describe("WhichPlanPage", () => {
       expect(s).not.toMatch(/[—–]/);
       expect(s).not.toContain("$");
       expect(s).not.toContain("!");
-      expect(s).not.toMatch(/\bprices?\b|per month|\/mo\b|upgrade now/i);
+      const withoutKeptPrice = s.replace("your price are kept", "");
+      expect(withoutKeptPrice).not.toMatch(
+        /\bprices?\b|per month|\/mo\b|upgrade now/i,
+      );
       expect(s).not.toMatch(/\b(live|proven)\b|now available/i);
     }
+  });
+
+  it("renders the conditional paid-plan terms with no amounts", async () => {
+    getUser.mockResolvedValue({ data: { user: null } });
+    const { container } = render(await WhichPlanPage());
+    expect(
+      screen.getByRole("heading", { level: 2, name: PAID_TERMS_HEADING }),
+    ).toBeInTheDocument();
+    for (const t of PAID_TERMS) {
+      expect(screen.getByText(t)).toBeInTheDocument();
+    }
+    expect(
+      screen.getByRole("link", { name: FOUNDER_SPOTS_NOTE }),
+    ).toHaveAttribute("href", "/waitlist");
+    expect(container.textContent).toContain("recorded by hand");
+    expect(container.textContent).not.toContain("S$");
+    expect(container.textContent).not.toContain("$");
   });
 
   it("shows the waitlist CTA signed out", async () => {

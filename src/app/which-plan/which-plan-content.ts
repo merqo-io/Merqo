@@ -55,3 +55,17 @@ export const PLAN_COVERS: readonly { plan: PlanName; covers: string }[] = [
 ];
 
 export const ORGANISER_CONTACT_HREF = "mailto:team@merqo.io";
+
+export const PAID_TERMS_HEADING = "If paid plans are introduced";
+
+export const PAID_TERMS: readonly string[] = [
+  "Founder offer: the first 20 vendors get numbered founder spots. It closes when 20 are taken, or 60 days after paid plans open. Founders are on Pro and skip the trial.",
+  "Trial: one 30-day Pro trial per business. It starts at your first order, not from sign-up. We may refuse a trial if the same email, PayNow number or UEN has already had one.",
+  "Pause: you can pause for up to 3 months in any 12 months. Your data and your price are kept while paused.",
+  "Missed payment: 7 days' grace after your billing date, then your account moves to Free. Your data is kept.",
+  "Changing plan: an upgrade takes effect now, pro-rated. A downgrade takes effect at the end of the period.",
+  "Payment is in advance, by PayNow, recorded by hand. Nothing is charged before Merqo is registered as a business.",
+];
+
+export const FOUNDER_SPOTS_NOTE =
+  "See how many founder spots are left on the waitlist page.";

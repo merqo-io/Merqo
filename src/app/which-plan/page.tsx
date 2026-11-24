@@ -5,7 +5,10 @@ import { Nav } from "@/components/landing/nav";
 import { Footer } from "@/components/landing/footer";
 import { createServerClient } from "@/lib/supabase/server";
 import {
+  FOUNDER_SPOTS_NOTE,
   ORGANISER_CONTACT_HREF,
+  PAID_TERMS,
+  PAID_TERMS_HEADING,
   PLAN_COVERS,
   PLAN_ROWS,
   WHICH_PLAN_INTRO,
@@ -67,6 +70,20 @@ export default async function WhichPlanPage() {
               </div>
             ))}
           </dl>
+
+          <h2 className="mt-12 font-display text-xl font-bold tracking-tight">
+            {PAID_TERMS_HEADING}
+          </h2>
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+            {PAID_TERMS.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+          <p className="mt-3 text-sm">
+            <Link href="/waitlist" className="underline underline-offset-4">
+              {FOUNDER_SPOTS_NOTE}
+            </Link>
+          </p>
 
           <div className="mt-10">
             <Button asChild size="lg">

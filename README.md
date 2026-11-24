@@ -19,7 +19,7 @@ This app is the public brand landing plus a role-gated operator console:
 - `/about` — public "Why Merqo" page: the qkit origin story and a
   founder/business-name line matching `/legal/terms`'s phrasing
 - `/faq` — public FAQ page on the shared `FaqPage` from `@merqo/ui`
-- `/which-plan` — public "Which plan fits you" page: a plan suggestion per vendor type, with no prices
+- `/which-plan` — public "Which plan fits you" page: a plan suggestion per vendor type, plus the conditional billing terms (founder offer, trial, pause, grace), with no prices
 
 Each kit runs its own app on its own schema in a shared Supabase project.
 Merqo pulls per-kit metrics over an HTTP API (bearer secret) — it never
