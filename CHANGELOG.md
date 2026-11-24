@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `/which-plan` and `/faq` now state the conditional billing terms (founder offer, 30-day Pro trial, pause, grace, manual PayNow payment) with no amounts.
+
 ## [0.20.0]
 
 ### Added
