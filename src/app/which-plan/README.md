@@ -12,7 +12,8 @@ being introduced, since Merqo is free during the pilot.
   through `getLandingNavUser` for the `Nav`, and shows a "Join the waitlist"
   button signed out or "Dashboard" signed in.
 - `which-plan-content.ts` - the title, intro, vendor rows, per-plan feature
-  words and organiser contact link, exported so tests can check them.
+  words, the conditional "If paid plans are introduced" terms (founder offer,
+  trial, pause, grace, manual payment; no amounts) and organiser contact link, exported so tests can check them.
 - `page.test.tsx` - covers the rows, plan names, copy guardrails (no `$`, no
   dashes, no price wording) and the CTA.
 

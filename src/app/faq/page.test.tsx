@@ -54,13 +54,24 @@ describe("FaqRoute", () => {
     expect(metadata.title).toBe("FAQ");
   });
 
-  it("has the three groups and eleven rows", () => {
+  it("has the three groups and fourteen rows", () => {
     expect(FAQ_GROUPS.map((g) => g.heading)).toEqual([
       "About Merqo",
       "Accounts and kits",
       "Waitlist",
     ]);
-    expect(FAQ_GROUPS.flatMap((g) => g.rows)).toHaveLength(11);
+    expect(FAQ_GROUPS.flatMap((g) => g.rows)).toHaveLength(14);
+  });
+
+  it("describes the billing terms conditionally with no amounts", async () => {
+    getUser.mockResolvedValue({ data: { user: null } });
+    const { container } = render(await FaqRoute());
+    const text = container.textContent ?? "";
+    expect(text).toContain("Merqo is free during the pilot.");
+    expect(text).toContain("30-day Pro trial");
+    expect(text).toContain("first 20 vendors");
+    expect(text).toContain("7-day grace period");
+    expect(text).not.toContain("$");
   });
 
   it("emits FAQ JSON-LD and no closing line", async () => {
@@ -76,6 +87,7 @@ describe("FaqRoute", () => {
     for (const s of allStrings) {
       expect(s).not.toMatch(/—/);
       expect(s).not.toContain("$");
+      expect(s).not.toContain("S$");
       expect(s).not.toContain("!");
       expect(s).not.toMatch(/\b(live|proven)\b|now available/i);
     }
