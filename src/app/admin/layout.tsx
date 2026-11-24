@@ -18,6 +18,7 @@ const SECONDARY_LINKS = [
   { href: "/admin/team", label: "Team" },
   { href: "/admin/feedback", label: "Feedback" },
   { href: "/admin/activity", label: "Activity" },
+  { href: "/admin/billing", label: "Billing" },
 ];
 
 export default async function AdminLayout({

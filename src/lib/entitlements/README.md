@@ -18,15 +18,32 @@ charges anyone; prices and payment stay manual until billing exists.
 - `derive.test.ts`: free default, each plan, starter vs qkit (starter paykit), off-sale plans, All Access,
   founder active vs expired, event pass running/upcoming/expired, overlapping
   sources, canceled and lapsed subscriptions, kits that are not live.
+- `lifecycle.ts`, `lifecycle.test.ts`, `derive-lifecycle.test.ts`, `derive-founder.test.ts`, `store-lifecycle.test.ts`: the billing lifecycle, all computed on read. `subscriptionPhase` says active, grace (7 days after `current_period_end`, `admin_manual` rows only), paused or expired; `derive.ts` grants nothing while paused or expired and keeps the plan in grace. `prorateUpgradeCents` and `quotePlanChange` price a mid-period upgrade (difference x days left / days in period, to cents). `vendorStatusLine` is the vendor-facing text. `store.ts` adds the pause and plan-change writes.
+- `trial.ts`, `trial.test.ts`: `normalizeEmail` (lowercase, trim, drop `+tag`, Gmail dots), `isTrialLive`, `trialDaysLeft`, `TRIAL_DAYS` and the 25-lookup cap `TRIAL_LOOKUPS_PER_RUN`.
+- `trial-store.ts`: service-client reads and the `merqo.trials` functions (start, UEN, override, sweep candidates). `derive.ts` treats a live trial as Pro only when no paid subscription is active, and an expired one as Free on read. `push.ts` loads it.
+- `trial-start.ts`, `trial-start.test.ts`: `checkFirstOrderAndStart` reads qkit's `firstOrderAt` and starts the trial (no `firstOrderAt`, no trial; `lastActivityAt` is never a fallback); `runTrialSweep` is the daily batch, sequential and capped.
 - `periods.ts`: `addMonths`, `periodEnd`, `founderUntil` (UTC calendar months,
   month-end clamped). `periods.test.ts` covers them.
 - `store.ts`: service-client reads and writes for subscriptions, event passes,
   push state and the founder count (`FOUNDER_CAP` 20). The founder cap is
   enforced by a database trigger; `grantSubscription` turns its `23514` into
-  `FounderCapError`. `findVendorId` maps an email to the auth id through the
+  `FounderCapError` and the closed-offer `23514` into `FounderClosedError`; `loadFounderNumber` reads a vendor's kept badge number from `merqo.founder_numbers`. `findVendorId` maps an email to the auth id through the
   service-only `user_id_for_email` function. `settleEventPass` records the
   offline settle (cups, top-up cents, who and when) and only matches a still
   active pass. `store.test.ts` covers it.
+- `founder.ts`: `formatFounderNumber` (`#01`), `founderCloseDate` (billing open
+  date plus 60 days) and `founderClosedByDate`. `founder.test.ts` covers them.
+- `billing-config.ts`: team-gated reads and writes of the one-row
+  `merqo.billing_config` (`billing_opens_at`, `revenue_cap_cents`,
+  `revenue_window_start`), used by `/admin/billing`.
+- `revenue.ts`: pure integer-cent helpers: `capSummary` (status at 80% and 100%),
+  `dollarsToCents`, `windowStart` (1 January of the Singapore year by default).
+  `revenue.test.ts` covers them.
+- `ledger.ts`: service-client reads and writes of `merqo.payments` and the
+  `revenue_total` and `recent_payments` functions. `ledger.test.ts` covers it.
+- `founder-spots.ts`: `getFounderSpotsLeft()` reads `merqo.founder_spots_left()`
+  with the publishable key, cached for 300 seconds, and returns null on any
+  failure (a failed read is never cached). Used by the public waitlist.
 - `push.ts`: `pushKitEntitlement()` posts one payload with the kit's
   `provision_secret`; `syncVendorEntitlements()` derives, pushes to every live
   and `push_only` kit (printkit; or `opts.kits`), records each result in `merqo.entitlement_sync` and

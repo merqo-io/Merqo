@@ -31,6 +31,8 @@ current connection with its own-row session/RLS client.
 
 The page sets its tab title to "Profile". The page header's way back to `/dashboard` is `@merqo/ui`'s `BackButton`, given `next/link`.
 
+`page.tsx` also shows "Founding merchant #01" under the heading when the vendor holds a kept founder number (read with `loadFounderNumber`; a failed lookup shows nothing, and no price appears). While a free trial is running it also shows "Pro trial: N days left" (read with `loadVendorTrial`); a blocked, ended or missing trial shows nothing.
+
 `loading.tsx` is the route skeleton shown while the session, profile and Telegram lookups resolve; `loading.test.tsx` covers it.
 
 ## Verification
@@ -56,3 +58,5 @@ Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
 Profile form sections import `FORM_LABEL_CLASS` and `FORM_ERROR_CLASS` from `@merqo/ui`.
 
 Since `@merqo/ui` 0.54.1 the Telegram disconnect asks for confirmation in a dialog before calling the action; `vendor-telegram-connect.test.tsx` taps through it by touch.
+
+The page shows "Renewal due in N days" during a subscription's grace week and "Plan paused until <date>" while a pause runs, from `vendorStatusLine`. It names no price.

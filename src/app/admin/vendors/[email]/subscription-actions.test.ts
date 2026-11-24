@@ -26,8 +26,10 @@ vi.mock("@/lib/pricing/catalog", () => ({
 }));
 vi.mock("@/lib/entitlements/store", () => {
   class FounderCapError extends Error {}
+  class FounderClosedError extends Error {}
   return {
     FounderCapError,
+    FounderClosedError,
     findVendorId: mocks.findVendorId,
     grantSubscription: mocks.grantSubscription,
     cancelSubscription: mocks.cancelSubscription,
@@ -49,7 +51,7 @@ vi.mock("@/lib/subscription-requests", () => ({
   getPendingRequest: mocks.getPendingRequest,
 }));
 
-import { FounderCapError } from "@/lib/entitlements/store";
+import { FounderCapError, FounderClosedError } from "@/lib/entitlements/store";
 import {
   cancelEventPassAction,
   cancelSubscriptionAction,
@@ -177,6 +179,52 @@ describe("grantSubscriptionAction", () => {
     expect(mocks.recordAudit).toHaveBeenCalledTimes(1);
   });
 
+  it("applies a scheduled downgrade at the catalog price and replaces the old row", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      {
+        id: "old-1",
+        status: "active",
+        planSlug: "qkit",
+        scheduledPlanSlug: "starter",
+      },
+    ]);
+    await grantSubscriptionAction({ ...grant, replaceCurrent: false });
+    expect(mocks.grantSubscription).toHaveBeenCalledWith(
+      expect.objectContaining({
+        plan: expect.objectContaining({ slug: "starter" }),
+        priceCents: 1990,
+      }),
+    );
+    expect(mocks.cancelSubscription).toHaveBeenCalledWith("vendor-1", "old-1");
+    expect(mocks.recordAudit).toHaveBeenCalledWith(
+      "admin-1",
+      "grant_subscription",
+      "sub-1",
+      expect.objectContaining({
+        plan: "starter",
+        scheduled_change_applied: true,
+      }),
+    );
+  });
+
+  it("ignores a scheduled plan that has since gone off sale", async () => {
+    mocks.loadVendorSubscriptions.mockResolvedValue([
+      {
+        id: "old-1",
+        status: "active",
+        planSlug: "qkit",
+        scheduledPlanSlug: "paykit",
+      },
+    ]);
+    await grantSubscriptionAction({ ...grant, replaceCurrent: false });
+    expect(mocks.grantSubscription).toHaveBeenCalledWith(
+      expect.objectContaining({
+        plan: expect.objectContaining({ slug: "qkit" }),
+      }),
+    );
+    expect(mocks.cancelSubscription).not.toHaveBeenCalled();
+  });
+
   it("resolves the request it answers", async () => {
     await grantSubscriptionAction({ ...grant, requestId: REQ });
     expect(mocks.closeRequest).toHaveBeenCalledWith(REQ, "resolved", "admin-1");
@@ -247,6 +295,14 @@ describe("grantSubscriptionAction", () => {
       error: "All 20 founder slots are taken.",
     });
     expect(mocks.recordAudit).not.toHaveBeenCalled();
+  });
+
+  it("explains a closed founder offer", async () => {
+    mocks.grantSubscription.mockRejectedValue(new FounderClosedError());
+    expect(await grantSubscriptionAction({ ...grant, founder: true })).toEqual({
+      success: false,
+      error: "The founder offer has closed.",
+    });
   });
 
   it("returns a generic error on other failures", async () => {

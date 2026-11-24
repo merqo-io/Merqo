@@ -4,6 +4,7 @@ import type { EntitlementPayload } from "./contract";
 const mocks = vi.hoisted(() => ({
   subscriptions: vi.fn(),
   passes: vi.fn(),
+  trial: vi.fn().mockResolvedValue(null),
   catalog: vi.fn(),
   live: vi.fn(),
   findVendorId: vi.fn(),
@@ -14,6 +15,7 @@ vi.mock("./store", () => ({
   loadVendorEventPasses: mocks.passes,
   findVendorId: mocks.findVendorId,
 }));
+vi.mock("./trial-store", () => ({ loadVendorTrial: mocks.trial }));
 vi.mock("@/lib/pricing/catalog", () => ({ loadPlanCatalog: mocks.catalog }));
 vi.mock("@/lib/products", () => ({ listEntitlementTargets: mocks.live }));
 vi.mock("@/lib/supabase/server", () => ({

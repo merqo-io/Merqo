@@ -6,6 +6,30 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.20.0]
+
+### Added
+
+- Admin payments ledger and revenue total: record PayNow and bank transfer payments by vendor email in `/admin/billing` or on the vendor page, see the running total since a start date, and compare it with a cap the owner types in (Under cap, Near cap from 80%, Over cap from 100%). Admin only; no cap is set until entered. Needs migration `0048`.
+
+## [0.19.0]
+
+### Added
+
+- Billing lifecycle for subscriptions collected by PayNow: a 7 day grace period after the paid period ends (the plan keeps working, admin sees "Grace: N days left", the vendor sees "Renewal due in N days"), pauses of up to 92 days in any rolling year that move the billing date out and grant nothing while they run, and plan changes where an upgrade applies at once with the pro-rata amount shown to admins and a downgrade waits for renewal. Pro-rata leaves paused days out, upgrades wait until a grace-period vendor renews, founder benefits follow the plan through grace and a pause moves the founder window, and a vendor who ever held a subscription no longer gets a trial. Needs migration `0047`.
+
+## [0.18.0]
+
+### Added
+
+- Free trial: 30 days of Pro starting at the vendor's first qkit order, with no charge and no public price. A trial is blocked when the same normalised email or PayNow/UEN already had one. A daily cron (`/api/cron/trials`) and a "Check first order now" button on the admin vendor page start trials, and an admin can set a PayNow/UEN or override with a reason. The profile shows "Pro trial: N days left". Needs migration `0046`, `CRON_SECRET` in Vercel, and qkit reporting `firstOrderAt`.
+
+## [0.17.0]
+
+### Added
+
+- Founder numbers: every founder gets a kept badge number, #01 to #20, shown in admin and as "Founding merchant #01" on the vendor's profile. A new `/admin/billing` page sets the billing open date; the founder offer closes at 20 merchants or 60 days after that date. The waitlist shows a live count of founder spots left. Needs migration `0045`.
+
 ## [0.16.1]
 
 ### Changed

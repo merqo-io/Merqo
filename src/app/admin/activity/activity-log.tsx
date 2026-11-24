@@ -18,6 +18,9 @@ const ACTION_LABELS: Record<string, string> = {
   mint_event_pass: "Minted event pass",
   cancel_event_pass: "Cancelled event pass",
   repush_entitlements: "Re-pushed entitlements",
+  check_first_order: "Checked first order",
+  set_trial_uen: "Set trial PayNow/UEN",
+  override_trial: "Overrode trial",
   resolve_subscription_request: "Resolved plan request",
   decline_subscription_request: "Declined plan request",
 };

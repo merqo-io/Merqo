@@ -170,7 +170,7 @@ src/lib/entitlements/     — derive what a vendor may use per kit from subscrip
 src/lib/schemas.ts          — Zod schemas for the profile page's forms
 src/lib/merqo-vendor-profile.ts — typed wrapper over the shared vendor_profile RPCs
 src/lib/supabase/           — browser / server (schema=merqo) / service-role clients
-supabase/migrations/        — SQL schema (merqo.* tables) + RLS + grants; 0037 adds pg_cron retention purges
+supabase/migrations/        — SQL schema (merqo.* tables) + RLS + grants; 0037 adds pg_cron retention purges; 0046 adds the trials tables; 0047 adds subscription pauses and scheduled plan changes; 0048 adds the payments ledger and revenue cap settings
 supabase/seed/staging-registry.sql: one-time staging registry wiring (docs/STAGING.md)
 scripts/staging-migrate.sh: applies migrations to the staging project with psql
 scripts/check-legal-version-skew.mjs — asserts merqo + all 5 kit repos pin
@@ -216,6 +216,7 @@ secrets and administrative writes use server-only service clients, so
 - The terms gate at `/legal/accept` has a Sign out button, so a user who declines the updated terms can leave.
 - `/legal/terms` and `/legal/privacy` render the shared `@merqo/ui` `LegalPage` through `src/app/legal/legal-page-client.tsx`; the package bundle drops the client boundary, so a Server Component cannot render `LegalPage` directly in a production build.
 - Vendor admin founder grants on a plan other than Pro (or All-Access) are refused with "Founders need a Pro subscription."
+- Founders get a numbered badge #01 to #20 (migration `0045`, never reused after account erasure). The founder offer closes 60 days after the billing open date set at `/admin/billing`, or at 20 founders; the waitlist shows the live spots left.
 - Changelog: `CHANGELOG.md` (the top paid tier is labelled Pro, stored `qkit` unchanged; the dashboard savings summary states the Pro estimate without an upgrade prompt; includes the new admin-audit trail, plus a fix
   restoring card/background contrast in both modes after the Harbour
   Control rebrand had accidentally collapsed them to the same color and a
@@ -233,7 +234,7 @@ secrets and administrative writes use server-only service clients, so
 - Deploy runbook: `docs/DEPLOY.md`. Git deploys only `main` (`vercel.json`
   `git.deploymentEnabled` turns every other branch off, previews included);
   staging deploys through the `staging-sync` deploy hook and on-demand
-  previews come from the `vercel` CLI.
+  previews come from the `vercel` CLI. `vercel.json` also registers the daily `/api/cron/trials` cron (Bearer `CRON_SECRET`).
 - Staging setup, the env model, the rollout checklist for every kit and the
   migration gate: `docs/STAGING.md`. `.gitattributes`
   keeps `*.sh` on LF line endings so the staging script runs in a Linux

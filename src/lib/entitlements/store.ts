@@ -2,6 +2,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import type { Plan } from "@/lib/pricing/catalog";
 import type { EntitlementPayload } from "./contract";
 import type { EventPassInput, SubscriptionInput } from "./derive";
+import type { PauseWindow } from "./lifecycle";
 import { founderUntil, periodEnd } from "./periods";
 
 // Every caller gates with requireMerqoTeam() first (or acts on the signed-in
@@ -15,6 +16,25 @@ export class FounderCapError extends Error {
   }
 }
 
+export class FounderClosedError extends Error {
+  constructor() {
+    super("founder offer closed");
+  }
+}
+
+export class PauseError extends Error {
+  constructor(
+    readonly kind: "cap" | "overlap" | "past" | "inactive" | "late" | "ended",
+  ) {
+    super(`pause rejected: ${kind}`);
+  }
+}
+
+export interface PauseRow extends PauseWindow {
+  id: string;
+  reason: string;
+}
+
 export interface SubscriptionRow extends SubscriptionInput {
   id: string;
   interval: "month" | "year";
@@ -22,6 +42,7 @@ export interface SubscriptionRow extends SubscriptionInput {
   renewalAnchor: string;
   lockedPriceCents: number;
   source: string;
+  pauses?: PauseRow[];
 }
 
 export interface EventPassRow extends EventPassInput {
@@ -45,7 +66,7 @@ export interface SyncRow {
 }
 
 const SUBSCRIPTION_COLUMNS =
-  "id, plan_slug, interval, status, current_period_start, current_period_end, renewal_anchor, locked_price_cents, included_kits, source, founder, founder_until";
+  "id, plan_slug, interval, status, current_period_start, current_period_end, renewal_anchor, locked_price_cents, included_kits, source, founder, founder_until, scheduled_plan_slug, subscription_pauses(id, starts_on, ends_on, reason)";
 
 type SubscriptionDbRow = {
   id: string;
@@ -60,6 +81,13 @@ type SubscriptionDbRow = {
   source: string;
   founder: boolean;
   founder_until: string | null;
+  scheduled_plan_slug: string | null;
+  subscription_pauses?: {
+    id: string;
+    starts_on: string;
+    ends_on: string;
+    reason: string;
+  }[];
 };
 
 function toSubscription(r: SubscriptionDbRow): SubscriptionRow {
@@ -76,6 +104,13 @@ function toSubscription(r: SubscriptionDbRow): SubscriptionRow {
     source: r.source,
     founder: r.founder,
     founderUntil: r.founder_until,
+    scheduledPlanSlug: r.scheduled_plan_slug,
+    pauses: (r.subscription_pauses ?? []).map((p) => ({
+      id: p.id,
+      startsOn: p.starts_on,
+      endsOn: p.ends_on,
+      reason: p.reason,
+    })),
   };
 }
 
@@ -180,6 +215,20 @@ export async function countFounders(): Promise<number> {
     .size;
 }
 
+/** The vendor's kept founder badge number, or null if they never were one. */
+export async function loadFounderNumber(
+  vendorId: string,
+): Promise<number | null> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase
+    .from("founder_numbers")
+    .select("number")
+    .eq("vendor_id", vendorId)
+    .maybeSingle();
+  if (error) throw new Error(`founder number read: ${error.message}`);
+  return (data?.number as number | undefined) ?? null;
+}
+
 export interface GrantInput {
   vendorId: string;
   plan: Plan;
@@ -222,6 +271,7 @@ export async function grantSubscription(input: GrantInput): Promise<string> {
         .update({
           ...fields,
           ...founderFields,
+          scheduled_plan_slug: null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", existing.id)
@@ -239,8 +289,18 @@ export async function grantSubscription(input: GrantInput): Promise<string> {
         .single();
   const { data, error } = await write;
   if (error) {
-    if (error.code === "23514" && error.message.includes("founder cap")) {
+    if (
+      error.code === "23514" &&
+      (error.message.includes("founder cap") ||
+        error.message.includes("no founder number free"))
+    ) {
       throw new FounderCapError();
+    }
+    if (
+      error.code === "23514" &&
+      error.message.includes("founder offer closed")
+    ) {
+      throw new FounderClosedError();
     }
     throw new Error(`grant subscription: ${error.message}`);
   }
@@ -262,6 +322,108 @@ export async function cancelSubscription(
     .select("id");
   if (error) throw new Error(`cancel subscription: ${error.message}`);
   return (data ?? []).length > 0;
+}
+
+/** Move a subscription to a dearer plan now, keeping its period and billing
+ *  date: the new row is written first so a failure never leaves the vendor
+ *  with no plan. */
+export async function upgradeSubscription(input: {
+  vendorId: string;
+  from: SubscriptionRow;
+  plan: Plan;
+  priceCents: number;
+}): Promise<string> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .insert({
+      vendor_id: input.vendorId,
+      plan_slug: input.plan.slug,
+      interval: input.from.interval,
+      current_period_start: input.from.currentPeriodStart,
+      current_period_end: input.from.currentPeriodEnd,
+      renewal_anchor: input.from.renewalAnchor,
+      locked_price_cents: input.priceCents,
+      included_kits: input.plan.includedKits,
+      source: input.from.source,
+      scheduled_plan_slug: null,
+    })
+    .select("id")
+    .single();
+  if (error) throw new Error(`upgrade subscription: ${error.message}`);
+  if (!(await cancelSubscription(input.vendorId, input.from.id))) {
+    throw new Error("upgrade subscription: old plan was already closed");
+  }
+  return data.id as string;
+}
+
+/** Set (or clear, with null) the plan a subscription changes to at renewal;
+ *  false if it was not the vendor's active subscription. */
+export async function setScheduledPlan(
+  vendorId: string,
+  subscriptionId: string,
+  planSlug: string | null,
+): Promise<boolean> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .update({
+      scheduled_plan_slug: planSlug,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", subscriptionId)
+    .eq("vendor_id", vendorId)
+    .eq("status", "active")
+    .select("id");
+  if (error) throw new Error(`schedule plan: ${error.message}`);
+  return (data ?? []).length > 0;
+}
+
+const PAUSE_ERRORS: [string, PauseError["kind"]][] = [
+  ["cap of 92", "cap"],
+  ["overlaps", "overlap"],
+  ["in the past", "past"],
+  ["not active", "inactive"],
+  ["no longer active", "inactive"],
+  ["after the paid period", "late"],
+  ["already ended", "ended"],
+];
+
+function pauseFailure(prefix: string, error: { message: string }): Error {
+  const known = PAUSE_ERRORS.find(([text]) => error.message.includes(text));
+  return known
+    ? new PauseError(known[1])
+    : new Error(`${prefix}: ${error.message}`);
+}
+
+/** Pause an active subscription for [startsOn, endsOn) (YYYY-MM-DD). The
+ *  database enforces the 92-days-a-year cap and extends the paid period. */
+export async function pauseSubscription(input: {
+  subscriptionId: string;
+  startsOn: string;
+  endsOn: string;
+  reason: string;
+  createdBy: string;
+}): Promise<string> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase.rpc("pause_subscription", {
+    p_subscription_id: input.subscriptionId,
+    p_starts_on: input.startsOn,
+    p_ends_on: input.endsOn,
+    p_reason: input.reason,
+    p_created_by: input.createdBy,
+  });
+  if (error) throw pauseFailure("pause subscription", error);
+  return data as string;
+}
+
+export async function endPause(pauseId: string, today: string): Promise<void> {
+  const supabase = await createServiceClient();
+  const { error } = await supabase.rpc("end_pause", {
+    p_pause_id: pauseId,
+    p_today: today,
+  });
+  if (error) throw pauseFailure("end pause", error);
 }
 
 export async function mintEventPass(input: {

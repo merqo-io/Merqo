@@ -57,6 +57,7 @@ describe("AdminLayout", () => {
       ["Team", "/admin/team"],
       ["Feedback", "/admin/feedback"],
       ["Activity", "/admin/activity"],
+      ["Billing", "/admin/billing"],
     ]) {
       expect(more.getByRole("link", { name: label })).toHaveAttribute(
         "href",

@@ -1,8 +1,18 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 
-const { getUser, getOrCreateVendorProfile, maybeSingle } = vi.hoisted(() => ({
+const {
+  getUser,
+  getOrCreateVendorProfile,
+  maybeSingle,
+  loadFounderNumber,
+  loadVendorTrial,
+  loadVendorSubscriptions,
+} = vi.hoisted(() => ({
+  loadFounderNumber: vi.fn(),
+  loadVendorTrial: vi.fn(),
+  loadVendorSubscriptions: vi.fn(),
   getUser: vi.fn(),
   getOrCreateVendorProfile: vi.fn(),
   maybeSingle: vi.fn(),
@@ -17,6 +27,11 @@ vi.mock("@/lib/supabase/server", () => ({
 vi.mock("@/lib/supabase/client", () => ({
   createClient: () => ({ auth: { updateUser: vi.fn() } }),
 }));
+vi.mock("@/lib/entitlements/store", () => ({
+  loadFounderNumber,
+  loadVendorSubscriptions,
+}));
+vi.mock("@/lib/entitlements/trial-store", () => ({ loadVendorTrial }));
 vi.mock("@/lib/merqo-vendor-profile", () => ({ getOrCreateVendorProfile }));
 vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
@@ -32,6 +47,93 @@ import ProfilePage from "./page";
 describe("ProfilePage", () => {
   beforeEach(() => {
     maybeSingle.mockResolvedValue({ data: null, error: null });
+    loadFounderNumber.mockResolvedValue(null);
+    loadVendorTrial.mockResolvedValue(null);
+    loadVendorSubscriptions.mockResolvedValue([]);
+  });
+
+  async function renderAs() {
+    getUser.mockResolvedValue({
+      data: { user: { id: "v1", email: "v@x.sg", user_metadata: {} } },
+    });
+    getOrCreateVendorProfile.mockResolvedValue({
+      vendor_id: "v1",
+      stall_name: "Kopi",
+      social_links: {},
+    });
+    render(await ProfilePage());
+  }
+
+  it("shows the founding merchant badge for a founder", async () => {
+    loadFounderNumber.mockResolvedValue(3);
+    await renderAs();
+    expect(screen.getByText("Founding merchant #03")).toBeInTheDocument();
+  });
+
+  it("shows the days left while a trial is running", async () => {
+    loadVendorTrial.mockResolvedValue({
+      status: "active",
+      endsAt: new Date(Date.now() + 5.5 * 86_400_000).toISOString(),
+    });
+    await renderAs();
+    expect(screen.getByText("Pro trial: 6 days left")).toBeInTheDocument();
+  });
+
+  it("shows the days left to renew during the grace week", async () => {
+    loadVendorSubscriptions.mockResolvedValue([
+      {
+        status: "active",
+        source: "admin_manual",
+        currentPeriodEnd: new Date(Date.now() - 2 * 86_400_000).toISOString(),
+      },
+    ]);
+    await renderAs();
+    expect(screen.getByText("Renewal due in 5 days")).toBeInTheDocument();
+  });
+
+  it("shows when a paused plan resumes", async () => {
+    const day = (offset: number) =>
+      new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
+    loadVendorSubscriptions.mockResolvedValue([
+      {
+        status: "active",
+        source: "admin_manual",
+        currentPeriodEnd: new Date(Date.now() + 30 * 86_400_000).toISOString(),
+        pauses: [{ startsOn: day(-1), endsOn: day(9) }],
+      },
+    ]);
+    await renderAs();
+    expect(screen.getByText(`Plan paused until ${day(9)}`)).toBeInTheDocument();
+  });
+
+  it("shows no plan status when the subscription lookup fails", async () => {
+    loadVendorSubscriptions.mockRejectedValue(new Error("db"));
+    await renderAs();
+    expect(screen.queryByText(/Renewal due|Plan paused/)).toBeNull();
+  });
+
+  it("shows nothing for a blocked or expired trial", async () => {
+    loadVendorTrial.mockResolvedValue({
+      status: "blocked",
+      endsAt: new Date(Date.now() + 5 * 86_400_000).toISOString(),
+    });
+    await renderAs();
+    expect(screen.queryByText(/Pro trial/)).toBeNull();
+  });
+
+  it("shows no trial text when the trial lookup fails", async () => {
+    loadVendorTrial.mockRejectedValue(new Error("db"));
+    await renderAs();
+    expect(screen.queryByText(/Pro trial/)).toBeNull();
+  });
+
+  it("shows no badge for a non-founder or when the lookup fails", async () => {
+    await renderAs();
+    expect(screen.queryByText(/Founding merchant/)).not.toBeInTheDocument();
+    cleanup();
+    loadFounderNumber.mockRejectedValue(new Error("db"));
+    await renderAs();
+    expect(screen.queryByText(/Founding merchant/)).not.toBeInTheDocument();
   });
 
   it("renders the form with the vendor's shared profile and auth-user fields", async () => {

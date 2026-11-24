@@ -44,6 +44,7 @@ vi.mock("@/lib/entitlements/store", () => ({
   FOUNDER_CAP: 20,
   findVendorId: findVendorIdMock,
   countFounders: countFoundersMock,
+  loadFounderNumber: vi.fn().mockResolvedValue(7),
   loadVendorSubscriptions: vi.fn().mockResolvedValue([
     {
       id: "sub-1",
@@ -133,6 +134,21 @@ vi.mock("@/lib/subscription-requests", () => ({
 vi.mock("@/lib/event-pass-usage-client", () => ({
   getEventPassUsage: vi.fn().mockResolvedValue({ ok: false }),
 }));
+vi.mock("@/lib/entitlements/trial-store", () => ({
+  loadVendorTrial: vi.fn().mockResolvedValue(null),
+}));
+vi.mock("@/lib/entitlements/ledger", () => ({
+  listVendorPayments: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("../../billing/payment-actions", () => ({
+  recordPaymentAction: vi.fn(),
+  deletePaymentAction: vi.fn(),
+}));
+vi.mock("./trial-actions", () => ({
+  checkFirstOrderAction: vi.fn(),
+  setTrialUenAction: vi.fn(),
+  overrideTrialAction: vi.fn(),
+}));
 vi.mock("./subscription-actions", () => ({
   settleEventPassAction: vi.fn(),
   grantSubscriptionAction: vi.fn(),
@@ -205,6 +221,23 @@ describe("VendorDetailPage", () => {
     expect(
       screen.getByText("No incidents in the last 72 hours"),
     ).toBeInTheDocument();
+  });
+
+  it("shows the vendor's payments with a record form", async () => {
+    getVendorActivityMock.mockResolvedValue({ ok: false });
+    render(
+      await VendorDetailPage({
+        params: Promise.resolve({ email: "vendor@business.sg" }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+    expect(
+      screen.getByRole("heading", { name: "Payments" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Record payment" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("No payments recorded yet.")).toBeInTheDocument();
   });
 
   it("renders a kit's incidents on its activity card", async () => {
@@ -306,7 +339,9 @@ describe("VendorDetailPage", () => {
     expect(
       screen.getByRole("switch", { name: /Replace current plan \(.*\)/ }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Founder until 2099-01-01/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Founder #07 until 2099-01-01/),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(/Founder slots left: 13 of 20/),
     ).toBeInTheDocument();

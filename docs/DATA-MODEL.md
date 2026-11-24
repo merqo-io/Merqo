@@ -22,6 +22,53 @@ from qkit (`GET /api/merqo/event-pass-usage`, bearer `metrics_secret`) and store
 cups and the top-up (`eventPassChargeCents` minus `prepaid_cents`, floored at 0).
 RLS and grants are unchanged.
 
+**Free trial (0046):** `trials` holds one row per vendor (`vendor_id` unique, nullable, `on delete set null`
+so an erased account still counts as having used a trial). A trial is 30 days of Pro from the vendor's first
+qkit order (`first_order_at`), not from sign-up. `status` is `active`, `blocked`, `overridden` or `ended`;
+an expired trial is read as Free by `deriveEntitlements`, no sweep flips it. `email_normalized` (lowercase,
+`+tag` dropped, Gmail dots dropped; done in `src/lib/entitlements/trial.ts`) and `paynow_uen` are indexed
+but deliberately not unique: `start_trial()` inserts `blocked` when another non-blocked row shares either
+value, and keeps the row as the record. `set_trial_uen()` re-runs that match and blocks a running trial;
+`override_trial()` starts a fresh 30 days with a required reason. `trial_candidates()` feeds the daily
+cron (least recently checked first, using `trial_checks`). RLS is on, the team reads, and every write goes
+through service-role-only functions. Trials are not subscriptions: nothing is charged.
+
+**Grace, pauses and plan changes (0047):** grace is computed on read, not stored: an active `admin_manual`
+subscription keeps its plan for 7 days after `current_period_end`, and the admin renew action ends it.
+`subscription_pauses` holds one row per pause (`ends_on` exclusive). `pause_subscription()` takes a per-vendor
+advisory lock, rejects overlaps and any pause that takes the vendor past 92 paused days in a rolling 365
+(counted per vendor, so a plan change does not reset it), then moves `current_period_end` out by the paused
+days; `end_pause()` gives unused days back. A running pause grants nothing and the vendor falls back to a
+trial or Free. `subscriptions.scheduled_plan_slug` holds a downgrade that applies when the admin renews;
+an upgrade ends the old row and inserts a new one on the same period and billing date. Founder rows
+are not changed through this path. Pro-rata leaves paused days out of both the days in the period and
+the days left. A pause must start on or before `current_period_end` and is refused once the subscription
+is past grace; the status check happens inside the row lock. A pause on a founder row moves
+`founder_until` out by the paused days and `end_pause()` takes them back; founder benefits follow the
+plan, so they continue through grace and are off only while paused. `0047` also replaces
+`trial_candidates()` and `start_trial()`: a vendor who ever had a subscription row, in any status or
+source, is not a candidate and `start_trial()` returns `ineligible` without writing a trial.
+
+**Payments ledger and revenue cap (0048):** `merqo.payments` holds the PayNow and bank transfers the team
+records by hand (integer `amount_cents` above 0, `received_on`, `method`, optional `reference` and `note`).
+`vendor_id`, `subscription_id` and `recorded_by` become null if their rows go, so the ledger survives an
+erased account. RLS is team-read; writes go through the service role. `billing_config.revenue_cap_cents`
+and `revenue_window_start` are null until the owner enters them in `/admin/billing`; with no window start
+the total counts from 1 January of the Singapore year. `revenue_total(date)` and `recent_payments(int)`
+are service-role-only. The cap is a value the owner types in, never part of code or seed data.
+
+**Founder numbers and billing open date (0045):** `founder_numbers` (`number` PK 1 to 20, nullable unique
+`vendor_id` to `auth.users` with `on delete set null`, `assigned_at`) holds the founding merchant badge
+(#01 to #20). A trigger on `subscriptions` gives a vendor the lowest free number the first
+time they get a founder row; numbers are kept after `founder_until` passes and after an account is erased (the row stays with a null `vendor_id`, so the number is retired and never reused) and existing
+founders were backfilled by earliest founder `created_at`. `billing_config` is a one-row
+table (`id` boolean PK) whose `billing_opens_at` is set on `/admin/billing`; once now is
+past it plus 60 days, `enforce_founder_cap()` refuses a new founder vendor (existing
+founders can still be updated). `founder_spots_left()` (security definer, executable by
+anon and authenticated) returns 0 when closed by date, else 20 minus the numbers held or retired (an erased founder does not free a spot),
+and nothing else. Both tables are team-read only through RLS; writes go through the
+service role or the trigger.
+
 **Customer Telegram identity (0019, 2026-08-16):** `customers` (0018) was widened
 — surrogate `id` PK, `phone` now nullable, plus `telegram_chat_id`/
 `consent_given_at`/`pending_notify_ref` and a `customers_identity_check`

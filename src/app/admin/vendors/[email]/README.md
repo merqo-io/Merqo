@@ -40,7 +40,7 @@ own admin console separately.
   with the expected hash and never the raw email.
 - `subscription-section.tsx`: server-rendered Subscriptions, Event passes and
   Kit entitlements sections. Shows each subscription's locked price, period and
-  founder window, an open request banner, the grant form, event pass minting and
+  founder window (with the kept number, for example "Founder #07"), an open request banner, the grant form, event pass minting and
   the last push per kit (status, failure kind and HTTP code, last success).
   Dates are shown in Singapore time (`sgDay`), a canceled or lapsed
   subscription reads "Cancelled. Period was A to B." instead of the renew hint,
@@ -48,7 +48,7 @@ own admin console separately.
   (`subscription-labels.ts`, with `subscription-labels.test.ts`).
 - `subscription-controls.tsx`: client controls. `GrantSubscriptionForm` (active
   plans only, price defaulting from the catalog via `annualCents` for annual,
-  founder switch locked at 0 slots left, a "Replace current plan" switch when an active plan exists, period start and renewal anchor),
+  founder switch locked at 0 slots left (turning it on selects the annual interval and ten months of the plan price, S$199 for Pro), a "Replace current plan" switch when an active plan exists, period start and renewal anchor),
   `CancelSubscriptionButton`, `MintEventPassForm`, `CancelEventPassButton`,
   `RepushButton`. Plan names come from `planLabel` (`qkit` shows as Pro). `subscription-controls.dom.test.tsx` covers them.
 - `subscription-actions.ts`: zod-validated, team-gated server actions
@@ -56,7 +56,7 @@ own admin console separately.
   `cancelEventPassAction`, `repushEntitlementsAction`). Each write is audited,
   pushes the vendor's entitlements to the kits and revalidates; a grant or cancel
   that carries a `requestId` also resolves that request. A founder grant needs the `qkit` or `all_access` plan ("Founders need a Pro
-  subscription."), and a full founder cap shows "All 20 founder slots are taken." `subscription-actions.test.ts` covers them.
+  subscription."), and a full founder cap shows "All 20 founder slots are taken." and a closed offer "The founder offer has closed." `subscription-actions.test.ts` covers them.
 - Event pass settle: for an active pass that has ended, `subscription-section.tsx`
   shows the cups read live from qkit (`getEventPassUsage`, loaded in `page.tsx`),
   total charge, prepaid and top-up due, with a `SettleEventPassButton`. Usage
@@ -66,6 +66,8 @@ own admin console separately.
   the pass settled and audits `settle_event_pass`. Merqo charges nobody. The
   top-up comes from `eventPassTopUpCents`, shared by the section and the action.
   `subscription-section.dom.test.tsx` covers the view.
+- A "Payments" panel on `page.tsx` reuses `../../billing/payment-form.tsx` (prefilled with this vendor) and `payment-list.tsx` to record and list this vendor's payments through `listVendorPayments`.
+- `trial-section.tsx`, `trial-controls.tsx`, `trial-actions.ts`: the "Free trial" panel (status, days left, PayNow/UEN field that re-runs the match, "Check first order now", and "Override and start trial" with a required reason) and its zod-validated, team-gated actions. `trial-actions.test.ts` and `trial-section.dom.test.tsx` cover them.
 - `vendor-activity-card.tsx` — `VendorActivityCard({ slug, result, now })`.
   Renders nothing when `!result.ok` or the kit reports `active: false`;
   otherwise a `StatusBadge` (skipped entirely when `status` is `null` —
@@ -105,3 +107,5 @@ Buttons, inputs, labels, selects, switches and tooltips used here, and cn, are i
 Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
 
 Empty states use the shared `EmptyState size="compact"` from `@merqo/ui`; there is no local dashed box.
+
+Pause, plan-change and scheduled-downgrade controls (`lifecycle-actions.ts`, `lifecycle-controls.tsx`, `subscription-lifecycle.tsx`) show only on active `admin_manual` subscriptions. The pro-rata amount owed is shown here and never to the vendor. A scheduled downgrade is applied by the existing renew action in `subscription-actions.ts`, which ends grace.

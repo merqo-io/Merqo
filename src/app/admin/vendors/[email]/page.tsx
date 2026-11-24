@@ -14,6 +14,7 @@ import { loadPlanCatalog } from "@/lib/pricing/catalog";
 import {
   countFounders,
   findVendorId,
+  loadFounderNumber,
   loadSyncRows,
   loadVendorEventPasses,
   loadVendorSubscriptions,
@@ -23,6 +24,11 @@ import { getPendingRequest } from "@/lib/subscription-requests";
 import { VendorActivityCard } from "./vendor-activity-card";
 import { getEventPassUsage } from "@/lib/event-pass-usage-client";
 import { SubscriptionSection } from "./subscription-section";
+import { TrialSection } from "./trial-section";
+import { loadVendorTrial } from "@/lib/entitlements/trial-store";
+import { listVendorPayments } from "@/lib/entitlements/ledger";
+import { PaymentForm } from "../../billing/payment-form";
+import { PaymentList } from "../../billing/payment-list";
 
 export const revalidate = 0;
 
@@ -36,17 +42,25 @@ export async function generateMetadata({
 }
 
 async function loadBilling(vendorId: string, requestId: string | undefined) {
-  const [subscriptions, eventPasses, syncRows, founderCount, catalog, request] =
-    await Promise.all([
-      loadVendorSubscriptions(vendorId),
-      loadVendorEventPasses(vendorId),
-      loadSyncRows(vendorId),
-      countFounders(),
-      loadPlanCatalog(),
-      z.string().uuid().safeParse(requestId).success
-        ? getPendingRequest(requestId as string, vendorId)
-        : null,
-    ]);
+  const [
+    subscriptions,
+    eventPasses,
+    syncRows,
+    founderCount,
+    founderNumber,
+    catalog,
+    request,
+  ] = await Promise.all([
+    loadVendorSubscriptions(vendorId),
+    loadVendorEventPasses(vendorId),
+    loadSyncRows(vendorId),
+    countFounders(),
+    loadFounderNumber(vendorId),
+    loadPlanCatalog(),
+    z.string().uuid().safeParse(requestId).success
+      ? getPendingRequest(requestId as string, vendorId)
+      : null,
+  ]);
   const pass = catalog.find((p) => p.kind === "event_pass" && p.active);
   const nowMs = Date.now();
   // Usage is only meaningful once a pass has started; settled and cancelled
@@ -75,6 +89,7 @@ async function loadBilling(vendorId: string, requestId: string | undefined) {
     passUsage,
     syncRows,
     founderCount,
+    founderNumber,
     plans: catalog.filter(
       (p) =>
         p.active &&
@@ -121,7 +136,13 @@ export default async function VendorDetailPage({
       .map((p) => getVendorActivity(p, grant.email)),
   );
   const vendorId = await findVendorId(grant.email);
-  const billing = vendorId ? await loadBilling(vendorId, requestId) : null;
+  const [billing, trial, payments] = vendorId
+    ? await Promise.all([
+        loadBilling(vendorId, requestId),
+        loadVendorTrial(vendorId),
+        listVendorPayments(vendorId, grant.email),
+      ])
+    : [null, null, []];
   // eslint-disable-next-line react-hooks/purity -- the wall clock is read once per request on purpose
   const now = Date.now();
 
@@ -187,6 +208,22 @@ export default async function VendorDetailPage({
           size="compact"
           title="This vendor has no Merqo account yet, so subscriptions and event passes unlock after they sign in once."
         />
+      )}
+
+      {billing && (
+        <TrialSection email={grant.email} trial={trial} nowMs={now} />
+      )}
+
+      {billing && (
+        <section className="rounded-xl border bg-card p-5 shadow-sm">
+          <h2 className="font-display text-lg font-bold">Payments</h2>
+          <PaymentForm fixedEmail={grant.email} today={sgDay(now)} />
+          <PaymentList
+            payments={payments}
+            email={grant.email}
+            showVendor={false}
+          />
+        </section>
       )}
 
       {activeSlugs.size > 0 && (

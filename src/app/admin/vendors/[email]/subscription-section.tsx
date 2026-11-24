@@ -13,11 +13,16 @@ import {
 } from "@/lib/pricing/calc";
 import type { EventPassUsageResult } from "@/lib/event-pass-usage-client";
 import { FOUNDER_CAP } from "@/lib/entitlements/store";
+import { formatFounderNumber } from "@/lib/entitlements/founder";
 import type {
   EventPassRow,
   SubscriptionRow,
   SyncRow,
 } from "@/lib/entitlements/store";
+import {
+  SubscriptionLifecycle,
+  lifecycleBadge,
+} from "./subscription-lifecycle";
 import {
   CancelEventPassButton,
   CancelSubscriptionButton,
@@ -31,11 +36,19 @@ import {
 
 const day = sgDay;
 
-function founderLabel(until: string | null, nowMs: number): string {
-  if (!until) return "Founder";
+function founderLabel(
+  until: string | null,
+  nowMs: number,
+  founderNumber: number | null,
+): string {
+  const name =
+    founderNumber === null
+      ? "Founder"
+      : `Founder ${formatFounderNumber(founderNumber)}`;
+  if (!until) return name;
   return Date.parse(until) > nowMs
-    ? `Founder until ${day(until)}`
-    : "Founder (benefits ended)";
+    ? `${name} until ${day(until)}`
+    : `${name} (benefits ended)`;
 }
 
 const SYNC_BADGES = {
@@ -130,6 +143,7 @@ export function SubscriptionSection({
   eventTerms,
   passUsage,
   founderCount,
+  founderNumber,
   today,
   request,
   nowMs,
@@ -142,6 +156,7 @@ export function SubscriptionSection({
   eventTerms: PassTerms | null;
   passUsage: Record<string, EventPassUsageResult>;
   founderCount: number;
+  founderNumber: number | null;
   today: string;
   request: (RequestPrefill & { kind: string }) | null;
   nowMs: number;
@@ -164,53 +179,64 @@ export function SubscriptionSection({
           </p>
         ) : (
           <ul className="space-y-2">
-            {subscriptions.map((s) => (
-              <li
-                key={s.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-card p-3.5 shadow-sm"
-              >
-                <div className="min-w-0 space-y-1">
-                  <p className="flex flex-wrap items-center gap-2 text-sm">
-                    <span className="font-medium">{planLabel(s.planSlug)}</span>
-                    <Badge
-                      variant={s.status === "active" ? "success" : "muted"}
-                      className="border-0 px-1.5 py-0"
-                    >
-                      {statusLabel(s.status)}
-                    </Badge>
-                    {s.status === "active" &&
-                      Date.parse(s.currentPeriodEnd) <= nowMs && (
+            {subscriptions.map((s) => {
+              const badge = lifecycleBadge(s, nowMs);
+              return (
+                <li
+                  key={s.id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-card p-3.5 shadow-sm"
+                >
+                  <div className="min-w-0 space-y-1">
+                    <p className="flex flex-wrap items-center gap-2 text-sm">
+                      <span className="font-medium">
+                        {planLabel(s.planSlug)}
+                      </span>
+                      <Badge
+                        variant={s.status === "active" ? "success" : "muted"}
+                        className="border-0 px-1.5 py-0"
+                      >
+                        {statusLabel(s.status)}
+                      </Badge>
+                      {badge && (
                         <Badge
-                          variant="destructive"
+                          variant={badge.variant}
                           className="border-0 px-1.5 py-0"
                         >
-                          Lapsed
+                          {badge.label}
                         </Badge>
                       )}
-                    {s.founder && (
-                      <Badge variant="gold" className="border-0 px-1.5 py-0">
-                        {founderLabel(s.founderUntil, nowMs)}
-                      </Badge>
-                    )}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatSgd(s.lockedPriceCents)} per {s.interval}.{" "}
-                    {subscriptionPeriodLine(s, nowMs, {
-                      start: day(s.currentPeriodStart),
-                      end: day(s.currentPeriodEnd),
-                    })}
-                  </p>
-                </div>
-                {s.status === "active" && (
-                  <CancelSubscriptionButton
+                      {s.founder && (
+                        <Badge variant="gold" className="border-0 px-1.5 py-0">
+                          {founderLabel(s.founderUntil, nowMs, founderNumber)}
+                        </Badge>
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatSgd(s.lockedPriceCents)} per {s.interval}.{" "}
+                      {subscriptionPeriodLine(s, nowMs, {
+                        start: day(s.currentPeriodStart),
+                        end: day(s.currentPeriodEnd),
+                      })}
+                    </p>
+                  </div>
+                  {s.status === "active" && (
+                    <CancelSubscriptionButton
+                      email={email}
+                      subscriptionId={s.id}
+                      label={planLabel(s.planSlug)}
+                      requestId={request?.id}
+                    />
+                  )}
+                  <SubscriptionLifecycle
                     email={email}
-                    subscriptionId={s.id}
-                    label={planLabel(s.planSlug)}
-                    requestId={request?.id}
+                    sub={s}
+                    plans={plans}
+                    today={today}
+                    nowMs={nowMs}
                   />
-                )}
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
         <div className="rounded-xl border bg-card p-5 shadow-sm">

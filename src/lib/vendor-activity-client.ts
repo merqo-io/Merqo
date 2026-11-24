@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   vendorActivityPayloadSchema,
   type VendorActivityPayload,
@@ -10,9 +11,35 @@ type VendorActivitySource = Pick<
   "slug" | "app_url" | "metrics_secret"
 >;
 
+export type VendorActivityData = VendorActivityPayload & {
+  firstOrderAt?: string | null;
+};
+
 export type VendorActivityResult =
-  | { ok: true; slug: string; data: VendorActivityPayload }
+  | { ok: true; slug: string; data: VendorActivityData }
   | { ok: false; slug: string };
+
+const firstOrderSchema = z.object({
+  firstOrderAt: z.string().datetime({ offset: true }).nullable(),
+});
+
+// Kits that have not shipped firstOrderAt yet still validate; a malformed
+// value is dropped rather than failing the whole card.
+const activitySchema = {
+  safeParse(
+    input: unknown,
+  ): { success: true; data: VendorActivityData } | { success: false } {
+    const base = vendorActivityPayloadSchema.safeParse(input);
+    if (!base.success) return { success: false };
+    const first = firstOrderSchema.safeParse(input);
+    return {
+      success: true,
+      data: first.success
+        ? { ...base.data, firstOrderAt: first.data.firstOrderAt }
+        : base.data,
+    };
+  },
+};
 
 /** One kit's cross-schema activity summary for a single vendor — the
  *  `/admin/vendors/[email]` detail page's per-kit card. Never throws, same
@@ -39,7 +66,7 @@ export async function getVendorActivity(
 
   const result = await fetchKitJson(
     url,
-    vendorActivityPayloadSchema,
+    activitySchema,
     { headers: { Authorization: `Bearer ${kit.metrics_secret}` } },
     opts.timeoutMs ?? 3000,
   );
