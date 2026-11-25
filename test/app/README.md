@@ -23,3 +23,5 @@ Tests that mocked the deleted local primitive paths import from `@merqo/ui/primi
 `savings-summary.test.tsx` asserts the dashboard Pro estimate line ("more with Pro features") shows only when there is upside and never reads as an upgrade prompt.
 
 Both login test files mock `useSearchParams` because the login page reads `?error=link`.
+
+Money shows through `formatMoney` and relative times through `Timestamp`, both from `@merqo/ui`; there are no local copies of either.

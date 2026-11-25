@@ -11,3 +11,5 @@ Page header follows the shared admin pattern (Admin eyebrow, display title equal
 Tiles show "No data yet" in place of a figure when a kit does not report one.
 
 Empty states use the shared `EmptyState size="compact"` from `@merqo/ui`; there is no local dashed box.
+
+Money shows through `formatMoney` and relative times through `Timestamp`, both from `@merqo/ui`; there are no local copies of either.
