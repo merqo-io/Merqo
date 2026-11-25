@@ -67,7 +67,7 @@ describe("VendorKitCard", () => {
       </TooltipProvider>,
     );
     expect(screen.getByText(/saved this month/)).toBeInTheDocument();
-    expect(screen.getByText("$230", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("S$230.00", { exact: false })).toBeInTheDocument();
   });
 
   it("shows the Pro upside line on a free-plan card with upside", () => {

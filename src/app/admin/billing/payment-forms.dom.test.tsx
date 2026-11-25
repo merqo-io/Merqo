@@ -145,7 +145,7 @@ describe("PaymentList", () => {
 
   it("lists a payment with its vendor, method and reference", () => {
     render(<PaymentList payments={[row]} showVendor />);
-    expect(screen.getByText("S$1234.56")).toBeInTheDocument();
+    expect(screen.getByText("S$1,234.56")).toBeInTheDocument();
     expect(screen.getByText("Bank transfer")).toBeInTheDocument();
     expect(screen.getByText("v@t.sg")).toBeInTheDocument();
     expect(screen.getByText("ref-1")).toBeInTheDocument();

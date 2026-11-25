@@ -28,7 +28,7 @@ it("shows reporting metrics and freshness diagnostics", () => {
   render(<ProductHealthCard name="Queue" result={result} now={now} />);
   expect(screen.getByText("Reporting")).toBeInTheDocument();
   expect(screen.getByText("200 ms")).toBeInTheDocument();
-  expect(screen.getByText("$10")).toBeInTheDocument();
+  expect(screen.getByText("S$10.00")).toBeInTheDocument();
 });
 it("keeps latency visible for a lagging product", () => {
   render(
@@ -56,6 +56,6 @@ it("shows down status and latency without invented business figures", () => {
   );
   expect(screen.getByText("Down")).toBeInTheDocument();
   expect(screen.getByText("5000 ms")).toBeInTheDocument();
-  expect(screen.queryByText("$10")).not.toBeInTheDocument();
+  expect(screen.queryByText("S$10.00")).not.toBeInTheDocument();
   expect(screen.getAllByText("No data yet")).toHaveLength(4);
 });
