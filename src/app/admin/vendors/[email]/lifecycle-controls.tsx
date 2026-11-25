@@ -1,8 +1,8 @@
 "use client";
+import { formatMoney } from "@merqo/ui";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAsyncAction } from "@/hooks/use-async-action";
-import { formatSgd } from "@/lib/pricing/format";
 import { sgDay } from "@/lib/sg-date";
 import {
   Button,
@@ -162,7 +162,7 @@ export function ChangePlanForm({
         toast.error(res.error);
       } else if (res.kind === "upgrade") {
         toast.success(
-          `Now on ${chosen.label}. Collect ${formatSgd(res.owedCents)} by PayNow.`,
+          `Now on ${chosen.label}. Collect ${formatMoney(res.owedCents)} by PayNow.`,
         );
       } else {
         toast.success(

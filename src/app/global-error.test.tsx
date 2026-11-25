@@ -10,7 +10,7 @@ describe("global error boundary", () => {
     render(<GlobalErrorBoundary error={new Error("boom")} reset={reset} />, {
       container: document,
     });
-    expect(screen.getByText("Something went wrong")).toBeTruthy();
+    expect(screen.getByText("Could not load the app")).toBeTruthy();
     expect(
       screen.getByText(/An unexpected error interrupted the console\./),
     ).toBeTruthy();

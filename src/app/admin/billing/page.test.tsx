@@ -58,7 +58,7 @@ describe("BillingPage revenue", () => {
   it("shows the total and no cap when none is set", async () => {
     mocks.revenueTotalSince.mockResolvedValue(123456);
     render(await BillingPage());
-    expect(screen.getByText("S$1234.56")).toBeInTheDocument();
+    expect(screen.getByText("S$1,234.56")).toBeInTheDocument();
     expect(screen.getByText("No cap set")).toBeInTheDocument();
     expect(screen.queryByText("Remaining")).not.toBeInTheDocument();
   });

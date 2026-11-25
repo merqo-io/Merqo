@@ -61,7 +61,9 @@ describe("VendorMetricList", () => {
     expect(screen.getByText("up from 30 last week")).toBeInTheDocument();
     expect(screen.getByText("Avg wait")).toBeInTheDocument();
     expect(screen.getByText("6 min")).toBeInTheDocument();
-    expect(screen.getByText("As of 2m ago")).toBeInTheDocument();
+    expect(screen.getByText("2m ago").closest("p")).toHaveTextContent(
+      "As of 2m ago",
+    );
   });
 
   it("caps supporting chips at three beyond the headline", () => {

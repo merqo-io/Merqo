@@ -33,3 +33,5 @@ layout's `requireMerqoTeam()`. Later billing settings belong here.
 ## Parent
 
 [admin](../README.md)
+
+Money shows through `formatMoney` and relative times through `Timestamp`, both from `@merqo/ui`; there are no local copies of either.

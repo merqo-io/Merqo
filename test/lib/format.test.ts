@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { computeTrend, timeAgo } from "@/lib/format";
+import { formatMoney, formatRelativeTime } from "@merqo/ui";
+import { computeTrend } from "@/lib/format";
 
 describe("computeTrend", () => {
   it("reports an increase", () => {
@@ -23,30 +24,27 @@ describe("computeTrend", () => {
   });
 });
 
-describe("timeAgo", () => {
+describe("shared formatters as merqo renders them", () => {
   const now = Date.parse("2026-07-26T12:00:00Z");
 
-  it("floors under a minute to 'just now'", () => {
-    expect(timeAgo("2026-07-26T11:59:31Z", now)).toBe("just now");
+  it("shows relative times in the coarse units the cards use", () => {
+    expect(formatRelativeTime("2026-07-26T11:59:31Z", now)).toBe("just now");
+    expect(formatRelativeTime("2026-07-26T11:57:00Z", now)).toBe("3m ago");
+    expect(formatRelativeTime("2026-07-26T09:30:00Z", now)).toBe("2h ago");
+    expect(formatRelativeTime("2026-07-23T12:00:00Z", now)).toBe("3d ago");
   });
 
-  it("reports whole minutes", () => {
-    expect(timeAgo("2026-07-26T11:57:00Z", now)).toBe("3m ago");
-  });
-
-  it("reports whole hours once past 60 minutes", () => {
-    expect(timeAgo("2026-07-26T09:30:00Z", now)).toBe("2h ago");
-  });
-
-  it("reports whole days once past 24 hours", () => {
-    expect(timeAgo("2026-07-23T12:00:00Z", now)).toBe("3d ago");
-  });
-
-  it("floors a future timestamp (clock skew) to 'just now'", () => {
-    expect(timeAgo("2026-07-26T12:05:00Z", now)).toBe("just now");
+  it("falls back to the Singapore date after a week", () => {
+    expect(formatRelativeTime("2026-07-10T12:00:00Z", now)).toBe("10 Jul 2026");
   });
 
   it("returns a dash for an unparseable timestamp", () => {
-    expect(timeAgo("not-a-date", now)).toBe("-");
+    expect(formatRelativeTime("not-a-date", now)).toBe("-");
+  });
+
+  it("formats cents as Singapore dollars", () => {
+    expect(formatMoney(1250)).toBe("S$12.50");
+    expect(formatMoney(1600)).toBe("S$16.00");
+    expect(formatMoney(123456)).toBe("S$1,234.56");
   });
 });

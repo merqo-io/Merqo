@@ -1,5 +1,4 @@
-import { InfoTooltip } from "@merqo/ui";
-import { money } from "@/lib/format";
+import { InfoTooltip, formatMoney } from "@merqo/ui";
 import type { VendorSavings } from "@/lib/savings";
 
 /** Page-level total of the per-card savings estimates — see
@@ -12,7 +11,7 @@ export function SavingsSummary({ totals }: { totals: VendorSavings }) {
       <p className="inline-flex flex-wrap items-center gap-1">
         Est.{" "}
         <span className="font-semibold text-foreground">
-          {money(totals.totalCostCentsPerMonth)}
+          {formatMoney(totals.totalCostCentsPerMonth)}
         </span>{" "}
         saved this month · ~{totals.totalHoursPerWeek} hrs/week back across your
         kits
@@ -32,7 +31,7 @@ export function SavingsSummary({ totals }: { totals: VendorSavings }) {
         <p className="mt-1 text-muted-foreground">
           Est.{" "}
           <span className="font-semibold text-foreground">
-            +{money(totals.totalUpsideCostCentsPerMonth)}
+            +{formatMoney(totals.totalUpsideCostCentsPerMonth)}
           </span>{" "}
           more with Pro features
         </p>

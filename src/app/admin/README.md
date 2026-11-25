@@ -153,3 +153,5 @@ Server Actions here return the shared `ActionResult` from `@merqo/ui/kit-api`.
 ## Account menu label
 
 The admin header passes the signed-in email as `accountLabel`; the stall-name label applies to the vendor dashboard only.
+
+Money shows through `formatMoney` and relative times through `Timestamp`, both from `@merqo/ui`; there are no local copies of either.

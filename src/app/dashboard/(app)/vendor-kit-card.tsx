@@ -1,8 +1,7 @@
-import { InfoTooltip } from "@merqo/ui";
+import { InfoTooltip, formatMoney, Timestamp } from "@merqo/ui";
 import type { KitTile } from "@/lib/vendor";
 import type { KitSavings } from "@/lib/savings";
 import type { VendorMetricsResult } from "@/lib/vendor-metrics-client";
-import { money, timeAgo } from "@/lib/format";
 import { tierLabel } from "@merqo/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@merqo/ui/primitives";
@@ -43,7 +42,7 @@ export function VendorKitCard({
         <p className="mt-2 inline-flex flex-wrap items-center gap-1 text-sm text-foreground">
           Est.{" "}
           <span className="font-semibold">
-            {money(savings.costCentsPerMonth)}
+            {formatMoney(savings.costCentsPerMonth)}
           </span>{" "}
           saved this month · ~{savings.hoursPerWeek} hrs/week back
           <InfoTooltip
@@ -80,7 +79,7 @@ export function VendorKitCard({
         <p className="mt-2 text-xs text-muted-foreground">
           Pro saves{" "}
           <span className="font-medium text-foreground">
-            +{money(savings.upsideCostCentsPerMonth)}
+            +{formatMoney(savings.upsideCostCentsPerMonth)}
           </span>{" "}
           more (+{savings.upsideHoursPerWeek} hrs/week)
         </p>
@@ -88,7 +87,7 @@ export function VendorKitCard({
 
       {tile.lastVerifiedAt && (
         <p className="mt-3 text-[0.7rem] text-muted-foreground">
-          Synced {timeAgo(tile.lastVerifiedAt, now)}
+          Synced <Timestamp value={tile.lastVerifiedAt} now={now} />
         </p>
       )}
     </div>

@@ -1,5 +1,6 @@
+import { formatMoney } from "@merqo/ui";
 import { Badge } from "@/components/ui/badge";
-import { formatSgd, planLabel } from "@/lib/pricing/format";
+import { planLabel } from "@/lib/pricing/format";
 import { sgDay } from "@/lib/sg-date";
 import {
   statusLabel,
@@ -83,8 +84,8 @@ function PassUsageLine({
     return (
       <p className="basis-full text-xs text-muted-foreground">
         Settled {pass.settledAt ? day(pass.settledAt) : ""}: {pass.settledCups}{" "}
-        cups, top-up {formatSgd(pass.settledCents)} (
-        {formatSgd(pass.prepaidCents)} prepaid)
+        cups, top-up {formatMoney(pass.settledCents)} (
+        {formatMoney(pass.prepaidCents)} prepaid)
       </p>
     );
   }
@@ -121,8 +122,9 @@ function PassUsageLine({
   return (
     <div className="flex basis-full flex-wrap items-center justify-between gap-2">
       <p className="text-xs text-muted-foreground">
-        {usage.cups} cups, total {formatSgd(total)},{" "}
-        {formatSgd(pass.prepaidCents)} prepaid, top-up due {formatSgd(topUp)}
+        {usage.cups} cups, total {formatMoney(total)},{" "}
+        {formatMoney(pass.prepaidCents)} prepaid, top-up due{" "}
+        {formatMoney(topUp)}
       </p>
       <SettleEventPassButton
         email={email}
@@ -212,7 +214,7 @@ export function SubscriptionSection({
                       )}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {formatSgd(s.lockedPriceCents)} per {s.interval}.{" "}
+                      {formatMoney(s.lockedPriceCents)} per {s.interval}.{" "}
                       {subscriptionPeriodLine(s, nowMs, {
                         start: day(s.currentPeriodStart),
                         end: day(s.currentPeriodEnd),
@@ -280,7 +282,7 @@ export function SubscriptionSection({
                     {statusLabel(p.status)}
                   </Badge>
                   <span className="text-xs text-muted-foreground">
-                    {formatSgd(p.prepaidCents)} prepaid
+                    {formatMoney(p.prepaidCents)} prepaid
                   </span>
                 </p>
                 {p.status === "active" && (
