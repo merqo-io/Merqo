@@ -1,4 +1,4 @@
-import { InfoTooltip, formatMoney, formatRelativeTime } from "@merqo/ui";
+import { InfoTooltip, formatMoney, Timestamp } from "@merqo/ui";
 import type { KitTile } from "@/lib/vendor";
 import type { KitSavings } from "@/lib/savings";
 import type { VendorMetricsResult } from "@/lib/vendor-metrics-client";
@@ -87,7 +87,7 @@ export function VendorKitCard({
 
       {tile.lastVerifiedAt && (
         <p className="mt-3 text-[0.7rem] text-muted-foreground">
-          Synced {formatRelativeTime(tile.lastVerifiedAt, now)}
+          Synced <Timestamp value={tile.lastVerifiedAt} now={now} />
         </p>
       )}
     </div>

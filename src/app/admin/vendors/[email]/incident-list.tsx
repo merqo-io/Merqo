@@ -1,4 +1,4 @@
-import { formatRelativeTime } from "@merqo/ui";
+import { Timestamp } from "@merqo/ui";
 import type { IncidentKind, VendorActivityPayload } from "@merqo/ui/contracts";
 import { Badge } from "@/components/ui/badge";
 
@@ -52,7 +52,7 @@ export function IncidentList({
                     </Badge>
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    last {formatRelativeTime(i.lastAt, now)}
+                    last <Timestamp value={i.lastAt} now={now} />
                   </span>
                 </li>
               ))}
@@ -68,7 +68,7 @@ export function IncidentList({
                   <span>{INCIDENT_LABELS[r.kind]}</span>
                   <span className="font-mono text-foreground">{r.ref}</span>
                   <span className="font-mono">{r.code}</span>
-                  <span>{formatRelativeTime(r.at, now)}</span>
+                  <Timestamp value={r.at} now={now} />
                 </li>
               ))}
             </ul>

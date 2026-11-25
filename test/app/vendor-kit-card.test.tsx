@@ -137,7 +137,9 @@ describe("VendorKitCard", () => {
         now={NOW}
       />,
     );
-    expect(screen.getByText("Synced 3m ago")).toBeInTheDocument();
+    expect(screen.getByText("3m ago").closest("p")).toHaveTextContent(
+      "Synced 3m ago",
+    );
   });
 
   it("omits the last-synced line when the tile has never been through a sync", () => {

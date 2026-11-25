@@ -3,7 +3,7 @@ import {
   DataTable,
   StatusBadge,
   type DataTableColumn,
-  formatRelativeTime,
+  Timestamp,
 } from "@merqo/ui";
 import type { RegistryRow } from "@/lib/products";
 import { listVendorGrants } from "@/lib/admin";
@@ -110,7 +110,7 @@ export async function TenantHealthSection({
         const at = lastIncident(row);
         return (
           <span className="text-xs text-muted-foreground">
-            {at ? formatRelativeTime(at, now) : "-"}
+            {at ? <Timestamp value={at} now={now} /> : "-"}
           </span>
         );
       },

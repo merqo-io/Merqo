@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, it, expect } from "vitest";
 import { IncidentList } from "./incident-list";
 
@@ -25,7 +26,9 @@ describe("IncidentList", () => {
     expect(screen.getByText("Payment callback failed")).toBeInTheDocument();
     expect(screen.getByText("Print stuck")).toBeInTheDocument();
     expect(screen.getByText("×3")).toBeInTheDocument();
-    expect(screen.getByText("last 2h ago")).toBeInTheDocument();
+    expect(screen.getByText("2h ago").closest("span")).toHaveTextContent(
+      "last 2h ago",
+    );
   });
 
   it("renders the reference id and code for recent incidents", () => {
@@ -62,5 +65,23 @@ describe("IncidentList", () => {
     expect(
       screen.getByText("No incidents in the last 72 hours"),
     ).toBeInTheDocument();
+  });
+
+  it("shows the exact Singapore time when a relative time is tapped", async () => {
+    render(
+      <IncidentList
+        now={NOW}
+        incidents={[
+          {
+            kind: "print_stuck",
+            count: 1,
+            lastAt: "2026-10-29T10:00:00Z",
+          },
+        ]}
+      />,
+    );
+
+    await userEvent.setup().click(screen.getByText("2h ago"));
+    expect(await screen.findByText("29 Oct 2026, 6:00 pm")).toBeInTheDocument();
   });
 });

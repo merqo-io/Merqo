@@ -1,4 +1,4 @@
-import { formatRelativeTime } from "@merqo/ui";
+import { Timestamp } from "@merqo/ui";
 import type { VendorMetricsResult } from "@/lib/vendor-metrics-client";
 
 /** The kit tile's stats block — a headline number (the kit's first metric,
@@ -53,7 +53,7 @@ export function VendorMetricList({
       )}
 
       <p className="mt-2 text-[0.7rem] text-muted-foreground">
-        As of {formatRelativeTime(result.data.generated_at, now)}
+        As of <Timestamp value={result.data.generated_at} now={now} />
       </p>
     </div>
   );
