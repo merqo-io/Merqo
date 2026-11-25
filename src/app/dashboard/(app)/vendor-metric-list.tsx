@@ -1,5 +1,5 @@
+import { formatRelativeTime } from "@merqo/ui";
 import type { VendorMetricsResult } from "@/lib/vendor-metrics-client";
-import { timeAgo } from "@/lib/format";
 
 /** The kit tile's stats block — a headline number (the kit's first metric,
  *  in the amber "value moment" accent per the Harbour Control system) plus
@@ -53,7 +53,7 @@ export function VendorMetricList({
       )}
 
       <p className="mt-2 text-[0.7rem] text-muted-foreground">
-        As of {timeAgo(result.data.generated_at, now)}
+        As of {formatRelativeTime(result.data.generated_at, now)}
       </p>
     </div>
   );

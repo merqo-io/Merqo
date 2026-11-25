@@ -1,9 +1,13 @@
 import Link from "next/link";
-import { DataTable, StatusBadge, type DataTableColumn } from "@merqo/ui";
+import {
+  DataTable,
+  StatusBadge,
+  type DataTableColumn,
+  formatRelativeTime,
+} from "@merqo/ui";
 import type { RegistryRow } from "@/lib/products";
 import { listVendorGrants } from "@/lib/admin";
 import { getTenantHealth, type TenantHealthRow } from "@/lib/tenant-health";
-import { timeAgo } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { VENDOR_ACTIVITY_STATUS_CONFIG } from "../vendors/[email]/vendor-activity-status-config";
 
@@ -106,7 +110,7 @@ export async function TenantHealthSection({
         const at = lastIncident(row);
         return (
           <span className="text-xs text-muted-foreground">
-            {at ? timeAgo(at, now) : "-"}
+            {at ? formatRelativeTime(at, now) : "-"}
           </span>
         );
       },

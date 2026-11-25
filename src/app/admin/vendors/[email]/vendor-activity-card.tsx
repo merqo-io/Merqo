@@ -1,7 +1,6 @@
-import { StatTile, StatusBadge } from "@merqo/ui";
+import { StatTile, StatusBadge, formatRelativeTime } from "@merqo/ui";
 import type { VendorActivityResult } from "@/lib/vendor-activity-client";
 import { VENDOR_ACTIVITY_STATUS_CONFIG } from "./vendor-activity-status-config";
-import { timeAgo } from "@/lib/format";
 import { IncidentList } from "./incident-list";
 
 /** One kit's activity summary on the vendor detail page. A kit that
@@ -52,7 +51,7 @@ export function VendorActivityCard({
 
       <p className="mt-3 text-[0.7rem] text-muted-foreground">
         {lastActivityAt
-          ? `Last activity ${timeAgo(lastActivityAt, now)}`
+          ? `Last activity ${formatRelativeTime(lastActivityAt, now)}`
           : "No activity recorded"}
       </p>
     </div>

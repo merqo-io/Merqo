@@ -1,8 +1,3 @@
-/** Integer cents as Singapore dollars, e.g. 1600 -> "S$16.00". */
-export function formatSgd(cents: number): string {
-  return `S$${(cents / 100).toFixed(2)}`;
-}
-
 const PLAN_LABELS: Record<string, string> = {
   free: "Free",
   starter: "Starter",

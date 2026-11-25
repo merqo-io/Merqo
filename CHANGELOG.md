@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- `@merqo/ui` pinned at v0.61.1. Money now shows as `S$12.50` (was `$13` on the admin and dashboard cards, and billing text gains thousands separators), and relative times past a week show the Singapore date instead of `Nd ago`. The local `money`, `timeAgo` and `formatSgd` helpers are replaced by `formatMoney` and `formatRelativeTime`.
 - `/which-plan` and `/faq` now state the conditional billing terms (founder offer, 30-day Pro trial, pause, grace, manual PayNow payment) with no amounts.
 
 ## [0.20.0]

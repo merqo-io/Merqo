@@ -1,8 +1,9 @@
+import { formatMoney } from "@merqo/ui";
 import { ProductHealthBadge } from "./product-health-badge";
 import { DollarSign, Users } from "lucide-react";
 import type { MetricsResult } from "@/lib/metrics-client";
 import { classifyHealth } from "@/lib/health";
-import { money, computeTrend } from "@/lib/format";
+import { computeTrend } from "@/lib/format";
 import { TrendIndicator } from "@/components/dashboard/trend-indicator";
 import { Badge } from "@/components/ui/badge";
 
@@ -44,7 +45,7 @@ export function ProductTile({
   const status = classifyHealth(result, now);
   const ordersTrend = computeTrend(d.orders_7d, d.orders_prev_7d);
   const chips: [string, string][] = [
-    ["GMV (30d)", money(d.gmv_cents_30d)],
+    ["GMV (30d)", formatMoney(d.gmv_cents_30d)],
     ["Signups (7d)", String(d.signups_7d)],
     ["Pro vendors", String(d.pro_vendors)],
   ];
@@ -71,7 +72,7 @@ export function ProductTile({
             Revenue (30d)
           </div>
           <div className="mt-1 font-display text-2xl font-bold tabular-nums">
-            {money(d.revenue_cents_30d)}
+            {formatMoney(d.revenue_cents_30d)}
           </div>
         </div>
         <div>
