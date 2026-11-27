@@ -1,5 +1,4 @@
-import { EmptyState } from "@merqo/ui";
-import { formatSgd } from "@/lib/pricing/format";
+import { EmptyState, formatMoney } from "@merqo/ui";
 import type { PaymentRow } from "@/lib/entitlements/ledger";
 import { DeletePaymentButton } from "./delete-payment-button";
 
@@ -35,7 +34,7 @@ export function PaymentList({
           className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-card p-3.5 text-sm shadow-sm"
         >
           <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="font-medium">{formatSgd(p.amountCents)}</span>
+            <span className="font-medium">{formatMoney(p.amountCents)}</span>
             <span>{p.receivedOn}</span>
             <span>{METHOD_LABELS[p.method]}</span>
             {showVendor && (

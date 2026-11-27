@@ -8,10 +8,10 @@ import { fetchProductMetrics } from "@/lib/metrics-client";
 import { summarizeOverview } from "@/lib/overview";
 import { classifyHealth, countHealth } from "@/lib/health";
 import { onboardingFunnel } from "@/lib/funnel";
-import { money, computeTrend, type Trend } from "@/lib/format";
+import { computeTrend, type Trend } from "@/lib/format";
 import { getTenantHealth } from "@/lib/tenant-health";
 import { cn } from "@merqo/ui/primitives";
-import { EmptyState, StatCard } from "@merqo/ui";
+import { EmptyState, StatCard, formatMoney } from "@merqo/ui";
 import { TrendIndicator } from "@/components/dashboard/trend-indicator";
 import { OnboardingFunnelView } from "./onboarding-funnel";
 import { ProductTile } from "./product-tile";
@@ -153,13 +153,13 @@ export default async function AdminOverviewPage() {
         <section className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <StatCard
             label="Revenue (all)"
-            value={money(totals.revenue_cents_all)}
+            value={formatMoney(totals.revenue_cents_all)}
             valueClassName={cn(STAT_VALUE_CLASS, "text-primary")}
             icon={<DollarSign />}
           />
           <StatCard
             label="GMV (30d)"
-            value={money(totals.gmv_cents_30d)}
+            value={formatMoney(totals.gmv_cents_30d)}
             valueClassName={STAT_VALUE_CLASS}
             icon={<TrendingUp />}
           />

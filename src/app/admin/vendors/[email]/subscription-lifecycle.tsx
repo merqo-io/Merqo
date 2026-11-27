@@ -1,10 +1,11 @@
+import { formatMoney } from "@merqo/ui";
 import { Badge } from "@/components/ui/badge";
 import {
   quotePlanChange,
   subscriptionPhase,
 } from "@/lib/entitlements/lifecycle";
 import type { SubscriptionRow } from "@/lib/entitlements/store";
-import { formatSgd, planLabel } from "@/lib/pricing/format";
+import { planLabel } from "@/lib/pricing/format";
 import { sgDay } from "@/lib/sg-date";
 import {
   ChangePlanForm,
@@ -55,7 +56,7 @@ function changeOptions(
       });
       const hint =
         quote.kind === "upgrade"
-          ? `Upgrades now. Collect ${formatSgd(quote.owedCents)} by PayNow for the rest of this period. The billing date stays ${sgDay(sub.currentPeriodEnd)}.`
+          ? `Upgrades now. Collect ${formatMoney(quote.owedCents)} by PayNow for the rest of this period. The billing date stays ${sgDay(sub.currentPeriodEnd)}.`
           : `Takes effect when you renew on ${sgDay(sub.currentPeriodEnd)}.`;
       return { slug: p.slug, label: planLabel(p.slug), hint };
     });

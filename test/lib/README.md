@@ -13,7 +13,7 @@ names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use
 - `ecosystem.test.ts` — the kit-stacker graph data/edge logic in `src/lib/ecosystem.ts`.
 - `feedback-action.test.ts` — the vendor feedback Server Action.
 - `feedback-support-schemas.test.ts` — the feedback/support Zod schemas.
-- `format.test.ts` — `money()` and the other display formatters in `src/lib/format.ts`.
+- `format.test.ts` — `computeTrend` in `src/lib/format.ts`, plus the `@merqo/ui` money and relative-time output merqo relies on.
 - `funnel.test.ts` — the onboarding funnel counts in `src/lib/funnel.ts`.
 - `health.test.ts` — the `reporting`/`lagging`/`down` classifier in `src/lib/health.ts`.
 - `kit-action-request.test.ts` — `src/lib/kit-action-request.ts`'s shared `fetchKitJson` helper (network/HTTP/parse/schema failure modes).
@@ -42,6 +42,8 @@ Boundary suites cover admin pagination, team authentication, session/server clie
 
 `team-boundary.test.ts` also covers the `aal2` gate and the membership-only `requireTeamMember()`.
 
-`format.test.ts` expects `timeAgo` to return `-` for an unparseable timestamp.
+`format.test.ts` expects `formatRelativeTime` to return `-` for an unparseable timestamp.
 
 `admin-pagination.test.ts` also asserts `listProducts()` excludes `push_only` products from the grant list; `products.test.ts` covers `listLiveProducts()` and `listEntitlementTargets()`.
+
+`kits.test.ts` and `ecosystem.test.ts` assert five kits, including printkit and its qkit "orders" edge; kit fixtures carry the `outcome` field.

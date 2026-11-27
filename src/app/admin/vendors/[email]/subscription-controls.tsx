@@ -1,9 +1,10 @@
 "use client";
+import { formatMoney } from "@merqo/ui";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAsyncAction } from "@/hooks/use-async-action";
 import { annualCents } from "@/lib/pricing/calc";
-import { formatSgd, planLabel } from "@/lib/pricing/format";
+import { planLabel } from "@/lib/pricing/format";
 import {
   Button,
   Input,
@@ -109,7 +110,7 @@ export function GrantSubscriptionForm({
           <SelectContent>
             {plans.map((p) => (
               <SelectItem key={p.slug} value={p.slug}>
-                {planLabel(p.slug)} ({formatSgd(p.monthlyCents)} a month)
+                {planLabel(p.slug)} ({formatMoney(p.monthlyCents)} a month)
               </SelectItem>
             ))}
           </SelectContent>
@@ -292,7 +293,7 @@ export function MintEventPassForm({
       </Button>
       <p className="basis-full text-xs text-muted-foreground">
         Runs {durationDays} days. Mint it after the vendor has prepaid{" "}
-        {formatSgd(minCents)} by PayNow.
+        {formatMoney(minCents)} by PayNow.
       </p>
     </form>
   );
@@ -357,7 +358,7 @@ export function SettleEventPassButton({
         <>
           Record the usage now and close the pass.
           {topUpCents !== null && (
-            <> Top-up due {formatSgd(topUpCents)}.</>
+            <> Top-up due {formatMoney(topUpCents)}.</>
           )}{" "}
           Cups are re-read when you confirm, so the final figure may differ.
           Merqo does not charge; collect it yourself.

@@ -32,8 +32,8 @@ describe("ProductTile", () => {
     render(<ProductTile name="Queue" result={okResult} now={NOW} />);
     expect(screen.getByText("Queue")).toBeInTheDocument();
     expect(screen.getByText("Reporting")).toBeInTheDocument();
-    // revenue_cents_30d 1000 renders as $10
-    expect(screen.getByText("$10")).toBeInTheDocument();
+    // revenue_cents_30d 1000 renders as S$10.00
+    expect(screen.getByText("S$10.00")).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument();
   });
 

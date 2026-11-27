@@ -8,12 +8,13 @@ import {
 } from "@/lib/kits";
 
 describe("kit family config", () => {
-  it("has the four kits shown publicly", () => {
+  it("has the five kits shown publicly", () => {
     expect(KITS.map((k) => k.slug)).toEqual([
       "qkit",
       "loopkit",
       "paykit",
       "stockkit",
+      "printkit",
     ]);
   });
 
@@ -21,7 +22,12 @@ describe("kit family config", () => {
     const byStatus = (s: string) =>
       KITS.filter((k) => k.status === s).map((k) => k.slug);
     expect(byStatus("piloting")).toEqual(["qkit"]);
-    expect(byStatus("in-build")).toEqual(["loopkit", "paykit", "stockkit"]);
+    expect(byStatus("in-build")).toEqual([
+      "loopkit",
+      "paykit",
+      "stockkit",
+      "printkit",
+    ]);
   });
 
   it("labels and explains each status without any live signal", () => {
@@ -30,7 +36,7 @@ describe("kit family config", () => {
       "in-build": "In build",
     });
     expect(KIT_STATUS_EXPLAINER).toEqual({
-      piloting: "Running with a few vendors",
+      piloting: "Running in a pilot",
       "in-build": "Built, not yet tried with vendors",
     });
   });
@@ -50,7 +56,12 @@ describe("kit family config", () => {
   });
 
   it("only in-build kits are waitlistable", () => {
-    expect(WAITLISTABLE_SLUGS).toEqual(["loopkit", "paykit", "stockkit"]);
+    expect(WAITLISTABLE_SLUGS).toEqual([
+      "loopkit",
+      "paykit",
+      "stockkit",
+      "printkit",
+    ]);
   });
 
   it("states one pricing line with the 30 days' notice condition", () => {

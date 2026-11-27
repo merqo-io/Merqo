@@ -16,7 +16,7 @@ export const KIT_STATUS_LABEL: Record<KitStatus, string> = {
 
 /** One line under each kit's badge saying what the badge means. */
 export const KIT_STATUS_EXPLAINER: Record<KitStatus, string> = {
-  piloting: "Running with a few vendors",
+  piloting: "Running in a pilot",
   "in-build": "Built, not yet tried with vendors",
 };
 
@@ -27,6 +27,9 @@ export const PRICING_LINE =
 export type Kit = {
   slug: string;
   name: string;
+  /** What the vendor gets, as a short action label. Shown as the primary
+   *  name in kit navigation, with `name` as secondary text so the brand stays findable. */
+  outcome: string;
   /** One-line, plain-language "what it does" for a non-technical vendor. */
   tagline: string;
   /** 2-3 sentence explanation for the dashboard's discovery cards. */
@@ -87,6 +90,7 @@ export const KITS: Kit[] = [
   {
     slug: "qkit",
     name: "qkit",
+    outcome: "Take orders",
     tagline:
       "Take orders and run your queue from a QR code. No app, no hardware.",
     description:
@@ -102,6 +106,7 @@ export const KITS: Kit[] = [
   {
     slug: "loopkit",
     name: "loopkit",
+    outcome: "Bring them back",
     tagline: "Stamp cards and points that bring customers back.",
     description:
       "Digital stamp cards and a points system that turns one-time buyers into regulars. Customers collect stamps or points on every visit and redeem rewards you set, no punch cards to lose.",
@@ -116,6 +121,7 @@ export const KITS: Kit[] = [
   {
     slug: "paykit",
     name: "paykit",
+    outcome: "Get paid",
     tagline: "Show a PayNow QR, and confirm each payment when it lands.",
     description:
       'Show a PayNow QR at checkout. The customer pays in their banking app and taps "I\'ve paid", then you confirm it. The money goes straight to you, never through Merqo.',
@@ -131,6 +137,7 @@ export const KITS: Kit[] = [
   {
     slug: "stockkit",
     name: "stockkit",
+    outcome: "Know your stock",
     tagline: "Track stock in and out, and know what each dish really costs.",
     description:
       "Keep a count of what's on your shelves or in your kitchen, and see the true cost of every dish or product, so you know what's actually making you money.",
@@ -141,6 +148,21 @@ export const KITS: Kit[] = [
     ],
     status: "in-build",
     href: STOCKKIT_URL,
+  },
+  {
+    slug: "printkit",
+    name: "printkit",
+    outcome: "Print orders",
+    tagline: "Print qkit orders on a Bluetooth printer.",
+    description:
+      "printkit turns each order from a qkit booth into a label for your printer. In build, not yet tried with vendors.",
+    features: [
+      "Prints each qkit order as a label",
+      "Bluetooth printer",
+      "Works with qkit orders",
+    ],
+    status: "in-build",
+    href: PRINTKIT_URL,
   },
 ];
 

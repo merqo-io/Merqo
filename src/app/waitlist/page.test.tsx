@@ -79,7 +79,7 @@ describe("WaitlistPage", () => {
     const options = screen
       .getAllByRole("option")
       .map((o) => (o as HTMLOptionElement).value);
-    expect(options).toEqual(["", "loopkit", "paykit", "stockkit"]);
+    expect(options).toEqual(["", "loopkit", "paykit", "stockkit", "printkit"]);
     expect(
       screen.getByText("Clarence may email you about this kit."),
     ).toBeInTheDocument();

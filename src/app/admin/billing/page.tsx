@@ -1,3 +1,4 @@
+import { formatMoney } from "@merqo/ui";
 import { requireMerqoTeam } from "@/lib/team";
 import { sgDay } from "@/lib/sg-date";
 import {
@@ -15,7 +16,6 @@ import {
   founderCloseDate,
   founderClosedByDate,
 } from "@/lib/entitlements/founder";
-import { formatSgd } from "@/lib/pricing/format";
 import { BillingOpenForm } from "./billing-form";
 import { PaymentForm } from "./payment-form";
 import { PaymentList } from "./payment-list";
@@ -105,7 +105,7 @@ export default async function BillingPage() {
           <div>
             <dt className="text-muted-foreground">Founder price</dt>
             <dd className="font-medium">
-              {formatSgd(FOUNDER_PRICE_CENTS)} prepaid for 12 months
+              {formatMoney(FOUNDER_PRICE_CENTS)} prepaid for 12 months
             </dd>
           </div>
         </dl>
@@ -116,7 +116,7 @@ export default async function BillingPage() {
         <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <dt className="text-muted-foreground">Received since {from}</dt>
-            <dd className="font-medium">{formatSgd(total)}</dd>
+            <dd className="font-medium">{formatMoney(total)}</dd>
           </div>
           <div>
             <dt className="text-muted-foreground">Status</dt>
@@ -127,7 +127,7 @@ export default async function BillingPage() {
               <div>
                 <dt className="text-muted-foreground">Cap</dt>
                 <dd className="font-medium">
-                  {formatSgd(revenueConfig.capCents)}
+                  {formatMoney(revenueConfig.capCents)}
                 </dd>
               </div>
               <div>
@@ -139,7 +139,7 @@ export default async function BillingPage() {
               <div>
                 <dt className="text-muted-foreground">Remaining</dt>
                 <dd className="font-medium">
-                  {formatSgd(cap.remainingCents ?? 0)}
+                  {formatMoney(cap.remainingCents ?? 0)}
                 </dd>
               </div>
             </>

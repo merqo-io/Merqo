@@ -11,8 +11,10 @@ import { KITS } from "@/lib/kits";
 const slugs = new Set(KIT_NODES.map((n) => n.slug));
 
 describe("ecosystem graph config", () => {
-  it("has the four public kits and no retired or unreleased slugs", () => {
-    expect(slugs).toEqual(new Set(["qkit", "loopkit", "paykit", "stockkit"]));
+  it("has the five public kits and no retired or unreleased slugs", () => {
+    expect(slugs).toEqual(
+      new Set(["qkit", "loopkit", "paykit", "stockkit", "printkit"]),
+    );
     expect(slugs.has("shopkit")).toBe(false);
     expect(slugs.has("reachkit")).toBe(false);
     expect(slugs.has("slotkit")).toBe(false);

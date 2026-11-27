@@ -67,7 +67,7 @@ describe("VendorKitCard", () => {
       </TooltipProvider>,
     );
     expect(screen.getByText(/saved this month/)).toBeInTheDocument();
-    expect(screen.getByText("$230", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText("S$230.00", { exact: false })).toBeInTheDocument();
   });
 
   it("shows the Pro upside line on a free-plan card with upside", () => {
@@ -137,7 +137,9 @@ describe("VendorKitCard", () => {
         now={NOW}
       />,
     );
-    expect(screen.getByText("Synced 3m ago")).toBeInTheDocument();
+    expect(screen.getByText("3m ago").closest("p")).toHaveTextContent(
+      "Synced 3m ago",
+    );
   });
 
   it("omits the last-synced line when the tile has never been through a sync", () => {

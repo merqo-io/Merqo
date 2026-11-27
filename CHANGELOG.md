@@ -8,6 +8,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Landing: printkit joins the kit list, waitlist and ecosystem graph (in build). The kit list leads with outcome labels (Get paid, Bring them back, Know your stock, Print orders) with the kit name beside them. Dropped the unproven "a few vendors" and single sign-in / one-account claims; each kit is described as running on its own.
+- `@merqo/ui` pinned at v0.61.1. Money now shows as `S$12.50` (was `$13` on the admin and dashboard cards, and billing text gains thousands separators), and relative times past a week show the Singapore date instead of `Nd ago`. The local `money`, `timeAgo` and `formatSgd` helpers are replaced by `formatMoney` and `Timestamp`, which also shows the exact time on tap.
 - `/which-plan` and `/faq` now state the conditional billing terms (founder offer, 30-day Pro trial, pause, grace, manual PayNow payment) with no amounts.
 
 ## [0.20.0]

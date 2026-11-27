@@ -86,6 +86,9 @@ export function ModuleList({
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="font-display font-bold">
+                            {k.outcome}
+                          </span>
+                          <span className="font-mono text-xs text-muted-foreground">
                             {k.name}
                           </span>
                           <Badge

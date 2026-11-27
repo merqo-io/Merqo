@@ -1,7 +1,7 @@
+import { formatMoney } from "@merqo/ui";
 import { ProductHealthBadge } from "../product-health-badge";
 import type { MetricsResult } from "@/lib/metrics-client";
 import { classifyHealth } from "@/lib/health";
-import { money } from "@/lib/format";
 
 export function ProductHealthCard({
   name,
@@ -35,7 +35,9 @@ export function ProductHealthCard({
             ],
             [
               "Revenue (30d)",
-              result.ok ? money(result.data.revenue_cents_30d) : "No data yet",
+              result.ok
+                ? formatMoney(result.data.revenue_cents_30d)
+                : "No data yet",
             ],
             [
               "Orders (7d)",

@@ -24,3 +24,5 @@ Linked from `Nav` (`src/components/landing/nav.tsx`).
 ## Parent
 
 [app](../README.md)
+
+The kit lists and descriptions include printkit, and the "one sign-in" row answers that each kit runs on its own.

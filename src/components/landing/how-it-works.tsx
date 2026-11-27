@@ -1,11 +1,11 @@
 const STEPS = [
   {
     title: "Pick a kit",
-    body: "qkit is piloting with a few vendors, for booth ordering and queues. loopkit, paykit, and stockkit are in build.",
+    body: "qkit is piloting, for booth ordering and queues. loopkit, paykit, stockkit and printkit are in build.",
   },
   {
-    title: "Sign up once",
-    body: "One Merqo sign-in covers the kits you use.",
+    title: "Pick your kits",
+    body: "Start with the kit you need. Add another only when you want it.",
   },
   {
     title: "Run your stall",

@@ -12,7 +12,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     rows: [
       {
         q: "What is Merqo?",
-        a: 'Merqo is the house brand behind a family of small-business tools ("kits") for Singapore micro/small sellers. qkit is piloting, and loopkit, paykit, and stockkit are in build.',
+        a: 'Merqo is the house brand behind a family of small-business tools ("kits") for Singapore micro/small sellers. qkit is piloting, and loopkit, paykit, stockkit, and printkit are in build.',
       },
       {
         q: "Who is behind Merqo?",
@@ -20,7 +20,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "What does each kit do?",
-        a: "qkit is piloting (running with a few vendors): take orders and run your queue from a QR code, with no app and no hardware. loopkit, paykit and stockkit are in build (built, not yet tried with vendors): loopkit is stamp cards and points, paykit shows a PayNow QR and you confirm each payment, and stockkit tracks stock in and out.",
+        a: "qkit is piloting (running in a pilot): take orders and run your queue from a QR code, with no app and no hardware. loopkit, paykit, stockkit and printkit are in build (built, not yet tried with vendors): loopkit is stamp cards and points, paykit shows a PayNow QR and you confirm each payment, stockkit tracks stock in and out, and printkit prints qkit orders on a Bluetooth printer.",
       },
     ],
   },
@@ -30,7 +30,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     rows: [
       {
         q: "Do I need to sign up for every kit separately?",
-        a: "No. The plan is one Merqo account and one sign-in across the kits.",
+        a: "No. Each kit runs on its own. Use only the ones you need.",
       },
       {
         q: "Can I use just one kit?",
@@ -72,7 +72,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     rows: [
       {
         q: "How do I join the waitlist?",
-        a: "Open the waitlist page, pick a kit and type your email. Only kits that are in build are listed: loopkit, paykit and stockkit.",
+        a: "Open the waitlist page, pick a kit and type your email. Only kits that are in build are listed: loopkit, paykit, stockkit and printkit.",
       },
       {
         q: "What happens to my email on the waitlist?",
