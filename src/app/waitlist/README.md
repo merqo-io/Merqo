@@ -19,3 +19,5 @@ The form has a separate, unticked general-updates checkbox, stored only when tic
 ## Parent
 
 [app](../README.md)
+
+The kit select includes printkit, since it is an in-build kit.

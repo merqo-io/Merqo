@@ -29,3 +29,5 @@ See the repo root [README.md](../../README.md) for the full test layout.
 ## Boundary and coverage
 
 Action-button tests verify that thrown and returned failures restore pending state and preserve useful feedback. Fixtures reset mocks and render state between cases; successful presentation is not used as evidence of database authorization.
+
+Kit fixtures here carry the `outcome` field required by the `Kit` type.

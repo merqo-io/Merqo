@@ -45,3 +45,5 @@ Boundary suites cover admin pagination, team authentication, session/server clie
 `format.test.ts` expects `formatRelativeTime` to return `-` for an unparseable timestamp.
 
 `admin-pagination.test.ts` also asserts `listProducts()` excludes `push_only` products from the grant list; `products.test.ts` covers `listLiveProducts()` and `listEntitlementTargets()`.
+
+`kits.test.ts` and `ecosystem.test.ts` assert five kits, including printkit and its qkit "orders" edge; kit fixtures carry the `outcome` field.

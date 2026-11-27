@@ -4,8 +4,8 @@ Public page rules (radius, shadow, hover and motion) are recorded in `DESIGN.md`
 
 House brand + operator console for a modular family of small-business tools
 ("kits") for Singapore micro/small sellers. `qkit` (queue/orders), `loopkit`
-(stamp-card loyalty), `paykit` (payments), and `stockkit` (inventory).
-`qkit` is in pilot; the others are in build (see `src/lib/kits.ts`).
+(stamp-card loyalty), `paykit` (payments), `stockkit` (inventory), and `printkit` (order labels).
+`qkit` is in pilot; the others are in build (see `src/lib/kits.ts`). Landing copy states that each kit runs on its own and does not promise a single account across kits.
 
 This app is the public brand landing plus a role-gated operator console:
 
