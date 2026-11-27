@@ -99,6 +99,7 @@ describe("tilesForLinks lastVerifiedAt passthrough", () => {
 const kit = (slug: string, status: "piloting" | "in-build") => ({
   slug,
   name: slug,
+  outcome: "Outcome",
   tagline: `${slug} tagline for vendors.`,
   description: `${slug} does something useful for a small seller.`,
   features: ["One", "Two", "Three"],

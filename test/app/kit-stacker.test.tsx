@@ -37,7 +37,7 @@ describe("KitStacker", () => {
   it("stacks every kit with Stack all", () => {
     render(<KitStacker />);
     fireEvent.click(screen.getByRole("button", { name: "Stack all" }));
-    expect(screen.getByText(/Your stack has 4 kits:/)).toBeInTheDocument();
+    expect(screen.getByText(/Your stack has 5 kits:/)).toBeInTheDocument();
   });
 
   it("removes qkit itself, since no kit is a required flagship", () => {

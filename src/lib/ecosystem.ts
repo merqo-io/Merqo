@@ -1,5 +1,5 @@
 /**
- * Data for the landing "kit stacker" graph: four standalone kits and the
+ * Data for the landing "kit stacker" graph: five standalone kits and the
  * integrations that exist between them. Positions are fixed (art-directed, not physics) in a
  * stable viewBox; edges render only when BOTH their endpoints are stacked. No kit
  * is a required flagship, the graph shows connections, not dependencies.
@@ -36,6 +36,7 @@ const NODE_LAYOUT: NodeLayout[] = [
   { slug: "paykit", short: "Payments", x: 120, y: 240 },
   { slug: "loopkit", short: "Loyalty", x: 400, y: 240 },
   { slug: "stockkit", short: "Stock", x: 260, y: 370 },
+  { slug: "printkit", short: "Print", x: 400, y: 90 },
 ];
 
 const STATUS_BY_SLUG = new Map(KITS.map((k) => [k.slug, k.status]));
@@ -46,7 +47,7 @@ export const KIT_NODES: KitNode[] = NODE_LAYOUT.map((n) => ({
 }));
 
 /** Only links that exist in the kits today: qkit shows a paykit PayNow QR,
- *  and a qkit order page can offer a loopkit stamp. */
+ *  a qkit order page can offer a loopkit stamp, and printkit prints qkit orders. */
 export const KIT_EDGES: KitEdge[] = [
   {
     from: "qkit",
@@ -59,6 +60,12 @@ export const KIT_EDGES: KitEdge[] = [
     to: "qkit",
     label: "pay",
     desc: "Customers pay by PayNow QR on the order page, and you confirm.",
+  },
+  {
+    from: "qkit",
+    to: "printkit",
+    label: "orders",
+    desc: "Each qkit order can be printed as a label on a Bluetooth printer.",
   },
 ];
 
