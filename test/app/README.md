@@ -25,3 +25,5 @@ Tests that mocked the deleted local primitive paths import from `@merqo/ui/primi
 Both login test files mock `useSearchParams` because the login page reads `?error=link`.
 
 Money shows through `formatMoney` and relative times through `Timestamp`, both from `@merqo/ui`; there are no local copies of either.
+
+`kit-stacker.test.tsx` and the faq/waitlist page tests cover printkit and the outcome-first kit labels.

@@ -6,6 +6,7 @@ import { KitDiscoveryCard } from "@/components/dashboard/kit-discovery-card";
 const qkit = {
   slug: "qkit",
   name: "qkit",
+  outcome: "Outcome",
   tagline: "Take orders and run your queue.",
   description: "Take orders and run your queue from a QR code.",
   features: ["QR ordering", "Live dashboard", "No app needed"],
@@ -16,6 +17,7 @@ const qkit = {
 const loopkit = {
   slug: "loopkit",
   name: "loopkit",
+  outcome: "Outcome",
   tagline: "Stamp cards.",
   description: "Digital stamp cards that bring customers back.",
   features: ["Stamp cards", "Points", "Rewards"],

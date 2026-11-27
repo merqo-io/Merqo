@@ -18,10 +18,10 @@ per file. Presentational only — no data fetching, no client state beyond the
   `nav.tsx`'s dashboard link). Its board carries a visible "Sample" label so it is not read as live data. Its board carries a visible "Sample" label so it is not read as live data.
   Its "Ready" pill uses `text-gold-text` on
   the gold tint.
-- `benefits.tsx` — the "why Merqo" points as a plain definition list (no icon tiles, no three-up grid).
+- `benefits.tsx` — the "why Merqo" points as a plain definition list (no icon tiles, no three-up grid); states that each kit runs on its own.
 - `kit-stacker/` — the interactive kit-stacking demo.
-- `how-it-works.tsx` — step-by-step explainer as a numbered list on a vertical rule, not three cards.
-- `faq.tsx` — static Q&A list.
+- `how-it-works.tsx` — step-by-step explainer as a numbered list on a vertical rule, not three cards; names printkit among the kits in build and frames signup as picking the kits you need.
+- `faq.tsx` — static Q&A list; lists printkit and answers sign-up as "each kit runs on its own".
 - `footer.tsx` — single-row site footer matching qkit's landing footer
   exactly — `Wordmark`, tagline, `© <year> Merqo` credit line (no "· a
   Merqo kit" suffix — Merqo is the parent, per the landing-page standard),

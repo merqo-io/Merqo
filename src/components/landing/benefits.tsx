@@ -4,8 +4,8 @@ const BENEFITS = [
     body: "Merqo is a growing kit of small-business tools. Pick the ones you need.",
   },
   {
-    title: "One account for the kits you use",
-    body: "Sign in once and use the same account on each kit you use.",
+    title: "Each kit runs on its own",
+    body: "Use only the kits you need. None depends on another.",
   },
   {
     title: "Built for SG micro-sellers",

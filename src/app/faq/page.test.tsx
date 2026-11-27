@@ -49,7 +49,7 @@ describe("FaqRoute", () => {
       }
     }
     expect(container.textContent).toContain(
-      "No. The plan is one Merqo account and one sign-in across the kits.",
+      "No. Each kit runs on its own. Use only the ones you need.",
     );
     expect(metadata.title).toBe("FAQ");
   });
