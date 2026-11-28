@@ -15,7 +15,7 @@ per file. Presentational only — no data fetching, no client state beyond the
   `/admin`) as the end slot. The signed-in end is `@merqo/ui`'s `LandingAccountNav` (Dashboard link, account menu with Switch products, help and feedback), fed by `toNavUser`, with no `LinkComponent` (`next/link` is not serializable from a Server Component; `AppLinkProvider` in the root layout supplies it); `Nav` takes `user` (a `NavUser`) rather than the old `authed`/`account` pair. Header padding/logo size (`px-5 py-4`,
   `text-3xl`) matches qkit's landing nav exactly.
 - `hero.tsx` — headline, paragraph and CTAs (same `/post-login` routing as `nav.tsx`). The product object is `kit-switcher.tsx`.
-- `kit-switcher.tsx` — client tablist over `KITS` (each tab 44px tall). Server-renders qkit; every other kit shows its `KIT_STATUS_LABEL` and `KIT_STATUS_EXPLAINER`, so in-build kits never read as live.
+- `kit-switcher.tsx` — client group of `aria-pressed` toggle buttons over `KITS` (each 44px tall). Server-renders qkit; every other kit shows its `KIT_STATUS_LABEL` and `KIT_STATUS_EXPLAINER`, so in-build kits never read as live.
 - `kit-journey.tsx` — client three-step `Journey` (`id="kits"`) on the shared `@merqo/ui` pieces. Watch builds qkit into the stack from scroll position (`useScrollPlay`, rewinds on scroll up). Tap adds in-build kits with `PressButton`, each block linking to its waitlist, plus Reset; reduced motion rests on the full stack. Manage lists every kit.
 - `faq.tsx` — three `FaqRows` plus a link to `/faq`, which still answers the longer list.
 - `closing.tsx` — `ClosingCall` with `PRICING_LINE` and the sign-in or dashboard CTA.

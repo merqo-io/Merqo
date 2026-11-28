@@ -33,6 +33,6 @@ test("a static page keeps the static CSP and still runs", async ({ page }) => {
   expect(response?.headers()["content-security-policy"]).toMatch(
     /script-src 'self' 'unsafe-inline'/,
   );
-  await expect(page.getByRole("tab", { name: "Take orders" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Take orders" })).toBeVisible();
   expect(problems).toEqual([]);
 });

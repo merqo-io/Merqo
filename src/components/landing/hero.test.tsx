@@ -23,22 +23,28 @@ describe("Hero", () => {
 
 describe("Hero kit switcher", () => {
   it("server-renders qkit as Piloting", () => {
-    render(<Hero />);
-    expect(screen.getByRole("tab", { name: "Take orders" })).toHaveAttribute(
-      "aria-selected",
+    const { container } = render(<Hero />);
+    expect(screen.getByRole("button", { name: "Take orders" })).toHaveAttribute(
+      "aria-pressed",
       "true",
     );
-    expect(screen.getByRole("tabpanel")).toHaveTextContent("Piloting");
+    expect(container.querySelector("[aria-live]")).toHaveTextContent(
+      "Piloting",
+    );
   });
 
   it("switches to an in-build kit by touch and shows In build", async () => {
     const user = userEvent.setup();
-    render(<Hero />);
+    const { container } = render(<Hero />);
     await user.pointer({
       keys: "[TouchA]",
-      target: screen.getByRole("tab", { name: "Get paid" }),
+      target: screen.getByRole("button", { name: "Get paid" }),
     });
-    const panel = screen.getByRole("tabpanel");
+    expect(screen.getByRole("button", { name: "Get paid" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    const panel = container.querySelector("[aria-live]");
     expect(panel).toHaveTextContent("paykit");
     expect(panel).toHaveTextContent("In build");
     expect(panel).not.toHaveTextContent("Piloting");

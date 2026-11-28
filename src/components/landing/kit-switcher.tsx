@@ -14,14 +14,9 @@ const DEFAULT_SLUG = "qkit";
 
 function KitCard({ kit }: { kit: Kit }) {
   return (
-    <div
-      role="tabpanel"
-      id="hero-kit-panel"
-      aria-labelledby={`hero-kit-tab-${kit.slug}`}
-      className="p-5"
-    >
+    <div aria-live="polite" className="p-5">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <h2 className="font-display text-2xl font-bold">{kit.outcome}</h2>
+        <p className="font-display text-2xl font-bold">{kit.outcome}</p>
         <span className="font-mono text-xs text-muted-foreground">
           {kit.name}
         </span>
@@ -48,7 +43,7 @@ export function KitSwitcher() {
   return (
     <div className="w-full max-w-sm rounded-lg border bg-card">
       <div
-        role="tablist"
+        role="group"
         aria-label="Merqo kits"
         className="flex flex-wrap gap-2 border-b p-3"
       >
@@ -58,16 +53,13 @@ export function KitSwitcher() {
             <button
               key={k.slug}
               type="button"
-              role="tab"
-              id={`hero-kit-tab-${k.slug}`}
-              aria-selected={selected}
-              aria-controls="hero-kit-panel"
+              aria-pressed={selected}
               onClick={() => setSlug(k.slug)}
               className={cn(
                 "inline-flex min-h-11 items-center rounded-lg border px-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 selected
-                  ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80"
-                  : "hover:bg-muted active:bg-muted/70",
+                  ? "border-primary bg-primary text-primary-foreground active:bg-primary/80"
+                  : "active:bg-muted/70",
               )}
             >
               {k.outcome}

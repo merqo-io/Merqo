@@ -22,7 +22,7 @@ const ADDABLE = KITS.filter((k) => k.status === "in-build");
 const ADDABLE_SLUGS = ADDABLE.map((k) => k.slug);
 
 const BUTTON =
-  "inline-flex min-h-11 items-center justify-center rounded-lg border-[1.5px] border-border px-4 text-sm font-semibold transition-colors hover:bg-muted active:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "inline-flex min-h-11 items-center justify-center rounded-lg border-[1.5px] border-border px-4 text-sm font-semibold transition-colors active:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 /**
  * Press-driven state shared by the Tap step. Scrolling never presses it: it

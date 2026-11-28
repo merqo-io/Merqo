@@ -36,7 +36,7 @@ test("landing renders with a Sign in action", async ({ page }) => {
     page.getByRole("link", { name: "Sign in" }).first(),
   ).toBeVisible();
   // the hero kit switcher is the centerpiece
-  await expect(page.getByRole("tab", { name: "Take orders" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Take orders" })).toBeVisible();
 });
 
 // The vendor dashboard requires a session — signed-out visitors are bounced to

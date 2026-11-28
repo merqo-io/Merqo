@@ -56,7 +56,7 @@ describe("Home", () => {
     const { container } = render(await Home());
 
     expect(
-      screen.getByRole("tablist", { name: "Merqo kits" }),
+      screen.getByRole("group", { name: "Merqo kits" }),
     ).toBeInTheDocument();
     expect(container.querySelector("#kits")).not.toBeNull();
     expect(container.querySelectorAll("#faq details")).toHaveLength(3);
