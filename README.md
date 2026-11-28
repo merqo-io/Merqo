@@ -131,6 +131,13 @@ pnpm check:legal-versions  # compare actual legal versions at each product's loc
 pnpm dlx knip@6.44.2 --no-progress  # unused files, exports and dependencies (config: knip.json); last run in docs/meta/2026-10-24-fresh-eyes-sweep.md
 ```
 
+## Demo videos
+
+`pnpm demo:record -- --scene one-account` then `pnpm demo:compose -- --scene
+one-account` produce a vertical 9:16 captioned clip from a local build.
+Prerequisites, environment variables, scenes and guardrails are in
+[scripts/demo/README.md](scripts/demo/README.md).
+
 ## Dependencies
 
 `pnpm-workspace.yaml`'s `overrides` block pins transitive deps (postcss,

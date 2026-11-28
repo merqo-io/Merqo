@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Demo video recorder (`scripts/demo`, `pnpm demo:record` and `pnpm demo:compose`): records the `one-account` scene (sign up, land on the kit dashboard) against a local Supabase and composes a captioned 1080x1920 clip. Copied from qkit, with the generic core kept apart from Merqo's flows and brand text.
+
 ### Changed
 
 - `@merqo/ui` repinned to v0.62.1. The About page's kit list now reads qkit "running in a pilot" and the others "In build", adds printkit and drops the one-sign-in sentence; the shared header and footer tap targets are at least 44px.

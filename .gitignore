@@ -63,3 +63,6 @@ PRODUCT.md
 # secrets). Machine-local — never the same across two developers or CI.
 supabase/.branches
 supabase/.temp
+
+# Demo recorder output (webm, steps.json, composed mp4)
+scripts/demo/out/
