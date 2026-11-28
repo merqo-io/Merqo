@@ -73,7 +73,7 @@ export function WaitlistForm({
         />
       </div>
       <p className="text-sm text-muted-foreground">
-        Clarence may email you about this kit.
+        We may email you about this kit.
       </p>
       <label className="flex items-start gap-2 text-sm">
         <input

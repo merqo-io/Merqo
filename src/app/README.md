@@ -36,7 +36,7 @@ console, auth, and shared account pages.
 - `login/` — email/password sign-in.
 - `no-access/` — explains missing Merqo-team access and offers sign-in or an admin-access retry.
 - `not-found.tsx` — branded 404, a thin wrapper over `NotFound` from `@merqo/ui` with the shared `components/brand/Wordmark`.
-- `page.tsx` — `Home` async server component, the public brand landing page. Composes `Nav`, `Hero`, `Benefits`, `KitStacker`, `HowItWorks`, `Faq`, `Footer`, and `BackToTop` from `@/components/landing/`. No CTA band above the footer, matching qkit. Its own sticky mobile CTA, like every landing CTA, links a signed-in vendor to `/post-login` (never straight to `/admin`) so a non-team vendor doesn't get bounced to `/no-access`.
+- `page.tsx` — `Home` async server component, the public brand landing page. Composes `Nav`, `Hero`, `KitJourney`, `Faq`, `Closing`, `Footer`, and `BackToTop` from `@/components/landing/`. The `Closing` call carries the pricing line and sign-in CTA. Its own sticky mobile CTA, like every landing CTA, links a signed-in vendor to `/post-login` (never straight to `/admin`) so a non-team vendor doesn't get bounced to `/no-access`.
 - `post-login/` — post-authentication redirect router (dashboard vs admin vs no-access).
 - `profile/` — shared account page (signed-in gate only — reachable from both the vendor dashboard and the admin console).
 - `reset-password/` — password-reset flow.

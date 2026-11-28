@@ -55,7 +55,6 @@ contracts; mocked network tests do not establish those database guarantees.
 console and dashboard figures (`countHealth` counts each kit once, so a lagging kit is not also "reporting"). Funnel counts are distinct populations, so do not
 report them as nested conversion stages. `kits.ts` is the family configuration (each kit's readiness, `piloting` or `in-build`, its plain-language `outcome` label used in the landing kit nav, and URL
 defaults to `https://<kit>.merqo.io`, overridable with `NEXT_PUBLIC_<KIT>_URL`);
-`ecosystem.ts` derives its diagram status from that configuration; printkit is a node with a qkit to printkit "orders" edge.
 `format.ts` provides `computeTrend`; money and relative times come from `@merqo/ui` (`formatMoney`, `Timestamp`). The form label and error class strings come from `@merqo/ui` (`FORM_LABEL_CLASS`, `FORM_ERROR_CLASS`).
 `sg-date.ts` provides `sgDay`, the Asia/Singapore YYYY-MM-DD formatter the vendor admin page uses for every date it shows. Its test pins the 16:00Z to 24:00Z window, where the Singapore date is a day ahead of UTC.
 `brand-mark.ts` binds merqo's colours to the shared `brandIcon` for the icon routes; `account.ts` safely reads metadata.

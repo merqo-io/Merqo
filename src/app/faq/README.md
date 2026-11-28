@@ -25,4 +25,4 @@ Linked from `Nav` (`src/components/landing/nav.tsx`).
 
 [app](../README.md)
 
-The kit lists and descriptions include printkit, and the "one sign-in" row answers that each kit runs on its own.
+The kit lists and descriptions include printkit, and the "one sign-in" row answers that each kit runs on its own. The waitlist-email row quotes the form wording "We may email you about this kit." (the landing page shows a 3-row subset of these rows).

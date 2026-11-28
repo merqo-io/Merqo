@@ -20,4 +20,4 @@ The form has a separate, unticked general-updates checkbox, stored only when tic
 
 [app](../README.md)
 
-The kit select includes printkit, since it is an in-build kit.
+The kit select includes printkit, since it is an in-build kit. The consent line under the email field reads "We may email you about this kit."; `page.test.tsx` asserts that wording.

@@ -10,7 +10,6 @@ names one-to-one. Audit-log fixtures use live actions only. Kit URL fixtures use
 
 - `account.test.ts` — `src/lib/account.ts` metadata field reads.
 - `admin.test.ts` — `src/lib/admin.ts`'s read helpers (team/grant listing, `listAdminAuditEntries`'s admin-id-to-email resolution) and write paths (`grantKit`/`revokeKit`/`removeTeamMember`/`addTeamMemberByEmail` — the last now returns the added member's user id, or `null` when no account matches — plus `recordAudit`'s best-effort insert), incl. duplicate-grant and not-found edge cases, all against a mocked Supabase service client.
-- `ecosystem.test.ts` — the kit-stacker graph data/edge logic in `src/lib/ecosystem.ts`.
 - `feedback-action.test.ts` — the vendor feedback Server Action.
 - `feedback-support-schemas.test.ts` — the feedback/support Zod schemas.
 - `format.test.ts` — `computeTrend` in `src/lib/format.ts`, plus the `@merqo/ui` money and relative-time output merqo relies on.
@@ -46,4 +45,4 @@ Boundary suites cover admin pagination, team authentication, session/server clie
 
 `admin-pagination.test.ts` also asserts `listProducts()` excludes `push_only` products from the grant list; `products.test.ts` covers `listLiveProducts()` and `listEntitlementTargets()`.
 
-`kits.test.ts` and `ecosystem.test.ts` assert five kits, including printkit and its qkit "orders" edge; kit fixtures carry the `outcome` field.
+`kits.test.ts` asserts five kits, including printkit; kit fixtures carry the `outcome` field.
