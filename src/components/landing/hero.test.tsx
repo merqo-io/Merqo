@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Hero } from "./hero";
 
 describe("Hero", () => {
@@ -20,9 +21,31 @@ describe("Hero", () => {
   });
 });
 
-describe("Hero sample board", () => {
-  it("labels the now-serving board as sample data in visible text", () => {
+describe("Hero kit switcher", () => {
+  it("server-renders qkit as Piloting", () => {
     render(<Hero />);
-    expect(screen.getByText("Sample")).toBeVisible();
+    expect(screen.getByRole("tab", { name: "Take orders" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(screen.getByRole("tabpanel")).toHaveTextContent("Piloting");
+  });
+
+  it("switches to an in-build kit by touch and shows In build", async () => {
+    const user = userEvent.setup();
+    render(<Hero />);
+    await user.pointer({
+      keys: "[TouchA]",
+      target: screen.getByRole("tab", { name: "Get paid" }),
+    });
+    const panel = screen.getByRole("tabpanel");
+    expect(panel).toHaveTextContent("paykit");
+    expect(panel).toHaveTextContent("In build");
+    expect(panel).not.toHaveTextContent("Piloting");
+  });
+
+  it("has no trust strip", () => {
+    render(<Hero />);
+    expect(screen.queryByText("No hardware")).toBeNull();
   });
 });

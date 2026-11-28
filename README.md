@@ -1,6 +1,6 @@
 # Merqo
 
-Public page rules (radius, shadow, hover and motion) are recorded in `DESIGN.md`. The landing follows them: no shadows, `rounded-lg` surfaces, 44px touch targets, and the kit stacker highlight works by tap and keyboard focus as well as mouse hover (`src/components/landing/kit-stacker/`).
+Public page rules (radius, shadow, hover and motion) are recorded in `DESIGN.md`. The landing follows them: no shadows, `rounded-lg` surfaces, 44px touch targets, and the kit journey and hero kit switcher work by tap and keyboard as well as mouse (`src/components/landing/kit-journey.tsx`).
 
 House brand + operator console for a modular family of small-business tools
 ("kits") for Singapore micro/small sellers. `qkit` (queue/orders), `loopkit`
@@ -157,7 +157,7 @@ src/app/api/telegram/webhook/ — merqo's own Telegram bot's webhook (customer c
 src/app/api/plans/          — bearer-gated, uncached GET /api/plans plan catalog for kit plan pages
 src/app/api/merqo/          — bearer-secret endpoints qkit/loopkit call INTO merqo
 src/proxy.ts                — Supabase session refresh + route guard (Next 16)
-src/components/landing/     — landing sections (nav, hero, kit-stacker, …)
+src/components/landing/     — landing sections (nav, hero, kit-journey, …)
 src/components/dashboard/   — dashboard widgets (stat cards, kit discovery/preview cards)
 src/components/brand/       — shared Merqo wordmark
 src/hooks/use-async-action.ts — shared pending/error state for server-action buttons
