@@ -8,6 +8,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- `@merqo/ui` repinned to v0.62.1. The About page's kit list now reads qkit "running in a pilot" and the others "In build", adds printkit and drops the one-sign-in sentence; the shared header and footer tap targets are at least 44px.
+
 - Landing rebuilt on the shared journey pieces: the hero shows a kit switcher (qkit, with In build kits labelled as such) instead of the sample board and trust strip; a scroll-driven three-step journey (start with qkit, add in-build kits, manage them) replaces the benefits list, kit stacker and how-it-works; the FAQ is three rows with a link to /faq; a closing call carries the pricing line. Header Sign in, hero, waitlist and FAQ links are now at least 44px tall. The waitlist notice reads "We may email you about this kit."
 - Landing: printkit joins the kit list, waitlist and ecosystem graph (in build). The kit list leads with outcome labels (Get paid, Bring them back, Know your stock, Print orders) with the kit name beside them. Dropped the unproven "a few vendors" and single sign-in / one-account claims; each kit is described as running on its own.
 - `@merqo/ui` pinned at v0.61.1. Money now shows as `S$12.50` (was `$13` on the admin and dashboard cards, and billing text gains thousands separators), and relative times past a week show the Singapore date instead of `Nd ago`. The local `money`, `timeAgo` and `formatSgd` helpers are replaced by `formatMoney` and `Timestamp`, which also shows the exact time on tap.

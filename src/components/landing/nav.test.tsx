@@ -31,11 +31,11 @@ vi.mock("@/app/actions/support", () => ({
 const ana = { name: "Ana", email: "ana@example.com" };
 
 describe("Nav", () => {
-  it("renders the sticky header matching qkit's px-5 py-4 sizing", () => {
+  it("renders the sticky shared header with its px-5 nav", () => {
     render(<Nav />);
 
     const header = screen.getByRole("banner");
-    expect(header).toHaveClass("py-4", "sticky", "before:backdrop-blur-md");
+    expect(header).toHaveClass("py-3", "sticky", "before:backdrop-blur-md");
     expect(header.querySelector("nav")).toHaveClass("px-5");
     expect(screen.getByText("Merqo home")).toBeInTheDocument();
   });
