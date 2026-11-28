@@ -19,7 +19,7 @@ src/app/api/merqo/          — bearer-secret endpoints qkit/loopkit call INTO m
                                (customer-connect-token, notify-customer, vendor-connect-token,
                                notify-vendor)
 src/proxy.ts                — Supabase session refresh + route guard (Next 16)
-src/components/landing/      — landing sections (nav, hero, kit-stacker, …)
+src/components/landing/      — landing sections (nav, hero, kit-journey, …)
 src/components/dashboard/    — dashboard widgets (stat cards, kit discovery/preview cards)
 src/components/ui/           — local badge only; other primitives come from @merqo/ui/primitives
 src/hooks/use-async-action.ts — shared pending/error state for server-action buttons

@@ -1,9 +1,8 @@
 import { Nav } from "@/components/landing/nav";
 import { Hero } from "@/components/landing/hero";
-import { Benefits } from "@/components/landing/benefits";
-import { KitStacker } from "@/components/landing/kit-stacker/kit-stacker";
-import { HowItWorks } from "@/components/landing/how-it-works";
+import { KitJourney } from "@/components/landing/kit-journey";
 import { Faq } from "@/components/landing/faq";
+import { Closing } from "@/components/landing/closing";
 import { Footer } from "@/components/landing/footer";
 import { BackToTop } from "@merqo/ui";
 import { getLandingNavUser } from "@/lib/landing-nav-user";
@@ -25,16 +24,15 @@ export default async function Home() {
       <Nav user={await getLandingNavUser(user)} />
       <main className="flex-1">
         <Hero authed={authed} />
-        <Benefits />
-        <KitStacker />
-        <HowItWorks />
+        <KitJourney />
         <Faq />
+        <Closing authed={authed} />
       </main>
       <Footer />
       <BackToTop />
       {/* Sticky mobile CTA — one persistent action on small screens. */}
       <div className="sticky bottom-0 z-40 border-t bg-background/90 p-3 backdrop-blur sm:hidden">
-        <Button asChild size="lg" className="w-full">
+        <Button asChild size="lg" className="min-h-11 w-full">
           <Link href={authed ? "/post-login" : "/login"}>
             {authed ? "Go to dashboard" : "Sign in"}
           </Link>

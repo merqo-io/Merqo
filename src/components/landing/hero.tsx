@@ -1,48 +1,7 @@
 import Link from "next/link";
 import { Button } from "@merqo/ui/primitives";
 import { ArrowRight } from "lucide-react";
-import { PRICING_LINE } from "@/lib/kits";
-
-const TRUST = ["No app", "No hardware"];
-
-/** A tiny "now serving" board: the product idea made visible, not a big
- *  number. Pure markup, no image asset, renders in the
- *  initial HTML for a fast LCP. */
-function NowServingBoard() {
-  const rows = [
-    { n: "05", label: "Kaya toast set", tone: "text-muted-foreground" },
-    { n: "04", label: "Iced kopi ×2", tone: "text-muted-foreground" },
-  ];
-  return (
-    <div aria-hidden className="w-full max-w-sm rounded-lg border bg-card p-5">
-      <div className="flex items-center justify-between border-b pb-3">
-        <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          Now serving
-        </span>
-        <span className="text-xs text-muted-foreground">Sample</span>
-      </div>
-      <div className="py-4 text-center">
-        <div className="font-mono text-6xl font-bold tabular-nums text-primary">
-          06
-        </div>
-        <div className="mt-1 text-sm text-muted-foreground">Nasi lemak ×1</div>
-      </div>
-      <ul className="space-y-2 border-t pt-3">
-        {rows.map((r) => (
-          <li key={r.n} className="flex items-center gap-3 text-sm">
-            <span className="font-mono text-xs text-muted-foreground">
-              {r.n}
-            </span>
-            <span className={r.tone}>{r.label}</span>
-            <span className="ml-auto rounded-full bg-gold/20 px-2 py-0.5 font-mono text-xs uppercase tracking-widest text-gold-text">
-              Ready
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+import { KitSwitcher } from "./kit-switcher";
 
 export function Hero({ authed = false }: { authed?: boolean }) {
   return (
@@ -60,30 +19,19 @@ export function Hero({ authed = false }: { authed?: boolean }) {
           pilot for orders and queues, and the rest of the family is in build.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="lg">
+          <Button asChild size="lg" className="min-h-11">
             <Link href={authed ? "/post-login" : "/login"}>
               {authed ? "Go to dashboard" : "Get started"}
               <ArrowRight className="size-4" />
             </Link>
           </Button>
-          <Button asChild size="lg" variant="outline">
+          <Button asChild size="lg" variant="outline" className="min-h-11">
             <a href="#kits">See the kits</a>
           </Button>
         </div>
-        <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-          {TRUST.map((t) => (
-            <li key={t} className="flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-gold" />
-              {t}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 max-w-md text-sm text-muted-foreground">
-          {PRICING_LINE}
-        </p>
       </div>
       <div className="flex justify-center lg:justify-end">
-        <NowServingBoard />
+        <KitSwitcher />
       </div>
     </section>
   );

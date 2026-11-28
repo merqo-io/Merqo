@@ -26,4 +26,4 @@ Both login test files mock `useSearchParams` because the login page reads `?erro
 
 Money shows through `formatMoney` and relative times through `Timestamp`, both from `@merqo/ui`; there are no local copies of either.
 
-`kit-stacker.test.tsx` and the faq/waitlist page tests cover printkit and the outcome-first kit labels.
+The kit-journey, hero and faq/waitlist page tests cover printkit and the outcome-first kit labels.

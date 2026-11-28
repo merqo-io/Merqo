@@ -39,7 +39,7 @@ export function Nav({ user = null }: { user?: NavUser | null }) {
               supportCategories={SUPPORT_CATEGORY_LABELS}
             />
           ) : (
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="min-h-11">
               <Link href="/login">Sign in</Link>
             </Button>
           )}

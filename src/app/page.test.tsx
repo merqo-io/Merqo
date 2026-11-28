@@ -23,6 +23,7 @@ vi.mock("@/lib/supabase/server", () => ({
 }));
 
 import Home from "./page";
+import { PRICING_LINE } from "@/lib/kits";
 
 describe("Home", () => {
   it("sends a signed-in vendor's CTAs through /post-login, not straight to /admin", async () => {
@@ -47,6 +48,19 @@ describe("Home", () => {
     expect(
       screen.getAllByRole("link", { name: /sign in/i })[0],
     ).toHaveAttribute("href", "/login");
+  });
+
+  it("composes the hero, the kits journey, three FAQ rows and the closing call", async () => {
+    getUser.mockResolvedValue({ data: { user: null } });
+
+    const { container } = render(await Home());
+
+    expect(
+      screen.getByRole("group", { name: "Merqo kits" }),
+    ).toBeInTheDocument();
+    expect(container.querySelector("#kits")).not.toBeNull();
+    expect(container.querySelectorAll("#faq details")).toHaveLength(3);
+    expect(screen.getByText(PRICING_LINE)).toBeInTheDocument();
   });
 
   it("labels the nav with the stall name, not the full name", async () => {

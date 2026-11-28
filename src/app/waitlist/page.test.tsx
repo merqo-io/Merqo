@@ -81,7 +81,7 @@ describe("WaitlistPage", () => {
       .map((o) => (o as HTMLOptionElement).value);
     expect(options).toEqual(["", "loopkit", "paykit", "stockkit", "printkit"]);
     expect(
-      screen.getByText("Clarence may email you about this kit."),
+      screen.getByText("We may email you about this kit."),
     ).toBeInTheDocument();
   });
 

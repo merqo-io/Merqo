@@ -127,50 +127,6 @@ body {
   letter-spacing: -0.015em;
 }
 
-/* kit-stacker graph: edges self-draw, then labels fade in just after.
-   The reduced-motion block below collapses both to their final state. */
-/* Edges are solid + always painted (resting opacity 1); the animation only
-   plays a gentle appear on mount, so a stripped/disabled animation still leaves
-   the edge fully visible. (A dashoffset "draw-in" proved flaky with pathLength.) */
-.edge-draw {
-  animation: edge-appear 0.45s ease-out;
-}
-@keyframes edge-appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* graph edges: an ambient pulse rides each connection (offset-path, GPU) */
-.edge-flow {
-  offset-rotate: 0deg;
-  animation: offset-travel 2.4s linear infinite;
-}
-/* the customer-journey token traces the current hop once, then the next hop
-   restarts it (via a changing React key). */
-.journey-token {
-  offset-rotate: 0deg;
-  animation: offset-travel 0.7s ease-in-out forwards;
-}
-@keyframes offset-travel {
-  from {
-    offset-distance: 0%;
-  }
-  to {
-    offset-distance: 100%;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  /* calm static state — no traveling dots */
-  .edge-flow,
-  .journey-token {
-    display: none;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

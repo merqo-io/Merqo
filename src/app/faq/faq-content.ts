@@ -76,7 +76,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "What happens to my email on the waitlist?",
-        a: 'We save your email against the kit you pick. The form says "Clarence may email you about this kit." A separate box, not ticked to start with, says "Also send me occasional Merqo updates." and we only record that if you tick it.',
+        a: 'We save your email against the kit you pick. The form says "We may email you about this kit." A separate box, not ticked to start with, says "Also send me occasional Merqo updates." and we only record that if you tick it.',
       },
     ],
   },
