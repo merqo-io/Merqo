@@ -19,6 +19,8 @@ with their source (mirrored by name/path under `app/`, `components/`,
 - `components/` — tests for `src/components/**` components not colocated with source.
 - `contract/` — cross-kit HTTP contract tests (e.g. qkit metrics API).
 - `db/` — schema/migration/RLS-shape tests.
+- `demo-scenes.test.ts` — demo recorder scene copy (no em dash, caption length), CLI args,
+  filtergraph and loopback guards for `scripts/demo/`.
 - `lib/` — tests for `src/lib/**` modules not colocated with source.
 
 ## Parent
