@@ -24,10 +24,10 @@ export const SCENES = [
     episode: null,
     mode: "single",
     status: "implemented",
-    hook: "One sign-in. Every tool.",
+    hook: "All your kits, one dashboard.",
     captions: {
       signup: "Create your Merqo account",
-      signin: "One email, one password",
+      signin: "Sign in to Merqo",
       kits: "Your kits, together in one place",
       more: "Add more kits as you grow",
     },
