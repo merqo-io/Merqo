@@ -18,6 +18,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "demo:record": "node scripts/demo/record.mjs",
+    "demo:compose": "node scripts/demo/compose.mjs",
     "prepare": "husky"
   },
   "dependencies": {
